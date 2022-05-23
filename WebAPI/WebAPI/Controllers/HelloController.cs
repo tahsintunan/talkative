@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 namespace WebAPI.Controllers
 {
     [ApiController]
-    [Route("api")]
+    [Route("api1")]
     public class HelloController : ControllerBase
     {
         [HttpGet]
