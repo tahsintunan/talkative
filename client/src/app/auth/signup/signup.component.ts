@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -11,7 +12,8 @@ export class SignupComponent implements OnInit {
   signupForm: FormGroup;
   passwordMismatch: boolean;
   constructor(
-    private _formBuilder: FormBuilder
+    private _formBuilder: FormBuilder,
+    private _authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -28,7 +30,10 @@ export class SignupComponent implements OnInit {
     const formValues = this.signupForm.getRawValue()
     if (formValues.confirmPassword === formValues.password) {
       this.passwordMismatch = false;
+      this._authService.signup(formValues).subscribe(res => {
+        console.log(res);
 
+      })
     } else {
       this.passwordMismatch = true;
       console.log(this.passwordMismatch);
