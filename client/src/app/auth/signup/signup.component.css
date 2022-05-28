@@ -61,6 +61,20 @@ input:focus {
   cursor: not-allowed;
 }
 
+.alertDiv {
+  width: 250px;
+  height: 50px;
+  border-radius: 8px;
+  background-color: #e60d00;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 25px;
+  right: 20px;
+}
+
 @media only screen and (max-width: 1200px) {
   .signupDiv {
     width: 80%;
