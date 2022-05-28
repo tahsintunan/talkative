@@ -1,17 +1,25 @@
+using FluentValidation.AspNetCore;
 using server.Interface;
 using server.Model;
+using server.Model.User;
 using server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<UserValidator>());
+
 builder.Services.Configure<UserDatabaseConfig>(
     builder.Configuration.GetSection("DatabaseConfig"));
+
 builder.Services.AddSingleton<IUserService,UserService>();
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddCors(o => {
     o.AddPolicy("CorsPolicy", builder =>
     {
@@ -21,6 +29,7 @@ builder.Services.AddCors(o => {
         .AllowAnyHeader();
     });
 });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

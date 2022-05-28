@@ -11,10 +11,10 @@ export class AuthService {
     private http: HttpClient
   ) { }
 
-  baseUrl = "http://localhost:5001/User/"
+  authUrl = "http://localhost:5001/api/Auth/"
 
   signup(body) {
-    return this.http.post(this.baseUrl, body);
+    return this.http.post(this.authUrl + "signup", body);
   }
 
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using server.Interface;
 using server.Model;
+using server.Model.User;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -29,8 +31,9 @@ namespace server.Services
             {
                 hashedPassword = GetHash(sha256Hash, user?.Password);
             }
-                User newUser = new User()
-            {
+            User newUser = new User()
+            {   
+                Id=ObjectId.GenerateNewId(),
                 Username = user.Username,
                 Password = hashedPassword,
                 Email = user.Email,
@@ -39,25 +42,21 @@ namespace server.Services
             await _userCollection.InsertOneAsync(newUser);
         }
 
-        private static string GetHash(HashAlgorithm hashAlgorithm, string input)
+        private static string GetHash(HashAlgorithm hashAlgorithm, string password)
         {
-
-            // Convert the input string to a byte array and compute the hash.
-            byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
-
-            // Create a new Stringbuilder to collect the bytes
-            // and create a string.
+            byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(password));
             var sBuilder = new StringBuilder();
-
-            // Loop through each byte of the hashed data
-            // and format each one as a hexadecimal string.
             for (int i = 0; i < data.Length; i++)
             {
                 sBuilder.Append(data[i].ToString("x2"));
             }
-
-            // Return the hexadecimal string.
             return sBuilder.ToString();
+        }
+
+        public async Task<User> findUser(User user)
+        {
+            var foundUser=await _userCollection.Find(existingUser=>existingUser.Username == user.Username).FirstOrDefaultAsync();
+            return foundUser;
         }
     }
 }

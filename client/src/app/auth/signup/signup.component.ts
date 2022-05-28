@@ -25,7 +25,7 @@ export class SignupComponent implements OnInit {
       email: ['', [Validators.email, Validators.required]],
       dateOfBirth: ['', [Validators.required, this.ageValidator]],
       password: ['', [Validators.required, Validators.pattern(
-        /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
+        /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#.\$%\^&\*])(?=.{8,})/
       ),
       Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required, this.confirmPasswordValidator]],
@@ -46,14 +46,19 @@ export class SignupComponent implements OnInit {
     this._authService.signup(formValues).subscribe(
       {
         next: (res) => this.showAlert('Signup Sucessful!', '#0de057'),
-        error: (err) => this.showAlert('Signup unsuccessful!', '#e60d00')
+        error: (err) => {
+
+
+          let error = err.error
+          console.log(error);
+          if (error.statusCode === 400) {
+            this.showAlert(error.message, '#e60d00')
+            return;
+          }
+          this.showAlert('Signup unsuccessful!', '#e60d00')
+        }
       }
     )
-  }
-
-  sexHaver() {
-    console.log(this.signupForm.controls['password']);
-
   }
 
   private ageValidator(control) {
