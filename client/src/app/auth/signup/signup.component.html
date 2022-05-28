@@ -4,7 +4,7 @@
     <div class="inputdiv">
       <input type="text" [formControlName]="'username'" placeholder="Username" />
 
-      <div style="color: red;text-align: center;"
+      <div style="color: red;font-size: 12px;"
         *ngIf="signupForm.controls['username'].invalid && (signupForm.controls['username'].touched || signupForm.controls['username'].dirty)">
         <div *ngIf="signupForm.controls['username'].errors['required']">
           Username is required.
@@ -15,7 +15,7 @@
     <div class="inputdiv">
       <input type="email" [formControlName]="'email'" placeholder="Email" />
 
-      <div style="color: red;text-align: center;"
+      <div style="color: red;font-size: 12px;"
         *ngIf="signupForm.controls['email'].invalid && (signupForm.controls['email'].touched || signupForm.controls['email'].dirty)">
         <div *ngIf="signupForm.controls['email'].errors['required']">
           Email is required.
@@ -30,7 +30,7 @@
     <div class="inputdiv">
       <input type="date" [formControlName]="'dateOfBirth'" placeholder="Date of Birth" />
 
-      <div style="color: red;text-align: center;"
+      <div style="color: red;font-size: 12px;"
         *ngIf="signupForm.controls['dateOfBirth'].invalid && (signupForm.controls['dateOfBirth'].touched || signupForm.controls['dateOfBirth'].dirty)">
         <div *ngIf="signupForm.controls['dateOfBirth'].errors['required']">
           Date of birth is required.
@@ -44,7 +44,7 @@
     <div class="inputdiv">
       <input type="password" [formControlName]="'password'" minlength="5" maxlength="50" placeholder="Password" />
 
-      <div style="color: red;text-align: center;"
+      <div style="color: red;font-size: 12px;"
         *ngIf="signupForm.controls['password'].invalid && (signupForm.controls['password'].touched)">
         <div *ngIf="signupForm.controls['password'].errors['required']">
           Password is required.
@@ -60,14 +60,14 @@
       <input (blur)="displayError=true" type="password" [formControlName]="'confirmPassword'"
         placeholder="Confirm Password" />
 
-      <div style="color: red;text-align: center;"
+      <div style="color: red;font-size: 12px;"
         *ngIf="signupForm.controls['confirmPassword'].invalid && (signupForm.controls['confirmPassword'].touched || signupForm.controls['confirmPassword'].dirty)">
         <div *ngIf="signupForm.controls['confirmPassword'].errors['required']">
           Please confirm your password.
         </div>
       </div>
 
-      <div style="color: red;text-align: center;"
+      <div style="color: red;font-size: 12px;"
         *ngIf="signupForm.controls['confirmPassword'].invalid &&  displayError &&(signupForm.controls['confirmPassword'].dirty ||signupForm.controls['confirmPassword'].touched )">
         <div *ngIf="signupForm.controls['confirmPassword'].errors['passwordMismatch']">
           Confirm Password doesn't match with password
