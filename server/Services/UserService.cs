@@ -32,8 +32,8 @@ namespace server.Services
                 hashedPassword = GetHash(sha256Hash, user?.Password);
             }
             User newUser = new User()
-            {   
-                Id=ObjectId.GenerateNewId(),
+            {
+                Id = ObjectId.GenerateNewId(),
                 Username = user.Username,
                 Password = hashedPassword,
                 Email = user.Email,
@@ -55,7 +55,7 @@ namespace server.Services
 
         public async Task<User> findUser(User user)
         {
-            var foundUser=await _userCollection.Find(existingUser=>existingUser.Username == user.Username).FirstOrDefaultAsync();
+            var foundUser = await _userCollection.Find(existingUser => existingUser.Username == user.Username).FirstOrDefaultAsync();
             return foundUser;
         }
     }

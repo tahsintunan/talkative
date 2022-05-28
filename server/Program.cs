@@ -14,13 +14,14 @@ builder.Services.AddControllers()
 builder.Services.Configure<UserDatabaseConfig>(
     builder.Configuration.GetSection("DatabaseConfig"));
 
-builder.Services.AddSingleton<IUserService,UserService>();
+builder.Services.AddSingleton<IUserService, UserService>();
 
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCors(o => {
+builder.Services.AddCors(o =>
+{
     o.AddPolicy("CorsPolicy", builder =>
     {
         builder

@@ -12,8 +12,8 @@ namespace server.Controllers
         public ILogger<AuthController> _logger;
         public AuthController(IUserService userService, ILogger<AuthController> logger)
         {
-            _userService=userService;
-            _logger=logger;
+            _userService = userService;
+            _logger = logger;
         }
         [HttpPost("signup")]
         public async Task<IActionResult> Signup(User user)
@@ -29,7 +29,8 @@ namespace server.Controllers
                     await _userService.signupUser(user);
                     return StatusCode(StatusCodes.Status201Created);
                 }
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(500, "Something went wrong.");

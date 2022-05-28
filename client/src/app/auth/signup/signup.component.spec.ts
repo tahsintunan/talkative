@@ -8,11 +8,10 @@ describe('SignupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SignupComponent]
+      declarations: [SignupComponent],
     });
     fixture = TestBed.createComponent(SignupComponent);
     component = fixture.componentInstance;
-
   });
 
   beforeEach(() => {

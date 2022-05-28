@@ -1,30 +1,33 @@
 .signupPage {
-  background-color: rgb(234, 244, 246);
   width: 100%;
   height: 100vh;
-  margin: 0px;
+  background-color: #eaf4f6;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .signupDiv {
-  width: 30%;
-  height: fit-content;
-  padding: 20px 0 20px 0;
-  background-color: #ffffff;
+  max-width: 540px;
+  width: 80%;
+  padding: 2.5rem 1rem;
+  background-color: white;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 30px;
-  box-shadow: 5px 5px 10px #eee;
+  gap: 2rem;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
 }
 
 .inputdiv {
-  width: 70%;
-  height: fit-content;
+  width: 80%;
+}
+
+.inputWarning {
+  color: #d73931;
+  font-size: 12px;
 }
 
 input {
@@ -32,24 +35,22 @@ input {
   font-weight: 500;
   border: 1px solid #d6d5d5;
   width: 100%;
-  height: 35px;
-  padding: 3px 5px 3px 5px;
-  font-size: 15px;
+  padding: 1rem;
+  font-size: 1rem;
 }
 
 input:focus {
-  outline: 1px solid rgb(89, 169, 234);
+  outline: 1px solid #59a9ea;
 }
 
 .signupButton {
-  width: 90px;
-  height: 40px;
-  font-size: 15px;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
   border-radius: 4px;
   outline: none;
   border: none;
   color: white;
-  background-color: #447fff;
+  background-color: #59a9ea;
 }
 
 .signupButton:hover {
@@ -64,8 +65,8 @@ input:focus {
 .alertDiv {
   width: fit-content;
   height: fit-content;
-  padding: 10px 20px 10px 20px;
-  border-radius: 8px;
+  padding: 0.8rem 2rem;
+  border-radius: 4px;
   background-color: #e60d00;
   color: white;
   display: flex;
@@ -73,11 +74,5 @@ input:focus {
   align-items: center;
   position: fixed;
   bottom: 25px;
-  right: 20px;
-}
-
-@media only screen and (max-width: 1200px) {
-  .signupDiv {
-    width: 80%;
-  }
+  right: 25px;
 }
