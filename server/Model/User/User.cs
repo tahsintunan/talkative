@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 
 namespace server.Model.User
 {
@@ -7,7 +8,8 @@ namespace server.Model.User
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public ObjectId? Id { get; set; }
+        [JsonProperty("_id")]
+        public string? Id { get; set; }
 
         [BsonElement("username")]
         public string? Username { get; set; }

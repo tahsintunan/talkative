@@ -33,11 +33,11 @@ namespace server.Services
             }
             User newUser = new User()
             {
-                Id = ObjectId.GenerateNewId(),
+                Id = ObjectId.GenerateNewId().ToString(),
                 Username = user.Username,
                 Password = hashedPassword,
                 Email = user.Email,
-                DateOfBirth = user.DateOfBirth
+                DateOfBirth = user.DateOfBirth.Date
             };
             await _userCollection.InsertOneAsync(newUser);
         }
@@ -58,5 +58,18 @@ namespace server.Services
             var foundUser = await _userCollection.Find(existingUser => existingUser.Username == user.Username).FirstOrDefaultAsync();
             return foundUser;
         }
+
+        public async Task<IList<User>> GetAllUsers()
+        {
+            IList<User> users = await _userCollection.Find(users => true).ToListAsync();
+            return users;
+        }
+
+        public async Task<User> GetUserById(string id)
+        {
+            User user = await _userCollection.Find(user=>user.Id==id).FirstOrDefaultAsync();
+            return user;
+        }
+
     }
 }

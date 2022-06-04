@@ -1,0 +1,38 @@
+<div class="mainDiv">
+  <ngx-datatable #mydatatable class="material" [headerHeight]="50" [limit]="5" [footerHeight]="50" rowHeight="auto"
+    [rows]="rows" [columnMode]="'force'">
+    <ngx-datatable-column name="id"></ngx-datatable-column>
+    <ngx-datatable-column name="Username"></ngx-datatable-column>
+    <ngx-datatable-column name="Email">
+      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+        <span title="Double click to edit" (dblclick)="editing[rowIndex + '-email'] = true"
+          *ngIf="!editing[rowIndex + '-email']">
+          {{ value }}
+        </span>
+        <input autofocus (blur)="updateValue($event, 'email', rowIndex)" *ngIf="editing[rowIndex + '-email']"
+          type="email" [value]="value" />
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Date Of Birth">
+
+      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+        <span title="Double click to edit" (dblclick)="editing[rowIndex + '-dateOfBirth'] = true"
+          *ngIf="!editing[rowIndex + '-dateOfBirth']">
+          {{convertToDate(value) }}
+        </span>
+        <input autofocus (blur)="updateValue($event, 'dateOfBirth', rowIndex)"
+          *ngIf="editing[rowIndex + '-dateOfBirth']" type="date" [value]="convertToDate(value)" />
+      </ng-template>
+
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="" [width]="15" prop="id" [sortable]="false">
+      <ng-template let-rowIndex="rowIndex" let-id="value" ngx-datatable-cell-template>
+        <button class="deleteButton" mat-mini-fab color="warn" (click)="deleteUser(id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </ng-template>
+    </ngx-datatable-column>
+
+  </ngx-datatable>
+</div>
