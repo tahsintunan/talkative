@@ -15,6 +15,7 @@ builder.Services.Configure<UserDatabaseConfig>(
     builder.Configuration.GetSection("DatabaseConfig"));
 
 builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<IAuthService, AuthService>();
 
 builder.Services.AddEndpointsApiExplorer();
 

@@ -1,11 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
-using MongoDB.Bson;
 using MongoDB.Driver;
+using server.Dto.UserDto.UpdateUserDto;
 using server.Interface;
 using server.Model;
 using server.Model.User;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace server.Services
 {
@@ -24,41 +22,6 @@ namespace server.Services
                 userDatabaseConfig.Value.UserCollectionName);
         }
 
-        public async Task signupUser(User user)
-        {
-            string? hashedPassword;
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                hashedPassword = GetHash(sha256Hash, user?.Password);
-            }
-            User newUser = new User()
-            {
-                Id = ObjectId.GenerateNewId().ToString(),
-                Username = user.Username,
-                Password = hashedPassword,
-                Email = user.Email,
-                DateOfBirth = user.DateOfBirth.Date
-            };
-            await _userCollection.InsertOneAsync(newUser);
-        }
-
-        private static string GetHash(HashAlgorithm hashAlgorithm, string password)
-        {
-            byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(password));
-            var sBuilder = new StringBuilder();
-            for (int i = 0; i < data.Length; i++)
-            {
-                sBuilder.Append(data[i].ToString("x2"));
-            }
-            return sBuilder.ToString();
-        }
-
-        public async Task<User> findUser(User user)
-        {
-            var foundUser = await _userCollection.Find(existingUser => existingUser.Username == user.Username).FirstOrDefaultAsync();
-            return foundUser;
-        }
-
         public async Task<IList<User>> GetAllUsers()
         {
             IList<User> users = await _userCollection.Find(users => true).ToListAsync();
@@ -70,6 +33,27 @@ namespace server.Services
             User user = await _userCollection.Find(user=>user.Id==id).FirstOrDefaultAsync();
             return user;
         }
+
+        public async Task UpdateUserInfo(UpdateUserDto updateUserDto)
+        {
+            User user = await _userCollection.Find(user => user.Id == updateUserDto.Id).FirstOrDefaultAsync();
+            User updatedUser = new User()
+            {
+                Id = updateUserDto.Id,
+                Username = user.Username,
+                DateOfBirth = updateUserDto.DateOfBirth?? user.DateOfBirth,
+                Email = updateUserDto.Email?? user.Email,
+                Password = user.Password,
+            };
+            await _userCollection.ReplaceOneAsync(x => x.Id == updateUserDto.Id,updatedUser );
+
+        }
+
+        public async Task DeleteUserById(string id)
+        {
+            await _userCollection.DeleteOneAsync(user => user.Id == id);
+        }
+
 
     }
 }

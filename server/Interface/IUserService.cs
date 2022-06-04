@@ -1,12 +1,13 @@
-﻿using server.Model.User;
+﻿using server.Dto.UserDto.UpdateUserDto;
+using server.Model.User;
 
 namespace server.Interface
 {
     public interface IUserService
     {
-        Task signupUser(User user);
-        Task<User> findUser(User user);
         Task<IList<User>> GetAllUsers();
         Task<User> GetUserById(string id);
+        Task UpdateUserInfo(UpdateUserDto updateUserDto);
+        Task DeleteUserById(string id);
     }
 }

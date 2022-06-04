@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using server.Dto.UserDto.UpdateUserDto;
 using server.Interface;
 
 namespace server.Controllers
@@ -9,10 +10,12 @@ namespace server.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
             _userService = userService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -31,6 +34,34 @@ namespace server.Controllers
                 return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "User doesn't exist" });
             }
             return Ok(user);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(UpdateUserDto updateUserDto)
+        {
+            try
+            {
+                await _userService.UpdateUserInfo(updateUserDto);
+                return NoContent();
+            }catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUserById(string id)
+        {
+            try
+            {
+                await _userService.DeleteUserById(id);
+                return NoContent();
+            }catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
         }
 
     }

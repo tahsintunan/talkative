@@ -8,25 +8,26 @@ namespace server.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        public IUserService _userService;
+        public IAuthService _authService;
         public ILogger<AuthController> _logger;
-        public AuthController(IUserService userService, ILogger<AuthController> logger)
+        public AuthController(IAuthService authService, ILogger<AuthController> logger)
         {
-            _userService = userService;
+            _authService = authService;
             _logger = logger;
         }
+
         [HttpPost("signup")]
         public async Task<IActionResult> Signup(User user)
         {
             try
             {
-                if (await _userService.findUser(user) != null)
+                if (await _authService.checkIfUsernameExists(user.Username))
                 {
                     return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "Username exists" });
                 }
                 else
                 {
-                    await _userService.signupUser(user);
+                    await _authService.signupUser(user);
                     return StatusCode(StatusCodes.Status201Created);
                 }
             }
