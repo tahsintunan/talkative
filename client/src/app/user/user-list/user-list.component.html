@@ -1,3 +1,4 @@
+<mat-progress-bar *ngIf="loading" class="progressBar" mode="indeterminate"></mat-progress-bar>
 <div class="mainDiv">
   <ngx-datatable #mydatatable class="material" [headerHeight]="50" [limit]="5" [footerHeight]="50" rowHeight="auto"
     [rows]="rows" [columnMode]="'force'">

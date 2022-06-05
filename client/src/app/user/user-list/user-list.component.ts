@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { catchError, EMPTY } from 'rxjs';
 import { UserService } from '../user.service';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
@@ -12,11 +12,12 @@ export class UserListComponent implements OnInit {
 
   rows = [];
   selected = [];
-
+  loading = false;
   editing = {};
 
   constructor(
-    private _userService: UserService
+    private _userService: UserService,
+    private _snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -24,10 +25,12 @@ export class UserListComponent implements OnInit {
   }
 
   getUsers() {
+    this.loading = true;
     this._userService.getUsers().subscribe(res => {
       console.log(res);
       let response: any = res
       this.rows = response;
+      this.loading = false
     }, catchError(err => {
       console.log(err);
 
@@ -40,26 +43,58 @@ export class UserListComponent implements OnInit {
     let day = dateOfBirth.getDate();
     let month = dateOfBirth.getMonth() + 1;
     let year = dateOfBirth.getFullYear();
-    const fullDate: string = year + "-" + month + "-" + (day < 10 ? "0" + day : day);
+    const fullDate: string = year + "-" + month + "-" + (day < 10 ? "0" + day + "" : day);
     return fullDate
   }
 
   updateValue(event, cell, rowIndex, row) {
-    console.log(row);
     if (event.target.value == "" || event.target.value == null) {
       this.rows[rowIndex][cell] = row[cell];
       return;
     }
+
+    const body = {
+      ...row,
+    }
+
+    body[cell] = event.target.value;
+
     this.editing[rowIndex + '-' + cell] = false;
-    this.rows[rowIndex][cell] = event.target.value;
-    this.rows = [...this.rows];
+    this.updateUser(body)
+  }
+
+  updateUser(user) {
+    this._userService.updateUser(user).subscribe(res => {
+      console.log(res);
+      this.getUsers()
+    }, err => {
+      let error = err.error.errors
+      let errorMessage;
+      if (error.Email) {
+        errorMessage = error.Email[0];
+      } else if (error.DateOfBirth) {
+        errorMessage = error.DateOfBirth[0];
+      } else {
+        errorMessage = "Something went wrong.";
+      }
+
+      this._snackBar.open(errorMessage, 'Undo', {
+        duration: 2000
+      })
+    }
+    )
   }
 
   deleteUser(id) {
     this._userService.deleteUser(id).subscribe(res => {
       console.log(res);
       this.getUsers()
-    })
+    }, catchError(err => {
+      this._snackBar.open("Something went wrong.", 'Undo', {
+        duration: 2000
+      })
+      return EMPTY
+    }))
   }
 
 }
