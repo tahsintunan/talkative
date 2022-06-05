@@ -9,7 +9,7 @@
           *ngIf="!editing[rowIndex + '-email']">
           {{ value }}
         </span>
-        <input autofocus (blur)="updateValue($event, 'email', rowIndex)" *ngIf="editing[rowIndex + '-email']"
+        <input autofocus (blur)="updateValue($event, 'email', rowIndex,row)" *ngIf="editing[rowIndex + '-email']"
           type="email" [value]="value" />
       </ng-template>
     </ngx-datatable-column>
@@ -20,7 +20,7 @@
           *ngIf="!editing[rowIndex + '-dateOfBirth']">
           {{convertToDate(value) }}
         </span>
-        <input autofocus (blur)="updateValue($event, 'dateOfBirth', rowIndex)"
+        <input autofocus (blur)="updateValue($event, 'dateOfBirth', rowIndex,row)"
           *ngIf="editing[rowIndex + '-dateOfBirth']" type="date" [value]="convertToDate(value)" />
       </ng-template>
 

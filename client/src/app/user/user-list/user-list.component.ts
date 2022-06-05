@@ -20,6 +20,10 @@ export class UserListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.getUsers()
+  }
+
+  getUsers() {
     this._userService.getUsers().subscribe(res => {
       console.log(res);
       let response: any = res
@@ -40,14 +44,22 @@ export class UserListComponent implements OnInit {
     return fullDate
   }
 
-  updateValue(event, cell, rowIndex) {
+  updateValue(event, cell, rowIndex, row) {
+    console.log(row);
+    if (event.target.value == "" || event.target.value == null) {
+      this.rows[rowIndex][cell] = row[cell];
+      return;
+    }
     this.editing[rowIndex + '-' + cell] = false;
     this.rows[rowIndex][cell] = event.target.value;
     this.rows = [...this.rows];
   }
 
   deleteUser(id) {
-    console.log(id)
+    this._userService.deleteUser(id).subscribe(res => {
+      console.log(res);
+      this.getUsers()
+    })
   }
 
 }
