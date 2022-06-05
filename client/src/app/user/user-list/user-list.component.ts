@@ -69,20 +69,25 @@ export class UserListComponent implements OnInit {
       this.getUsers()
     }, err => {
       let error = err.error.errors
-      let errorMessage;
-      if (error.Email) {
-        errorMessage = error.Email[0];
-      } else if (error.DateOfBirth) {
-        errorMessage = error.DateOfBirth[0];
-      } else {
-        errorMessage = "Something went wrong.";
-      }
-
-      this._snackBar.open(errorMessage, 'Undo', {
-        duration: 2000
-      })
+      this.handleError(error);
     }
     )
+  }
+
+  handleError(error) {
+    let errorMessage;
+
+    if (error.Email) {
+      errorMessage = error.Email[0];
+    } else if (error.DateOfBirth) {
+      errorMessage = error.DateOfBirth[0];
+    } else {
+      errorMessage = "Something went wrong.";
+    }
+
+    this._snackBar.open(errorMessage, 'Undo', {
+      duration: 2000
+    })
   }
 
   deleteUser(id) {
