@@ -48,8 +48,14 @@ export class UserListComponent implements OnInit {
   }
 
   updateValue(event, cell, rowIndex, row) {
+    if (event.target.value === row[cell]) {
+      this.editing[rowIndex + '-' + cell] = false;
+      return;
+
+    }
     if (event.target.value == "" || event.target.value == null) {
       this.rows[rowIndex][cell] = row[cell];
+      this.editing[rowIndex + '-' + cell] = false;
       return;
     }
 
@@ -64,14 +70,17 @@ export class UserListComponent implements OnInit {
   }
 
   updateUser(user) {
-    this._userService.updateUser(user).subscribe(res => {
-      console.log(res);
-      this.getUsers()
-    }, err => {
-      let error = err.error.errors
-      this.handleError(error);
-    }
-    )
+
+    this._userService.updateUser(user).subscribe({
+      next: res => {
+        console.log(res);
+        this.getUsers()
+      },
+      error: err => {
+        let error = err.error.errors
+        this.handleError(error);
+      }
+    })
   }
 
   handleError(error) {
@@ -91,15 +100,16 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(id) {
-    this._userService.deleteUser(id).subscribe(res => {
-      console.log(res);
-      this.getUsers()
-    }, catchError(err => {
-      this._snackBar.open("Something went wrong.", 'Undo', {
-        duration: 2000
-      })
-      return EMPTY
-    }))
+
+    this._userService.deleteUser(id).subscribe({
+      next: res => this.getUsers(),
+      error: err => {
+        this._snackBar.open("Something went wrong.", 'Undo', {
+          duration: 2000
+        })
+      }
+    })
+
   }
 
 }

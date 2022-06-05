@@ -21,19 +21,36 @@ namespace server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _userService.GetAllUsers();
-            return Ok(users);
+            try
+            {
+                var users = await _userService.GetAllUsers();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(string id)
         {
-            var user=await _userService.GetUserById(id);
-            if (user == null)
+            try
             {
-                return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "User doesn't exist" });
+                var user = await _userService.GetUserById(id);
+                if (user == null)
+                {
+                    return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "User doesn't exist" });
+                }
+                return Ok(user);
             }
-            return Ok(user);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+                throw;
+            }
         }
 
         [HttpPut]
