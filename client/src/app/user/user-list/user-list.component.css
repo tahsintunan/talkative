@@ -1,18 +1,21 @@
-@import '~@swimlane/ngx-datatable/index.css';
-@import '~@swimlane/ngx-datatable/themes/material.css';
-@import '~@swimlane/ngx-datatable/assets/icons.css';
+@import "~@swimlane/ngx-datatable/index.css";
+@import "~@swimlane/ngx-datatable/themes/material.css";
+@import "~@swimlane/ngx-datatable/assets/icons.css";
 
 .mainDiv {
-  width: 70%;
+  max-width: 1200px;
+  width: 100%;
   margin: auto;
   padding: 20px;
 }
 
-.deleteButton {
-  width: 30px;
-  height: 30px;
+.underlined-input {
+  padding: 8px;
+  outline: none;
+  border-radius: 5px;
+  border: 2px solid gray;
 }
 
-.mat-icon {
-  font-size: 15px;
+.underlined-input:focus {
+  border-color: royalblue;
 }
