@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class UserService {
 
-  private userUrl = "http://localhost:5001/api/User/"
+  private userUrl = "http://kernel-panic.learnathon.net/api2/api/User/";
 
   constructor(
     private http: HttpClient

@@ -18,8 +18,8 @@ import { AuthService } from '../auth.service';
 export class SignupComponent implements OnInit {
   signupForm: FormGroup;
   displayError: boolean = false;
-  color;
-  alert;
+  color: any;
+  alert: { message: any; color: any; };
   constructor(
     private _formBuilder: FormBuilder,
     private _authService: AuthService

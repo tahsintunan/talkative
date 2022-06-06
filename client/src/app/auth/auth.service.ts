@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 export class AuthService {
   constructor(private http: HttpClient) {}
 
-  authUrl = 'http://localhost:5001/api/Auth/';
+  authUrl = 'http://kernel-panic.learnathon.net/api2/api/Auth/';
 
   signup(body) {
     return this.http.post(this.authUrl + 'signup', body);
