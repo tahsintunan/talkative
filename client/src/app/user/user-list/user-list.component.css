@@ -19,3 +19,9 @@
 .underlined-input:focus {
   border-color: royalblue;
 }
+
+.signupRedirectButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}

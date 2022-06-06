@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { catchError, EMPTY } from 'rxjs';
 import { UserService } from '../user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
@@ -16,11 +17,16 @@ export class UserListComponent implements OnInit {
 
   constructor(
     private _userService: UserService,
-    private _snackBar: MatSnackBar
-  ) {}
+    private _snackBar: MatSnackBar,
+    private _router: Router
+  ) { }
 
   ngOnInit(): void {
     this.getUsers();
+  }
+
+  goToSignup() {
+    this._router.navigate(['auth/signup'])
   }
 
   getUsers() {

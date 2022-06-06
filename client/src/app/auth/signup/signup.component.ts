@@ -7,8 +7,10 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { catchError } from 'rxjs';
 import { AuthService } from '../auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-signup',
@@ -22,8 +24,10 @@ export class SignupComponent implements OnInit {
   alert: { message: any; color: any; };
   constructor(
     private _formBuilder: FormBuilder,
-    private _authService: AuthService
-  ) {}
+    private _snackBar: MatSnackBar,
+    private _authService: AuthService,
+    private _router: Router
+  ) { }
 
   ngOnInit(): void {
     this.signupForm = this._formBuilder.group({
@@ -35,7 +39,7 @@ export class SignupComponent implements OnInit {
         [
           Validators.required,
           Validators.pattern(
-            /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#.\$%\^&\*])(?=.{8,})/
+            /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#.,;+_=\/\\\$%\^&\*\-])(?=.{8,})/
           ),
           Validators.minLength(8),
         ],
@@ -47,26 +51,32 @@ export class SignupComponent implements OnInit {
     });
   }
 
-  findStrengthOfPassword() {
-    if (this.signupForm.controls['password']) {
-      let password: string = this.signupForm.controls['password'].value;
-    }
-  }
+
 
   signup() {
     const formValues = this.signupForm.getRawValue();
 
     this._authService.signup(formValues).subscribe({
-      next: (res) => this.showAlert('Signup Sucessful!', '#0de057'),
+      next: (res) => {
+        this._router.navigate(['user'])
+      },
       error: (err) => {
         let error = err.error;
-        console.log(error);
-        if (error.statusCode === 400) {
-          this.showAlert(error.message, '#e60d00');
-          return;
-        }
-        this.showAlert('Signup unsuccessful!', '#e60d00');
+        this.handleError(error)
       },
+    });
+  }
+
+  private handleError(error) {
+    if (error.statusCode === 400) {
+      this._snackBar.open(error.message, 'Undo', {
+        duration: 2000,
+      });
+      return;
+    }
+
+    this._snackBar.open('Signup unsuccessful!', 'Undo', {
+      duration: 2000,
     });
   }
 
