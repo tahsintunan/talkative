@@ -11,8 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers()
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SignupRequestDtoValidator>())
-    .AddFluentValidation(fv=>fv.RegisterValidatorsFromAssemblyContaining<LoginRequestDtoValidator>());
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 
 builder.Services.Configure<UserDatabaseConfig>(
     builder.Configuration.GetSection("DatabaseConfig"));
