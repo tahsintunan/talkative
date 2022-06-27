@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Interface;
 using server.Model.User;
-using server.Dto.RequestDto;
+using server.Dto.RequestDto.SignupRequestDto;
+using server.Dto.RequestDto.LoginRequestDto;
 
 namespace server.Controllers
 {
@@ -18,18 +19,16 @@ namespace server.Controllers
         }
 
         [HttpPost("signup")]
-        public async Task<IActionResult> Signup(User user)
+        public async Task<IActionResult> Signup(SignupRequestDto signupRequestDto)
         {
             try
             {
-                if (user == null || user.Username == null || user.Password == null)
-                    return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "Invalid request" });
                 
-                if (await _authService.checkIfUsernameExists(user.Username))
+                if (await _authService.checkIfUsernameExists(signupRequestDto.Username!))
                     return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "Username exists" });
                 
-                await _authService.signupUser(user);
-                return StatusCode(StatusCodes.Status201Created);
+                var signupResponse = await _authService.signupUser(signupRequestDto);
+                return StatusCode(StatusCodes.Status201Created,signupResponse);
             }
             catch (Exception ex)
             {
@@ -42,12 +41,9 @@ namespace server.Controllers
         public async Task<IActionResult> Login(LoginRequestDto request)
         {
             try
-            {
-                if (request == null || request.Username == null || request.Password == null)
-                    return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "Invalid request" });
-                
-                string username = request.Username;
-                string password = request.Password;
+            {   
+                string username = request.Username!;
+                string password = request.Password!;
                 
                 if (!await _authService.checkIfUsernameExists(username))
                     return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "Username does not exist" });

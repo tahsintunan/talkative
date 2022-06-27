@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using server.Dto.UserDto.UpdateUserDto;
 using server.Interface;
 
@@ -21,6 +20,7 @@ namespace server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
+
             try
             {
                 var users = await _userService.GetAllUsers();
@@ -31,6 +31,7 @@ namespace server.Controllers
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
+
         }
 
         [HttpGet("{id}")]

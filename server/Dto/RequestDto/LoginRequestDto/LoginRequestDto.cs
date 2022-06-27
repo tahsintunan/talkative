@@ -1,4 +1,4 @@
-namespace server.Dto.RequestDto
+namespace server.Dto.RequestDto.LoginRequestDto
 {
     public class LoginRequestDto
     {

@@ -1,7 +1,9 @@
 using FluentValidation.AspNetCore;
+using server.Dto.RequestDto.LoginRequestDto;
+using server.Dto.RequestDto.SignupRequestDto;
 using server.Interface;
+using server.Middlewares;
 using server.Model;
-using server.Model.User;
 using server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers()
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<UserValidator>());
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SignupRequestDtoValidator>())
+    .AddFluentValidation(fv=>fv.RegisterValidatorsFromAssemblyContaining<LoginRequestDtoValidator>());
 
 builder.Services.Configure<UserDatabaseConfig>(
     builder.Configuration.GetSection("DatabaseConfig"));
@@ -20,6 +23,7 @@ builder.Services.AddSingleton<IAuthService, AuthService>();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddCors(o =>
 {
@@ -40,6 +44,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<AuthMiddleware>();
 
 app.UseCors("CorsPolicy");
 

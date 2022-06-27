@@ -6,11 +6,12 @@ using server.Model;
 using server.Model.User;
 using System.Security.Cryptography;
 using System.Text;
-using server.Dto.RequestDto;
 using server.Dto.ResponseDto;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using server.Dto.RequestDto.SignupRequestDto;
+using server.Dto.RequestDto.LoginRequestDto;
 
 namespace server.Services
 {
@@ -38,37 +39,38 @@ namespace server.Services
                 userDatabaseConfig.Value.RefreshTokenCollectionName);
         }
 
-        public async Task signupUser(User user)
+        public async Task<AuthResponseDto> signupUser(SignupRequestDto signupRequestDto)
         {
-            if (user == null || user.Username == null || user.Password == null)
-                throw new ArgumentNullException("Invalid request");
             
             string hashedPassword;
             using (SHA256 sha256Hash = SHA256.Create())
             {
-                hashedPassword = GetHash(sha256Hash, user.Password);
+                hashedPassword = GetHash(sha256Hash, signupRequestDto.Password!);
             }
             User newUser = new User()
             {
                 Id = ObjectId.GenerateNewId().ToString(),
-                Username = user.Username,
+                Username = signupRequestDto.Username,
                 Password = hashedPassword,
-                Email = user.Email,
-                DateOfBirth = user.DateOfBirth.Date
+                Email = signupRequestDto.Email,
+                DateOfBirth = signupRequestDto.DateOfBirth.Date
             };
             await _userCollection.InsertOneAsync(newUser);
+            
+            string accessToken = GenerateAccessToken(newUser);     // generate access token
+            string refreshToken = await GetRefreshToken(newUser);  // get refresh token
+            AuthResponseDto authResponse = new AuthResponseDto(accessToken, refreshToken);
+            return authResponse;
         }
 
-        public async Task<LoginResponseDto> loginUser(LoginRequestDto request)
+        public async Task<AuthResponseDto> loginUser(LoginRequestDto request)
         {
-            if (request == null || request.Username == null || request.Password == null)
-                throw new ArgumentNullException("Invalid request");
             
             var user = await _userCollection.Find(user => user.Username == request.Username).FirstOrDefaultAsync();
             string accessToken = GenerateAccessToken(user);     // generate access token
             string refreshToken = await GetRefreshToken(user);  // get refresh token
-            LoginResponseDto loginResponse = new LoginResponseDto(accessToken, refreshToken);
-            return loginResponse;
+            AuthResponseDto authResponse = new AuthResponseDto(accessToken, refreshToken);
+            return authResponse;
         }
 
         public async Task<bool> checkIfUsernameExists(string username)
@@ -111,6 +113,7 @@ namespace server.Services
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, user.Username!),
+                new Claim("user_id", user.Id!),
                 new Claim(ClaimTypes.Email, user.Email!),
                 new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString())
             };
