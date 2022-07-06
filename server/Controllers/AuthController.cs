@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Interface;
-using server.Model.User;
 using server.Dto.RequestDto.SignupRequestDto;
 using server.Dto.RequestDto.LoginRequestDto;
 
@@ -23,17 +22,16 @@ namespace server.Controllers
         {
             try
             {
-                
                 if (await _authService.checkIfUsernameExists(signupRequestDto.Username!))
                     return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "Username exists" });
                 
                 var signupResponse = await _authService.signupUser(signupRequestDto);
-                return StatusCode(StatusCodes.Status201Created,signupResponse);
+                return StatusCode(StatusCodes.Status201Created, signupResponse);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return StatusCode(500, "Something went wrong.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
             }
         } 
 

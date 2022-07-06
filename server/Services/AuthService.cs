@@ -2,16 +2,16 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using server.Interface;
-using server.Model;
-using server.Model.User;
 using System.Security.Cryptography;
 using System.Text;
-using server.Dto.ResponseDto;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using server.Model;
+using server.Model.User;
 using server.Dto.RequestDto.SignupRequestDto;
 using server.Dto.RequestDto.LoginRequestDto;
+using server.Dto.ResponseDto;
 
 namespace server.Services
 {

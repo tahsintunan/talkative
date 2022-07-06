@@ -1,7 +1,6 @@
 ﻿using server.Dto.RequestDto.LoginRequestDto;
 using server.Dto.RequestDto.SignupRequestDto;
 using server.Dto.ResponseDto;
-using server.Model.User;
 
 namespace server.Interface
 {

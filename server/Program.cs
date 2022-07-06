@@ -1,6 +1,4 @@
 using FluentValidation.AspNetCore;
-using server.Dto.RequestDto.LoginRequestDto;
-using server.Dto.RequestDto.SignupRequestDto;
 using server.Interface;
 using server.Middlewares;
 using server.Model;
