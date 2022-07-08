@@ -13,15 +13,13 @@ public class OnlineUsersController : ControllerBase
     public OnlineUsersController(ILogger<OnlineUsersController> logger)
     {
         _logger = logger;
-        _configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
+        _configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
     }
 
     [HttpGet(Name = "OnlineUsers")]
     public List<string> Get()
     {
-        string pattern = "kernel-panic:*";
+        string pattern = "kernel-panic*";
 
         ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(_configuration.GetSection("RedisConnectionString").Value);
         var server = redis.GetServer(_configuration.GetSection("RedisConnectionString").Value);
@@ -30,10 +28,10 @@ public class OnlineUsersController : ControllerBase
         var users = new List<string>();
         foreach (var key in server.Keys(pattern: pattern))
         {
-            var userId = db.StringGet(key);
+            // var userId = db.StringGet(key);
+            var userId = key.ToString().Substring(13);
             users.Add(userId!);
         }
         return users;
     }
 }
-
