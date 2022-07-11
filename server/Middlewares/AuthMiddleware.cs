@@ -21,7 +21,7 @@ namespace server.Middlewares
 
             var request = httpContext.Request;
 
-            if (request.Path.HasValue && (request.Path.Value == "/api/Auth/Login" || request.Path.Value == "/api/Auth/Signup"))
+            if (request.Path.HasValue && (request.Path.Value == "/api/Auth/login" || request.Path.Value == "/api/Auth/signup"))
             {
                 await _next.Invoke(httpContext);
                 return;

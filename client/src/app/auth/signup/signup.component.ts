@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { catchError } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-signup',
@@ -26,10 +27,17 @@ export class SignupComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private _snackBar: MatSnackBar,
     private _authService: AuthService,
+    private _cookieService: CookieService,
     private _router: Router
   ) { }
 
   ngOnInit(): void {
+    this._cookieService.delete('accessToken')
+    this.initForm()
+
+  }
+
+  initForm() {
     this.signupForm = this._formBuilder.group({
       username: ['', Validators.required],
       email: ['', [Validators.email, Validators.required]],
@@ -52,12 +60,13 @@ export class SignupComponent implements OnInit {
   }
 
 
-
   signup() {
     const formValues = this.signupForm.getRawValue();
 
     this._authService.signup(formValues).subscribe({
       next: (res) => {
+        let accessToken = res['accessToken']
+        this._cookieService.set('accessToken', accessToken)
         this._router.navigate(['user'])
       },
       error: (err) => {

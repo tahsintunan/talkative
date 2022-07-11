@@ -1,0 +1,37 @@
+<div class="signupPage">
+  <form [formGroup]="loginForm" class="signupDiv">
+    <h1>Login</h1>
+    <div class="inputdiv">
+      <input type="text" [formControlName]="'username'" placeholder="Username" />
+
+      <div class="inputWarning" *ngIf="
+          loginForm.controls['username'].invalid &&
+          (loginForm.controls['username'].touched ||
+            loginForm.controls['username'].dirty)
+        ">
+        <div *ngIf="loginForm.controls['username'].errors['required']">
+          Username is required.
+        </div>
+      </div>
+    </div>
+
+
+    <div class="inputdiv">
+      <input type="password" [formControlName]="'password'" minlength="5" maxlength="50" placeholder="Password" />
+
+      <div class="inputWarning" *ngIf="
+          loginForm.controls['password'].invalid &&
+          loginForm.controls['password'].touched
+        ">
+        <div *ngIf="loginForm.controls['password'].errors['required']">
+          Password is required.
+        </div>
+      </div>
+    </div>
+
+    <button (click)="login()" [disabled]="loginForm.invalid" type="button" class="signupButton">
+      Login
+    </button>
+    <p>Don't have an account? <a [routerLink]="'/auth/signup'">Sign up</a></p>
+  </form>
+</div>
