@@ -15,8 +15,6 @@ export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
   canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
     let accessToken = this._cookieService.get('accessToken')
     if (accessToken == "") {
-      console.log("what");
-
       this._router.navigate(['auth/login'])
     }
     return accessToken !== "";
@@ -31,7 +29,6 @@ export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     let accessToken = this._cookieService.get('accessToken')
-    console.log("what");
 
     if (accessToken === "") {
       this._router.navigate(['auth/login'])

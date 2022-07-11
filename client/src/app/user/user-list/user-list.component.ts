@@ -33,9 +33,7 @@ export class UserListComponent implements OnInit {
     this.loading = true;
     this._userService.getUsers().subscribe(
       (res) => {
-        console.log(res);
-        let response: any = res;
-        this.rows = response;
+        this.rows = [...res];
         this.loading = false;
       },
       catchError((err) => {

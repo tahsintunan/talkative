@@ -39,9 +39,6 @@ export class LoginComponent implements OnInit {
       ...this.loginForm.getRawValue()
     }
 
-    console.log(loginBody);
-
-
     this._authService.login(loginBody).subscribe({
       next: res => {
         let accessToken = res['accessToken']

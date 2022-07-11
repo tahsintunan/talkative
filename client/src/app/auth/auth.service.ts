@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { EnvService } from '../env.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private envService: EnvService
+  ) { }
 
-  authProdUrl = 'http://kernel-panic.learnathon.net/api2/api/Auth/';
-  authDevUrl = 'http://localhost:5001/api/Auth/'
+  authUrl = this.envService.apiUrl + "api/Auth/"
+
   signup(body) {
-    return this.http.post(this.authDevUrl + 'signup', body);
+    return this.http.post(this.authUrl + 'signup', body);
   }
 
   login(body) {
-    return this.http.post(this.authDevUrl + 'login', body)
+    return this.http.post(this.authUrl + 'login', body)
   }
 }
