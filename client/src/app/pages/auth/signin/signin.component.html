@@ -1,0 +1,45 @@
+<form [formGroup]="signinForm">
+  <div class="form-card flex glass max-w-4xl flex-1">
+    <div class="flex flex-col p-7 flex-1">
+      <h1 class="text-3xl font-semibold mb-7">Sign In</h1>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput type="text" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="hidePassword = !hidePassword"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hidePassword"
+        >
+          <mat-icon>{{
+            hidePassword ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <div class="flex items-center gap-5">
+        <button mat-raised-button color="primary" type="submit">Login</button>
+        <p>
+          Don't have an account?
+          <strong><a [routerLink]="'/auth/signup'">Sign Up</a></strong>
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="glass flex flex-col items-center justify-center p-7 max-w-sm gap-8"
+    >
+      <mat-icon class="app-logo" color="primary">question_answer</mat-icon>
+      <p class="text-2xl font-semibold">
+        Sign in to Panic Chat and connect with people all around
+      </p>
+    </div>
+  </div>
+</form>

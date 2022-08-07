@@ -6,14 +6,16 @@ const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'user' },
   {
     path: 'auth',
-    loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
+    loadChildren: () =>
+      import('./pages/auth/auth.module').then((m) => m.AuthModule),
   },
 
   {
     path: 'user',
     canActivate: [AuthGuard],
     canActivateChild: [AuthGuard],
-    loadChildren: () => import('./user/user.module').then((m) => m.UserModule)
+    loadChildren: () =>
+      import('./pages/user/user.module').then((m) => m.UserModule),
   },
 ];
 
@@ -21,4 +23,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
