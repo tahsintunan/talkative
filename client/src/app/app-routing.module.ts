@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'user' },
+  { path: '', pathMatch: 'full', redirectTo: 'home' },
   {
     path: 'auth',
     loadChildren: () =>
@@ -11,11 +11,11 @@ const routes: Routes = [
   },
 
   {
-    path: 'user',
+    path: 'home',
     canActivate: [AuthGuard],
     canActivateChild: [AuthGuard],
     loadChildren: () =>
-      import('./pages/user/user.module').then((m) => m.UserModule),
+      import('./pages/home/home.module').then((m) => m.HomeModule),
   },
 ];
 

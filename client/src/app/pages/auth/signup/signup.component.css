@@ -4,8 +4,9 @@ form {
   justify-content: center;
   height: 100%;
 }
+
 .app-logo {
-  transform: scale(3);
+  transform: scale(4);
 }
 
 .form-card {
