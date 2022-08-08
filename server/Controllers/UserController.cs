@@ -20,7 +20,6 @@ namespace server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-
             try
             {
                 var users = await _userService.GetAllUsers();
@@ -28,7 +27,7 @@ namespace server.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError("{ErrorMessage}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
 
@@ -48,9 +47,8 @@ namespace server.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError("{ErrorMessage}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-                throw;
             }
         }
 
@@ -63,7 +61,7 @@ namespace server.Controllers
                 return NoContent();
             }catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError("{ErrorMessage}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
@@ -77,7 +75,7 @@ namespace server.Controllers
                 return NoContent();
             }catch(Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError("{ErrorMessage}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }

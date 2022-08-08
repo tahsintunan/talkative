@@ -1,14 +1,16 @@
-﻿using server.Dto.RequestDto.LoginRequestDto;
+﻿using Microsoft.AspNetCore.Mvc;
+using server.Dto.RequestDto.LoginRequestDto;
 using server.Dto.RequestDto.SignupRequestDto;
-using server.Dto.ResponseDto;
 
 namespace server.Interface
 {
     public interface IAuthService
     {
-        Task<AuthResponseDto> signupUser(SignupRequestDto signupRequestDto);
-        Task<AuthResponseDto> loginUser(LoginRequestDto loginRequestDto);
-        Task<bool> checkIfUsernameExists(string username);
-        Task<bool> checkIfPasswordMatches(string username, string password);
+        Task<IActionResult> SignupUser(SignupRequestDto signupRequestDto);
+        Task<IActionResult> LoginUser(LoginRequestDto loginRequestDto, HttpContext httpContext);
+        Task<IActionResult> LogoutUser(HttpContext httpContext);
+        Task<bool> CheckIfUserExists(string username, string email);
+        Task<bool> CheckIfUsernameExists(string username);
+        Task<bool> CheckIfPasswordMatches(string username, string password);
     }
 }

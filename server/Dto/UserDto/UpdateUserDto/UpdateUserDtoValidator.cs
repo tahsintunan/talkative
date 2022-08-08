@@ -11,11 +11,7 @@ namespace server.Dto.UserDto.UpdateUserDto
             RuleFor(user => user.DateOfBirth).Must(dateOfBirth =>
             {
                 var today = DateTime.Today;
-                if (today.Year - dateOfBirth?.Year < 18)
-                {
-                    return false;
-                }
-                return true;
+                return !(today.Year - dateOfBirth?.Year < 18);
             }).WithMessage("Must be above the age of 18");
         }
     }

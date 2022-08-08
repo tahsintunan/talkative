@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Globalization;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using server.Interface;
@@ -6,12 +7,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using server.Model;
 using server.Model.User;
 using server.Dto.RequestDto.SignupRequestDto;
 using server.Dto.RequestDto.LoginRequestDto;
-using server.Dto.ResponseDto;
 
 namespace server.Services
 {
@@ -39,15 +41,14 @@ namespace server.Services
                 userDatabaseConfig.Value.RefreshTokenCollectionName);
         }
 
-        public async Task<AuthResponseDto> signupUser(SignupRequestDto signupRequestDto)
+        public async Task<IActionResult> SignupUser(SignupRequestDto signupRequestDto)
         {
-            
             string hashedPassword;
-            using (SHA256 sha256Hash = SHA256.Create())
+            using (var sha256Hash = SHA256.Create())
             {
                 hashedPassword = GetHash(sha256Hash, signupRequestDto.Password!);
             }
-            User newUser = new User()
+            var newUser = new User()
             {
                 Id = ObjectId.GenerateNewId().ToString(),
                 Username = signupRequestDto.Username,
@@ -56,38 +57,57 @@ namespace server.Services
                 DateOfBirth = signupRequestDto.DateOfBirth.Date
             };
             await _userCollection.InsertOneAsync(newUser);
-            
-            string accessToken = GenerateAccessToken(newUser);     // generate access token
-            string refreshToken = await GetRefreshToken(newUser);  // get refresh token
-            AuthResponseDto authResponse = new AuthResponseDto(accessToken, refreshToken);
-            return authResponse;
+            return new OkResult();
         }
-
-        public async Task<AuthResponseDto> loginUser(LoginRequestDto request)
+        
+        public async Task<IActionResult> LoginUser(LoginRequestDto loginRequestDto, HttpContext httpContext)
         {
+            var user = await _userCollection.Find(user => user.Username == loginRequestDto.Username).FirstOrDefaultAsync();
+            var accessToken = GenerateAccessToken(user);
+            var headerValue = new AuthenticationHeaderValue("Bearer", accessToken);
             
-            var user = await _userCollection.Find(user => user.Username == request.Username).FirstOrDefaultAsync();
-            string accessToken = GenerateAccessToken(user);     // generate access token
-            string refreshToken = await GetRefreshToken(user);  // get refresh token
-            AuthResponseDto authResponse = new AuthResponseDto(accessToken, refreshToken);
-            return authResponse;
+            httpContext.Response.Cookies.Append(
+                "authorization",
+                headerValue.ToString(),
+                new CookieOptions()
+                {
+                    HttpOnly = true,
+                    Expires = DateTime.Now.AddDays(7)
+                }
+            );
+            return new OkResult();
         }
 
-        public async Task<bool> checkIfUsernameExists(string username)
+        public Task<IActionResult> LogoutUser(HttpContext httpContext)
+        {
+            httpContext.Response.Cookies.Delete("authorization");
+            return Task.FromResult<IActionResult>(new OkObjectResult(new { message = "User logged out" }));
+        }
+
+        public async Task<bool> CheckIfUserExists(string username, string email)
+        {
+            var findUserByUsername = _userCollection.Find(user => user.Username == username).FirstOrDefaultAsync();
+            var findUserByEmail = _userCollection.Find(user => user.Email == email).FirstOrDefaultAsync();
+            
+            await Task.WhenAll(findUserByUsername, findUserByEmail);
+            
+            var userByUsername = await findUserByUsername;
+            var userByEmail = await findUserByEmail;
+            
+            return (userByUsername != null || userByEmail != null);
+        }
+
+        public async Task<bool> CheckIfUsernameExists(string username)
         {
             var foundUser = await _userCollection.Find(user => user.Username == username).FirstOrDefaultAsync();
-            if (foundUser == null)
-            {
-                return false;
-            }
-            return true;
+            return foundUser != null;
         }
 
-        public async Task<bool> checkIfPasswordMatches(string username, string password)
+        public async Task<bool> CheckIfPasswordMatches(string username, string password)
         {
             var user = await _userCollection.Find(user => user.Username == username).FirstOrDefaultAsync();
             string hashedPassword;
-            using (SHA256 sha256Hash = SHA256.Create())
+            using (var sha256Hash = SHA256.Create())
             {
                 hashedPassword = GetHash(sha256Hash, password);
             }
@@ -96,11 +116,11 @@ namespace server.Services
 
         private static string GetHash(HashAlgorithm hashAlgorithm, string password)
         {
-            byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(password));
+            var data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(password));
             var sBuilder = new StringBuilder();
-            for (int i = 0; i < data.Length; i++)
+            foreach (var t in data)
             {
-                sBuilder.Append(data[i].ToString("x2"));
+                sBuilder.Append(t.ToString("x2"));
             }
             return sBuilder.ToString();
         }
@@ -108,59 +128,29 @@ namespace server.Services
         private string GenerateAccessToken(User user)
         {
             if (user == null)
-                throw new ArgumentNullException("Invalid request");
+                throw new Exception("Invalid request");
             
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, user.Username!),
                 new Claim("user_id", user.Id!),
                 new Claim(ClaimTypes.Email, user.Email!),
-                new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString())
+                new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString(CultureInfo.CurrentCulture))
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration.GetSection("JwtSettings:AccessTokenKey").Value));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddMinutes(30),
-                SigningCredentials = creds
+                Expires = DateTime.Now.AddDays(7),
+                SigningCredentials = credentials
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwt = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(jwt);
-        }
-
-        private async Task<string> GetRefreshToken(User user)
-        {
-            if (user == null)
-                throw new ArgumentNullException("Invalid request");
-
-            var refreshToken = await _refreshTokenCollection.Find(token => token.UserId == user.Id).FirstOrDefaultAsync();
-            if (refreshToken == null || refreshToken.ExpiresAt < DateTime.Now)
-            {
-                RefreshToken newRefreshToken = new RefreshToken()
-                {
-                    Id = ObjectId.GenerateNewId().ToString(),
-                    UserId = user.Id,
-                    Token = GenerateRefreshToken(),
-                    ExpiresAt = DateTime.Now.AddDays(7),
-                    CreatedAt = DateTime.Now
-                };
-                await _refreshTokenCollection.InsertOneAsync(newRefreshToken);
-                refreshToken = newRefreshToken;
-            }
-            return refreshToken.Token!;
-        }
-
-        private string GenerateRefreshToken()
-        {
-            var randomString = new byte[128];
-            using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(randomString);
-            return Convert.ToHexString(randomString);
         }
     }
 }

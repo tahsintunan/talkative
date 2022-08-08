@@ -9,8 +9,8 @@ namespace server.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        public IAuthService _authService;
-        public ILogger<AuthController> _logger;
+        private readonly IAuthService _authService;
+        private readonly ILogger<AuthController> _logger;
         public AuthController(IAuthService authService, ILogger<AuthController> logger)
         {
             _authService = authService;
@@ -22,15 +22,14 @@ namespace server.Controllers
         {
             try
             {
-                if (await _authService.checkIfUsernameExists(signupRequestDto.Username!))
-                    return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "Username exists" });
-                
-                var signupResponse = await _authService.signupUser(signupRequestDto);
-                return StatusCode(StatusCodes.Status201Created, signupResponse);
+                if (await _authService.CheckIfUserExists(signupRequestDto.Username!, signupRequestDto.Email!))
+                    return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "User already exists" });
+                await _authService.SignupUser(signupRequestDto);
+                return StatusCode(StatusCodes.Status201Created, "User created successfully");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError("{ErrorMessage}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
             }
         } 
@@ -40,23 +39,30 @@ namespace server.Controllers
         {
             try
             {   
-                string username = request.Username!;
-                string password = request.Password!;
+                var username = request.Username!;
+                var password = request.Password!;
                 
-                if (!await _authService.checkIfUsernameExists(username))
+                if (!await _authService.CheckIfUsernameExists(username))
                     return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "Username does not exist" });
                 
-                if (!await _authService.checkIfPasswordMatches(username, password))
+                if (!await _authService.CheckIfPasswordMatches(username, password))
                     return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "Password does not match" });
                 
-                var loginResponse = await _authService.loginUser(request);
-                return StatusCode(StatusCodes.Status200OK, loginResponse);
+                await _authService.LoginUser(request, HttpContext);
+                return StatusCode(StatusCodes.Status200OK, "User logged in");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError("{ErrorMessage}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
             }
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _authService.LogoutUser(HttpContext);
+            return StatusCode((StatusCodes.Status200OK));
         }
     }
 }
