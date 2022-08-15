@@ -4,17 +4,18 @@ import {
   FormBuilder,
   FormGroup,
   ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-signup',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css'],
+  templateUrl: './signup.page.html',
+  styleUrls: ['./signup.page.css'],
 })
-export class SignupComponent implements OnInit {
+export class SignupPage implements OnInit {
   hidePassword: boolean = true;
   hideConfirmPassword: boolean = true;
 
@@ -48,7 +49,12 @@ export class SignupComponent implements OnInit {
         ],
         confirmPassword: ['', [Validators.required]],
       },
-      { validator: this.confirmPasswordValidator }
+      {
+        validators: this.confirmPasswordValidator(
+          'password',
+          'confirmPassword'
+        ),
+      }
     );
   }
 
@@ -68,20 +74,37 @@ export class SignupComponent implements OnInit {
   }
 
   private ageValidator(control: AbstractControl): ValidationErrors | null {
-    if (
-      control.value &&
-      new Date().getFullYear() - new Date(control.value).getFullYear() < 18
-    ) {
+    const today = new Date();
+    const birthDate = new Date(control.value);
+    const month = today.getMonth() - birthDate.getMonth();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    if (age < 18) {
       return { underage: true };
     }
     return null;
   }
 
   private confirmPasswordValidator(
-    control: AbstractControl
-  ): ValidationErrors | null {
-    const password = control.get('password')?.value;
-    const confirmPassword = control.get('confirmPassword')?.value;
-    return password !== confirmPassword ? { passwordMismatch: true } : null;
+    passwordControlName: string,
+    confirmPasswordControlName: string
+  ) {
+    return (formGroup: FormGroup) => {
+      const password = formGroup.controls[passwordControlName];
+      const confirmPassword = formGroup.controls[confirmPasswordControlName];
+
+      if (confirmPassword.errors && !confirmPassword.errors['mismatch']) {
+        return;
+      }
+
+      if (password.value !== confirmPassword.value) {
+        confirmPassword.setErrors({ mismatch: true });
+      } else {
+        confirmPassword.setErrors(null);
+      }
+    };
   }
 }

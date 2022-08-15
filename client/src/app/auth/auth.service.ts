@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
-import { SignInReqModel, SignInResModel } from 'src/app/models/signin.model';
-import { SignUpReqModel, SignUpResModel } from 'src/app/models/signup.model';
+import { SignInReqModel, SignInResModel } from './models/signin.model';
+import { SignUpReqModel, SignUpResModel } from './models/signup.model';
 
 @Injectable({
   providedIn: 'root',
