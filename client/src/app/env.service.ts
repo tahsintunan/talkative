@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EnvService {
-  public apiUrl = '';
+  public apiUrl = 'http://localhost:5001/';
 
-  constructor() {
-  }
+  constructor() {}
 }

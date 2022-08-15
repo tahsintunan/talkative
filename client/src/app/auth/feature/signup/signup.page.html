@@ -1,4 +1,4 @@
-<form [formGroup]="signupForm" (onsubmit)="(submitForm)">
+<form [formGroup]="signupForm" (ngSubmit)="submitForm()">
   <div class="form-card flex glass max-w-4xl flex-1">
     <div class="flex flex-col p-7 flex-1 gap-3">
       <h1 class="text-3xl font-semibold mb-7">Sign Up</h1>
@@ -55,6 +55,7 @@
         <mat-label>Password</mat-label>
         <input
           matInput
+          autocomplete
           [type]="hidePassword ? 'password' : 'text'"
           formControlName="password"
         />
@@ -84,6 +85,7 @@
         <mat-label>Confirm password</mat-label>
         <input
           matInput
+          autocomplete
           [type]="hideConfirmPassword ? 'password' : 'text'"
           formControlName="confirmPassword"
         />

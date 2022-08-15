@@ -16,6 +16,7 @@ builder.Services.Configure<UserDatabaseConfig>(
 
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<IAuthService, AuthService>();
+builder.Services.AddSingleton<IRabbitmqService, RabbitmqService>();
 
 builder.Services.AddEndpointsApiExplorer();
 

@@ -30,14 +30,14 @@ namespace server.Services
 
         public async Task<User> GetUserById(string id)
         {
-            User user = await _userCollection.Find(user=>user.Id==id).FirstOrDefaultAsync();
+            var user = await _userCollection.Find(user=>user.Id==id).FirstOrDefaultAsync();
             return user;
         }
 
         public async Task UpdateUserInfo(UpdateUserDto updateUserDto)
         {
-            User user = await _userCollection.Find(user => user.Id == updateUserDto.Id).FirstOrDefaultAsync();
-            User updatedUser = new User()
+            var user = await _userCollection.Find(user => user.Id == updateUserDto.Id).FirstOrDefaultAsync();
+            var updatedUser = new User()
             {
                 Id = updateUserDto.Id,
                 Username = user.Username,
@@ -53,7 +53,5 @@ namespace server.Services
         {
             await _userCollection.DeleteOneAsync(user => user.Id == id);
         }
-
-
     }
 }

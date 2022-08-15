@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using server.Interface;
+﻿using server.Interface;
 using System.IdentityModel.Tokens.Jwt;
-using System.Threading.Tasks;
 
 namespace server.Middlewares
 {
@@ -10,7 +7,6 @@ namespace server.Middlewares
     public class AuthMiddleware
     {
         private readonly RequestDelegate _next;
-
         public AuthMiddleware(RequestDelegate next)
         {
             _next = next;
@@ -18,19 +14,15 @@ namespace server.Middlewares
 
         public async Task Invoke(HttpContext httpContext, IUserService userService)
         {
-
             var request = httpContext.Request;
-
-            if (request.Path.HasValue && (request.Path.Value == "/api/Auth/login" || request.Path.Value == "/api/Auth/signup"))
+            if (request.Path.HasValue && request.Path.Value.ToLower() is "/api/auth/login" or "/api/auth/signup")
             {
                 await _next.Invoke(httpContext);
                 return;
             }
             
-            string? userId=this.DecodeAccessToken(httpContext);
-            
-            var user=await userService.GetUserById(userId!);
-
+            var userId= DecodeAccessToken(httpContext);
+            var user = await userService.GetUserById(userId!);
             if(user == null)
             {
                 httpContext.Response.StatusCode = 401;
@@ -40,28 +32,28 @@ namespace server.Middlewares
 
             httpContext.Items["User"] = userId;
             await _next.Invoke(httpContext);
-            return;
         }
 
 
-        private string? DecodeAccessToken(HttpContext httpContext)
+        private static string? DecodeAccessToken(HttpContext httpContext)
         {
-            var token = httpContext.Request.Headers["Authorization"].FirstOrDefault();
-            if (token == null)
+            try
+            {
+                var token = httpContext.Request.Cookies["authorization"];
+                if (token == null) { return null; }
+
+                token = token.Split(" ").Last();
+                var handler = new JwtSecurityTokenHandler();
+                var jwtSecurityToken = handler.ReadJwtToken(token);
+                var userId = jwtSecurityToken.Claims.First(claim => claim.Type == "user_id").Value;
+
+                return userId;
+            }
+            catch
             {
                 return null;
             }
-
-            token = token.Split(" ").Last();
-            var handler = new JwtSecurityTokenHandler();
-            JwtSecurityToken jwtSecurityToken = handler.ReadJwtToken(token);
-            string userId = jwtSecurityToken.Claims.First(claim => claim.Type == "user_id").Value;
-
-            return userId;
-
         }
-
-       
     }
 
     // Extension method used to add the middleware to the HTTP request pipeline.

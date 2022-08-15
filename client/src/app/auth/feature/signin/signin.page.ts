@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
 import { SignInReqModel } from '../../models/signin.model';
 
@@ -15,7 +16,8 @@ export class SigninPage implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -29,11 +31,16 @@ export class SigninPage implements OnInit {
     });
   }
 
-  submit(): void {
+  submitForm(): void {
     const signinData: SignInReqModel = this.signinForm.getRawValue();
 
-    this.authService.signin(signinData).subscribe((result) => {
-      console.log(result);
+    this.authService.signin(signinData).subscribe({
+      next: (res) => {
+        this.router.navigate(['home']);
+      },
+      error: (err) => {
+        console.log(err);
+      },
     });
   }
 }
