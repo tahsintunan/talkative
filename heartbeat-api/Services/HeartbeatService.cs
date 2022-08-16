@@ -16,9 +16,18 @@ namespace heartbeat_api.Services
 
         public async Task Heartbeat(string userId, string prefix, int expiry)
         {
-            var redis = await ConnectionMultiplexer.ConnectAsync(_configuration.GetSection("RedisConnectionString").Value);
+            var option = new ConfigurationOptions
+            {
+                AbortOnConnectFail = false,
+                ConnectTimeout = 30000,
+                Ssl = false,
+                Password = _configuration["Redis:Password"],
+                EndPoints = { _configuration["Redis:ConnectionString"] }
+            };
+            
+            var redis = await ConnectionMultiplexer.ConnectAsync(option);
             var db = redis.GetDatabase();
-
+            
             var key = prefix + userId;
             var value = userId;
 
@@ -28,18 +37,16 @@ namespace heartbeat_api.Services
 
         public bool IsValidRequest(HttpRequest request)
         {
-            if (!request.Headers.ContainsKey("Authorization"))
-            {
+            if (!request.Cookies.ContainsKey("authorization"))
                 return false;
-            }
-
-            var authHeader = request.Headers["Authorization"].FirstOrDefault();
+            
+            var authHeader = request.Cookies["authorization"];
             if (authHeader == null || !authHeader.StartsWith("Bearer ") || authHeader.Split(' ').Length != 2)
             {
                 return false;
             }
 
-            var token = authHeader.ToString().Split(' ')[1];
+            var token = authHeader.Split(' ')[1];
             var jwtHandler = new JwtSecurityTokenHandler();
             return jwtHandler.CanReadToken(token);
         }
@@ -47,8 +54,8 @@ namespace heartbeat_api.Services
 
         public string GetToken(HttpRequest request)
         {
-            var authHeader = request.Headers["Authorization"].FirstOrDefault();
-            var token = authHeader!.ToString().Split(' ')[1];
+            var authHeader = request.Cookies["authorization"];
+            var token = authHeader!.Split(' ')[1];
             return token;
         }
 
