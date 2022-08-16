@@ -1,10 +1,11 @@
 using StackExchange.Redis;
 using System.IdentityModel.Tokens.Jwt;
+using heartbeat_api.Interfaces;
 
 
 namespace heartbeat_api.Services
 {
-    public class HeartbeatService
+    public class HeartbeatService: IHeartbeatService
     {
         private readonly IConfiguration _configuration;
         public HeartbeatService(IConfiguration configuration)
@@ -15,7 +16,7 @@ namespace heartbeat_api.Services
 
         public async Task Heartbeat(string userId, string prefix, int expiry)
         {
-            var redis = ConnectionMultiplexer.Connect(_configuration.GetSection("RedisConnectionString").Value);
+            var redis = await ConnectionMultiplexer.ConnectAsync(_configuration.GetSection("RedisConnectionString").Value);
             var db = redis.GetDatabase();
 
             var key = prefix + userId;
@@ -27,7 +28,7 @@ namespace heartbeat_api.Services
 
         public bool IsValidRequest(HttpRequest request)
         {
-            if (!request.Headers.Keys.Contains("Authorization"))
+            if (!request.Headers.ContainsKey("Authorization"))
             {
                 return false;
             }
@@ -40,12 +41,7 @@ namespace heartbeat_api.Services
 
             var token = authHeader.ToString().Split(' ')[1];
             var jwtHandler = new JwtSecurityTokenHandler();
-            if (!jwtHandler.CanReadToken(token))
-            {
-                return false;
-            }
-
-            return true;
+            return jwtHandler.CanReadToken(token);
         }
 
 
@@ -59,7 +55,7 @@ namespace heartbeat_api.Services
 
         public string GetUserId(string token)
         {
-            var claimType = "user_id";
+            const string claimType = "user_id";
 
             var jwtHandler = new JwtSecurityTokenHandler();
             var jwtToken = jwtHandler.ReadJwtToken(token);

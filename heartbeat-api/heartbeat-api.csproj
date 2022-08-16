@@ -6,9 +6,9 @@
     <RootNamespace>heartbeat_api</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
-    <PackageReference Include="StackExchange.Redis" Version="2.6.48"/>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.6"/>
-    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.21.0"/>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.48" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.6" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.21.0" />
   </ItemGroup>
 </Project>

@@ -1,18 +1,19 @@
+using heartbeat_api.Interfaces;
+using heartbeat_api.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
+builder.Services.AddSingleton<IHeartbeatService, HeartbeatService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(o =>
 {
-    o.AddPolicy("CorsPolicy", builder =>
+    o.AddPolicy("CorsPolicy", corsPolicyBuilder =>
     {
-        builder
+        corsPolicyBuilder
         .AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader();

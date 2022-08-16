@@ -1,3 +1,4 @@
+using heartbeat_api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using heartbeat_api.Services;
 
@@ -8,14 +9,11 @@ namespace heartbeat_api.Controllers;
 [Route("[controller]")]
 public class HeartbeatController : ControllerBase
 {
-    private readonly ILogger<HeartbeatController> _logger;
-    private readonly IConfiguration _configuration;
-    public HeartbeatService _heartbeatService;
-    public HeartbeatController(ILogger<HeartbeatController> logger)
+    private readonly IHeartbeatService _heartbeatService;
+    public HeartbeatController(ILogger<HeartbeatController> logger, IHeartbeatService heartbeatService)
     {
-        _logger = logger;
-        _configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-        _heartbeatService = new HeartbeatService(_configuration);
+        IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+        _heartbeatService = heartbeatService;
     }
 
     [HttpGet(Name = "Heartbeat")]
