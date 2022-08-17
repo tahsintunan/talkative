@@ -20,7 +20,6 @@ namespace server.Services
     public class AuthService : IAuthService
     {
         private readonly IMongoCollection<User> _userCollection;
-        private readonly IMongoCollection<RefreshToken> _refreshTokenCollection;
         private readonly IConfiguration _configuration;
         public AuthService(
             IConfiguration configuration,
@@ -36,9 +35,6 @@ namespace server.Services
 
             _userCollection = mongoDatabase.GetCollection<User>(
                 userDatabaseConfig.Value.UserCollectionName);
-
-            _refreshTokenCollection = mongoDatabase.GetCollection<RefreshToken>(
-                userDatabaseConfig.Value.RefreshTokenCollectionName);
         }
 
         public async Task<IActionResult> SignupUser(SignupRequestDto signupRequestDto)
@@ -64,14 +60,14 @@ namespace server.Services
         {
             var user = await _userCollection.Find(user => user.Username == loginRequestDto.Username).FirstOrDefaultAsync();
             var accessToken = GenerateAccessToken(user);
-            var headerValue = new AuthenticationHeaderValue("Bearer", accessToken);
-            
+            var value = new AuthenticationHeaderValue("Bearer", accessToken);
+
             httpContext.Response.Cookies.Append(
                 "authorization",
-                headerValue.ToString(),
-                new CookieOptions()
+                value.ToString(),
+                new CookieOptions
                 {
-                    HttpOnly = true,
+                    HttpOnly = false,
                     Expires = DateTime.Now.AddDays(7)
                 }
             );

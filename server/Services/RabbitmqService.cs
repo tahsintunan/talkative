@@ -13,27 +13,25 @@ public class RabbitmqService: IRabbitmqService
     private const string RabbitmqServerConnectionString = "amqps://ddnxoukr:qyYjYj9t0IK6zJqlZkKtMyj8eZt2dy90@mustang.rmq.cloudamqp.com/ddnxoukr";
     private const string RabbitmqServerExchangeName = "test";
     
+    private static readonly ConnectionFactory ConnectionFactory = new ConnectionFactory() { Uri = new Uri(RabbitmqServerConnectionString) };
+    private static readonly IConnection Connection = ConnectionFactory.CreateConnection();
+    private static readonly IModel Channel = Connection.CreateModel();
+    
+    
+    
     public Task<IActionResult> FanOut(MessageDto messageDto)
     {
         try
         {
-            var connectionFactory = new ConnectionFactory()
-            {
-                Uri = new Uri(RabbitmqServerConnectionString)
-            };
-
-            var connection = connectionFactory.CreateConnection();
-            var channel = connection.CreateModel();
-
             var messageObject = GetMessageObject(messageDto);
             var marshalledMessageObject = JsonConvert.SerializeObject(messageObject);
             
             var messageBuffer = Encoding.Default.GetBytes(marshalledMessageObject);
-            channel.BasicPublish(exchange: RabbitmqServerExchangeName,
+            Channel.BasicPublish(exchange: RabbitmqServerExchangeName,
                 routingKey: "",
                 basicProperties: null,
                 body: messageBuffer);
-
+            
             return Task.FromResult<IActionResult>(new OkResult());
         }
         catch(Exception e)
@@ -57,8 +55,17 @@ public class RabbitmqService: IRabbitmqService
     
     private static string GetChatroomId(string senderId, string receiverId)
     {
-        return senderId + receiverId;
+        string a, b;
+        if (string.Compare(senderId, receiverId, StringComparison.Ordinal) < 0)
+        {
+            a = senderId;
+            b = receiverId;
+        }
+        else
+        {
+            a = receiverId;
+            b = senderId;
+        }
+        return a + b;
     }
 }
-// - erpor oita handler e pathaite hobe
-// - handler pore unmarshal koira kaaj korbe
