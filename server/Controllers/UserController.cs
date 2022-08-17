@@ -30,7 +30,6 @@ namespace server.Controllers
                 _logger.LogError("{ErrorMessage}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
-
         }
 
         [HttpGet("{id}")]

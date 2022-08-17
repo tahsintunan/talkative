@@ -1,4 +1,4 @@
-using server.Model;
+using server.Model.Message;
 
 namespace server.Interface;
 

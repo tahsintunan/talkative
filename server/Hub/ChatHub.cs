@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.SignalR;
 using server.Dto.MessageDto;
 using server.Interface;
-using server.Model;
+using server.Model.Message;
 
-namespace server.Services;
+namespace server.Hub;
 
-public class ChatHub: Hub, IChatHub
+public class ChatHub: Microsoft.AspNetCore.SignalR.Hub, IChatHub
 {
     private readonly IHubContext<ChatHub> _hubContext;
     public ChatHub(IHubContext<ChatHub> hubContext)

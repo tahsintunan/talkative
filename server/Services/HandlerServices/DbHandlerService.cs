@@ -5,18 +5,26 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using server.Model;
+using server.Configs.DbConfig;
+using server.Model.Message;
 
-namespace server.Services;
+namespace server.Services.HandlerServices;
 
 public class DbHandlerService: IHostedService
 {
-    private const string RabbitmqServerConnectionString = "amqps://ddnxoukr:qyYjYj9t0IK6zJqlZkKtMyj8eZt2dy90@mustang.rmq.cloudamqp.com/ddnxoukr";
-    private const string RabbitmqQueueName = "Q1";
+    private const string RabbitmqQueueName = "MongoDbQueue";
     
     private readonly IMongoCollection<Message> _messageCollection;
-    public DbHandlerService(IOptions<MessageDatabaseConfig> messageDatabaseConfig)
+    private readonly IModel _channel;
+    private readonly EventingBasicConsumer _consumer;
+    
+    public DbHandlerService(IConfiguration configuration, IOptions<MessageDatabaseConfig> messageDatabaseConfig)
     {
+        var connectionFactory = new ConnectionFactory { Uri = new Uri(configuration["RabbitMQ:ConnectionString"]) };
+        var connection = connectionFactory.CreateConnection();
+        _channel = connection.CreateModel();
+        _consumer = new EventingBasicConsumer(_channel);
+        
         var mongoClient = new MongoClient(
             messageDatabaseConfig.Value.ConnectionString);
         var mongoDatabase = mongoClient.GetDatabase(
@@ -25,20 +33,16 @@ public class DbHandlerService: IHostedService
             messageDatabaseConfig.Value.MessageCollectionName);
     }
     
+    
     private async Task ProcessMessage(Message message)
     {
         await _messageCollection.InsertOneAsync(message);
     }
     
     
-    private static readonly ConnectionFactory ConnectionFactory = new ConnectionFactory() { Uri = new Uri(RabbitmqServerConnectionString) };
-    private static readonly IConnection Connection = ConnectionFactory.CreateConnection();
-    private static readonly IModel Channel = Connection.CreateModel();
-    private static readonly EventingBasicConsumer Consumer = new EventingBasicConsumer(Channel);
-    
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        Consumer.Received += async (model, eventArgs) =>
+        _consumer.Received += async (model, eventArgs) =>
         {
             var body = eventArgs.Body.ToArray();
             var marshalledMessageObject = Encoding.UTF8.GetString(body);
@@ -46,7 +50,7 @@ public class DbHandlerService: IHostedService
             await ProcessMessage(messageObject!);
         };
         
-        Channel.BasicConsume(queue: RabbitmqQueueName, autoAck: true, consumer: Consumer);
+        _channel.BasicConsume(queue: RabbitmqQueueName, autoAck: true, consumer: _consumer);
         return Task.FromResult<IActionResult>(new OkObjectResult("Ok DbHandlerService"));
     }
     

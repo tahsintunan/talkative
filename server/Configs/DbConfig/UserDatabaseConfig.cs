@@ -1,4 +1,4 @@
-﻿namespace server.Model
+﻿namespace server.Configs.DbConfig
 {
     public class UserDatabaseConfig
     {

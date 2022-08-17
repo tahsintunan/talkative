@@ -10,7 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using server.Model;
+using server.Configs.DbConfig;
 using server.Model.User;
 using server.Dto.RequestDto.SignupRequestDto;
 using server.Dto.RequestDto.LoginRequestDto;

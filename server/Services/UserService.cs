@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using server.Configs.DbConfig;
 using server.Dto.UserDto.UpdateUserDto;
 using server.Interface;
-using server.Model;
 using server.Model.User;
 
 namespace server.Services
@@ -46,7 +46,6 @@ namespace server.Services
                 Password = user.Password,
             };
             await _userCollection.ReplaceOneAsync(x => x.Id == updateUserDto.Id,updatedUser );
-
         }
 
         public async Task DeleteUserById(string id)
