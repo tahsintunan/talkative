@@ -8,31 +8,30 @@ namespace heartbeat_api.Services
 {
     public class HeartbeatService: IHeartbeatService
     {
-        private readonly IConfiguration _configuration;
+        
+        private readonly ConnectionMultiplexer _redis;
+        private readonly IDatabase _db;
         public HeartbeatService(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-
-        public async Task Heartbeat(string userId, string userName, string prefix, int expiry)
         {
             var option = new ConfigurationOptions
             {
                 AbortOnConnectFail = false,
                 ConnectTimeout = 30000,
                 Ssl = false,
-                Password = _configuration["Redis:Password"],
-                EndPoints = { _configuration["Redis:ConnectionString"] }
+                Password = configuration["Redis:Password"],
+                EndPoints = { configuration["Redis:ConnectionString"] }
             };
-            
-            var redis = await ConnectionMultiplexer.ConnectAsync(option);
-            var db = redis.GetDatabase();
-            
+            _redis = ConnectionMultiplexer.Connect(option);
+            _db = _redis.GetDatabase();
+        }
+
+
+        public async Task Heartbeat(string userId, string userName, string prefix, int expiry)
+        {
             var key = prefix + userId;
             var value = userName;
 
-            await db.StringSetAsync(key, value, TimeSpan.FromSeconds(expiry));
+            await _db.StringSetAsync(key, value, TimeSpan.FromSeconds(expiry));
         }
 
 
