@@ -16,12 +16,13 @@ export class AuthService {
     private http: HttpClient,
     private envService: EnvService,
     private cookieService: CookieService
-  ) {}
+  ) { }
 
   signup(data: SignUpReqModel): Observable<SignUpResModel> {
     return this.http.post<SignUpResModel>(this.authUrl + 'signup', data).pipe(
       map((res) => {
-        this.cookieService.set('accessToken', res.accessToken);
+        console.log(res);
+
         return res;
       }),
       catchError(this.handleError)
@@ -29,9 +30,9 @@ export class AuthService {
   }
 
   signin(data: SignInReqModel): Observable<SignInResModel> {
-    return this.http.post<SignInResModel>(this.authUrl + 'login', data).pipe(
+
+    return this.http.post<SignInResModel>(this.authUrl + 'login', data, { withCredentials: true }).pipe(
       map((res) => {
-        this.cookieService.set('accessToken', res.accessToken);
         return res;
       }),
       catchError(this.handleError)

@@ -49,7 +49,7 @@ namespace server.Controllers
                     return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "Password does not match" });
                 
                 await _authService.LoginUser(request, HttpContext);
-                return StatusCode(StatusCodes.Status200OK, "User logged in");
+                return StatusCode(StatusCodes.Status200OK, new { response = "User logged in" });
             }
             catch (Exception ex)
             {

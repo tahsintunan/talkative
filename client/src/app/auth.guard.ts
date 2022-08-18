@@ -17,7 +17,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
-  constructor(private cookieService: CookieService, private router: Router) {}
+  constructor(private cookieService: CookieService, private router: Router) { }
 
   canActivateChild(
     childRoute: ActivatedRouteSnapshot,
@@ -27,7 +27,9 @@ export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
     | UrlTree
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree> {
-    const accessToken = this.cookieService.get('accessToken');
+    const accessToken = this.cookieService.get('authorization');
+    console.log(accessToken);
+
     if (accessToken == '') {
       this.router.navigate(['/auth/signin']);
     }
@@ -42,7 +44,7 @@ export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
     | UrlTree
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree> {
-    const accessToken = this.cookieService.get('accessToken');
+    const accessToken = this.cookieService.get('authorization');
     return accessToken !== '';
   }
 
@@ -54,7 +56,7 @@ export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    const accessToken = this.cookieService.get('accessToken');
+    const accessToken = this.cookieService.get('authorization');
 
     if (accessToken === '') {
       this.router.navigate(['/auth/signin']);
