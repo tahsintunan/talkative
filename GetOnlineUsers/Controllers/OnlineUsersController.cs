@@ -9,35 +9,36 @@ namespace GetOnlineUsers.Controllers;
 [Route("[controller]")]
 public class OnlineUsersController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
+    private readonly IServer _server;
+    private readonly IDatabase _database;
+    
     public OnlineUsersController()
     {
-        _configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-    }
-
-    [HttpGet(Name = "OnlineUsers")]
-    public List<UserDto> Get()
-    {
-        const string pattern = "kernel-panic*";
-        
+        var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
         var option = new ConfigurationOptions
         {
             AbortOnConnectFail = false,
             ConnectTimeout = 30000,
             Ssl = false,
-            Password = _configuration["Redis:Password"],
-            EndPoints = { _configuration["Redis:ConnectionString"] }
+            Password = configuration["Redis:Password"],
+            EndPoints = { configuration["Redis:ConnectionString"] }
         };
-        
         var redis = ConnectionMultiplexer.Connect(option);
-        var server = redis.GetServer(option.EndPoints.First());
-        var db = redis.GetDatabase();
+        _server = redis.GetServer(option.EndPoints.First());
+        _database = redis.GetDatabase();
+    }
 
+    
+    [HttpGet(Name = "OnlineUsers")]
+    public List<UserDto> Get()
+    {
+        const string pattern = "kernel-panic*";
         var users = new List<UserDto>();
-        foreach (var key in server.Keys(pattern: pattern))
+        
+        foreach (var key in _server.Keys(pattern: pattern))
         {
             var userId = key.ToString()[13..];
-            var userName = db.StringGet(key);
+            var userName = _database.StringGet(key);
             
             var user = new UserDto
             {
