@@ -1,5 +1,6 @@
 using StackExchange.Redis;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using heartbeat_api.Interfaces;
 
 
@@ -14,7 +15,7 @@ namespace heartbeat_api.Services
         }
 
 
-        public async Task Heartbeat(string userId, string prefix, int expiry)
+        public async Task Heartbeat(string userId, string userName, string prefix, int expiry)
         {
             var option = new ConfigurationOptions
             {
@@ -29,7 +30,7 @@ namespace heartbeat_api.Services
             var db = redis.GetDatabase();
             
             var key = prefix + userId;
-            var value = userId;
+            var value = userName;
 
             await db.StringSetAsync(key, value, TimeSpan.FromSeconds(expiry));
         }
@@ -70,5 +71,18 @@ namespace heartbeat_api.Services
             var userId = jwtToken.Claims.First(claim => claim.Type == claimType).Value;
             return userId;
         }
+
+        
+        public string GetUserName(string token)
+        {
+            const string claimType = "unique_name";
+            
+            var jwtHandler = new JwtSecurityTokenHandler();
+            var jwtToken = jwtHandler.ReadJwtToken(token);
+            
+            var userName = jwtToken.Claims.First(claim => claim.Type == claimType).Value;
+            return userName;
+        }
+        
     }
 }

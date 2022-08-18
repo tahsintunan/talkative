@@ -1,6 +1,5 @@
 using heartbeat_api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using heartbeat_api.Services;
 
 namespace heartbeat_api.Controllers;
 
@@ -10,9 +9,8 @@ namespace heartbeat_api.Controllers;
 public class HeartbeatController : ControllerBase
 {
     private readonly IHeartbeatService _heartbeatService;
-    public HeartbeatController(ILogger<HeartbeatController> logger, IHeartbeatService heartbeatService)
+    public HeartbeatController(IHeartbeatService heartbeatService)
     {
-        IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
         _heartbeatService = heartbeatService;
     }
 
@@ -23,9 +21,12 @@ public class HeartbeatController : ControllerBase
         {
             if (!_heartbeatService.IsValidRequest(Request))
                 return StatusCode(StatusCodes.Status400BadRequest, "Unauthorized. Invalid Request.");
+
             var token = _heartbeatService.GetToken(Request);
             var userId = _heartbeatService.GetUserId(token);
-            await _heartbeatService.Heartbeat(userId: userId, prefix: "kernel-panic:", expiry: 90);
+            var userName = _heartbeatService.GetUserName(token);
+            
+            await _heartbeatService.Heartbeat(userId, userName, "kernel-panic:", 90);
             return StatusCode(StatusCodes.Status200OK, "OK");
         }
         catch (Exception ex)
