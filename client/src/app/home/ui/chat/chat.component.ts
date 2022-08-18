@@ -16,62 +16,50 @@ export class ChatComponent implements OnInit {
   heartBeatSubscription: Subscription | undefined;
 
   ngOnInit(): void {
-    const observable = interval(60000);
-    // this.heartBeatSubscription = observable.pipe(
-    //   // see if flatMap can be used to remove the nested subscription
-    //   flatMap(() => this.chatService.updateCurrentUserOnlineStatus())
-    // )
-    //   .subscribe(
-    //     intervalResponse => {
-    //       console.log(intervalResponse);
-    //       this.chatService.updateCurrentUserOnlineStatus().subscribe((heartBeatResponse) => {
-    //         console.log(heartBeatResponse);
-    //       }
-    //       );
-    //     },
-    //     error => {
-    //       console.log('heartbeat error');
-    //       console.log(error);
-    //       if (error instanceof HttpErrorResponse) {
-    //         alert(error.status + ' ' + error.statusText);
-    //       }
-    //     },
-    //     () => {
-    //       console.log('complete');
-    //     }
-    //   );
 
+    this.updateOnlineStatusWithInterval()
+    this.getOnlineUsersWithInterval()
+
+  }
+
+
+  updateOnlineStatusWithInterval() {
     this.updateOnlineStatus()
+    setInterval(() => {
+      this.updateOnlineStatus()
+    }, 30000);
+  }
+
+  private updateOnlineStatus() {
+    this.chatService.updateCurrentUserOnlineStatus().subscribe({
+      next: res => {
+        console.log(res);
+
+      },
+      error: err => {
+        console.log(err);
+
+      }
+    })
+  }
+
+
+  getOnlineUsersWithInterval() {
     this.getOnlineUsers()
+    setInterval(() => {
+      this.getOnlineUsers()
+    }, 30000);
   }
 
-
-  updateOnlineStatus() {
-    setInterval(() => {
-      this.chatService.updateCurrentUserOnlineStatus().subscribe({
-        next: res => {
-          console.log(res);
-
-        },
-        error: err => {
-          console.log(err);
-
-        }
-      })
-    }, 10000);
-  }
-
-  getOnlineUsers() {
-    setInterval(() => {
-      this.chatService.getOnlineUsers().subscribe({
-        next: res => {
-          console.log(res);
-        },
-        error: err => {
-          console.log(err)
-        }
-      })
-    }, 10000);
+  private getOnlineUsers() {
+    this.chatService.getOnlineUsers().subscribe({
+      next: res => {
+        console.log(res);
+      },
+      error: err => {
+        console.log(err)
+      }
+    })
   }
 
 }
