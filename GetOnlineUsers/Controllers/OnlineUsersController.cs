@@ -1,3 +1,4 @@
+using GetOnlineUsers.Dto;
 using Microsoft.AspNetCore.Mvc;
 using StackExchange.Redis;
 
@@ -15,7 +16,7 @@ public class OnlineUsersController : ControllerBase
     }
 
     [HttpGet(Name = "OnlineUsers")]
-    public List<string> Get()
+    public List<UserDto> Get()
     {
         const string pattern = "kernel-panic*";
         
@@ -32,13 +33,19 @@ public class OnlineUsersController : ControllerBase
         var server = redis.GetServer(option.EndPoints.First());
         var db = redis.GetDatabase();
 
-        var users = new List<string>();
+        var users = new List<UserDto>();
         foreach (var key in server.Keys(pattern: pattern))
         {
             var userId = key.ToString()[13..];
             var userName = db.StringGet(key);
             
-            users.Add(userId + " " + userName);
+            var user = new UserDto
+            {
+                UserId = userId,
+                UserName = userName
+            };
+            
+            users.Add(user);
         }
         return users;
     }
