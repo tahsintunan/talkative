@@ -30,14 +30,15 @@ public class OnlineUsersController : ControllerBase
         
         var redis = ConnectionMultiplexer.Connect(option);
         var server = redis.GetServer(option.EndPoints.First());
-        // var db = redis.GetDatabase();
+        var db = redis.GetDatabase();
 
         var users = new List<string>();
         foreach (var key in server.Keys(pattern: pattern))
         {
-            // var userId = db.StringGet(key);
             var userId = key.ToString()[13..];
-            users.Add(userId);
+            var userName = db.StringGet(key);
+            
+            users.Add(userId + " " + userName);
         }
         return users;
     }
