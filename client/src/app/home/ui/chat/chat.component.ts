@@ -1,7 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Subscription, interval, flatMap } from 'rxjs';
-import { ChatService } from '../../chat.service';
+import { ChatService } from '../../data-access/chat.service';
+import { Message } from '../../Models/message.model';
+import jwt_decode from "jwt-decode";
+import { CookieService } from 'ngx-cookie-service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -11,55 +15,48 @@ import { ChatService } from '../../chat.service';
 export class ChatComponent implements OnInit {
 
   constructor(
-    private chatService: ChatService
+    private chatService: ChatService,
+    private cookieService: CookieService,
+    private activatedRoute: ActivatedRoute
   ) { }
   heartBeatSubscription: Subscription | undefined;
 
+  msgDto: Message = new Message();
+  msgInboxArray: Message[] = [];
+
   ngOnInit(): void {
-
-    this.updateOnlineStatusWithInterval()
-    this.getOnlineUsersWithInterval()
-
   }
 
 
-  updateOnlineStatusWithInterval() {
-    this.updateOnlineStatus()
-    setInterval(() => {
-      this.updateOnlineStatus()
-    }, 30000);
-  }
 
-  private updateOnlineStatus() {
-    this.chatService.updateCurrentUserOnlineStatus().subscribe({
-      next: res => {
-        console.log(res);
-
-      },
-      error: err => {
-        console.log(err);
-
+  send(): void {
+    if (this.msgDto) {
+      console.log(this.msgDto);
+      let user: any = jwt_decode(this.cookieService.get("authorization"))
+      let user_id: string = user.user_id;
+      let body: Message = {
+        messageText: this.msgDto.messageText,
+        senderId: user_id,
+        receiverId: this.activatedRoute.snapshot.params['userId']
       }
-    })
+
+      this.chatService.broadcastMessage(body);
+      this.msgDto.messageText = '';
+    }
   }
 
-
-  getOnlineUsersWithInterval() {
-    this.getOnlineUsers()
-    setInterval(() => {
-      this.getOnlineUsers()
-    }, 30000);
+  inputFieldChanged(event: any) {
+    this.msgDto.messageText = event.target.value
   }
 
-  private getOnlineUsers() {
-    this.chatService.getOnlineUsers().subscribe({
-      next: res => {
-        console.log(res);
-      },
-      error: err => {
-        console.log(err)
-      }
-    })
+  addToInbox(obj: Message) {
+    let newObj = new Message();
+    newObj.senderId = obj.senderId;
+    newObj.receiverId = obj.receiverId
+    newObj.messageText = obj.messageText;
+    this.msgInboxArray.push(newObj);
+    console.log(this.msgInboxArray);
+
   }
 
 }

@@ -1,0 +1,5 @@
+<div (click)="profileClicked()"
+  class="glass flex items-center p-2 gap-3 flex-1 w-full rounded-full hover:cursor-pointer">
+  <img [alt]="profile?.username" [src]="getProfileImage()" class="w-10" />
+  <h2>{{ profile?.username }}</h2>
+</div>

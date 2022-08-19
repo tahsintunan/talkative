@@ -19,10 +19,8 @@ export class AuthService {
   ) { }
 
   signup(data: SignUpReqModel): Observable<SignUpResModel> {
-    return this.http.post<SignUpResModel>(this.authUrl + 'signup', data).pipe(
+    return this.http.post<SignUpResModel>(this.authUrl + 'signup', data, { withCredentials: true }).pipe(
       map((res) => {
-        console.log(res);
-
         return res;
       }),
       catchError(this.handleError)

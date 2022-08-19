@@ -25,7 +25,7 @@ namespace server.Controllers
                 if (await _authService.CheckIfUserExists(signupRequestDto.Username!, signupRequestDto.Email!))
                     return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "User already exists" });
                 await _authService.SignupUser(signupRequestDto);
-                return StatusCode(StatusCodes.Status201Created, "User created successfully");
+                return StatusCode(StatusCodes.Status201Created,new {response = "User created successfully" });
             }
             catch (Exception ex)
             {
