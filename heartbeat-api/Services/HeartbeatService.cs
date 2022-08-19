@@ -1,6 +1,5 @@
 using StackExchange.Redis;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using heartbeat_api.Interfaces;
 
 
@@ -8,29 +7,17 @@ namespace heartbeat_api.Services
 {
     public class HeartbeatService: IHeartbeatService
     {
-        
-        private readonly ConnectionMultiplexer _redis;
         private readonly IDatabase _db;
-        public HeartbeatService(IConfiguration configuration)
+        public HeartbeatService(IConnectionMultiplexer redis)
         {
-            var option = new ConfigurationOptions
-            {
-                AbortOnConnectFail = false,
-                ConnectTimeout = 30000,
-                Ssl = false,
-                Password = configuration["Redis:Password"],
-                EndPoints = { configuration["Redis:ConnectionString"] }
-            };
-            _redis = ConnectionMultiplexer.Connect(option);
-            _db = _redis.GetDatabase();
+            _db = redis.GetDatabase();
         }
-
+        
 
         public async Task Heartbeat(string userId, string userName, string prefix, int expiry)
         {
             var key = prefix + userId;
             var value = userName;
-
             await _db.StringSetAsync(key, value, TimeSpan.FromSeconds(expiry));
         }
 
@@ -38,14 +25,14 @@ namespace heartbeat_api.Services
         public bool IsValidRequest(HttpRequest request)
         {
             if (!request.Cookies.ContainsKey("authorization"))
+            {
                 return false;
-            
+            }
             var authHeader = request.Cookies["authorization"];
             if (authHeader == null || !authHeader.StartsWith("Bearer ") || authHeader.Split(' ').Length != 2)
             {
                 return false;
             }
-
             var token = authHeader.Split(' ')[1];
             var jwtHandler = new JwtSecurityTokenHandler();
             return jwtHandler.CanReadToken(token);
@@ -63,10 +50,8 @@ namespace heartbeat_api.Services
         public string GetUserId(string token)
         {
             const string claimType = "user_id";
-
             var jwtHandler = new JwtSecurityTokenHandler();
             var jwtToken = jwtHandler.ReadJwtToken(token);
-
             var userId = jwtToken.Claims.First(claim => claim.Type == claimType).Value;
             return userId;
         }
@@ -75,10 +60,8 @@ namespace heartbeat_api.Services
         public string GetUserName(string token)
         {
             const string claimType = "unique_name";
-            
             var jwtHandler = new JwtSecurityTokenHandler();
             var jwtToken = jwtHandler.ReadJwtToken(token);
-            
             var userName = jwtToken.Claims.First(claim => claim.Type == claimType).Value;
             return userName;
         }
