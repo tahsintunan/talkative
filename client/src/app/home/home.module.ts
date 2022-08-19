@@ -10,10 +10,28 @@ import { NavbarComponent } from './ui/navbar/navbar.component';
 import { UserItemComponent } from './ui/user-item/user-item.component';
 import { UserListComponent } from './ui/user-list/user-list.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
-    ChatComponent, ProfileComponent, Homepage, NavbarComponent, UserListComponent, UserItemComponent],
-  imports: [CommonModule, HttpClientModule, HomeRoutingModule, MatToolbarModule, MatIconModule],
+    ChatComponent,
+    ProfileComponent,
+    Homepage,
+    NavbarComponent,
+    UserListComponent,
+    UserItemComponent
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    HttpClientModule,
+    HomeRoutingModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatInputModule,
+    MatFormFieldModule
+  ],
 })
 export class HomeModule { }

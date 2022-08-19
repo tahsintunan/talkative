@@ -1,6 +1,5 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Subscription, interval, flatMap } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ChatService } from '../../data-access/chat.service';
 import { Message } from '../../Models/message.model';
 import jwt_decode from "jwt-decode";
@@ -20,43 +19,73 @@ export class ChatComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) { }
   heartBeatSubscription: Subscription | undefined;
-
-  msgDto: Message = new Message();
+  message: string = ""
   msgInboxArray: Message[] = [];
+  userId: string = "";
+  receiverId: string = ""
 
   ngOnInit(): void {
+    this.chatService.retrieveMappedObject().subscribe((receivedObj: Message) => { this.addToInbox(receivedObj); });
+
+    let user: any = jwt_decode(this.cookieService.get("authorization"))
+    this.userId = user.user_id;
+    console.log(this.userId, this.receiverId);
+
+    this.activatedRoute.params.subscribe({
+      next: (res: any) => {
+        this.receiverId = res.userId
+      }
+    })
+
   }
 
 
 
   send(): void {
-    if (this.msgDto) {
-      console.log(this.msgDto);
-      let user: any = jwt_decode(this.cookieService.get("authorization"))
-      let user_id: string = user.user_id;
+    if (this.message.trim() !== "") {
+
       let body: Message = {
-        messageText: this.msgDto.messageText,
-        senderId: user_id,
-        receiverId: this.activatedRoute.snapshot.params['userId']
+        messageText: this.message,
+        senderId: this.userId,
+        receiverId: this.receiverId
       }
 
-      this.chatService.broadcastMessage(body);
-      this.msgDto.messageText = '';
+      this.chatService.broadcastMessage(body).subscribe({
+        next: res => {
+          this.message = ""
+        },
+        error: err => {
+          console.log(err);
+
+        }
+      })
     }
   }
 
-  inputFieldChanged(event: any) {
-    this.msgDto.messageText = event.target.value
-  }
+
 
   addToInbox(obj: Message) {
     let newObj = new Message();
     newObj.senderId = obj.senderId;
     newObj.receiverId = obj.receiverId
     newObj.messageText = obj.messageText;
-    this.msgInboxArray.push(newObj);
+    this.msgInboxArray.push(newObj)
     console.log(this.msgInboxArray);
 
   }
 
+
+  checkIfMessageSentToUser(senderId: string, receiverId: string): boolean {
+    console.log(senderId, receiverId);
+    console.log(this.userId, this.receiverId);
+
+
+    return (
+      this.userId === senderId || this.userId === receiverId
+    ) && (
+        this.receiverId === receiverId || this.receiverId === senderId
+      )
+  }
+
 }
+

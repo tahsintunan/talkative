@@ -17,7 +17,6 @@ export class ChatService {
     .build();
 
   private POST_URL = "http://localhost:5000/api/Chat/send"
-  private receivedMessageObject: Message = new Message();
   private sharedObj = new Subject<Message>();
 
   constructor(
@@ -27,45 +26,45 @@ export class ChatService {
     this.connection.onclose(async err => {
       await this.start()
     })
-    this.connection.on("ReceiveMessage", (senderId, receiverId, messageText) => { this.mapReceivedMessage(senderId, receiverId, messageText); });
+    this.connection.on("ReceiveMessage", (message: Message) => {
+      this.mapReceivedMessage(message);
+    });
     this.start();
   }
 
 
   public async start() {
+
     try {
       this.connection.start();
       console.log("connection started");
+
     } catch (err) {
+
       console.log(err);
       setTimeout(() => {
         this.start()
       }, 2500);
+
     }
   }
 
   broadcastMessage(message: Message) {
     let headers = new HttpHeaders()
     headers.set("Cookie", document.cookie)
-    console.log(message);
 
-    return this.http.post(this.POST_URL, message, { headers: headers, withCredentials: true }).subscribe({
-      next: res => {
-        console.log(res);
-
-      },
-      error: err => {
-        console.log(err);
-
-      }
-    })
+    return this.http.post(this.POST_URL, message, { headers: headers, withCredentials: true })
   }
 
-  private mapReceivedMessage(senderId: string, receiverId: string, messageText: string): void {
-    this.receivedMessageObject.senderId = senderId;
-    this.receivedMessageObject.receiverId = receiverId
-    this.receivedMessageObject.messageText = messageText;
-    this.sharedObj.next(this.receivedMessageObject);
+  private mapReceivedMessage(message: Message): void {
+
+    let receivedMessageObject: Message = new Message();
+
+    receivedMessageObject = {
+      ...message,
+    }
+
+    this.sharedObj.next(receivedMessageObject);
   }
 
 

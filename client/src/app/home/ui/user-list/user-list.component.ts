@@ -32,7 +32,6 @@ export class UserListComponent implements OnInit {
   private updateOnlineStatus() {
     this.userListService.updateCurrentUserOnlineStatus().subscribe({
       next: res => {
-        console.log(res);
 
       },
       error: err => {
@@ -53,10 +52,7 @@ export class UserListComponent implements OnInit {
   private getOnlineUsers() {
     this.userListService.getOnlineUsers().subscribe({
       next: res => {
-        console.log(res);
-
         this.userList = [...res]
-
       },
       error: err => {
         console.log(err)

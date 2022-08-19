@@ -1,6 +1,8 @@
 <app-navbar></app-navbar>
-<div class="h-full flex justify-between">
+<div class="h-full flex  justify-between">
   <app-profile [profile]="profile" class="flex-1"></app-profile>
-  <router-outlet class="chat-box"></router-outlet>
+  <div class="chat-box">
+    <router-outlet></router-outlet>
+  </div>
   <app-user-list class="flex-1"></app-user-list>
 </div>

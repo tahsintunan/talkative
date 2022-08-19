@@ -28,8 +28,6 @@ export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree> {
     const accessToken = this.cookieService.get('authorization');
-    console.log(accessToken);
-
     if (accessToken == '') {
       this.router.navigate(['/auth/signin']);
     }

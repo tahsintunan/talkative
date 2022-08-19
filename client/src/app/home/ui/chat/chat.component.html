@@ -1,2 +1,12 @@
-<input (change)="inputFieldChanged($event)" style="height: 40px;" />
-<button (click)="send()">send</button>
+<div class="w-full h-5/6 overflow-y-auto">
+
+</div>
+
+<div class="flex flex-row">
+  <mat-form-field class="w-10/12" appearance="outline">
+    <input matInput type="text" [(ngModel)]="message" />
+  </mat-form-field>
+  <button (click)="send()" class="w-2/12">
+    Send
+  </button>
+</div>
