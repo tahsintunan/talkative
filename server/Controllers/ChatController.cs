@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Dto.MessageDto;
+using server.Dto.RequestDto.ChatHistoryRequestDto;
+using server.Dto.ResponseDto.ChatHistoryResponseDto;
 using server.Interface;
 
 namespace server.Controllers;
@@ -9,10 +11,12 @@ namespace server.Controllers;
 public class ChatController: ControllerBase
 {
     private readonly IRabbitmqService _rabbitmqService;
+    private readonly IChatService _chatService;
     private readonly ILogger<ChatController> _logger;
-    public ChatController(IRabbitmqService rabbitmqService, ILogger<ChatController> logger)
+    public ChatController(IRabbitmqService rabbitmqService, IChatService chatService, ILogger<ChatController> logger)
     {
         _rabbitmqService = rabbitmqService;
+        _chatService = chatService;
         _logger = logger;
     }
 
@@ -37,4 +41,20 @@ public class ChatController: ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
         }
     }
+    
+    
+    [HttpPost("GetMessageHistory")]
+    public List<ChatHistoryResponseDto> GetMessageHistory(ChatHistoryRequestDto chatHistoryRequestDto)
+    {
+        try
+        {
+            return _chatService.GetMessageHistory(chatHistoryRequestDto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("{ErrorMessage}", ex.Message);
+            throw;
+        }
+    }
+    
 }

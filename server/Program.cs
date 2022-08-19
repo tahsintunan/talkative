@@ -20,6 +20,7 @@ builder.Services.Configure<MessageDatabaseConfig>(
 
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<IAuthService, AuthService>();
+builder.Services.AddSingleton<IChatService, ChatService>();
 builder.Services.AddSingleton<IRabbitmqService, RabbitmqService>();
 builder.Services.AddSingleton<IChatHub, ChatHub>();
 builder.Services.AddHostedService<DbHandlerService>();

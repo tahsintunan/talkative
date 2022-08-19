@@ -25,12 +25,9 @@ public class DbHandlerService: IHostedService
         _channel = connection.CreateModel();
         _consumer = new EventingBasicConsumer(_channel);
         
-        var mongoClient = new MongoClient(
-            messageDatabaseConfig.Value.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(
-            messageDatabaseConfig.Value.DatabaseName);
-        _messageCollection = mongoDatabase.GetCollection<Message>(
-            messageDatabaseConfig.Value.MessageCollectionName);
+        var mongoClient = new MongoClient(messageDatabaseConfig.Value.ConnectionString);
+        var mongoDatabase = mongoClient.GetDatabase(messageDatabaseConfig.Value.DatabaseName);
+        _messageCollection = mongoDatabase.GetCollection<Message>(messageDatabaseConfig.Value.MessageCollectionName);
     }
     
     
