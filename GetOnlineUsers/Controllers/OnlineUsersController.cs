@@ -12,19 +12,9 @@ public class OnlineUsersController : ControllerBase
     private readonly IServer _server;
     private readonly IDatabase _database;
     
-    public OnlineUsersController()
+    public OnlineUsersController(IConfiguration configuration, IConnectionMultiplexer redis)
     {
-        var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-        var option = new ConfigurationOptions
-        {
-            AbortOnConnectFail = false,
-            ConnectTimeout = 30000,
-            Ssl = false,
-            Password = configuration["Redis:Password"],
-            EndPoints = { configuration["Redis:ConnectionString"] }
-        };
-        var redis = ConnectionMultiplexer.Connect(option);
-        _server = redis.GetServer(option.EndPoints.First());
+        _server = redis.GetServer(configuration["Redis:ConnectionString"]);
         _database = redis.GetDatabase();
     }
 

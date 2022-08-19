@@ -1,8 +1,23 @@
+using StackExchange.Redis;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
+    ConnectionMultiplexer.Connect(new ConfigurationOptions()
+    {
+        Password = builder.Configuration["Redis:Password"],
+        EndPoints = { builder.Configuration["Redis:ConnectionString"] },
+        Ssl = false,
+        AbortOnConnectFail = false,
+        ConnectTimeout = 30000,
+        ConnectRetry = 3,
+        KeepAlive = 30
+    }));
+
 
 builder.Services.AddCors(o =>
 {
