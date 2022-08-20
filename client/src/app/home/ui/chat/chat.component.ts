@@ -29,16 +29,33 @@ export class ChatComponent implements OnInit {
 
     let user: any = jwt_decode(this.cookieService.get("authorization"))
     this.userId = user.user_id;
-    console.log(this.userId, this.receiverId);
 
     this.activatedRoute.params.subscribe({
       next: (res: any) => {
-        this.receiverId = res.userId
+        this.receiverId = res.userId;
+        this.resetChatHistory();
       }
     })
 
   }
 
+
+  resetChatHistory() {
+    this.msgInboxArray = [];
+    let chatRequestDto = {
+      senderId: this.userId,
+      receiverId: this.receiverId
+    }
+    this.chatService.getMessages(chatRequestDto).subscribe({
+      next: res => {
+        this.msgInboxArray = [...res]
+      },
+      error: err => {
+        console.log(err);
+
+      }
+    })
+  }
 
 
   send(): void {
@@ -66,20 +83,18 @@ export class ChatComponent implements OnInit {
 
   addToInbox(obj: Message) {
     let newObj = new Message();
-    newObj.senderId = obj.senderId;
-    newObj.receiverId = obj.receiverId
-    newObj.messageText = obj.messageText;
-    this.msgInboxArray.push(newObj)
-    console.log(this.msgInboxArray);
+    newObj = { ...obj }
+    if (this.messageSentToUser(newObj.senderId, newObj.receiverId)) {
+      // this.msgInboxArray.push(newObj)
+      console.log(newObj.messageText);
+
+    }
+    // console.log(this.msgInboxArray);
 
   }
 
 
-  checkIfMessageSentToUser(senderId: string, receiverId: string): boolean {
-    console.log(senderId, receiverId);
-    console.log(this.userId, this.receiverId);
-
-
+  messageSentToUser(senderId: string, receiverId: string): boolean {
     return (
       this.userId === senderId || this.userId === receiverId
     ) && (

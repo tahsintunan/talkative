@@ -16,7 +16,7 @@ export class ChatService {
     })
     .build();
 
-  private POST_URL = "http://localhost:5000/api/Chat/send"
+  private POST_URL = "http://localhost:5000/api/Chat/"
   private sharedObj = new Subject<Message>();
 
   constructor(
@@ -53,7 +53,7 @@ export class ChatService {
     let headers = new HttpHeaders()
     headers.set("Cookie", document.cookie)
 
-    return this.http.post(this.POST_URL, message, { headers: headers, withCredentials: true })
+    return this.http.post(this.POST_URL + "send", message, { headers: headers, withCredentials: true })
   }
 
   private mapReceivedMessage(message: Message): void {
@@ -70,6 +70,11 @@ export class ChatService {
 
   public retrieveMappedObject(): Observable<Message> {
     return this.sharedObj.asObservable();
+  }
+
+
+  public getMessages(body: any): Observable<[]> {
+    return this.http.post<[]>(this.POST_URL + "GetMessageHistory", body, { withCredentials: true })
   }
 
 }
