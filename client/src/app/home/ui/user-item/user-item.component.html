@@ -1,6 +1,7 @@
 <div
   matRipple
   class="glass flex items-center p-1 gap-3 flex-1 w-full rounded-full cursor-pointer"
+  (click)="onClick()"
 >
   <app-avater
     [alt]="profile?.username"

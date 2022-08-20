@@ -3,11 +3,7 @@
   <app-profile [profile]=" selectedUser|| profile" class="flex-1"></app-profile>
 
   <div class="chat-box-container">
-    <app-chat
-      *ngIf="selectedUser"
-      (onClose)="closeChat()"
-      [selectedUser]="selectedUser"
-    ></app-chat>
+    <router-outlet></router-outlet>
   </div>
 
   <app-user-list

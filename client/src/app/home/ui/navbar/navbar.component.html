@@ -1,6 +1,7 @@
 <mat-toolbar class="glass">
-  <a [routerLink]="'/'" class="flex items-center">
+  <a [routerLink]="'/'" class="flex items-center flex-1">
     <mat-icon color="primary">question_answer</mat-icon>
     <span class="ml-2"><strong>Panic Chat</strong> </span>
   </a>
+  <button mat-flat-button color="primary" (click)="onLogout()">Logout</button>
 </mat-toolbar>

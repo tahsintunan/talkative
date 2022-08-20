@@ -10,7 +10,7 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { chatModel } from '../../models/chat.model';
+import { ChatModel } from '../../models/chat.model';
 import { ProfileModel } from '../../models/profile.model';
 
 @Component({
@@ -25,34 +25,12 @@ export class ChatComponent implements OnInit, OnChanges, AfterViewChecked {
 
   @Output() onClose = new EventEmitter();
 
-  chatData: chatModel[] = [];
+  chatData: ChatModel[] = [];
 
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.chatData = [
-      {
-        id: '1',
-        message: 'Hello',
-        sender: 'John Doe',
-        senderId: '1',
-        createdAt: new Date().toString(),
-      },
-      {
-        id: '2',
-        message: 'Hello',
-        sender: 'John Doe2',
-        senderId: '2',
-        createdAt: new Date().toString(),
-      },
-      {
-        id: '3',
-        message: 'Hello again',
-        sender: 'John Doe',
-        senderId: '3',
-        createdAt: new Date().toString(),
-      },
-    ];
+    this.chatData = [];
   }
 
   ngOnInit() {
@@ -70,15 +48,5 @@ export class ChatComponent implements OnInit, OnChanges, AfterViewChecked {
     } catch (err) {}
   }
 
-  onSend(message: string) {
-    this.chatData.push({
-      id: '1',
-      message: message,
-      sender: 'John Doe',
-      senderId: '1',
-      createdAt: new Date().toString(),
-    });
-
-    this.chatData = this.chatData.slice();
-  }
+  onSend(message: string) {}
 }

@@ -1,8 +1,7 @@
-export interface chatModel {
-  id: string;
-  message: string;
-  sender: string;
+export interface ChatModel {
+  messageText: string;
   senderId: string;
-  senderImage?: string;
+  senderName: string;
+  receiverId: string;
   createdAt: string;
 }

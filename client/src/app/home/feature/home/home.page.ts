@@ -8,7 +8,7 @@ import { ProfileModel } from '../../models/profile.model';
 })
 export class Homepage implements OnInit {
   profile: ProfileModel = {
-    id: '1',
+    userId: '1',
     username: 'John Doe',
     email: 'john@example.com',
     dateOfBirth: '2000-01-01',
