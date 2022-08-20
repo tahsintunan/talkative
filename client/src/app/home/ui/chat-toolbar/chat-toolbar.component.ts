@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { ProfileModel } from '../../models/profile.model';
 
 @Component({
@@ -8,9 +9,15 @@ import { ProfileModel } from '../../models/profile.model';
 })
 export class ChatToolbarComponent implements OnInit {
   @Input() selectedUser?: ProfileModel;
-  @Output() onClose = new EventEmitter();
 
-  constructor() {}
 
-  ngOnInit(): void {}
+  constructor(
+    private router: Router
+  ) { }
+
+  ngOnInit(): void { }
+
+  closeChat() {
+    this.router.navigate(['/home'])
+  }
 }

@@ -11,13 +11,13 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ChatService } from '../../data-access/chat.service';
-import { Message } from '../../Models/message.model';
+import { ChatService } from '../../services/chat.service';
+import { Message } from '../../models/message.model';
 import jwt_decode from "jwt-decode";
 import { CookieService } from 'ngx-cookie-service';
 import { ActivatedRoute } from '@angular/router';
 import { chatModel } from '../../models/chat.model';
-import { ProfileModel } from '../../Models/profile.model';
+import { ProfileModel } from '../../models/profile.model';
 
 @Component({
   selector: 'app-chat',
@@ -88,7 +88,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   onSend(message: string) {
     let body: Message = {
-      messageText: this.message,
+      messageText: message,
       senderId: this.userId,
       receiverId: this.receiverId
     }
@@ -97,7 +97,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
     this.chatService.broadcastMessage(body).subscribe({
       next: res => {
-        this.message = ""
+        //message sent
       },
       error: err => {
         console.log(err);
@@ -127,11 +127,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     let newObj = new Message();
     newObj = { ...obj }
     if (this.messageSentToUser(newObj.senderId, newObj.receiverId)) {
-      // this.msgInboxArray.push(newObj)
+      this.msgInboxArray.push(newObj)
       console.log(newObj.messageText);
 
     }
-    // console.log(this.msgInboxArray);
 
   }
 

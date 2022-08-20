@@ -17,6 +17,6 @@ export class UserItemComponent implements OnInit {
   ngOnInit(): void { }
 
   profileClicked() {
-    this.router.navigate(['./', 'chat', this.profile?.id], { relativeTo: this.activatedRoute })
+    this.router.navigate(['./', 'chat', this.profile?.userId], { relativeTo: this.activatedRoute })
   }
 }

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { map, Observable } from 'rxjs';
-import { ProfileModel } from '../Models/profile.model';
+import { ProfileModel } from '../models/profile.model';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +36,7 @@ export class UserListService {
         res.forEach((user: any) => {
           let decodedUser: any = jwtDecode(this.cookie.get("authorization"))
           if (user.userId !== decodedUser.user_id) {
-            listOfUsers.push({ userId: user.userId, username: user.userName })
+            listOfUsers.push({ userId: user.userId, username: user.userName, dateOfBirth: user.dateOfBirth, email: user.email })
           }
         })
         return listOfUsers;

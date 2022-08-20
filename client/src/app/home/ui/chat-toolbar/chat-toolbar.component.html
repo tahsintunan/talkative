@@ -1,16 +1,12 @@
 <div class="flex p-2 items-center gap-1">
-  <app-avater
-    [alt]="selectedUser?.username"
-    [src]="selectedUser?.username"
-    size="40px"
-    [generateAvater]="true"
-  ></app-avater>
+  <app-avater [alt]="selectedUser?.username" [src]="selectedUser?.username" size="40px" [generateAvater]="true">
+  </app-avater>
 
   <h1 class="flex-1 text-xl font-bold mx-2">
     {{ selectedUser?.username }}
   </h1>
 
-  <button mat-icon-button (click)="onClose.emit()">
+  <button mat-icon-button (click)="closeChat()">
     <mat-icon>close</mat-icon>
   </button>
 </div>

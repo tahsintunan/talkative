@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProfileModel } from '../../Models/profile.model';
+import { ProfileModel } from '../../models/profile.model';
 import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 @Component({

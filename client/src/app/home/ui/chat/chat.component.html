@@ -1,9 +1,9 @@
 <div class="glass flex flex-col h-full">
-  <app-chat-toolbar [selectedUser]="selectedUser" (onClose)="onClose.emit()"></app-chat-toolbar>
+  <app-chat-toolbar [selectedUser]="selectedUser"></app-chat-toolbar>
   <hr />
 
   <div class="chat-box" #chatBox>
-    <app-chat-item *ngFor="let chat of chatData; let i = index" [chatData]="chat" [isSender]="i % 2 == 0">
+    <app-chat-item *ngFor="let chat of chatData; let i = index" [chatData]="chat" [isSender]="chat.senderId == userId">
     </app-chat-item>
   </div>
 

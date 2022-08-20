@@ -1,6 +1,7 @@
+import { UserListService } from './../../services/user-list.service';
 import { Component, OnInit } from '@angular/core';
-import { UserListService } from '../../data-access/user-list.service';
-import { ProfileModel } from '../../Models/profile.model';
+
+import { ProfileModel } from '../../models/profile.model';
 
 @Component({
   selector: 'app-user-list',
@@ -31,10 +32,10 @@ export class UserListComponent implements OnInit {
 
   private updateOnlineStatus() {
     this.userListService.updateCurrentUserOnlineStatus().subscribe({
-      next: res => {
+      next: () => {
 
       },
-      error: err => {
+      error: (err: any) => {
         console.log(err);
 
       }

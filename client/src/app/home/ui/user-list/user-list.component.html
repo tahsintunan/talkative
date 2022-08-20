@@ -3,7 +3,7 @@
   <hr />
 
   <div class="user-list-container">
-    <div *ngFor="let user of userList" (click)="onClick.emit($any(user))">
+    <div *ngFor="let user of userList">
       <app-user-item [profile]="user"></app-user-item>
     </div>
   </div>

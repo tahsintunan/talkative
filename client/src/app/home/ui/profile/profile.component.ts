@@ -17,7 +17,7 @@ export class ProfileComponent implements OnInit {
     if (this.profile) {
       return (
         new Date().getFullYear() -
-        new Date(this.profile?.dateOfBirth).getFullYear()
+        new Date(this.profile.dateOfBirth).getFullYear()
       );
     } else {
       return 0;

@@ -1,6 +1,6 @@
 export interface chatModel {
   id: string;
-  message: string;
+  messageText: string;
   sender: string;
   senderId: string;
   senderImage?: string;
