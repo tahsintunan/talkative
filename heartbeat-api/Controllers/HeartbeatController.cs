@@ -25,9 +25,9 @@ public class HeartbeatController : ControllerBase
             var token = _heartbeatService.GetToken(Request);
             var userId = _heartbeatService.GetUserId(token);
             var userName = _heartbeatService.GetUserName(token);
-            
+
             await _heartbeatService.Heartbeat(userId, userName, "kernel-panic:", 90);
-            return StatusCode(StatusCodes.Status200OK, "OK");
+            return StatusCode(StatusCodes.Status200OK, new { response = "OK" });
         }
         catch (Exception ex)
         {
