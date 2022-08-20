@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-avater',
@@ -12,7 +12,7 @@ export class AvaterComponent implements OnInit {
   @Input() generateAvater?: boolean = false;
   @Input() bgColor?: string = '#fff';
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 }

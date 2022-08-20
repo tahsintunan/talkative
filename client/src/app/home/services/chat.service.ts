@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvService } from '../../env.service';
 import * as signalR from '@microsoft/signalr';
-import { Message } from '../models/message.model';
+import { chatModel } from '../Models/chat.model';
 @Injectable({
   providedIn: 'root',
 })
@@ -17,7 +17,7 @@ export class ChatService {
     .build();
 
   private POST_URL = "http://localhost:5000/api/Chat/"
-  private sharedObj = new Subject<Message>();
+  private sharedObj = new Subject<chatModel>();
 
   constructor(
     private http: HttpClient,
@@ -26,9 +26,7 @@ export class ChatService {
     this.connection.onclose(async err => {
       await this.start()
     })
-    this.connection.on("ReceiveMessage", (message: Message) => {
-      this.mapReceivedMessage(message);
-    });
+    this.connection.on("ReceiveMessage", (message: chatModel) => { this.mapReceivedMessage(message); });
     this.start();
   }
 
@@ -49,16 +47,16 @@ export class ChatService {
     }
   }
 
-  broadcastMessage(message: Message) {
+  broadcastMessage(message: chatModel) {
     let headers = new HttpHeaders()
     headers.set("Cookie", document.cookie)
 
     return this.http.post(this.POST_URL + "send", message, { headers: headers, withCredentials: true })
   }
 
-  private mapReceivedMessage(message: Message): void {
+  private mapReceivedMessage(message: chatModel): void {
 
-    let receivedMessageObject: Message = new Message();
+    let receivedMessageObject: chatModel;
 
     receivedMessageObject = {
       ...message,
@@ -68,7 +66,7 @@ export class ChatService {
   }
 
 
-  public retrieveMappedObject(): Observable<Message> {
+  public retrieveMappedObject(): Observable<chatModel> {
     return this.sharedObj.asObservable();
   }
 

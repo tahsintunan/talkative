@@ -1,5 +1,5 @@
 <div matRipple class="glass flex items-center p-1 gap-3 flex-1 w-full rounded-full cursor-pointer"
   (click)="profileClicked()">
-  <app-avater [alt]="profile?.username" [src]="profile?.username" size="50px" [generateAvater]="true"></app-avater>
+  <app-avater [alt]="profile?.username" [src]="profile?.id" size="50px" [generateAvater]="true"></app-avater>
   <h2>{{ profile?.username }}</h2>
 </div>

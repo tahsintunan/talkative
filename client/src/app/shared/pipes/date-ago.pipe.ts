@@ -6,6 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class DateAgoPipe implements PipeTransform {
   transform(value: any, ...args: unknown[]): unknown {
+
     if (!value) {
       return 'a long time ago';
     }

@@ -1,6 +1,6 @@
 export interface ProfileModel {
-  userId?: string;
+  id?: string;
   username?: string;
-  email: string;
-  dateOfBirth?: string;
+  email?: string;
+  dateOfBirth?: Date;
 }

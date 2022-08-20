@@ -12,12 +12,12 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ChatService } from '../../services/chat.service';
-import { Message } from '../../models/message.model';
 import jwt_decode from "jwt-decode";
 import { CookieService } from 'ngx-cookie-service';
 import { ActivatedRoute } from '@angular/router';
-import { chatModel } from '../../models/chat.model';
-import { ProfileModel } from '../../models/profile.model';
+import { chatModel } from '../../Models/chat.model';
+import { ProfileModel } from '../../Models/profile.model';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-chat',
@@ -28,22 +28,18 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   @ViewChild('chatBox') private chatBox: ElementRef = new ElementRef(null);
   @Input() selectedUser?: ProfileModel;
 
-  @Output() onClose = new EventEmitter();
-
   chatData: chatModel[] = [];
-  heartBeatSubscription: Subscription | undefined;
-  message: string = ""
-  msgInboxArray: Message[] = [];
   userId: string = "";
   receiverId: string = ""
 
   constructor(
     private chatService: ChatService,
     private cookieService: CookieService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private userService: UserService
   ) { }
   ngOnInit(): void {
-    this.chatService.retrieveMappedObject().subscribe((receivedObj: Message) => { this.addToInbox(receivedObj); });
+    this.chatService.retrieveMappedObject().subscribe((receivedObj: chatModel) => { this.addToInbox(receivedObj); });
 
     let user: any = jwt_decode(this.cookieService.get("authorization"))
     this.userId = user.user_id;
@@ -51,6 +47,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.activatedRoute.params.subscribe({
       next: (res: any) => {
         this.receiverId = res.userId;
+        this.getUserById()
         this.resetChatHistory();
       }
     })
@@ -58,8 +55,18 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.scrollToBottom();
 
   }
+
+
   ngAfterViewChecked() {
     this.scrollToBottom();
+  }
+
+  getUserById() {
+    this.userService.getUser(this.receiverId).subscribe({
+      next: res => {
+        this.selectedUser = { ...res }
+      }
+    })
   }
 
   scrollToBottom(): void {
@@ -70,14 +77,14 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   resetChatHistory() {
-    this.msgInboxArray = [];
+    this.chatData = [];
     let chatRequestDto = {
       senderId: this.userId,
       receiverId: this.receiverId
     }
     this.chatService.getMessages(chatRequestDto).subscribe({
       next: res => {
-        this.msgInboxArray = [...res]
+        this.chatData = [...res]
       },
       error: err => {
         console.log(err);
@@ -87,10 +94,11 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   onSend(message: string) {
-    let body: Message = {
+    let body: chatModel = {
       messageText: message,
       senderId: this.userId,
-      receiverId: this.receiverId
+      receiverId: this.receiverId,
+      datetime: new Date()
     }
 
 
@@ -104,32 +112,17 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
       }
     })
-    // this.chatData.push({
-    //   id: '1',
-    //   message: message,
-    //   sender: 'John Doe',
-    //   senderId: '1',
-    //   createdAt: new Date().toString(),
-    // });
-
-    // this.chatData = this.chatData.slice();
   }
 
   messageSentToUser(senderId: string, receiverId: string): boolean {
     return (
       this.userId === senderId || this.userId === receiverId
-    ) && (
-        this.receiverId === receiverId || this.receiverId === senderId
-      )
+    )
   }
 
-  addToInbox(obj: Message) {
-    let newObj = new Message();
-    newObj = { ...obj }
-    if (this.messageSentToUser(newObj.senderId, newObj.receiverId)) {
-      this.msgInboxArray.push(newObj)
-      console.log(newObj.messageText);
-
+  addToInbox(obj: chatModel) {
+    if (this.messageSentToUser(obj.senderId, obj.receiverId)) {
+      this.chatData.push(obj)
     }
 
   }

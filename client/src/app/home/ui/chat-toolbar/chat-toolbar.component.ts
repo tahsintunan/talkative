@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProfileModel } from '../../models/profile.model';
+import { Homepage } from '../../feature/home/home.page';
+import { ProfileModel } from '../../Models/profile.model';
+import { ActiveChatService } from '../../services/active-chat.service';
 
 @Component({
   selector: 'app-chat-toolbar',
@@ -10,14 +12,17 @@ import { ProfileModel } from '../../models/profile.model';
 export class ChatToolbarComponent implements OnInit {
   @Input() selectedUser?: ProfileModel;
 
-
   constructor(
-    private router: Router
+    private router: Router,
+    private activatedChat: ActiveChatService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+
+  }
 
   closeChat() {
+    this.activatedChat.updateActiveChat("");
     this.router.navigate(['/home'])
   }
 }

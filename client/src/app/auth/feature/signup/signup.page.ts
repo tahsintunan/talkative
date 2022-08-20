@@ -25,7 +25,7 @@ export class SignupPage implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -60,8 +60,6 @@ export class SignupPage implements OnInit {
 
   submitForm() {
     const formValues = this.signupForm.getRawValue();
-
-    console.log(formValues);
 
     this.authService.signup(formValues).subscribe({
       next: (res) => {

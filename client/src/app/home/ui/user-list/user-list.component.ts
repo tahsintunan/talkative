@@ -1,7 +1,7 @@
 import { UserListService } from './../../services/user-list.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
-import { ProfileModel } from '../../models/profile.model';
+import { ProfileModel } from '../../Models/profile.model';
 
 @Component({
   selector: 'app-user-list',
@@ -9,8 +9,8 @@ import { ProfileModel } from '../../models/profile.model';
   styleUrls: ['./user-list.component.css'],
 })
 export class UserListComponent implements OnInit {
-  userList: ProfileModel[] = [
-  ];
+  userList: ProfileModel[] = [];
+
 
   constructor(
     private userListService: UserListService
@@ -27,7 +27,7 @@ export class UserListComponent implements OnInit {
     this.updateOnlineStatus()
     setInterval(() => {
       this.updateOnlineStatus()
-    }, 30000);
+    }, 60000);
   }
 
   private updateOnlineStatus() {
@@ -47,7 +47,7 @@ export class UserListComponent implements OnInit {
     this.getOnlineUsers()
     setInterval(() => {
       this.getOnlineUsers()
-    }, 30000);
+    }, 60000);
   }
 
   private getOnlineUsers() {
@@ -61,7 +61,4 @@ export class UserListComponent implements OnInit {
     })
   }
 
-  click(value: any) {
-    console.log(value.value);
-  }
 }

@@ -1,33 +1,42 @@
 import { Component, OnInit } from '@angular/core';
-import { ProfileModel } from '../../models/profile.model';
+import { ProfileModel } from '../../Models/profile.model';
 import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
+import { ActivatedRoute, ActivationEnd, Router } from '@angular/router';
+import { filter, map } from 'rxjs';
+import { ActiveChatService } from '../../services/active-chat.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.css'],
 })
 export class Homepage implements OnInit {
-  profile: ProfileModel = jwtDecode(this.cookie.get('authorization'));
 
+  profileId: string = this.getUserId()
   selectedUser?: ProfileModel;
   constructor(
-    private cookie: CookieService
+    private cookie: CookieService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private activeChat: ActiveChatService
   ) { }
 
   ngOnInit(): void {
-    let decodedUser: any = jwtDecode(this.cookie.get('authorization'))
-    this.profile.username = decodedUser.unique_name
-    this.profile.dateOfBirth = decodedUser.birthdate
+
+    this.activeChat.getActivatedChat().subscribe(res => {
+      if (res == "") {
+        this.profileId = this.getUserId();
+      } else {
+        this.profileId = res
+      }
+    })
+
   }
 
-  closeChat() {
-    console.log('close chat');
-    this.selectedUser = undefined;
+
+  getUserId(): string {
+    let decodedToken: any = jwtDecode(this.cookie.get('authorization'));
+    return decodedToken.user_id
   }
 
-  onActiveUserClick(user: ProfileModel) {
-    console.log('onActiveUserClick', user);
-    this.selectedUser = user;
-  }
 }

@@ -36,8 +36,6 @@ export class SigninPage implements OnInit {
 
     this.authService.signin(signinData).subscribe({
       next: (res) => {
-        console.log(res);
-
         this.router.navigate(['/home'])
 
       },
