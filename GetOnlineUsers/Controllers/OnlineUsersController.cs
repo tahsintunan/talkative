@@ -11,31 +11,31 @@ public class OnlineUsersController : ControllerBase
 {
     private readonly IServer _server;
     private readonly IDatabase _database;
-    
+
     public OnlineUsersController(IConfiguration configuration, IConnectionMultiplexer redis)
     {
         _server = redis.GetServer(configuration["Redis:ConnectionString"]);
         _database = redis.GetDatabase();
     }
 
-    
+
     [HttpGet(Name = "OnlineUsers")]
     public List<UserDto> Get()
     {
         const string pattern = "kernel-panic*";
         var users = new List<UserDto>();
-        
+
         foreach (var key in _server.Keys(pattern: pattern))
         {
             var userId = key.ToString()[13..];
             var userName = _database.StringGet(key);
-            
+
             var user = new UserDto
             {
-                UserId = userId,
-                UserName = userName
+                Id = userId,
+                Username = userName
             };
-            
+
             users.Add(user);
         }
         return users;
