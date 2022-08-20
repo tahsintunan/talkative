@@ -25,12 +25,12 @@ namespace server.Controllers
                 if (await _authService.CheckIfUserExists(signupRequestDto.Username!, signupRequestDto.Email!))
                     return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "User already exists" });
                 await _authService.SignupUser(signupRequestDto);
-                return StatusCode(StatusCodes.Status201Created, "User created successfully");
+                return StatusCode(StatusCodes.Status201Created, new {response = "User created successfully" });
             }
             catch (Exception ex)
             {
                 _logger.LogError("{ErrorMessage}", ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
+                return StatusCode(StatusCodes.Status500InternalServerError, new {response = "Something went wrong." });
             }
         } 
 
@@ -49,12 +49,12 @@ namespace server.Controllers
                     return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "Password does not match" });
                 
                 await _authService.LoginUser(request, HttpContext);
-                return StatusCode(StatusCodes.Status200OK, "User logged in");
+                return StatusCode(StatusCodes.Status200OK, new {response = "User logged in" });
             }
             catch (Exception ex)
             {
                 _logger.LogError("{ErrorMessage}", ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
+                return StatusCode(StatusCodes.Status500InternalServerError, new {response = "Something went wrong." });
             }
         }
 

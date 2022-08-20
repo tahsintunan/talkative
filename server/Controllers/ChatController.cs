@@ -33,12 +33,12 @@ public class ChatController: ControllerBase
             }
 
             await _rabbitmqService.FanOut(messageDto);
-            return StatusCode(StatusCodes.Status200OK, "Message pushed to Rabbitmq Exchange");
+            return StatusCode(StatusCodes.Status200OK, new {response = "Message pushed to Rabbitmq Exchange" });
         }
         catch (Exception ex)
         {
             _logger.LogError("{ErrorMessage}", ex.Message);
-            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
+            return StatusCode(StatusCodes.Status500InternalServerError, new {response = "Something went wrong." });
         }
     }
     
