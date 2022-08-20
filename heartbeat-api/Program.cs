@@ -1,13 +1,25 @@
 using heartbeat_api.Interfaces;
 using heartbeat_api.Services;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddSingleton<IHeartbeatService, HeartbeatService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<IHeartbeatService, HeartbeatService>();
+builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
+    ConnectionMultiplexer.Connect(new ConfigurationOptions()
+    {
+        Password = builder.Configuration["Redis:Password"],
+        EndPoints = { builder.Configuration["Redis:ConnectionString"] },
+        Ssl = false,
+        AbortOnConnectFail = false,
+        ConnectTimeout = 30000,
+        ConnectRetry = 3,
+        KeepAlive = 30
+    }));
 
 builder.Services.AddCors(o =>
 {
