@@ -1,0 +1,16 @@
+<div class="chat-container" [ngClass]="{ sender: isSender }">
+  <app-avater
+    [alt]="chatData?.sender"
+    [src]="chatData?.sender"
+    size="40px"
+    [generateAvater]="true"
+    class="self-end"
+  >
+  </app-avater>
+  <div class="flex flex-col">
+    <div class="chat-bubble">
+      {{ chatData?.message }}
+    </div>
+    <label class="time-label">{{ chatData?.createdAt | dateAgo }}</label>
+  </div>
+</div>

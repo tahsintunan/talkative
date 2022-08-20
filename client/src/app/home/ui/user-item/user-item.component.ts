@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ProfileModel } from '../../models/profile.model';
 
 @Component({
@@ -12,8 +12,4 @@ export class UserItemComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
-
-  getProfileImage(): string {
-    return 'https://img.icons8.com/fluency/344/fox.png';
-  }
 }

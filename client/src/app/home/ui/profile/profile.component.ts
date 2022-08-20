@@ -13,10 +13,6 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  getProfileImage(): string {
-    return 'https://img.icons8.com/fluency/344/fox.png';
-  }
-
   getAge(): number {
     if (this.profile) {
       return (

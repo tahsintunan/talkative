@@ -1,6 +1,17 @@
 <app-navbar></app-navbar>
-<div class="h-full flex justify-between">
-  <app-profile [profile]="profile" class="flex-1"></app-profile>
-  <app-chat class="chat-box"></app-chat>
-  <app-user-list class="flex-1"></app-user-list>
+<div class="flex justify-between" [ngStyle]="{height:'calc(100vh - 64px)'}">
+  <app-profile [profile]=" selectedUser|| profile" class="flex-1"></app-profile>
+
+  <div class="chat-box-container">
+    <app-chat
+      *ngIf="selectedUser"
+      (onClose)="closeChat()"
+      [selectedUser]="selectedUser"
+    ></app-chat>
+  </div>
+
+  <app-user-list
+    class="flex-1"
+    (onClick)="onActiveUserClick($event)"
+  ></app-user-list>
 </div>

@@ -37,7 +37,14 @@
       </mat-form-field>
 
       <div class="flex items-center gap-5 mt-2">
-        <button mat-raised-button color="primary" type="submit">Login</button>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="signinForm.invalid"
+        >
+          Login
+        </button>
         <p>
           Don't have an account?
           <strong><a [routerLink]="'/auth/signup'">Sign Up</a></strong>

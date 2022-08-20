@@ -10,9 +10,38 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { UserListComponent } from './ui/user-list/user-list.component';
 import { UserItemComponent } from './ui/user-item/user-item.component';
+import { MatRippleModule } from '@angular/material/core';
+import { ChatInputComponent } from './ui/chat-input/chat-input.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
+import { ChatItemComponent } from './ui/chat-item/chat-item.component';
+import { ChatToolbarComponent } from './ui/chat-toolbar/chat-toolbar.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-  declarations: [ChatComponent, ProfileComponent, Homepage, NavbarComponent, UserListComponent, UserItemComponent],
-  imports: [CommonModule, HomeRoutingModule, MatToolbarModule, MatIconModule],
+  declarations: [
+    ChatComponent,
+    ProfileComponent,
+    Homepage,
+    NavbarComponent,
+    UserListComponent,
+    UserItemComponent,
+    ChatInputComponent,
+    ChatItemComponent,
+    ChatToolbarComponent,
+  ],
+  imports: [
+    CommonModule,
+    HomeRoutingModule,
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatRippleModule,
+    MatDividerModule,
+    MatButtonModule,
+  ],
 })
 export class HomeModule {}

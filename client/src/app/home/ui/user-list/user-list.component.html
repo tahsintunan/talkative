@@ -1,10 +1,10 @@
-<div class="glass flex flex-col gap-5 h-full">
-  <h1 class="text-2xl font-bold mt-5 mx-5">Active Users</h1>
+<div class="glass flex flex-col h-full">
+  <h1 class="text-2xl font-bold mx-5 my-3">Active Users</h1>
   <hr />
 
-  <app-user-item
-    class="mx-3"
-    *ngFor="let user of userList"
-    [profile]="user"
-  ></app-user-item>
+  <div class="user-list-container">
+    <div *ngFor="let user of userList" (click)="onClick.emit($any(user))">
+      <app-user-item [profile]="user"></app-user-item>
+    </div>
+  </div>
 </div>

@@ -1,4 +1,12 @@
-<div class="glass flex items-center p-2 gap-3 flex-1 w-full rounded-full">
-  <img [alt]="profile?.username" [src]="getProfileImage()" class="w-10" />
+<div
+  matRipple
+  class="glass flex items-center p-1 gap-3 flex-1 w-full rounded-full cursor-pointer"
+>
+  <app-avater
+    [alt]="profile?.username"
+    [src]="profile?.username"
+    size="50px"
+    [generateAvater]="true"
+  ></app-avater>
   <h2>{{ profile?.username }}</h2>
 </div>
