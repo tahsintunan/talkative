@@ -1,0 +1,17 @@
+<div class="glass rounded-full flex items-center m-5">
+  <input
+    class="outline-none border-none w-full p-2 px-3 bg-transparent"
+    type="text"
+    placeholder="Write here......"
+    [(ngModel)]="message"
+  />
+
+  <button
+    mat-mini-fab
+    color="primary"
+    [disabled]="message.trim().length === 0"
+    (click)="sendMessage()"
+  >
+    <mat-icon>send</mat-icon>
+  </button>
+</div>

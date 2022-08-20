@@ -59,4 +59,8 @@ export class UserListComponent implements OnInit {
       }
     })
   }
+
+  click(value: any) {
+    console.log(value.value);
+  }
 }

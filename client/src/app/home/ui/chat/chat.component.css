@@ -1,0 +1,28 @@
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+  flex: 1;
+  padding: 1rem 2rem;
+}
+.chat-box::-webkit-scrollbar {
+  background-color: transparent;
+  width: 8px;
+}
+.chat-box::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.chat-box::-webkit-scrollbar-track:hover {
+  background-color: transparent;
+}
+.chat-box::-webkit-scrollbar-thumb {
+  background-color: #babac0;
+  border-radius: 16px;
+}
+.chat-box::-webkit-scrollbar-thumb:hover {
+  background-color: #a0a0a5;
+}
+.chat-box::-webkit-scrollbar-button {
+  display: none;
+}

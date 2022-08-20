@@ -1,12 +1,14 @@
-<div class="w-full h-5/6 overflow-y-auto">
+<div class="glass flex flex-col h-full">
+  <app-chat-toolbar [selectedUser]="selectedUser" (onClose)="onClose.emit()"></app-chat-toolbar>
+  <hr />
 
-</div>
+  <div class="chat-box" #chatBox>
+    <app-chat-item *ngFor="let chat of chatData; let i = index" [chatData]="chat" [isSender]="i % 2 == 0">
+    </app-chat-item>
+  </div>
 
-<div class="flex flex-row">
-  <mat-form-field class="w-10/12" appearance="outline">
-    <input matInput type="text" [(ngModel)]="message" />
-  </mat-form-field>
-  <button (click)="send()" class="w-2/12">
-    Send
-  </button>
+  <hr />
+  <div class="justify-self-end">
+    <app-chat-input (onSend)="onSend($event)"></app-chat-input>
+  </div>
 </div>

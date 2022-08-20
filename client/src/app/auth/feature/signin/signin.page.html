@@ -1,5 +1,5 @@
 <form [formGroup]="signinForm" (ngSubmit)="submitForm()">
-  <div class="form-card flex glass max-w-4xl flex-1">
+  <div class="form-card flex glass-card max-w-4xl flex-1">
     <div class="flex flex-col p-7 flex-1 justify-center gap-3">
       <h1 class="text-3xl font-semibold mb-7">Sign In</h1>
 
@@ -37,7 +37,14 @@
       </mat-form-field>
 
       <div class="flex items-center gap-5 mt-2">
-        <button mat-raised-button color="primary" type="submit">Login</button>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="signinForm.invalid"
+        >
+          Login
+        </button>
         <p>
           Don't have an account?
           <strong><a [routerLink]="'/auth/signup'">Sign Up</a></strong>
@@ -46,7 +53,7 @@
     </div>
 
     <div
-      class="glass flex flex-col items-center justify-center p-7 max-w-sm gap-10"
+      class="glass-card flex flex-col items-center justify-center p-7 max-w-sm gap-10"
     >
       <mat-icon class="app-logo" color="primary">question_answer</mat-icon>
       <p class="text-2xl text-center">

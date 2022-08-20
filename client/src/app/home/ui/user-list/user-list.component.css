@@ -1,0 +1,27 @@
+.user-list-container {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  gap: 16px;
+  padding: 16px;
+}
+.user-list-container::-webkit-scrollbar {
+  background-color: transparent;
+  width: 8px;
+}
+.user-list-container::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.user-list-container::-webkit-scrollbar-track:hover {
+  background-color: transparent;
+}
+.user-list-container::-webkit-scrollbar-thumb {
+  background-color: #babac0;
+  border-radius: 16px;
+}
+.user-list-container::-webkit-scrollbar-thumb:hover {
+  background-color: #a0a0a5;
+}
+.user-list-container::-webkit-scrollbar-button {
+  display: none;
+}

@@ -1,29 +1,47 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ChatService } from '../../data-access/chat.service';
 import { Message } from '../../Models/message.model';
 import jwt_decode from "jwt-decode";
 import { CookieService } from 'ngx-cookie-service';
 import { ActivatedRoute } from '@angular/router';
+import { chatModel } from '../../models/chat.model';
+import { ProfileModel } from '../../Models/profile.model';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, AfterViewChecked {
+  @ViewChild('chatBox') private chatBox: ElementRef = new ElementRef(null);
+  @Input() selectedUser?: ProfileModel;
 
-  constructor(
-    private chatService: ChatService,
-    private cookieService: CookieService,
-    private activatedRoute: ActivatedRoute
-  ) { }
+  @Output() onClose = new EventEmitter();
+
+  chatData: chatModel[] = [];
   heartBeatSubscription: Subscription | undefined;
   message: string = ""
   msgInboxArray: Message[] = [];
   userId: string = "";
   receiverId: string = ""
 
+  constructor(
+    private chatService: ChatService,
+    private cookieService: CookieService,
+    private activatedRoute: ActivatedRoute
+  ) { }
   ngOnInit(): void {
     this.chatService.retrieveMappedObject().subscribe((receivedObj: Message) => { this.addToInbox(receivedObj); });
 
@@ -37,8 +55,19 @@ export class ChatComponent implements OnInit {
       }
     })
 
+    this.scrollToBottom();
+
+  }
+  ngAfterViewChecked() {
+    this.scrollToBottom();
   }
 
+  scrollToBottom(): void {
+    try {
+      this.chatBox.nativeElement.scrollTop =
+        this.chatBox?.nativeElement.scrollHeight;
+    } catch (err) { }
+  }
 
   resetChatHistory() {
     this.msgInboxArray = [];
@@ -57,29 +86,42 @@ export class ChatComponent implements OnInit {
     })
   }
 
-
-  send(): void {
-    if (this.message.trim() !== "") {
-
-      let body: Message = {
-        messageText: this.message,
-        senderId: this.userId,
-        receiverId: this.receiverId
-      }
-
-      this.chatService.broadcastMessage(body).subscribe({
-        next: res => {
-          this.message = ""
-        },
-        error: err => {
-          console.log(err);
-
-        }
-      })
+  onSend(message: string) {
+    let body: Message = {
+      messageText: this.message,
+      senderId: this.userId,
+      receiverId: this.receiverId
     }
+
+
+
+    this.chatService.broadcastMessage(body).subscribe({
+      next: res => {
+        this.message = ""
+      },
+      error: err => {
+        console.log(err);
+
+      }
+    })
+    // this.chatData.push({
+    //   id: '1',
+    //   message: message,
+    //   sender: 'John Doe',
+    //   senderId: '1',
+    //   createdAt: new Date().toString(),
+    // });
+
+    // this.chatData = this.chatData.slice();
   }
 
-
+  messageSentToUser(senderId: string, receiverId: string): boolean {
+    return (
+      this.userId === senderId || this.userId === receiverId
+    ) && (
+        this.receiverId === receiverId || this.receiverId === senderId
+      )
+  }
 
   addToInbox(obj: Message) {
     let newObj = new Message();
@@ -93,14 +135,6 @@ export class ChatComponent implements OnInit {
 
   }
 
-
-  messageSentToUser(senderId: string, receiverId: string): boolean {
-    return (
-      this.userId === senderId || this.userId === receiverId
-    ) && (
-        this.receiverId === receiverId || this.receiverId === senderId
-      )
-  }
 
 }
 

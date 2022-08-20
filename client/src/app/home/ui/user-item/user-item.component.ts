@@ -1,7 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ProfileModel } from '../../Models/profile.model';
-
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-user-item',
   templateUrl: './user-item.component.html',
@@ -17,11 +16,7 @@ export class UserItemComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  getProfileImage(): string {
-    return 'https://img.icons8.com/fluency/344/fox.png';
-  }
-
   profileClicked() {
-    this.router.navigate(['./', 'chat', this.profile?.userId], { relativeTo: this.activatedRoute })
+    this.router.navigate(['./', 'chat', this.profile?.id], { relativeTo: this.activatedRoute })
   }
 }

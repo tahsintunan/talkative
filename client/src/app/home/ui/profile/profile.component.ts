@@ -4,19 +4,14 @@ import { ProfileModel } from '../../Models/profile.model';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent implements OnInit {
-
-  @Input() profile?: any;
+  @Input() profile?: ProfileModel;
 
   constructor() { }
 
   ngOnInit(): void { }
-
-  getProfileImage(): string {
-    return 'https://img.icons8.com/fluency/344/fox.png';
-  }
 
   getAge(): number {
     if (this.profile) {

@@ -9,6 +9,8 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class Homepage implements OnInit {
   profile: ProfileModel = jwtDecode(this.cookie.get('authorization'));
+
+  selectedUser?: ProfileModel;
   constructor(
     private cookie: CookieService
   ) { }
@@ -17,5 +19,15 @@ export class Homepage implements OnInit {
     let decodedUser: any = jwtDecode(this.cookie.get('authorization'))
     this.profile.username = decodedUser.unique_name
     this.profile.dateOfBirth = decodedUser.birthdate
+  }
+
+  closeChat() {
+    console.log('close chat');
+    this.selectedUser = undefined;
+  }
+
+  onActiveUserClick(user: ProfileModel) {
+    console.log('onActiveUserClick', user);
+    this.selectedUser = user;
   }
 }
