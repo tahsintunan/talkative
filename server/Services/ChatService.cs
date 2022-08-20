@@ -29,6 +29,7 @@ public class ChatService: IChatService
         {
             SenderId = message.SenderId,
             MessageText = message.MessageText,
+            Datetime = message.Datetime,
         }).ToList();
     }
     

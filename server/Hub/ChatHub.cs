@@ -19,7 +19,8 @@ public class ChatHub: Microsoft.AspNetCore.SignalR.Hub, IChatHub
         {
             SenderId = message.SenderId,
             ReceiverId = message.ReceiverId,
-            MessageText = message.MessageText
+            MessageText = message.MessageText,
+            DateTime = message.Datetime
         };
         
         await _hubContext.Clients.All.SendAsync("ReceiveMessage", msg);
