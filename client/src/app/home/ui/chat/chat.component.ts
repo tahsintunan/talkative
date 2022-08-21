@@ -15,8 +15,8 @@ import { ChatService } from '../../services/chat.service';
 import jwt_decode from "jwt-decode";
 import { CookieService } from 'ngx-cookie-service';
 import { ActivatedRoute } from '@angular/router';
-import { chatModel } from '../../Models/chat.model';
-import { ProfileModel } from '../../Models/profile.model';
+import { chatModel } from '../../models/chat.model';
+import { ProfileModel } from '../../models/profile.model';
 import { UserService } from '../../services/user.service';
 
 @Component({

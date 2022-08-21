@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProfileModel } from '../../Models/profile.model';
+import { ProfileModel } from '../../models/profile.model';
 import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { ActivatedRoute, ActivationEnd, Router } from '@angular/router';
@@ -22,6 +22,13 @@ export class Homepage implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+    if (this.route.children.length > 0) {
+      let childParameter = this.route.children[0].snapshot.params['userId']
+
+      this.profileId = childParameter
+    }
+
 
     this.activeChat.getActivatedChat().subscribe(res => {
       if (res == "") {

@@ -1,7 +1,7 @@
 import { UserListService } from './../../services/user-list.service';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
-import { ProfileModel } from '../../Models/profile.model';
+import { ProfileModel } from '../../models/profile.model';
 
 @Component({
   selector: 'app-user-list',

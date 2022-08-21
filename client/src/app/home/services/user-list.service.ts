@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { map, Observable } from 'rxjs';
-import { ProfileModel } from '../Models/profile.model';
+import { ProfileModel } from '../models/profile.model';
 
 @Injectable({
   providedIn: 'root'

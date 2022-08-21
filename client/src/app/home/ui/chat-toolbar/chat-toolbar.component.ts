@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { Homepage } from '../../feature/home/home.page';
-import { ProfileModel } from '../../Models/profile.model';
+import { ProfileModel } from '../../models/profile.model';
 import { ActiveChatService } from '../../services/active-chat.service';
 
 @Component({

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ProfileModel } from '../../Models/profile.model';
+import { ProfileModel } from '../../models/profile.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Homepage } from '../../feature/home/home.page';
 import { ActiveChatService } from '../../services/active-chat.service';

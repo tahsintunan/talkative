@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvService } from '../../env.service';
 import * as signalR from '@microsoft/signalr';
-import { chatModel } from '../Models/chat.model';
+import { chatModel } from '../models/chat.model';
 @Injectable({
   providedIn: 'root',
 })

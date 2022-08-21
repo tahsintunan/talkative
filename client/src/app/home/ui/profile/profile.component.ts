@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProfileModel } from '../../Models/profile.model';
+import { ProfileModel } from '../../models/profile.model';
 import { UserService } from '../../services/user.service';
 
 @Component({

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { chatModel } from '../../Models/chat.model';
+import { chatModel } from '../../models/chat.model';
 
 @Component({
   selector: 'app-chat-item',
@@ -10,7 +10,7 @@ export class ChatItemComponent implements OnInit {
   @Input() chatData?: chatModel;
   @Input() isSender?: boolean = false;
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 }
