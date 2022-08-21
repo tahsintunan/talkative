@@ -24,7 +24,7 @@ export class SignupPage implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -61,13 +61,27 @@ export class SignupPage implements OnInit {
     const formValues = this.signupForm.getRawValue();
 
     this.authService.signup(formValues).subscribe({
-      next: (res) => {
-        this.router.navigate(['home']);
+      next: () => {
+        let password = formValues.password;
+        let username = formValues.username;
+        this.signinUserAfterSignUp(username, password)
       },
-      error: (err) => {
+      error: (err: any) => {
         console.log(err);
       },
     });
+  }
+
+  signinUserAfterSignUp(username: string, password: string) {
+    this.authService.signin({ username, password }).subscribe({
+      next: () => {
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        console.log(err);
+
+      }
+    })
   }
 
   private ageValidator(control: AbstractControl): ValidationErrors | null {
