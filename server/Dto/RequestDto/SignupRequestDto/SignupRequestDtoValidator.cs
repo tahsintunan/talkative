@@ -13,7 +13,7 @@ namespace server.Dto.RequestDto.SignupRequestDto
             {
                 if (password == null) { return false; }
 
-                return password.Length > 8 &&
+                return password.Length >= 8 &&
                        password.Any(c => char.IsUpper(c)) &&
                        password.Any(c => char.IsLower(c)) &&
                        password.Any(c => char.IsDigit(c)) &&
