@@ -11,11 +11,18 @@ export class ChatInputComponent implements OnInit {
 
   message: string = '';
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
+
+  keyDownFunction(event: any) {
+    if (event.keyCode === 13) {
+      this.sendMessage()
+    }
+  }
 
   sendMessage() {
+    if (this.message.trim() === '') return;
     this.onSend.emit(this.message.trim());
     this.message = '';
   }

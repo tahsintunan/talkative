@@ -1,6 +1,6 @@
+import { Homepage } from './feature/home/home.page';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { Homepage } from './feature/home/home.page';
 import { ChatComponent } from './ui/chat/chat.component';
 
 const routes: Routes = [
@@ -9,7 +9,7 @@ const routes: Routes = [
     component: Homepage,
     children: [
       {
-        path: ':userId',
+        path: 'chat/:userId',
         component: ChatComponent,
       },
     ],

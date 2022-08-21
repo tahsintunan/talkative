@@ -1,7 +1,8 @@
 export interface ChatModel {
-  messageText: string;
+  id?: string;
   senderId: string;
-  senderName: string;
   receiverId: string;
-  createdAt: string;
+  messageText?: string;
+  senderImage?: string;
+  datetime?: Date;
 }

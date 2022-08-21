@@ -4,7 +4,6 @@ import {
   FormBuilder,
   FormGroup,
   ValidationErrors,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -60,8 +59,6 @@ export class SignupPage implements OnInit {
 
   submitForm() {
     const formValues = this.signupForm.getRawValue();
-
-    console.log(formValues);
 
     this.authService.signup(formValues).subscribe({
       next: (res) => {

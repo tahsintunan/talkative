@@ -9,8 +9,9 @@ import { ChatModel } from '../models/chat.model';
   providedIn: 'root',
 })
 export class ChatService {
-  private POST_URL = 'http://localhost:5000/api/Chat/';
   private sharedObj = new Subject<ChatModel>();
+
+  private POST_URL = 'http://localhost:5000/api/Chat/';
 
   private connection = new signalR.HubConnectionBuilder()
     .withUrl('http://localhost:5000/chathub', {
@@ -42,7 +43,8 @@ export class ChatService {
   }
 
   broadcastMessage(message: ChatModel) {
-    let headers = new HttpHeaders();
+    const headers = new HttpHeaders();
+
     headers.set('Cookie', document.cookie);
 
     return this.http.post(this.POST_URL + 'send', message, {

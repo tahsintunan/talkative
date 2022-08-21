@@ -25,6 +25,11 @@ hr {
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
 .error-snackbar {
   background-color: rgb(201, 0, 0);
   color: white;

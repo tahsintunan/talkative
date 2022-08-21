@@ -9,26 +9,15 @@ import { ProfileModel } from '../models/profile.model';
   providedIn: 'root',
 })
 export class UserListService {
-  heartbeatApiDeployUrl = 'http://kernel-panic.learnathon.net/api2/Heartbeat/';
-  heartbeatApiUrl = 'http://localhost:5001/Heartbeat/';
   onlineUserApiUrl = 'http://localhost:5003/OnlineUsers';
   onlineUserDeployApiUrl =
     'http://kernel-panic.learnathon.net/api4/OnlineUsers/';
 
   constructor(private http: HttpClient, private cookie: CookieService) {}
 
-  updateCurrentUserOnlineStatus() {
-    const headers = new HttpHeaders();
-    headers.set('Cookie', document.cookie);
-
-    return this.http.get(this.heartbeatApiUrl, {
-      headers: headers,
-      withCredentials: true,
-    });
-  }
-
   getOnlineUsers(): Observable<ProfileModel[]> {
     const headers = new HttpHeaders();
+
     headers.set('Cookie', document.cookie);
 
     return this.http
@@ -44,13 +33,8 @@ export class UserListService {
               this.cookie.get('authorization')
             );
 
-            if (user.userId !== decodedUser.user_id) {
-              listOfUsers.push({
-                userId: user.userId,
-                username: user.userName,
-                dateOfBirth: user.dateOfBirth,
-                email: user.email,
-              });
+            if (user.id !== decodedUser.user_id) {
+              listOfUsers.push({ id: user.id, username: user.username });
             }
           });
           return listOfUsers;

@@ -36,7 +36,7 @@ export class SigninPage implements OnInit {
 
     this.authService.signin(signinData).subscribe({
       next: (res) => {
-        this.router.navigate(['home']);
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         console.log(err);

@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import jwtDecode from 'jwt-decode';
+import { CookieService } from 'ngx-cookie-service';
 import { ProfileModel } from '../../models/profile.model';
+import { ActiveChatService } from '../../services/active-chat.service';
 
 @Component({
   selector: 'app-home',
@@ -7,26 +11,32 @@ import { ProfileModel } from '../../models/profile.model';
   styleUrls: ['./home.page.css'],
 })
 export class Homepage implements OnInit {
-  profile: ProfileModel = {
-    userId: '1',
-    username: 'John Doe',
-    email: 'john@example.com',
-    dateOfBirth: '2000-01-01',
-  };
-
+  profileId: string = this.getUserId();
   selectedUser?: ProfileModel;
 
-  constructor() {}
+  constructor(
+    private cookie: CookieService,
+    private activeChat: ActiveChatService,
+    private route: ActivatedRoute
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.route.snapshot.children.length > 0) {
+      const childParameter = this.route.children[0].snapshot.params['userId'];
+      this.profileId = childParameter;
+    }
 
-  closeChat() {
-    console.log('close chat');
-    this.selectedUser = undefined;
+    this.activeChat.getActivatedChat().subscribe((res) => {
+      if (res == '') {
+        this.profileId = this.getUserId();
+      } else {
+        this.profileId = res;
+      }
+    });
   }
 
-  onActiveUserClick(user: ProfileModel) {
-    console.log('onActiveUserClick', user);
-    this.selectedUser = user;
+  getUserId(): string {
+    let decodedToken: any = jwtDecode(this.cookie.get('authorization'));
+    return decodedToken.user_id;
   }
 }

@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
 import { ProfileModel } from '../../models/profile.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ActiveChatService } from '../../services/active-chat.service';
 
 @Component({
   selector: 'app-user-item',
@@ -10,11 +11,18 @@ import { ProfileModel } from '../../models/profile.model';
 export class UserItemComponent implements OnInit {
   @Input() profile?: ProfileModel;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private activeChat: ActiveChatService
+  ) {}
 
   ngOnInit(): void {}
 
-  onClick() {
-    this.router.navigate(['/home', this.profile?.userId]);
+  profileClicked() {
+    this.activeChat.updateActiveChat(this.profile?.id || '');
+    this.router.navigate(['./', 'chat', this.profile?.id], {
+      relativeTo: this.activatedRoute,
+    });
   }
 }
