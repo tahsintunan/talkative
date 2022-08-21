@@ -1,14 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { EnvService } from 'src/app/env.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HeartbeatService {
-  heartbeatApiDeployUrl = 'http://kernel-panic.learnathon.net/api2/Heartbeat/';
-  heartbeatApiUrl = 'http://localhost:5001/Heartbeat/';
+  heartbeatApiUrl = this.env.heartbeatApiUrl
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private env:EnvService) {}
 
   sendHeartbeat() {
     const headers = new HttpHeaders();

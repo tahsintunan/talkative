@@ -3,17 +3,19 @@ import { Injectable } from '@angular/core';
 import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { map, Observable } from 'rxjs';
+import { EnvService } from 'src/app/env.service';
 import { ProfileModel } from '../models/profile.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserListService {
-  onlineUserApiUrl = 'http://localhost:5003/OnlineUsers';
-  onlineUserDeployApiUrl =
-    'http://kernel-panic.learnathon.net/api4/OnlineUsers/';
+  getOnlineUserApiUrl = this.env.getOnlineUserApiUrl;
 
-  constructor(private http: HttpClient, private cookie: CookieService) {}
+  constructor(
+    private http: HttpClient, 
+    private cookie: CookieService,
+    private env:EnvService) {}
 
   getOnlineUsers(): Observable<ProfileModel[]> {
     const headers = new HttpHeaders();
@@ -21,7 +23,7 @@ export class UserListService {
     headers.set('Cookie', document.cookie);
 
     return this.http
-      .get<ProfileModel[]>(this.onlineUserApiUrl, {
+      .get<ProfileModel[]>(this.getOnlineUserApiUrl, {
         headers: headers,
         withCredentials: true,
       })

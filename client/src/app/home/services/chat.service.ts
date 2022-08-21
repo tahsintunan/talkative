@@ -11,23 +11,26 @@ import { ChatModel } from '../models/chat.model';
 export class ChatService {
   private sharedObj = new Subject<ChatModel>();
 
-  private POST_URL = 'http://localhost:5000/api/Chat/';
+  private chatApiUrl = this.envService.apiUrl;
 
   private connection = new signalR.HubConnectionBuilder()
-    .withUrl('http://localhost:5000/chathub', {
+    .withUrl(this.chatApiUrl+'chathub', {
       skipNegotiation: true,
       transport: signalR.HttpTransportType.WebSockets,
     })
     .build();
 
-  constructor(private http: HttpClient, private envService: EnvService) {
-    this.connection.onclose(async (err) => {
-      await this.start();
-    });
-    this.connection.on('ReceiveMessage', (message: ChatModel) => {
-      this.mapReceivedMessage(message);
-    });
-    this.start();
+  constructor(
+    private http: HttpClient, 
+    private envService: EnvService
+    ) {
+      this.connection.onclose(async (err) => {
+        await this.start();
+      });
+      this.connection.on('ReceiveMessage', (message: ChatModel) => {
+        this.mapReceivedMessage(message);
+      });
+      this.start();
   }
 
   public async start() {
@@ -47,7 +50,7 @@ export class ChatService {
 
     headers.set('Cookie', document.cookie);
 
-    return this.http.post(this.POST_URL + 'send', message, {
+    return this.http.post(this.chatApiUrl+'api/Chat/send', message, {
       headers: headers,
       withCredentials: true,
     });
@@ -66,7 +69,7 @@ export class ChatService {
   }
 
   public getMessages(body: any): Observable<[]> {
-    return this.http.post<[]>(this.POST_URL + 'GetMessageHistory', body, {
+    return this.http.post<[]>(this.chatApiUrl+'api/Chat/GetMessageHistory', body, {
       withCredentials: true,
     });
   }

@@ -8,7 +8,7 @@ export const EnvServiceFactory = () => {
 
   for (const key in browserWindowEnv) {
     if (browserWindowEnv.hasOwnProperty(key)) {
-      env[key] = window['__env'][key];
+      env[key] = (window as any)['__env'][key];
     }
   }
 

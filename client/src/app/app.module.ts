@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './shared/interceptors/http-error.interceptor';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { EnvServiceProvider } from './env.service.provider';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,6 +20,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+    EnvServiceProvider
   ],
   bootstrap: [AppComponent],
 })
