@@ -18,6 +18,7 @@ import { ChatItemComponent } from './ui/chat-item/chat-item.component';
 import { ChatToolbarComponent } from './ui/chat-toolbar/chat-toolbar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { SharedModule } from '../shared/shared.module';
     MatRippleModule,
     MatDividerModule,
     MatButtonModule,
+    MatBadgeModule,
   ],
 })
 export class HomeModule {}

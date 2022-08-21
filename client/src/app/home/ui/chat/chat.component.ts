@@ -37,8 +37,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     this.chatService
       .retrieveMappedObject()
-      .subscribe((receivedObj: ChatModel) => {
-        this.addToInbox(receivedObj);
+      .subscribe((receivedMessage: ChatModel) => {
+        this.addToInbox(receivedMessage);
       });
 
     const user: any = jwt_decode(this.cookieService.get('authorization'));
@@ -111,7 +111,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   messageSentToUser(senderId: string, receiverId: string): boolean {
-    return this.userId === senderId || this.userId === receiverId;
+    return (
+      (this.userId === senderId || this.userId === receiverId) &&
+      (this.receiverId === senderId || this.receiverId === receiverId)
+    );
   }
 
   addToInbox(message: ChatModel) {
