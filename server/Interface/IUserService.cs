@@ -9,5 +9,7 @@ namespace server.Interface
         Task<User> GetUserById(string id);
         Task UpdateUserInfo(UpdateUserDto updateUserDto);
         Task DeleteUserById(string id);
+        Task ForgetPassword(string email);
+        Task UpdatePassword(User user,string password);
     }
 }

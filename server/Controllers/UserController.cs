@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using server.Dto.RequestDto.ForgetPasswordDto;
 using server.Dto.UserDto.UpdateUserDto;
 using server.Interface;
 
@@ -77,6 +78,13 @@ namespace server.Controllers
                 _logger.LogError("{ErrorMessage}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
+        }
+
+        [HttpPost("forget-password")]
+        public async Task<ActionResult> ForgotPassword(ForgetPasswordDto forgetPasswordDto)
+        {
+            await _userService.ForgetPassword(forgetPasswordDto.Email!);
+            return NoContent();
         }
 
     }

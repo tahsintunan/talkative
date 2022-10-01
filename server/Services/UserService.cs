@@ -4,13 +4,17 @@ using server.Configs.DbConfig;
 using server.Dto.UserDto.UpdateUserDto;
 using server.Interface;
 using server.Model.User;
+using System.Net;
+using System.Net.Mail;
+using System.Security.Cryptography;
 
 namespace server.Services
 {
     public class UserService : IUserService
     {
         private readonly IMongoCollection<User>? _userCollection;
-        public UserService(IOptions<UserDatabaseConfig> userDatabaseConfig)
+        private readonly IAuthService _authService;
+        public UserService(IOptions<UserDatabaseConfig> userDatabaseConfig, IAuthService authService)
         {
             var mongoClient = new MongoClient(
             userDatabaseConfig.Value.ConnectionString);
@@ -20,6 +24,8 @@ namespace server.Services
 
             _userCollection = mongoDatabase.GetCollection<User>(
                 userDatabaseConfig.Value.UserCollectionName);
+
+            _authService = authService;
         }
 
         public async Task<IList<User>> GetAllUsers()
@@ -51,6 +57,60 @@ namespace server.Services
         public async Task DeleteUserById(string id)
         {
             await _userCollection.DeleteOneAsync(user => user.Id == id);
+        }
+
+        public async Task ForgetPassword(string email)
+        {
+            string newPassword = GenerateRandomString(16);
+            var user = await _userCollection.Find(user => user.Email == email).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                await UpdatePassword(user, newPassword);
+                await SendPasswordWithMail(email, newPassword);
+            }
+            else
+            {
+                throw new BadHttpRequestException("User with current email doesn't exist");
+            }
+        }
+
+        public async Task UpdatePassword(User user,string password)
+        {
+            string hashedPassword;
+            using (var sha256Hash = SHA256.Create())
+            {
+                hashedPassword = _authService.GetHash(sha256Hash, password);
+            }
+
+            user.Password = hashedPassword;
+            await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
+        }
+
+        private async Task SendPasswordWithMail(string email,string newPassword)
+        {
+            MailMessage message = new MailMessage();
+            SmtpClient smtp = new SmtpClient();
+            message.From = new MailAddress("kernel.panic.learnathon@gmail.com");
+            message.To.Add(new MailAddress(email));
+            message.Subject = "Your New Password";
+            message.IsBodyHtml = true; //to make message body as html  
+            message.Body = "Your new password is " + newPassword;
+            smtp.UseDefaultCredentials = true;
+            smtp.Port = 587;
+            smtp.Host = "smtp.gmail.com"; //for gmail host  
+            smtp.EnableSsl = true;
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new NetworkCredential("kernel.panic.learnathon@gmail.com", "elyqvsnuctidkukw");
+            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+            await smtp.SendMailAsync(message);
+        }
+
+        public static string GenerateRandomString(int length)
+        {
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

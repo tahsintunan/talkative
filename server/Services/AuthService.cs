@@ -110,7 +110,7 @@ namespace server.Services
             return hashedPassword == user.Password;
         }
 
-        private static string GetHash(HashAlgorithm hashAlgorithm, string password)
+        public string GetHash(HashAlgorithm hashAlgorithm, string password)
         {
             var data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(password));
             var sBuilder = new StringBuilder();
@@ -147,6 +147,11 @@ namespace server.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwt = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(jwt);
+        }
+
+        public Task UpdateUserPassword(string id, string password)
+        {
+            throw new NotImplementedException();
         }
     }
 }
