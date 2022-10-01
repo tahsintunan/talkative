@@ -1,0 +1,14 @@
+a {
+  display: flex;
+  align-items: center;
+  padding: 1rem 3rem;
+  gap: 1rem;
+  margin: 0.5rem;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+}
+
+a.active {
+  background-color: #1b5e20;
+}

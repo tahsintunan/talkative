@@ -8,9 +8,9 @@ import { ProfileModel } from '../models/profile.model';
   providedIn: 'root',
 })
 export class UserService {
-  apiUrl = this.env.apiUrl+'api/User/';
+  apiUrl = this.env.apiUrl + 'api/User/';
 
-  constructor(private http: HttpClient,private env:EnvService) {}
+  constructor(private http: HttpClient, private env: EnvService) {}
 
   getUser(id: string): Observable<ProfileModel> {
     const headers = new HttpHeaders();

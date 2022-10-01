@@ -1,0 +1,30 @@
+<div class="flex items-center justify-between">
+  <label class="text-lg font-bold">{{
+    data?.dialogTitle || "Create Post"
+  }}</label>
+  <button mat-icon-button (click)="onCancelClick()" [autofocus]="false">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content>
+  <app-hashtag-input
+    [rows]="8"
+    [placeholder]="'What do you want to say?'"
+    classExpression="w-full pt-3 text-lg outline-0"
+    [text]="data?.text || ''"
+    (onChange)="onHashtagInputChanged($event)"
+  ></app-hashtag-input>
+</div>
+
+<div mat-dialog-actions>
+  <button
+    mat-flat-button
+    color="primary"
+    class="w-full"
+    [disabled]="!postData.get('text')?.value"
+    (click)="onPostClick()"
+  >
+    Post
+  </button>
+</div>

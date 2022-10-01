@@ -1,5 +1,5 @@
 <form [formGroup]="signupForm" (ngSubmit)="submitForm()">
-  <div class="form-card flex glass-card max-w-4xl flex-1">
+  <div class="card form-card flex max-w-4xl flex-1">
     <div class="flex flex-col p-7 flex-1 gap-3">
       <h1 class="text-3xl font-semibold mb-7">Sign Up</h1>
 
@@ -133,12 +133,16 @@
       </div>
     </div>
 
-    <div
-      class="glass-card flex flex-col items-center justify-center p-7 max-w-sm gap-10"
-    >
-      <mat-icon class="app-logo" color="primary">question_answer</mat-icon>
+    <mat-divider [vertical]="true"></mat-divider>
+
+    <div class="flex flex-col p-7 max-w-sm gap-6 justify-center">
+      <img
+        src="../../../../assets/images/logo.svg"
+        alt="Logo"
+        class="logo h-16"
+      />
       <p class="text-2xl text-center">
-        Sign up to Panic Chat and connect with people all around
+        Sign up to Talkative and connect with people all around
       </p>
     </div>
   </div>

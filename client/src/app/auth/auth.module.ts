@@ -8,11 +8,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthRoutingModule } from './auth-routing.module';
-import { SigninPage } from './feature/signin/signin.page';
-import { SignupPage } from './feature/signup/signup.page';
+import { SigninComponent } from './feature/signin/signin.component';
+import { SignupComponent } from './feature/signup/signup.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
-  declarations: [SigninPage, SignupPage],
+  declarations: [SigninComponent, SignupComponent],
   imports: [
     CommonModule,
     AuthRoutingModule,
@@ -24,6 +25,7 @@ import { SignupPage } from './feature/signup/signup.page';
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatDividerModule,
   ],
 })
 export class AuthModule {}

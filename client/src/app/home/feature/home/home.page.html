@@ -1,8 +1,8 @@
-<app-navbar></app-navbar>
-<div class="flex justify-between" [ngStyle]="{height:'calc(100vh - 64px)'}">
-  <app-profile [profileId]="profileId" class="flex-1"></app-profile>
-  <div class="chat-box-container">
+<mat-drawer-container class="h-full">
+  <mat-drawer mode="side" opened class="h-full w-80 bg-neutral-900">
+    <app-navbar></app-navbar>
+  </mat-drawer>
+  <mat-drawer-content class="p-6">
     <router-outlet></router-outlet>
-  </div>
-  <app-user-list class="flex-1"></app-user-list>
-</div>
+  </mat-drawer-content>
+</mat-drawer-container>

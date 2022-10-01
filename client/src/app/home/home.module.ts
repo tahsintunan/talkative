@@ -19,6 +19,13 @@ import { ChatToolbarComponent } from './ui/chat-toolbar/chat-toolbar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatCardModule } from '@angular/material/card';
+import { NavLinkItemComponent } from './ui/nav-link-item/nav-link-item.component';
+import { FeedComponent } from './feature/feed/feed.component';
+import { NotificationsComponent } from './feature/notifications/notifications.component';
+import { PostMakerDialogComponent } from './ui/post-maker-dialog/post-maker-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -31,6 +38,10 @@ import { MatBadgeModule } from '@angular/material/badge';
     ChatInputComponent,
     ChatItemComponent,
     ChatToolbarComponent,
+    NavLinkItemComponent,
+    FeedComponent,
+    NotificationsComponent,
+    PostMakerDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -44,6 +55,9 @@ import { MatBadgeModule } from '@angular/material/badge';
     MatDividerModule,
     MatButtonModule,
     MatBadgeModule,
+    MatSidenavModule,
+    MatCardModule,
+    MatDialogModule,
   ],
 })
 export class HomeModule {}

@@ -6,10 +6,10 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-signin',
-  templateUrl: './signin.page.html',
-  styleUrls: ['./signin.page.css'],
+  templateUrl: './signin.component.html',
+  styleUrls: ['./signin.component.css'],
 })
-export class SigninPage implements OnInit {
+export class SigninComponent implements OnInit {
   hidePassword: boolean = true;
 
   signinForm: FormGroup = this.formBuilder.group({});

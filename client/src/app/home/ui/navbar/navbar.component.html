@@ -1,7 +1,32 @@
-<mat-toolbar class="glass">
-  <a [routerLink]="'/'" class="flex items-center flex-1">
-    <mat-icon color="primary">question_answer</mat-icon>
-    <span class="ml-2"><strong>Panic Chat</strong> </span>
+<div class="flex flex-col h-full py-6">
+  <a routerLink="/" class="flex items-center justify-center h-16 px-4 gap-2">
+    <img
+      src="../../../../assets/images/logo.svg"
+      alt="Logo"
+      class="logo h-10"
+    />
+    <span class="text-4xl font-bold text-white">Talkative</span>
   </a>
-  <button mat-flat-button color="primary" (click)="onLogout()">Logout</button>
-</mat-toolbar>
+
+  <div class="mb-auto mt-3">
+    <app-nav-link-item
+      link="./feed"
+      icon="home"
+      text="Home"
+    ></app-nav-link-item>
+    <app-nav-link-item
+      link="./profile"
+      icon="person"
+      text="Profile"
+    ></app-nav-link-item>
+    <app-nav-link-item
+      link="./notifications"
+      icon="notifications"
+      text="Notifications"
+    ></app-nav-link-item>
+  </div>
+
+  <button mat-fab color="primary" class="self-center" (click)="onLogout()">
+    <mat-icon class="material-symbols-rounded">power_rounded</mat-icon>
+  </button>
+</div>

@@ -11,10 +11,10 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-signup',
-  templateUrl: './signup.page.html',
-  styleUrls: ['./signup.page.css'],
+  templateUrl: './signup.component.html',
+  styleUrls: ['./signup.component.css'],
 })
-export class SignupPage implements OnInit {
+export class SignupComponent implements OnInit {
   hidePassword: boolean = true;
   hideConfirmPassword: boolean = true;
 
@@ -24,7 +24,7 @@ export class SignupPage implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -64,7 +64,7 @@ export class SignupPage implements OnInit {
       next: () => {
         let password = formValues.password;
         let username = formValues.username;
-        this.signinUserAfterSignUp(username, password)
+        this.signinUserAfterSignUp(username, password);
       },
       error: (err: any) => {
         console.log(err);
@@ -79,9 +79,8 @@ export class SignupPage implements OnInit {
       },
       error: (err) => {
         console.log(err);
-
-      }
-    })
+      },
+    });
   }
 
   private ageValidator(control: AbstractControl): ValidationErrors | null {

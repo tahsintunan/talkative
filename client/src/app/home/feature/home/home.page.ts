@@ -36,7 +36,11 @@ export class Homepage implements OnInit {
   }
 
   getUserId(): string {
-    const decodedToken: any = jwtDecode(this.cookie.get('authorization'));
-    return decodedToken.user_id;
+    try {
+      const decodedToken: any = jwtDecode(this.cookie.get('authorization'));
+      return decodedToken.user_id;
+    } catch (error) {
+      return '';
+    }
   }
 }

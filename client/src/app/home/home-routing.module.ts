@@ -1,7 +1,9 @@
 import { Homepage } from './feature/home/home.page';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ChatComponent } from './ui/chat/chat.component';
+import { FeedComponent } from './feature/feed/feed.component';
+import { NotificationsComponent } from './feature/notifications/notifications.component';
+import { ProfileComponent } from './feature/profile/profile.component';
 
 const routes: Routes = [
   {
@@ -9,8 +11,21 @@ const routes: Routes = [
     component: Homepage,
     children: [
       {
-        path: 'chat/:userId',
-        component: ChatComponent,
+        path: '',
+        redirectTo: 'feed',
+        pathMatch: 'full',
+      },
+      {
+        path: 'feed',
+        component: FeedComponent,
+      },
+      {
+        path: 'profile',
+        component: ProfileComponent,
+      },
+      {
+        path: 'notifications',
+        component: NotificationsComponent,
       },
     ],
   },

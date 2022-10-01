@@ -20,7 +20,7 @@ import { EnvServiceProvider } from './env.service.provider';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
-    EnvServiceProvider
+    EnvServiceProvider,
   ],
   bootstrap: [AppComponent],
 })
