@@ -17,10 +17,15 @@ builder.Services.Configure<UserDatabaseConfig>(
     builder.Configuration.GetSection("UserDatabaseConfig"));
 builder.Services.Configure<MessageDatabaseConfig>(
     builder.Configuration.GetSection("MessageDatabaseConfig"));
+builder.Services.Configure<TweetDatabaseConfig>(
+    builder.Configuration.GetSection("TweetDatabaseConfig"));
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<IAuthService, AuthService>();
 builder.Services.AddSingleton<IChatService, ChatService>();
+builder.Services.AddSingleton<ITweetService, TweetService>();
 builder.Services.AddSingleton<IRabbitmqService, RabbitmqService>();
 builder.Services.AddSingleton<IChatHub, ChatHub>();
 builder.Services.AddHostedService<DbHandlerService>();
