@@ -14,7 +14,8 @@ namespace server.Services
     {
         private readonly IMongoCollection<User>? _userCollection;
         private readonly IAuthService _authService;
-        public UserService(IOptions<UserDatabaseConfig> userDatabaseConfig, IAuthService authService)
+        private readonly IConfiguration _configuration;
+        public UserService(IOptions<UserDatabaseConfig> userDatabaseConfig, IAuthService authService, IConfiguration configuration)
         {
             var mongoClient = new MongoClient(
             userDatabaseConfig.Value.ConnectionString);
@@ -26,6 +27,8 @@ namespace server.Services
                 userDatabaseConfig.Value.UserCollectionName);
 
             _authService = authService;
+
+            _configuration = configuration;
         }
 
         public async Task<IList<User>> GetAllUsers()
@@ -88,9 +91,12 @@ namespace server.Services
 
         private async Task SendPasswordWithMail(string email,string newPassword)
         {
+            var systemEmailCredentials = _configuration.GetSection("EmailCredentials");
+            var systemEmail = systemEmailCredentials.GetSection("Email").Value;
+            var systemEmailPassword = systemEmailCredentials.GetSection("Password").Value;
             MailMessage message = new MailMessage();
             SmtpClient smtp = new SmtpClient();
-            message.From = new MailAddress("kernel.panic.learnathon@gmail.com");
+            message.From = new MailAddress(systemEmail);
             message.To.Add(new MailAddress(email));
             message.Subject = "Your New Password";
             message.IsBodyHtml = true; //to make message body as html  
@@ -100,7 +106,7 @@ namespace server.Services
             smtp.Host = "smtp.gmail.com"; //for gmail host  
             smtp.EnableSsl = true;
             smtp.UseDefaultCredentials = false;
-            smtp.Credentials = new NetworkCredential("kernel.panic.learnathon@gmail.com", "elyqvsnuctidkukw");
+            smtp.Credentials = new NetworkCredential(systemEmail, systemEmailPassword);
             smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
             await smtp.SendMailAsync(message);
         }
