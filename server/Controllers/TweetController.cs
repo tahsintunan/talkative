@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using server.Dto.RequestDto.TweetRequestDto;
-using server.Interface;
+using server.Application.Dto.TweetDto;
+using server.Application.Interface;
 
 namespace server.Controllers
 {
@@ -16,7 +16,7 @@ namespace server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> PublishTweet(TweetRequestDto tweetRequestDto)
+        public async Task<ActionResult> PublishTweet(TweetDto tweetRequestDto)
         {
             var context = HttpContext;
             var userId = context.Items["User"]!.ToString();
@@ -31,7 +31,7 @@ namespace server.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateTweet(TweetRequestDto tweetRequestDto)
+        public async Task<ActionResult> UpdateTweet(TweetDto tweetRequestDto)
         {
             await _tweetService.UpdateTweet(tweetRequestDto);
             return NoContent();

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using server.Interface;
-using server.Dto.RequestDto.SignupRequestDto;
-using server.Dto.RequestDto.LoginRequestDto;
+using server.Application.Dto.SignupDto;
+using server.Application.Dto.LoginDto;
+using server.Application.Interface;
 
 namespace server.Controllers
 {
@@ -18,7 +18,7 @@ namespace server.Controllers
         }
 
         [HttpPost("signup")]
-        public async Task<IActionResult> Signup(SignupRequestDto signupRequestDto)
+        public async Task<IActionResult> Signup(SignupDto signupRequestDto)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace server.Controllers
         } 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequestDto request)
+        public async Task<IActionResult> Login(LoginDto request)
         {
             try
             {   

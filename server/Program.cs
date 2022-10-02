@@ -1,10 +1,10 @@
 using FluentValidation.AspNetCore;
-using server.Configs.DbConfig;
-using server.Hub;
-using server.Interface;
+using server.Application.Hub;
+using server.Application.Interface;
+using server.Infrastructure.DbConfig;
+using server.Infrastructure.Services;
+using server.Infrastructure.Services.HandlerService;
 using server.Middlewares;
-using server.Services;
-using server.Services.HandlerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 

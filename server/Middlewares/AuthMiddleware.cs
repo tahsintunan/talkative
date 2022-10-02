@@ -1,4 +1,4 @@
-﻿using server.Interface;
+﻿using server.Application.Interface;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace server.Middlewares

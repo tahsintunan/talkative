@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using server.Dto.MessageDto;
-using server.Dto.RequestDto.ChatHistoryRequestDto;
-using server.Dto.ResponseDto.ChatHistoryResponseDto;
-using server.Interface;
+using server.Application.Dto.ChatHistoryDto;
+using server.Application.Dto.MessageDto;
+using server.Application.Interface;
+using server.Application.ViewModels;
 
 namespace server.Controllers;
 
@@ -44,7 +44,7 @@ public class ChatController: ControllerBase
     
     
     [HttpPost("GetMessageHistory")]
-    public List<ChatHistoryResponseDto> GetMessageHistory(ChatHistoryRequestDto chatHistoryRequestDto)
+    public List<ChatHistoryVm> GetMessageHistory(ChatHistoryDto chatHistoryRequestDto)
     {
         try
         {
