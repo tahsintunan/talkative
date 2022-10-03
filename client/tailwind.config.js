@@ -1,8 +1,33 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{html,ts}", "./projects/**/*.{html,ts}"],
-  theme: {
-    extend: {},
+  mode: "jit",
+  purge: {
+    enabled: true,
+    content: ["./src/**/*.{html,ts}"],
   },
-  plugins: [],
+  theme: {
+    extend: {
+      colors: {
+        primary: "var(--primary)",
+        primaryDark: "var(--primary-dark)",
+        secondary: "var(--secondary)",
+        error: "var(--error)",
+        errorDark: "var(--error-dark)",
+      },
+      backgroundColor: {
+        primary: "var(--primary)",
+        primaryDark: "var(--primary-dark)",
+        secondary: "var(--secondary)",
+        error: "var(--error)",
+        errorDark: "var(--error-dark)",
+      },
+      borderColor: {
+        primary: "var(--primary)",
+        primaryDark: "var(--primary-dark)",
+        secondary: "var(--secondary)",
+        error: "var(--error)",
+        errorDark: "var(--error-dark)",
+      },
+    },
+  },
 };

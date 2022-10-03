@@ -3,12 +3,18 @@ a {
   align-items: center;
   padding: 1rem 3rem;
   gap: 1rem;
-  margin: 0.5rem;
-  border-radius: 8px;
-  color: white;
-  font-weight: 600;
+  border-radius: 4px;
+  color: #e0e0e0;
+  transition: all 0.2s ease-in-out;
 }
 
-a.active {
-  background-color: #1b5e20;
+a:hover {
+  background-color: #434343;
+  color: #fff;
+}
+
+a.active,
+a:hover.active {
+  background-color: rgb(25, 25, 25);
+  color: #77c27c;
 }

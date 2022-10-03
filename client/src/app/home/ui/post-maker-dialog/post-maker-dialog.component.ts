@@ -26,7 +26,7 @@ export class PostMakerDialogComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  onCancelClick(): void {
+  onCloseClick(): void {
     this.dialogRef.close();
   }
 

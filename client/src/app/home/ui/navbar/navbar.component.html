@@ -1,32 +1,39 @@
-<div class="flex flex-col h-full py-6">
-  <a routerLink="/" class="flex items-center justify-center h-16 px-4 gap-2">
-    <img
-      src="../../../../assets/images/logo.svg"
-      alt="Logo"
-      class="logo h-10"
-    />
+<div class="flex flex-col h-full py-6 gap-6">
+  <a routerLink="/" class="flex items-center justify-center h-16 px-4 gap-3">
+    <mat-icon
+      color="primary"
+      svgIcon="app_logo"
+      [ngStyle]="{ fontSize: '3rem', width: '3rem', height: '3rem' }"
+    >
+    </mat-icon>
+
     <span class="text-4xl font-bold text-white">Talkative</span>
   </a>
 
-  <div class="mb-auto mt-3">
+  <hr />
+
+  <button
+    class="w-full flex items-center justify-center gap-3 px-8 py-4 rounded border-none outline-none bg-zinc-900 text-white hover:bg-zinc-800"
+    (click)="openCreatePostDialog()"
+  >
+    <span>CREATE POST</span>
+    <mat-icon class="material-symbols-rounded">add</mat-icon>
+  </button>
+
+  <div class="mb-auto flex flex-col gap-2">
     <app-nav-link-item
-      link="./feed"
-      icon="home"
-      text="Home"
-    ></app-nav-link-item>
-    <app-nav-link-item
-      link="./profile"
-      icon="person"
-      text="Profile"
-    ></app-nav-link-item>
-    <app-nav-link-item
-      link="./notifications"
-      icon="notifications"
-      text="Notifications"
+      *ngFor="let data of navData"
+      [link]="data.link"
+      [icon]="data.icon"
+      [text]="data.text"
     ></app-nav-link-item>
   </div>
 
-  <button mat-fab color="primary" class="self-center" (click)="onLogout()">
+  <button
+    class="flex items-center justify-center gap-3 px-8 py-4 rounded border-none outline-none bg-zinc-900 text-white hover:bg-zinc-800"
+    (click)="onLogout()"
+  >
+    <span>LOGOUT</span>
     <mat-icon class="material-symbols-rounded">power_rounded</mat-icon>
   </button>
 </div>

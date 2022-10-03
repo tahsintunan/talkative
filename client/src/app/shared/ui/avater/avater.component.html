@@ -1,5 +1,12 @@
 <img
   [alt]="alt"
   [src]="generateAvater ? (src | generateImage) : src"
-  [ngStyle]="{ width: size, heigth: size, backgroundColor: bgColor }"
+  [ngStyle]="{
+    width: size,
+    heigth: size,
+    backgroundColor: bgColor,
+    borderRadius: borderRadius,
+    borderWidth: borderWidth,
+    borderColor: borderColor
+  }"
 />

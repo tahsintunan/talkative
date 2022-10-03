@@ -1,7 +1,7 @@
 <form [formGroup]="signupForm" (ngSubmit)="submitForm()">
-  <div class="card form-card flex max-w-4xl flex-1">
-    <div class="flex flex-col p-7 flex-1 gap-3">
-      <h1 class="text-3xl font-semibold mb-7">Sign Up</h1>
+  <div class="card form-card flex max-w-5xl flex-1">
+    <div class="flex flex-col p-10 flex-1 gap-3">
+      <h1 class="py-3 text-4xl font-semibold text-gray-900">Signup</h1>
 
       <mat-form-field appearance="outline">
         <mat-label>Username</mat-label>
@@ -67,9 +67,9 @@
           [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="hidePassword"
         >
-          <mat-icon
-            >{{ hidePassword ? "visibility_off" : "visibility" }}</mat-icon
-          >
+          <mat-icon class="material-symbols-rounded">{{
+            hidePassword ? "visibility_off" : "visibility"
+          }}</mat-icon>
         </button>
 
         <mat-error *ngIf="signupForm.controls['password'].hasError('required')">
@@ -98,10 +98,9 @@
           [attr.aria-label]="'Hide password'"
           [attr.aria-pressed]="hideConfirmPassword"
         >
-          <mat-icon
-            >{{ hideConfirmPassword ? "visibility_off" : "visibility"
-            }}</mat-icon
-          >
+          <mat-icon class="material-symbols-rounded">{{
+            hideConfirmPassword ? "visibility_off" : "visibility"
+          }}</mat-icon>
         </button>
 
         <mat-error
@@ -124,25 +123,36 @@
           type="submit"
           [disabled]="signupForm.invalid"
         >
-          Create Account
+          Create an account
         </button>
-        <p>
+        <p class="text-gray-700">
           Already have an account?
-          <strong><a [routerLink]="'/auth/signin'">Sign In</a></strong>
+          <a [routerLink]="'/auth/signin'" class="text-primary hover:underline">
+            <strong>Sign In</strong>
+          </a>
         </p>
       </div>
     </div>
 
     <mat-divider [vertical]="true"></mat-divider>
 
-    <div class="flex flex-col p-7 max-w-sm gap-6 justify-center">
-      <img
-        src="../../../../assets/images/logo.svg"
-        alt="Logo"
-        class="logo h-16"
-      />
-      <p class="text-2xl text-center">
-        Sign up to Talkative and connect with people all around
+    <div class="relative flex flex-col justify-center p-10 max-w-sm gap-6">
+      <span class="flex items-center gap-3">
+        <mat-icon
+          color="primary"
+          svgIcon="app_logo"
+          [ngStyle]="{ fontSize: '2rem', width: '2rem', height: '2rem' }"
+        >
+        </mat-icon>
+        <h1 class="text-2xl font-bold text-gray-900">Talkative</h1>
+      </span>
+
+      <h1 class="py-3 mt-auto text-4xl font-bold text-gray-900">
+        Welcome New User!
+      </h1>
+
+      <p class="text-2xl mb-auto text-gray-700 pb-5">
+        Sign up to our service and connect with people all around
       </p>
     </div>
   </div>

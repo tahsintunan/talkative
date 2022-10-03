@@ -1,8 +1,26 @@
 <mat-drawer-container class="h-full">
-  <mat-drawer mode="side" opened class="h-full w-80 bg-neutral-900">
+  <mat-drawer mode="side" opened class="h-full w-80 p-4">
     <app-navbar></app-navbar>
   </mat-drawer>
-  <mat-drawer-content class="p-6">
-    <router-outlet></router-outlet>
+  <mat-drawer-content>
+    <mat-toolbar class="bg-white">
+      <app-search-input></app-search-input>
+
+      <div class="flex items-center gap-3 ml-auto">
+        <p class="text-gray-600">Tajbir Ahmmad</p>
+        <app-avater
+          alt="User"
+          [src]="'user?.photoURL'"
+          size="40px"
+          [generateAvater]="true"
+        ></app-avater>
+      </div>
+    </mat-toolbar>
+
+    <mat-divider></mat-divider>
+
+    <main>
+      <router-outlet></router-outlet>
+    </main>
   </mat-drawer-content>
 </mat-drawer-container>

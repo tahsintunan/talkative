@@ -1,9 +1,13 @@
 <div class="flex items-center justify-between">
-  <label class="text-lg font-bold">{{
-    data?.dialogTitle || "Create Post"
-  }}</label>
-  <button mat-icon-button (click)="onCancelClick()" [autofocus]="false">
-    <mat-icon>close</mat-icon>
+  <h3 class="text-xl font-semibold text-gray-900">
+    {{ data?.dialogTitle || "Create Post" }}
+  </h3>
+  <button
+    type="button"
+    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-full text-sm p-1.5 ml-auto inline-flex items-center"
+    (click)="onCloseClick()"
+  >
+    <span class="material-symbols-rounded">close</span>
   </button>
 </div>
 
@@ -19,11 +23,10 @@
 
 <div mat-dialog-actions>
   <button
-    mat-flat-button
     color="primary"
-    class="w-full"
+    class="w-full text-white bg-primary hover:bg-primaryDark font-medium rounded-lg text-sm px-5 py-2.5"
     [disabled]="!postData.get('text')?.value"
-    (click)="onPostClick()"
+    (onClick)="onPostClick()"
   >
     Post
   </button>

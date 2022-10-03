@@ -10,11 +10,11 @@ import { PostMakerDialogComponent } from '../../ui/post-maker-dialog/post-maker-
   styleUrls: ['./feed.component.css'],
 })
 export class FeedComponent implements OnInit {
-  constructor(private tweetService: TweetService, public dialog: MatDialog) {}
+  constructor(private tweetService: TweetService, private dialog: MatDialog) {}
 
   ngOnInit(): void {}
 
-  onCreatePostClick() {
+  openCreatePostDialog() {
     const dialogRef = this.dialog.open(PostMakerDialogComponent, {
       width: '500px',
     });
