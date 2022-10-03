@@ -11,7 +11,7 @@ namespace server.Application.Interface
         Task UpdateTweet(TweetDto tweetDto);
         Task GetTweetOfCurrentUser();
         Task GetTweetsOfFollowing();
-        Task<TweetVm> GetTweetById(string id);
+        Task<TweetVm?> GetTweetById(string id);
 
     }
 }

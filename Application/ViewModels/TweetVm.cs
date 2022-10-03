@@ -9,6 +9,7 @@
         public IList<string>? Hashtags { get; set; }
         public bool IsRetweet { get; set; }
         public string? RetweetId { get; set; }
+        public TweetVm? Retweet { get; set; }
         public IList<string?>? Likes { get; set; }
         public IList<string>? CommentId { get; set; }
         public DateTime CreatedAt { get; set; }

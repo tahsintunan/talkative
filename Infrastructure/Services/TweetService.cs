@@ -51,12 +51,15 @@ namespace server.Infrastructure.Services
             await _tweetCollection.DeleteOneAsync(tweet => tweet.Id == id);
         }
 
-        public async Task<TweetVm> GetTweetById(string id)
+        public async Task<TweetVm?> GetTweetById(string id)
         {
             var tweet = await _tweetCollection.Find(tweet => tweet.Id == id).FirstOrDefaultAsync();
             TweetVm tweetVm = _mapper.Map<TweetVm>(tweet);
-            var user = await _userService.GetUserById(tweetVm.UserId!);
-            tweetVm.Username = user.Username;
+            if (tweetVm != null)
+            {
+                var user = await _userService.GetUserById(tweetVm.UserId!);
+                tweetVm.Username = user.Username;
+            }
             return tweetVm;
         }
 
