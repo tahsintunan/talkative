@@ -6,14 +6,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Security.Claims;
 using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Mvc;
 using server.Domain.Entities;
 using server.Application.Dto.SignupDto;
 using server.Application.Dto.LoginDto;
 using server.Infrastructure.DbConfig;
 using server.Application.Interface;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -39,7 +37,7 @@ namespace server.Infrastructure.Services
                 userDatabaseConfig.Value.UserCollectionName);
         }
 
-        public async Task<IActionResult> SignupUser(SignupDto signupRequestDto)
+        public async Task SignupUser(SignupDto signupRequestDto)
         {
             string hashedPassword;
             using (var sha256Hash = SHA256.Create())
@@ -55,31 +53,15 @@ namespace server.Infrastructure.Services
                 DateOfBirth = signupRequestDto.DateOfBirth.Date
             };
             await _userCollection.InsertOneAsync(newUser);
-            return new OkResult();
         }
 
-        public async Task<IActionResult> LoginUser(LoginDto loginRequestDto, HttpContext httpContext)
+        public async Task<string> LoginUser(LoginDto loginRequestDto)
         {
             var user = await _userCollection.Find(user => user.Username == loginRequestDto.Username).FirstOrDefaultAsync();
             var accessToken = GenerateAccessToken(user);
             var value = new AuthenticationHeaderValue("Bearer", accessToken);
-
-            httpContext.Response.Cookies.Append(
-                "authorization",
-                value.ToString(),
-                new CookieOptions
-                {
-                    HttpOnly = false,
-                    Expires = DateTime.Now.AddDays(7)
-                }
-            );
-            return new OkResult();
-        }
-
-        public Task<IActionResult> LogoutUser(HttpContext httpContext)
-        {
-            httpContext.Response.Cookies.Delete("authorization");
-            return Task.FromResult<IActionResult>(new OkObjectResult(new { message = "User logged out" }));
+            return accessToken;
+            
         }
 
         public async Task<bool> CheckIfUserExists(string username, string email)

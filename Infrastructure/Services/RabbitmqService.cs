@@ -1,5 +1,4 @@
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -21,7 +20,7 @@ public class RabbitmqService : IRabbitmqService
         _channel = connection.CreateModel();
     }
 
-    public Task<IActionResult> FanOut(MessageDto messageDto)
+    public Task FanOut(MessageDto messageDto)
     {
         try
         {
@@ -34,11 +33,12 @@ public class RabbitmqService : IRabbitmqService
                 basicProperties: null,
                 body: messageBuffer);
 
-            return Task.FromResult<IActionResult>(new OkResult());
+            return Task.CompletedTask;
+
         }
         catch (Exception e)
         {
-            return Task.FromResult<IActionResult>(new BadRequestObjectResult(e.Message));
+            throw new Exception(e.Message);
         }
     }
 

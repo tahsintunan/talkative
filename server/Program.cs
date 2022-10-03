@@ -1,6 +1,6 @@
 using FluentValidation.AspNetCore;
-using server.Application.Hub;
 using server.Application.Interface;
+using server.Hub;
 using server.Infrastructure.DbConfig;
 using server.Infrastructure.Services;
 using server.Infrastructure.Services.HandlerService;

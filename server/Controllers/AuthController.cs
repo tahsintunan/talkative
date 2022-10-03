@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using server.Application.Dto.SignupDto;
 using server.Application.Dto.LoginDto;
 using server.Application.Interface;
+using System.Net.Http.Headers;
 
 namespace server.Controllers
 {
@@ -48,8 +49,21 @@ namespace server.Controllers
                 if (!await _authService.CheckIfPasswordMatches(username, password))
                     return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "Password does not match" });
                 
-                await _authService.LoginUser(request, HttpContext);
-                return StatusCode(StatusCodes.Status200OK, new {response = "User logged in" });
+                string accessToken = await _authService.LoginUser(request);
+
+                var value = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                HttpContext.Response.Cookies.Append(
+                    "authorization",
+                    value.ToString(),
+                    new CookieOptions
+                    {
+                        HttpOnly = false,
+                        Expires = DateTime.Now.AddDays(7)
+                    }
+                );
+
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -59,10 +73,10 @@ namespace server.Controllers
         }
 
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        public Task<IActionResult> Logout()
         {
-            await _authService.LogoutUser(HttpContext);
-            return StatusCode((StatusCodes.Status200OK));
+            HttpContext.Response.Cookies.Delete("authorization");
+            return Task.FromResult<IActionResult>(new OkObjectResult(new { message = "User logged out" }));
         }
     }
 }

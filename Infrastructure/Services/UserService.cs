@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using server.Application.Dto.UpdateUserDto;
@@ -72,10 +71,6 @@ namespace server.Infrastructure.Services
             {
                 await UpdatePassword(user, newPassword);
                 await SendPasswordWithMail(email, newPassword);
-            }
-            else
-            {
-                throw new BadHttpRequestException("User with current email doesn't exist");
             }
         }
 

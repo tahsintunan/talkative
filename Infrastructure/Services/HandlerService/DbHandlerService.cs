@@ -1,5 +1,4 @@
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -50,7 +49,7 @@ public class DbHandlerService : IHostedService
         };
 
         _channel.BasicConsume(queue: RabbitmqQueueName, autoAck: true, consumer: _consumer);
-        return Task.FromResult<IActionResult>(new OkObjectResult("Ok DbHandlerService"));
+        return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

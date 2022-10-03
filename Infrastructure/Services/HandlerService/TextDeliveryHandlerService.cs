@@ -1,5 +1,4 @@
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
@@ -46,7 +45,7 @@ public class TextDeliveryHandlerService : IHostedService
         };
 
         _channel.BasicConsume(queue: RabbitmqQueueName, autoAck: true, consumer: _consumer);
-        return Task.FromResult<IActionResult>(new OkObjectResult("Ok TextDeliveryHandlerService"));
+        return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

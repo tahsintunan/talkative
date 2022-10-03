@@ -3,7 +3,7 @@ using server.Application.Dto.MessageDto;
 using server.Application.Interface;
 using server.Domain.Entities;
 
-namespace server.Application.Hub;
+namespace server.Hub;
 
 public class ChatHub : Microsoft.AspNetCore.SignalR.Hub, IChatHub
 {
