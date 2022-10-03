@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
 using MongoDB.Driver;
-using server.Application.Dto.TweetDto;
 using server.Application.Interface;
 using server.Application.ViewModels;
 using server.Domain.Entities;
@@ -13,8 +11,6 @@ namespace server.Infrastructure.Services
     public class TweetService : ITweetService
     {
         private readonly IMongoCollection<Tweet> _tweetCollection;
-        private readonly IMapper _mapper;
-        private readonly IUserService _userService;
         public TweetService(IOptions<TweetDatabaseConfig> tweetDatabaseConfig, IMapper mapper, IUserService userService)
         {
             var mongoClient = new MongoClient(
@@ -26,23 +22,9 @@ namespace server.Infrastructure.Services
             _tweetCollection = mongoDatabase.GetCollection<Tweet>(
                 tweetDatabaseConfig.Value.TweetCollectionName);
 
-            _mapper = mapper;
-            _userService = userService;
         }
-        public async Task PublishTweet(TweetDto tweetRequestDto, string userId)
+        public async Task PublishTweet(Tweet tweet)
         {
-            Tweet tweet = new Tweet()
-            {
-                Id = ObjectId.GenerateNewId().ToString(),
-                Text = tweetRequestDto.Text,
-                UserId = userId,
-                Hashtags = new List<string>(tweetRequestDto.Hashtags!),
-                IsRetweet = tweetRequestDto.IsRetweet,
-                RetweetId = tweetRequestDto.IsRetweet ? null : tweetRequestDto.RetweetId,
-                Likes = new List<string>(),
-                CommentId = new List<string>(),
-                CreatedAt = DateTime.Now
-            };
             await _tweetCollection.InsertOneAsync(tweet);
         }
 
@@ -51,21 +33,10 @@ namespace server.Infrastructure.Services
             await _tweetCollection.DeleteOneAsync(tweet => tweet.Id == id);
         }
 
-        public async Task<TweetVm?> GetTweetById(string id)
+        public async Task<Tweet?> GetTweetById(string id)
         {
             var tweet = await _tweetCollection.Find(tweet => tweet.Id == id).FirstOrDefaultAsync();
-            TweetVm tweetVm = _mapper.Map<TweetVm>(tweet);
-            if (tweetVm != null)
-            {
-                var user = await _userService.GetUserById(tweetVm.UserId!);
-                tweetVm.Username = user.Username;
-            }
-            return tweetVm;
-        }
-
-        public Task GetTweetOfCurrentUser()
-        {
-            throw new NotImplementedException();
+            return tweet;
         }
 
         public Task GetTweetsOfFollowing()
@@ -73,25 +44,15 @@ namespace server.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public async Task UpdateTweet(TweetDto tweetRequestDto)
+        public async Task UpdateTweet(Tweet updatedTweet)
         {
-            var tweet = await _tweetCollection.Find(tweet => tweet.Id == tweetRequestDto.Id).FirstOrDefaultAsync();
-            if (tweet != null)
-            {
-                var updatedTweet = new Tweet()
-                {
-                    Id = tweetRequestDto.Id,
-                    Text = tweetRequestDto.Text ?? tweet.Text,
-                    UserId = tweet.UserId,
-                    Hashtags = tweetRequestDto.Hashtags ?? tweet.Hashtags,
-                    IsRetweet = tweet.IsRetweet,
-                    RetweetId = tweet.RetweetId,
-                    Likes = new List<string>(tweet.Likes!),
-                    CommentId = new List<string>(tweet.CommentId!),
-                    CreatedAt = tweet.CreatedAt
-                };
-                await _tweetCollection.ReplaceOneAsync(x => x.Id == updatedTweet.Id, updatedTweet);
-            }
+            await _tweetCollection.ReplaceOneAsync(x => x.Id == updatedTweet.Id, updatedTweet);
+        }
+
+        public async Task<IList<Tweet>> GetTweetsOfSingleUser(string userId)
+        {
+            IList<Tweet> tweets = await _tweetCollection.Find(tweet => tweet.UserId == userId).ToListAsync();
+            return tweets;
         }
     }
 }

@@ -1,4 +1,5 @@
 using FluentValidation.AspNetCore;
+using MediatR;
 using server.Application.Interface;
 using server.Hub;
 using server.Infrastructure.DbConfig;
@@ -21,7 +22,8 @@ builder.Services.Configure<TweetDatabaseConfig>(
     builder.Configuration.GetSection("TweetDatabaseConfig"));
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+builder.Services.AddApplicationServices();
+builder.Services.AddMediatR(typeof(Program).Assembly);
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<IAuthService, AuthService>();
 builder.Services.AddSingleton<IChatService, ChatService>();

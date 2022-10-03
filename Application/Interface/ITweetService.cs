@@ -1,17 +1,14 @@
-﻿using server.Application.ViewModels;
-using server.Application.Dto;
-using server.Application.Dto.TweetDto;
+﻿using server.Domain.Entities;
 
 namespace server.Application.Interface
 {
     public interface ITweetService
     {
-        Task PublishTweet(TweetDto tweetDto, string userId);
+        Task PublishTweet(Tweet tweet);
         Task DeleteTweet(string id);
-        Task UpdateTweet(TweetDto tweetDto);
-        Task GetTweetOfCurrentUser();
+        Task UpdateTweet(Tweet tweet);
         Task GetTweetsOfFollowing();
-        Task<TweetVm?> GetTweetById(string id);
-
+        Task<Tweet?> GetTweetById(string id);
+        Task<IList<Tweet>> GetTweetsOfSingleUser(string userId);
     }
 }
