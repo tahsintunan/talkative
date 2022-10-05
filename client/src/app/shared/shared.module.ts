@@ -1,14 +1,14 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { TextInputHighlightModule } from 'angular-text-input-highlight';
 import { DateAgoPipe } from './pipes/date-ago.pipe';
 import { GenerateImagePipe } from './pipes/generate-image.pipe';
+import { HashtagPipe } from './pipes/hashtag.pipe';
 import { AvaterComponent } from './ui/avater/avater.component';
 import { HashtagInputComponent } from './ui/hashtag-input/hashtag-input.component';
-import { TextInputHighlightModule } from 'angular-text-input-highlight';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HashtagPipe } from './pipes/hashtag.pipe';
 import { SearchInputComponent } from './ui/search-input/search-input.component';
-import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [

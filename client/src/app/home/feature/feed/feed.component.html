@@ -7,13 +7,13 @@
     <div class="flex items-center gap-3 m-3">
       <app-avater
         alt="User"
-        [src]="'user?.photoURL'"
+        [src]="userAuth?.username"
         size="50px"
         [generateAvater]="true"
       ></app-avater>
 
       <button
-        class="w-full py-2.5 px-5 text-start text-md font-medium rounded-full outline-none transition-all duration-200 ease-in-out text-gray-500 bg-gray-100 hover:bg-gray-200"
+        class="w-full py-2.5 px-5 text-start text-md font-medium rounded-full outline-none transition duration-200 ease-in-out text-gray-500 bg-gray-100 hover:bg-gray-200"
         (click)="openCreatePostDialog()"
       >
         What's on your mind?
@@ -22,6 +22,6 @@
   </div>
 
   <div class="container flex flex-col gap-6">
-    <app-feed-item *ngFor="let x of [1, 2, 3, 4]"></app-feed-item>
+    <app-feed-item *ngFor="let tweet of tweets" [data]="tweet"></app-feed-item>
   </div>
 </section>

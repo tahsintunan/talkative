@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProfileModel } from '../../models/profile.model';
+import { UserModel } from '../../models/user.model';
 import { ActiveChatService } from '../../services/active-chat.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { ActiveChatService } from '../../services/active-chat.service';
   styleUrls: ['./chat-toolbar.component.css'],
 })
 export class ChatToolbarComponent implements OnInit {
-  @Input() selectedUser?: ProfileModel;
+  @Input() selectedUser?: UserModel;
 
   constructor(
     private router: Router,

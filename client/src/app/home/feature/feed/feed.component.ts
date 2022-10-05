@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { UserModel } from '../../models/user.model';
 import { TweetModel } from '../../models/tweet.model';
 import { TweetService } from '../../services/tweet.service';
+import { UserService } from '../../services/user.service';
 import { PostMakerDialogComponent } from '../../ui/post-maker-dialog/post-maker-dialog.component';
 
 @Component({
@@ -10,9 +12,24 @@ import { PostMakerDialogComponent } from '../../ui/post-maker-dialog/post-maker-
   styleUrls: ['./feed.component.css'],
 })
 export class FeedComponent implements OnInit {
-  constructor(private tweetService: TweetService, private dialog: MatDialog) {}
+  userAuth?: UserModel;
+  tweets?: TweetModel[];
 
-  ngOnInit(): void {}
+  constructor(
+    private userService: UserService,
+    private tweetService: TweetService,
+    private dialog: MatDialog
+  ) {}
+
+  ngOnInit(): void {
+    this.userService.userAuth.subscribe((res) => {
+      this.userAuth = res;
+    });
+
+    this.tweetService.getFeedTweets().subscribe((res) => {
+      this.tweets = res;
+    });
+  }
 
   openCreatePostDialog() {
     const dialogRef = this.dialog.open(PostMakerDialogComponent, {
@@ -22,7 +39,7 @@ export class FeedComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: TweetModel) => {
       if (result) {
         this.tweetService.createTweet(result).subscribe((res) => {
-          console.log(res);
+          console.log(result);
         });
       }
     });

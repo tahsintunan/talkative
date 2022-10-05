@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { TweetModel } from '../../models/tweet.model';
 import { TweetService } from '../../services/tweet.service';
+import { UserService } from '../../services/user.service';
 import { PostMakerDialogComponent } from '../post-maker-dialog/post-maker-dialog.component';
 
 @Component({
@@ -12,6 +13,8 @@ import { PostMakerDialogComponent } from '../post-maker-dialog/post-maker-dialog
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit {
+  userId?: string;
+
   navData = [
     {
       text: 'Home',
@@ -20,7 +23,7 @@ export class NavbarComponent implements OnInit {
     },
     {
       text: 'Profile',
-      link: './profile',
+      link: `./profile/${this.userId}`,
       icon: 'person',
     },
     {
@@ -32,12 +35,18 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     private cookieService: CookieService,
+    private userService: UserService,
     private tweetService: TweetService,
     private router: Router,
     private dialog: MatDialog
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.userService.userAuth.subscribe((res) => {
+      this.userId = res.id;
+      this.navData[1].link = `./profile/${this.userId}`;
+    });
+  }
 
   onLogout() {
     this.cookieService.delete('authorization');

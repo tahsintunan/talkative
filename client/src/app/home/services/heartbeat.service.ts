@@ -6,9 +6,9 @@ import { EnvService } from 'src/app/env.service';
   providedIn: 'root',
 })
 export class HeartbeatService {
-  heartbeatApiUrl = this.env.heartbeatApiUrl
+  heartbeatApiUrl = this.env.heartbeatApiUrl;
 
-  constructor(private http: HttpClient,private env:EnvService) {}
+  constructor(private http: HttpClient, private env: EnvService) {}
 
   sendHeartbeat() {
     const headers = new HttpHeaders();

@@ -5,8 +5,8 @@
 @tailwind utilities;
 
 :root {
-  --primary: rgb(21, 128, 61);
-  --primary-dark: rgb(21, 101, 52);
+  --primary: rgb(46, 125, 50);
+  --primary-dark: rgb(40, 105, 42);
   --secondary: rgb(48, 48, 48);
   --secondary-dark: rgb(30, 30, 30);
   --error: rgb(185, 28, 28);

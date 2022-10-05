@@ -6,12 +6,12 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { ChatService } from '../../services/chat.service';
+import { ActivatedRoute } from '@angular/router';
 import jwt_decode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
-import { ActivatedRoute } from '@angular/router';
 import { ChatModel } from '../../models/chat.model';
-import { ProfileModel } from '../../models/profile.model';
+import { UserModel } from '../../models/user.model';
+import { ChatService } from '../../services/chat.service';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -21,7 +21,7 @@ import { UserService } from '../../services/user.service';
 })
 export class ChatComponent implements OnInit, AfterViewChecked {
   @ViewChild('chatBox') private chatBox: ElementRef = new ElementRef(null);
-  @Input() selectedUser?: ProfileModel;
+  @Input() selectedUser?: UserModel;
 
   chatData: ChatModel[] = [];
   userId: string = '';

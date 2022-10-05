@@ -53,6 +53,6 @@ export class HashtagInputComponent implements OnInit {
   }
 
   onTextChange() {
-    this.onChange.emit({ text: this.text, tags: this.hashtags });
+    this.onChange.emit({ text: this.text, hashtags: this.hashtags });
   }
 }

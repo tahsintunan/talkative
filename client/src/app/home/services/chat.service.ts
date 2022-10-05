@@ -1,8 +1,8 @@
-import { Observable, Subject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { EnvService } from '../../env.service';
 import * as signalR from '@microsoft/signalr';
+import { Observable, Subject } from 'rxjs';
+import { EnvService } from '../../env.service';
 import { ChatModel } from '../models/chat.model';
 
 @Injectable({
@@ -14,23 +14,20 @@ export class ChatService {
   private chatApiUrl = this.envService.apiUrl;
 
   private connection = new signalR.HubConnectionBuilder()
-    .withUrl(this.chatApiUrl+'chathub', {
+    .withUrl(this.chatApiUrl + 'chathub', {
       skipNegotiation: true,
       transport: signalR.HttpTransportType.WebSockets,
     })
     .build();
 
-  constructor(
-    private http: HttpClient, 
-    private envService: EnvService
-    ) {
-      this.connection.onclose(async (err) => {
-        await this.start();
-      });
-      this.connection.on('ReceiveMessage', (message: ChatModel) => {
-        this.mapReceivedMessage(message);
-      });
-      this.start();
+  constructor(private http: HttpClient, private envService: EnvService) {
+    this.connection.onclose(async (err) => {
+      await this.start();
+    });
+    this.connection.on('ReceiveMessage', (message: ChatModel) => {
+      this.mapReceivedMessage(message);
+    });
+    this.start();
   }
 
   public async start() {
@@ -50,7 +47,7 @@ export class ChatService {
 
     headers.set('Cookie', document.cookie);
 
-    return this.http.post(this.chatApiUrl+'api/Chat/send', message, {
+    return this.http.post(this.chatApiUrl + 'api/Chat/send', message, {
       headers: headers,
       withCredentials: true,
     });
@@ -69,8 +66,12 @@ export class ChatService {
   }
 
   public getMessages(body: any): Observable<[]> {
-    return this.http.post<[]>(this.chatApiUrl+'api/Chat/GetMessageHistory', body, {
-      withCredentials: true,
-    });
+    return this.http.post<[]>(
+      this.chatApiUrl + 'api/Chat/GetMessageHistory',
+      body,
+      {
+        withCredentials: true,
+      }
+    );
   }
 }

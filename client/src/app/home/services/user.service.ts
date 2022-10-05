@@ -1,8 +1,10 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import jwtDecode from 'jwt-decode';
+import { CookieService } from 'ngx-cookie-service';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
-import { ProfileModel } from '../models/profile.model';
+import { UserModel } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -10,16 +12,44 @@ import { ProfileModel } from '../models/profile.model';
 export class UserService {
   apiUrl = this.env.apiUrl + 'api/User/';
 
-  constructor(private http: HttpClient, private env: EnvService) {}
+  private userAuthSubject = new BehaviorSubject<UserModel>({});
+  private userProfileSubject = new BehaviorSubject<UserModel>({});
 
-  getUser(id: string): Observable<ProfileModel> {
-    const headers = new HttpHeaders();
+  public userAuth = this.userAuthSubject.asObservable();
+  public userProfile = this.userProfileSubject.asObservable();
 
-    headers.set('Cookie', document.cookie);
+  constructor(
+    private http: HttpClient,
+    private env: EnvService,
+    private cookie: CookieService
+  ) {}
 
-    return this.http.get<ProfileModel>(this.apiUrl + id, {
-      headers: headers,
-      withCredentials: true,
-    });
+  public init(): void {
+    this.loadUserAuthData();
+  }
+
+  public loadUserAuthData(): void {
+    const token = this.cookie.get('authorization');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+
+        this.userAuthSubject.next({
+          id: decodedToken.user_id,
+          username: decodedToken.unique_name,
+          email: decodedToken.email,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  public getUser(userId: string): Observable<UserModel> {
+    return this.http.get<UserModel>(this.apiUrl + userId).pipe(
+      tap((res) => {
+        this.userProfileSubject.next(res);
+      })
+    );
   }
 }

@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ProfileModel } from '../../models/profile.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ActiveChatService } from '../../services/active-chat.service';
-import { ChatService } from '../../services/chat.service';
-import { ChatModel } from '../../models/chat.model';
 import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
+import { ChatModel } from '../../models/chat.model';
+import { UserModel } from '../../models/user.model';
+import { ActiveChatService } from '../../services/active-chat.service';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-user-item',
@@ -13,7 +13,7 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./user-item.component.css'],
 })
 export class UserItemComponent implements OnInit {
-  @Input() profile?: ProfileModel;
+  @Input() profile?: UserModel;
 
   newMessageCount = 0;
 

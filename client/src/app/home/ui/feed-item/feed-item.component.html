@@ -1,40 +1,58 @@
-<div class="card flex flex-col p-1 gap-1">
+<div class="card flex flex-col gap-1">
   <div class="flex gap-3 items-center m-3">
     <app-avater
       alt="User"
-      [src]="'user?.photoURL'"
+      [src]="data?.username"
       size="50px"
       [generateAvater]="true"
     ></app-avater>
 
-    <div class="flex flex-col">
-      <span class="text-md">Name</span>
-      <span class="text-gray-500 text-xs">Date and Time</span>
-    </div>
+    <a class="flex flex-col" routerLink="/home/profile/{{ data?.userId }}">
+      <span class="text-md hover:underline">{{ data?.username }}</span>
+      <span class="text-gray-500 text-xs">{{ data?.createdAt | dateAgo }}</span>
+    </a>
+
+    <button
+      *ngIf="data?.userId === userAuth?.id"
+      class="!ml-auto"
+      mat-icon-button
+      [matMenuTriggerFor]="menu"
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #menu>
+      <button mat-menu-item (click)="onEdit()">
+        <mat-icon>edit</mat-icon>
+        <span>Edit Post</span>
+      </button>
+      <button mat-menu-item (click)="onDelete()">
+        <mat-icon>delete</mat-icon>
+        <span>Delete Post</span>
+      </button>
+    </mat-menu>
   </div>
 
   <div class="mx-5 mb-5">
     <div
-      [innerHtml]="tweetMessage | hashtag"
-      (click)="onHashTagClick($event)"
+      [innerHtml]="data?.text || '' | hashtag"
+      (click)="onTagClick($event)"
     ></div>
   </div>
 
-  <mat-divider></mat-divider>
-
-  <div class="flex gap-1">
-    <button mat-button class="flex-1" (click)="onLikeClick()">
+  <div class="flex p-1 gap-1 border-t border-gray-300">
+    <button mat-button class="flex-1" (click)="onLike()">
       <mat-icon class="material-symbols-rounded">favorite</mat-icon>
     </button>
 
     <mat-divider vertical></mat-divider>
 
-    <button mat-button class="flex-1" (click)="onCommentClick()">
+    <button mat-button class="flex-1" (click)="onComment()">
       <mat-icon class="material-symbols-rounded">mode_comment</mat-icon>
     </button>
     <mat-divider vertical></mat-divider>
 
-    <button mat-button class="flex-1" (click)="onRetweetClick()">
+    <button mat-button class="flex-1" (click)="onRetweet()">
       <mat-icon class="material-symbols-rounded">cycle</mat-icon>
     </button>
   </div>

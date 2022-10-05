@@ -7,7 +7,7 @@
         left: 'calc(50% - 50px)'
       }"
       size="100px"
-      src="user"
+      [src]="data?.username"
       [generateAvater]="true"
       borderColor="rgb(21,128,61)"
       borderWidth="5px"
@@ -17,13 +17,17 @@
   </div>
 
   <div class="flex flex-col gap-3 p-5">
-    <h1 class="text-center text-2xl font-bold text-gray-800">John Doe</h1>
+    <h1 class="text-center text-2xl font-bold text-gray-800">
+      {{ data?.username }}
+    </h1>
 
-    <p class="text-gray-600 text-center">john.doe@email.com</p>
+    <p class="text-gray-600 text-center">{{ data?.email }}</p>
 
-    <p class="text-gray-600 text-center">20 years old</p>
+    <p class="text-gray-600 text-center">{{ getAge() }} years old</p>
 
-    <p class="text-gray-600 text-center">Born in December 21th, 2000</p>
+    <p class="text-gray-600 text-center">
+      Born in {{ data?.dateOfBirth | date: "MMMM d, y" }}
+    </p>
 
     <div class="flex justify-center mt-3 gap-4">
       <div class="flex flex-col items-center">
@@ -49,6 +53,11 @@
 </div>
 
 <div class="flex flex-col gap-4 py-4">
-  <button></button>
-  <button></button>
+  <button mat-raised-button color="primary" class="w-full">
+    Edit Profile <span class="material-symbols-rounded">edit</span>
+  </button>
+
+  <button mat-raised-button color="primary" class="w-full">
+    Change Password <span class="material-symbols-rounded">key</span>
+  </button>
 </div>

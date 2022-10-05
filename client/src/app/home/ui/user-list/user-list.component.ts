@@ -1,7 +1,7 @@
-import { UserListService } from './../../services/user-list.service';
 import { Component, OnInit } from '@angular/core';
-import { ProfileModel } from '../../models/profile.model';
+import { UserModel } from '../../models/user.model';
 import { HeartbeatService } from '../../services/heartbeat.service';
+import { UserListService } from './../../services/user-list.service';
 
 @Component({
   selector: 'app-user-list',
@@ -9,7 +9,7 @@ import { HeartbeatService } from '../../services/heartbeat.service';
   styleUrls: ['./user-list.component.css'],
 })
 export class UserListComponent implements OnInit {
-  userList: ProfileModel[] = [];
+  userList: UserModel[] = [];
 
   constructor(
     private userListService: UserListService,

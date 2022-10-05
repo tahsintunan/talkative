@@ -4,7 +4,7 @@ import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { map, Observable } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
-import { ProfileModel } from '../models/profile.model';
+import { UserModel } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,23 +13,24 @@ export class UserListService {
   getOnlineUserApiUrl = this.env.getOnlineUserApiUrl;
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private cookie: CookieService,
-    private env:EnvService) {}
+    private env: EnvService
+  ) {}
 
-  getOnlineUsers(): Observable<ProfileModel[]> {
+  getOnlineUsers(): Observable<UserModel[]> {
     const headers = new HttpHeaders();
 
     headers.set('Cookie', document.cookie);
 
     return this.http
-      .get<ProfileModel[]>(this.getOnlineUserApiUrl, {
+      .get<UserModel[]>(this.getOnlineUserApiUrl, {
         headers: headers,
         withCredentials: true,
       })
       .pipe(
         map((res) => {
-          const listOfUsers: ProfileModel[] = [];
+          const listOfUsers: UserModel[] = [];
           res.forEach((user: any) => {
             const decodedUser: any = jwtDecode(
               this.cookie.get('authorization')

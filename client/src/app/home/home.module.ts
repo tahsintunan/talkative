@@ -1,31 +1,30 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HomeRoutingModule } from './home-routing.module';
-import { Homepage } from './feature/home/home.page';
-import { NavbarComponent } from './ui/navbar/navbar.component';
-
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatRippleModule } from '@angular/material/core';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatButtonModule } from '@angular/material/button';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from '../shared/shared.module';
 import { MatBadgeModule } from '@angular/material/badge';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatCardModule } from '@angular/material/card';
-import { NavLinkItemComponent } from './ui/nav-link-item/nav-link-item.component';
-import { FeedComponent } from './feature/feed/feed.component';
-import { ProfileComponent } from './feature/profile/profile.component';
-import { NotificationsComponent } from './feature/notifications/notifications.component';
-import { PostMakerDialogComponent } from './ui/post-maker-dialog/post-maker-dialog.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { SharedModule } from '../shared/shared.module';
+import { FeedComponent } from './feature/feed/feed.component';
+import { HomeComponent } from './feature/home/home.component';
+import { NotificationsComponent } from './feature/notifications/notifications.component';
+import { ProfileComponent } from './feature/profile/profile.component';
+import { HomeRoutingModule } from './home-routing.module';
 import { FeedItemComponent } from './ui/feed-item/feed-item.component';
+import { NavLinkItemComponent } from './ui/nav-link-item/nav-link-item.component';
+import { NavbarComponent } from './ui/navbar/navbar.component';
+import { PostMakerDialogComponent } from './ui/post-maker-dialog/post-maker-dialog.component';
 import { ProfileDetailsComponent } from './ui/profile-details/profile-details.component';
 
 @NgModule({
   declarations: [
-    Homepage,
+    HomeComponent,
     NavbarComponent,
     NavLinkItemComponent,
     FeedComponent,
@@ -48,8 +47,8 @@ import { ProfileDetailsComponent } from './ui/profile-details/profile-details.co
     MatButtonModule,
     MatBadgeModule,
     MatSidenavModule,
-    MatCardModule,
     MatDialogModule,
+    MatMenuModule,
   ],
 })
 export class HomeModule {}

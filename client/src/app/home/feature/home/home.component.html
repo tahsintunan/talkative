@@ -6,15 +6,18 @@
     <mat-toolbar class="bg-white">
       <app-search-input></app-search-input>
 
-      <div class="flex items-center gap-3 ml-auto">
-        <p class="text-gray-600">Tajbir Ahmmad</p>
+      <span
+        class="ml-auto p-1 rounded-full text-gray-500 bg-gray-200 font-bold text-sm flex items-center w-max"
+      >
+        <span class="px-2"> {{ userAuth?.username }} </span>
         <app-avater
+          bgColor="#fff"
           alt="User"
-          [src]="'user?.photoURL'"
-          size="40px"
+          [src]="userAuth?.username"
+          size="35px"
           [generateAvater]="true"
         ></app-avater>
-      </div>
+      </span>
     </mat-toolbar>
 
     <mat-divider></mat-divider>

@@ -1,4 +1,15 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewEncapsulation,
+} from '@angular/core';
+import { TweetModel } from '../../models/tweet.model';
+import { UserModel } from '../../models/user.model';
+import { TweetService } from '../../services/tweet.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-feed-item',
@@ -7,27 +18,53 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
   encapsulation: ViewEncapsulation.None,
 })
 export class FeedItemComponent implements OnInit {
-  tweetMessage = `hi huys #my name is Tj`;
+  @Input() data?: TweetModel;
+  @Output() onHashtagClick = new EventEmitter();
+  @Output() onLikeClick = new EventEmitter();
+  @Output() onCommentClick = new EventEmitter();
+  @Output() onRetweetClick = new EventEmitter();
+  @Output() onEditClick = new EventEmitter();
 
-  constructor() {}
+  userAuth?: UserModel;
 
-  ngOnInit(): void {}
+  constructor(
+    private userService: UserService,
+    private tweetService: TweetService
+  ) {}
 
-  onHashTagClick(event: any) {
+  ngOnInit(): void {
+    this.userService.userAuth.subscribe((res) => {
+      this.userAuth = res;
+    });
+  }
+
+  onTagClick(event: any) {
     if (event.target.classList.contains('hashtag')) {
-      console.log(event.target.innerText);
+      this.onHashtagClick.emit(event.target.innerText);
     }
   }
 
-  onLikeClick() {
-    console.log('link clicked');
+  onLike() {
+    this.onLikeClick.emit(this.data?.id);
   }
 
-  onCommentClick() {
-    console.log('comment clicked');
+  onComment() {
+    this.onCommentClick.emit(this.data?.id);
   }
 
-  onRetweetClick() {
-    console.log('retweet clicked');
+  onRetweet() {
+    this.onRetweetClick.emit(
+      this.data?.isRetweet ? this.data?.retweetId : this.data?.id
+    );
+  }
+
+  onEdit() {
+    this.onEditClick.emit(this.data?.id);
+  }
+
+  onDelete() {
+    if (this.data?.id) {
+      this.tweetService.deleteTweet(this.data?.id);
+    }
   }
 }
