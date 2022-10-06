@@ -4,7 +4,6 @@ using Application.Tweets.Commands.UpdateTweetCommand;
 using Application.Tweets.Queries.GetTweetByIdQuery;
 using Application.Tweets.Queries.GetTweetsOfSingleUserQuery;
 using Microsoft.AspNetCore.Mvc;
-using server.Application.Interface;
 
 namespace server.Controllers
 {
@@ -17,8 +16,8 @@ namespace server.Controllers
         {
             var userId = HttpContext.Items["User"]!.ToString();
             publishTweetCommand.UserId = userId;
-            await Mediator.Send(publishTweetCommand);
-            return NoContent();
+            var tweet = await Mediator.Send(publishTweetCommand);
+            return CreatedAtAction(nameof(GetTweetById), new { id = tweet.Id }, tweet);
         }
 
         [HttpGet("{id}")]

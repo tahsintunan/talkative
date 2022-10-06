@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using server.Application.Interface;
-using server.Application.ViewModels;
 using server.Domain.Entities;
 using server.Infrastructure.DbConfig;
 

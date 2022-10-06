@@ -1,11 +1,13 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using MongoDB.Bson;
 using server.Application.Interface;
+using server.Application.ViewModels;
 using server.Domain.Entities;
 
 namespace Application.Tweets.Commands.PublishTweetCommand
 {
-    public class PublishTweetCommand:IRequest
+    public class PublishTweetCommand:IRequest<TweetVm>
     {
         public string? Id { get; set; }
         public string? Text { get; set; }
@@ -15,14 +17,16 @@ namespace Application.Tweets.Commands.PublishTweetCommand
         public string? RetweetId { get; set; }
     }
 
-    public class PublishTweetCommandHandler : IRequestHandler<PublishTweetCommand>
+    public class PublishTweetCommandHandler : IRequestHandler<PublishTweetCommand, TweetVm>
     {
         private readonly ITweetService _tweetService;
-        public PublishTweetCommandHandler(ITweetService tweetService)
+        private readonly IMapper _mapper;
+        public PublishTweetCommandHandler(ITweetService tweetService,IMapper mapper)
         {
             _tweetService = tweetService;
+            _mapper = mapper;
         }
-        public async Task<Unit> Handle(PublishTweetCommand request, CancellationToken cancellationToken)
+        public async Task<TweetVm> Handle(PublishTweetCommand request, CancellationToken cancellationToken)
         {
             Tweet tweet = new Tweet()
             {
@@ -31,13 +35,13 @@ namespace Application.Tweets.Commands.PublishTweetCommand
                 UserId = request.UserId,
                 Hashtags = new List<string>(request.Hashtags!),
                 IsRetweet = request.IsRetweet,
-                RetweetId = request.IsRetweet ? null : request.RetweetId,
+                RetweetId = request.IsRetweet ? request.RetweetId :null ,
                 Likes = new List<string>(),
                 CommentId = new List<string>(),
                 CreatedAt = DateTime.Now
             };
-            await _tweetService.PublishTweet(tweet);   
-            return Unit.Value;
+            await _tweetService.PublishTweet(tweet);
+            return _mapper.Map<TweetVm>(tweet);
         }
     }
 }
