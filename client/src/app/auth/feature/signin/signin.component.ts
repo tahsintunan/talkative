@@ -12,7 +12,10 @@ import { AuthService } from '../../services/auth.service';
 export class SigninComponent implements OnInit {
   hidePassword: boolean = true;
 
-  signinForm: FormGroup = this.formBuilder.group({});
+  formData: FormGroup = this.formBuilder.group({
+    username: [null, [Validators.required]],
+    password: [null, [Validators.required]],
+  });
 
   constructor(
     private formBuilder: FormBuilder,
@@ -20,19 +23,10 @@ export class SigninComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    this.initForm();
-  }
+  ngOnInit(): void {}
 
-  initForm(): void {
-    this.signinForm = this.formBuilder.group({
-      username: ['', [Validators.required]],
-      password: ['', Validators.required],
-    });
-  }
-
-  submitForm(): void {
-    const signinData: SignInReqModel = this.signinForm.getRawValue();
+  onSubmit(): void {
+    const signinData: SignInReqModel = this.formData.getRawValue();
 
     this.authService.signin(signinData).subscribe({
       next: (res) => {

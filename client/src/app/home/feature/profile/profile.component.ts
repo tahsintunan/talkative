@@ -36,10 +36,10 @@ export class ProfileComponent implements OnInit {
   }
 
   getProfile(userId: string) {
-    this.userService.getUser(userId).subscribe();
+    this.userService.getUser(userId);
   }
 
   getUserTweets(userId: string) {
-    this.tweetService.getUserTweets(userId).subscribe();
+    this.tweetService.getUserTweets(userId);
   }
 }

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
 import { TweetModel } from '../models/tweet.model';
 
@@ -10,11 +10,11 @@ import { TweetModel } from '../models/tweet.model';
 export class TweetService {
   apiUrl = this.env.apiUrl + 'api/Tweet';
 
-  private tweetsSubject = new BehaviorSubject<TweetModel[]>([]);
-  private userTweetSubject = new BehaviorSubject<TweetModel[]>([]);
+  private readonly tweetsSubject = new BehaviorSubject<TweetModel[]>([]);
+  private readonly userTweetSubject = new BehaviorSubject<TweetModel[]>([]);
 
-  public tweets = this.tweetsSubject.asObservable();
-  public userTweets = this.userTweetSubject.asObservable();
+  public readonly tweets = this.tweetsSubject.asObservable();
+  public readonly userTweets = this.userTweetSubject.asObservable();
 
   constructor(private http: HttpClient, private env: EnvService) {}
 
@@ -38,19 +38,23 @@ export class TweetService {
     });
   }
 
-  getFeedTweets(): Observable<TweetModel[]> {
-    return this.http.get<TweetModel[]>(this.apiUrl + '/user/current-user').pipe(
-      tap((res) => {
+  getTweets() {
+    return this.http
+      .get<TweetModel[]>(this.apiUrl + '/user/current-user')
+      .subscribe((res) => {
         this.tweetsSubject.next(res);
-      })
-    );
+      });
   }
 
-  getUserTweets(userId: string): Observable<TweetModel[]> {
-    return this.http.get<TweetModel[]>(this.apiUrl + '/user/' + userId).pipe(
-      tap((res) => {
+  getTweetById(id: string) {
+    return this.http.get<TweetModel>(this.apiUrl + '/' + id);
+  }
+
+  getUserTweets(userId: string) {
+    this.http
+      .get<TweetModel[]>(this.apiUrl + '/user/' + userId)
+      .subscribe((res) => {
         this.userTweetSubject.next(res);
-      })
-    );
+      });
   }
 }

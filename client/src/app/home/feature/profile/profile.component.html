@@ -5,7 +5,10 @@
   ></app-profile-details>
 
   <div [ngStyle]="{ flex: 1.5 }" class="flex flex-col gap-6">
-    <app-feed-item *ngFor="let tweet of tweets" [data]="tweet"></app-feed-item>
+    <app-tweet-item
+      *ngFor="let tweet of tweets"
+      [data]="tweet"
+    ></app-tweet-item>
   </div>
 
   <div class="card flex-1 flex flex-col py-3 gap-3">

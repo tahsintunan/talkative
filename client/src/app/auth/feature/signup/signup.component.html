@@ -1,4 +1,4 @@
-<form [formGroup]="signupForm" (ngSubmit)="submitForm()">
+<form [formGroup]="formData" (ngSubmit)="onSubmit()">
   <div class="card form-card flex max-w-5xl flex-1">
     <div class="flex flex-col p-10 flex-1 gap-3">
       <h1 class="py-3 text-4xl font-semibold text-gray-900">Signup</h1>
@@ -7,8 +7,8 @@
         <mat-label>Username</mat-label>
         <input matInput type="text" formControlName="username" />
 
-        <mat-error *ngIf="signupForm.controls['username'].hasError('required')">
-          User is required
+        <mat-error *ngIf="formData.controls['username'].hasError('required')">
+          Username is required
         </mat-error>
       </mat-form-field>
 
@@ -16,11 +16,11 @@
         <mat-label>Email</mat-label>
         <input matInput type="email" formControlName="email" />
 
-        <mat-error *ngIf="signupForm.controls['email'].hasError('required')">
+        <mat-error *ngIf="formData.controls['email'].hasError('required')">
           Email is required
         </mat-error>
 
-        <mat-error *ngIf="signupForm.controls['email'].hasError('email')">
+        <mat-error *ngIf="formData.controls['email'].hasError('email')">
           Please enter a valid email address
         </mat-error>
       </mat-form-field>
@@ -39,13 +39,13 @@
         <mat-datepicker #datePicker></mat-datepicker>
 
         <mat-error
-          *ngIf="signupForm.controls['dateOfBirth'].hasError('required')"
+          *ngIf="formData.controls['dateOfBirth'].hasError('required')"
         >
           Date of birth is required
         </mat-error>
 
         <mat-error
-          *ngIf="signupForm.controls['dateOfBirth'].hasError('underage')"
+          *ngIf="formData.controls['dateOfBirth'].hasError('underage')"
         >
           Must be over 18 years old
         </mat-error>
@@ -72,11 +72,11 @@
           }}</mat-icon>
         </button>
 
-        <mat-error *ngIf="signupForm.controls['password'].hasError('required')">
+        <mat-error *ngIf="formData.controls['password'].hasError('required')">
           Password is required
         </mat-error>
 
-        <mat-error *ngIf="signupForm.controls['password'].hasError('pattern')">
+        <mat-error *ngIf="formData.controls['password'].hasError('pattern')">
           Must contain at least 8 characters, an uppercase letter, a lowercase
           letter, a number and a special character
         </mat-error>
@@ -104,13 +104,13 @@
         </button>
 
         <mat-error
-          *ngIf="signupForm.controls['confirmPassword'].hasError('required')"
+          *ngIf="formData.controls['confirmPassword'].hasError('required')"
         >
           Please confirm your password
         </mat-error>
 
         <mat-error
-          *ngIf="signupForm.controls['confirmPassword'].hasError('mismatch')"
+          *ngIf="formData.controls['confirmPassword'].hasError('mismatch')"
         >
           Confirm password doesn't match with password
         </mat-error>
@@ -121,7 +121,7 @@
           mat-raised-button
           color="primary"
           type="submit"
-          [disabled]="signupForm.invalid"
+          [disabled]="formData.invalid"
         >
           Create an account
         </button>

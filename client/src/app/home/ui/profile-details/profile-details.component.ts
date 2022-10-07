@@ -1,5 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { UtilityService } from 'src/app/shared/services/utility.service';
 import { UserModel } from '../../models/user.model';
+import { UserService } from '../../services/user.service';
+import { ProfileUpdateDialogComponent } from '../profile-update-dialog/profile-update-dialog.component';
 
 @Component({
   selector: 'app-profile-details',
@@ -9,18 +13,35 @@ import { UserModel } from '../../models/user.model';
 export class ProfileDetailsComponent implements OnInit {
   @Input() data?: UserModel;
 
-  constructor() {}
+  userAuth?: UserModel;
 
-  ngOnInit(): void {}
+  constructor(
+    private dialog: MatDialog,
+    private userService: UserService,
+    protected utilityService: UtilityService
+  ) {}
 
-  public getAge() {
-    const today = new Date();
-    const birthDate = new Date(this.data?.dateOfBirth || '');
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
+  ngOnInit(): void {
+    this.userService.userAuth.subscribe((res) => {
+      this.userAuth = res;
+    });
+  }
+
+  onEditProfileClick() {
+    const dialogRef = this.dialog.open(ProfileUpdateDialogComponent, {
+      width: '500px',
+      data: {
+        id: this.data?.id,
+        username: this.data?.username,
+        email: this.data?.email,
+        dateOfBirth: this.data?.dateOfBirth,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.userService.updateProfile(result);
+      }
+    });
   }
 }

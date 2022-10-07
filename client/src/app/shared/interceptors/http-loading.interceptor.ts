@@ -16,11 +16,11 @@ export class HttpLoadingInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    this.loaderService.setIsLoading();
+    this.loaderService.setLoading(true, request.url);
 
     return next.handle(request).pipe(
       finalize(() => {
-        this.loaderService.setIsNotLoading();
+        this.loaderService.setLoading(false, request.url);
       })
     );
   }

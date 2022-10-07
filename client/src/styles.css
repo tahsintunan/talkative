@@ -63,6 +63,12 @@ input::-ms-clear {
   display: none;
 }
 
+.hashtag {
+  color: forestgreen;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .error-snackbar {
   background-color: rgb(201, 0, 0);
   color: white;

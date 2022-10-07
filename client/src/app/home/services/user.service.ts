@@ -12,11 +12,11 @@ import { UserModel } from '../models/user.model';
 export class UserService {
   apiUrl = this.env.apiUrl + 'api/User/';
 
-  private userAuthSubject = new BehaviorSubject<UserModel>({});
-  private userProfileSubject = new BehaviorSubject<UserModel>({});
+  private readonly userAuthSubject = new BehaviorSubject<UserModel>({});
+  private readonly userProfileSubject = new BehaviorSubject<UserModel>({});
 
-  public userAuth = this.userAuthSubject.asObservable();
-  public userProfile = this.userProfileSubject.asObservable();
+  public readonly userAuth = this.userAuthSubject.asObservable();
+  public readonly userProfile = this.userProfileSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -45,11 +45,15 @@ export class UserService {
     }
   }
 
-  public getUser(userId: string): Observable<UserModel> {
-    return this.http.get<UserModel>(this.apiUrl + userId).pipe(
-      tap((res) => {
-        this.userProfileSubject.next(res);
-      })
-    );
+  public getUser(userId: string) {
+    this.http.get<UserModel>(this.apiUrl + userId).subscribe((res) => {
+      this.userProfileSubject.next(res);
+    });
+  }
+
+  public updateProfile(user: UserModel) {
+    this.http.put<UserModel>(this.apiUrl, user).subscribe((res) => {
+      if (user.id) this.getUser(user.id);
+    });
   }
 }

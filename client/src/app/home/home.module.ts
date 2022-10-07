@@ -3,10 +3,13 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
-import { MatRippleModule } from '@angular/material/core';
+import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -16,11 +19,13 @@ import { HomeComponent } from './feature/home/home.component';
 import { NotificationsComponent } from './feature/notifications/notifications.component';
 import { ProfileComponent } from './feature/profile/profile.component';
 import { HomeRoutingModule } from './home-routing.module';
-import { FeedItemComponent } from './ui/feed-item/feed-item.component';
 import { NavLinkItemComponent } from './ui/nav-link-item/nav-link-item.component';
 import { NavbarComponent } from './ui/navbar/navbar.component';
 import { PostMakerDialogComponent } from './ui/post-maker-dialog/post-maker-dialog.component';
 import { ProfileDetailsComponent } from './ui/profile-details/profile-details.component';
+import { ProfileUpdateDialogComponent } from './ui/profile-update-dialog/profile-update-dialog.component';
+import { RetweetContentComponent } from './ui/retweet-content/retweet-content.component';
+import { TweetItemComponent } from './ui/tweet-item/tweet-item.component';
 
 @NgModule({
   declarations: [
@@ -31,8 +36,10 @@ import { ProfileDetailsComponent } from './ui/profile-details/profile-details.co
     ProfileComponent,
     NotificationsComponent,
     PostMakerDialogComponent,
-    FeedItemComponent,
+    TweetItemComponent,
     ProfileDetailsComponent,
+    ProfileUpdateDialogComponent,
+    RetweetContentComponent,
   ],
   imports: [
     CommonModule,
@@ -40,6 +47,13 @@ import { ProfileDetailsComponent } from './ui/profile-details/profile-details.co
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
+    FormsModule,
+    MatInputModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatToolbarModule,
     MatIconModule,
     MatRippleModule,

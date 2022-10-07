@@ -14,7 +14,7 @@
 
       <button
         class="w-full py-2.5 px-5 text-start text-md font-medium rounded-full outline-none transition duration-200 ease-in-out text-gray-500 bg-gray-100 hover:bg-gray-200"
-        (click)="openCreatePostDialog()"
+        (click)="onCreatePost()"
       >
         What's on your mind?
       </button>
@@ -22,6 +22,9 @@
   </div>
 
   <div class="container flex flex-col gap-6">
-    <app-feed-item *ngFor="let tweet of tweets" [data]="tweet"></app-feed-item>
+    <app-tweet-item
+      *ngFor="let tweet of tweets"
+      [data]="tweet"
+    ></app-tweet-item>
   </div>
 </section>

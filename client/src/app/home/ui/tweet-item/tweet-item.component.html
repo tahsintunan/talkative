@@ -7,10 +7,14 @@
       [generateAvater]="true"
     ></app-avater>
 
-    <a class="flex flex-col" routerLink="/home/profile/{{ data?.userId }}">
-      <span class="text-md hover:underline">{{ data?.username }}</span>
+    <span class="flex flex-col">
+      <a
+        class="text-md hover:underline"
+        routerLink="/home/profile/{{ data?.userId }}"
+        >{{ data?.username }}</a
+      >
       <span class="text-gray-500 text-xs">{{ data?.createdAt | dateAgo }}</span>
-    </a>
+    </span>
 
     <button
       *ngIf="data?.userId === userAuth?.id"

@@ -3,7 +3,7 @@
   class="!flex !items-center pb-3 justify-between border-b border-gray-200"
 >
   <h3 class="text-xl font-semibold text-gray-900">
-    {{ data?.dialogTitle || "Create Post" }}
+    {{ data?.isEdit ? "Edit Post" : "Create Post" }}
   </h3>
   <button
     class="outline-none text-gray-900 bg-transparent hover:bg-gray-200 focus:bg-gray-200 rounded-full text-sm p-1.5 ml-auto inline-flex items-center"
@@ -29,11 +29,16 @@
     </span>
   </span>
 
+  <app-retweet-content
+    *ngIf="data?.isRetweet"
+    [data]="retweetContent"
+  ></app-retweet-content>
+
   <app-hashtag-input
     [rows]="8"
     [placeholder]="'What do you want to say?'"
     classExpression="w-full pt-3 text-lg outline-0"
-    [text]="data?.text || ''"
+    [text]="formData.controls['text'].value"
     (onChange)="onHashtagInputChanged($event)"
   ></app-hashtag-input>
 </div>
@@ -43,8 +48,8 @@
     mat-raised-button
     color="primary"
     class="w-full"
-    [disabled]="!postData.get('text')?.value"
-    (click)="onPostClick()"
+    [disabled]="formData.invalid"
+    (click)="onSubmit()"
   >
     Post
   </button>

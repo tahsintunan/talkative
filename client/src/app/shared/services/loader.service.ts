@@ -5,23 +5,24 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class LoaderService {
-  private isLoading = new BehaviorSubject<boolean>(false);
+  private readonly loadingSubject = new BehaviorSubject<boolean>(false);
+
+  private readonly loadingMap = new Map<string, boolean>();
+
+  public readonly loadingStatus = this.loadingSubject.asObservable();
 
   constructor() {}
 
-  public setIsLoading(): void {
-    this.isLoading.next(true);
-  }
+  public setLoading(loading: boolean, url: string): void {
+    if (loading === true) {
+      this.loadingMap.set(url, loading);
+      this.loadingSubject.next(true);
+    } else if (loading === false && this.loadingMap.has(url)) {
+      this.loadingMap.delete(url);
+    }
 
-  public setIsNotLoading(): void {
-    this.isLoading.next(false);
-  }
-
-  public toggleIsLoading(): void {
-    this.isLoading.next(!this.isLoading.value);
-  }
-
-  public getIsLoading(): Observable<boolean> {
-    return this.isLoading.asObservable();
+    if (this.loadingMap.size === 0) {
+      this.loadingSubject.next(false);
+    }
   }
 }

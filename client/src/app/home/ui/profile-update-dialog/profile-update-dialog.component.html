@@ -1,0 +1,72 @@
+<form [formGroup]="formData" (ngSubmit)="onSubmit()">
+  <div
+    mat-dialog-title
+    class="!flex !items-center pb-3 justify-between border-b border-gray-200"
+  >
+    <h3 class="text-xl font-semibold text-gray-900">Update Profile</h3>
+    <button
+      class="outline-none text-gray-900 bg-transparent hover:bg-gray-200 focus:bg-gray-200 rounded-full text-sm p-1.5 ml-auto inline-flex items-center"
+      mat-dialog-close
+    >
+      <span class="material-symbols-rounded">close</span>
+    </button>
+  </div>
+
+  <div mat-dialog-content class="!flex !flex-col !gap-2">
+    <mat-form-field appearance="outline">
+      <mat-label>Username</mat-label>
+      <input matInput type="text" formControlName="username" />
+
+      <mat-error *ngIf="formData.controls['username'].hasError('required')">
+        Username is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" />
+
+      <mat-error *ngIf="formData.controls['email'].hasError('required')">
+        Email is required
+      </mat-error>
+
+      <mat-error *ngIf="formData.controls['email'].hasError('email')">
+        Please enter a valid email address
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date of Birth</mat-label>
+      <input
+        matInput
+        [matDatepicker]="datePicker"
+        formControlName="dateOfBirth"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="datePicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+
+      <mat-error *ngIf="formData.controls['dateOfBirth'].hasError('required')">
+        Date of birth is required
+      </mat-error>
+
+      <mat-error *ngIf="formData.controls['dateOfBirth'].hasError('underage')">
+        Must be over 18 years old
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      class="w-full"
+      type="submit"
+      [disabled]="formData.invalid"
+    >
+      Submit
+    </button>
+  </div>
+</form>

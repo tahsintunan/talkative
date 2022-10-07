@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { delay } from 'rxjs';
 import { IconService } from './icon.service';
 import { LoaderService } from './shared/services/loader.service';
 
@@ -15,11 +16,10 @@ export class AppComponent implements OnInit {
     private iconService: IconService,
     private loaderService: LoaderService
   ) {}
+
   ngOnInit(): void {
-    this.loaderService.getIsLoading().subscribe((res) => {
-      setTimeout(() => {
-        this.loading = res;
-      }, 0);
+    this.loaderService.loadingStatus.pipe(delay(0)).subscribe((loading) => {
+      this.loading = loading;
     });
   }
 }

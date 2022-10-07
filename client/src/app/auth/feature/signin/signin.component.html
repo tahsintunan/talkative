@@ -1,4 +1,4 @@
-<form [formGroup]="signinForm" (ngSubmit)="submitForm()">
+<form [formGroup]="formData" (ngSubmit)="onSubmit()">
   <div
     class="mt-20 h-fit card flex flex-col max-w-2xl flex-1 px-10 sm:px-20 pb-20 py-14 gap-4"
   >
@@ -21,7 +21,7 @@
     <mat-form-field appearance="outline">
       <mat-label>Username</mat-label>
       <input matInput type="text" formControlName="username" />
-      <mat-error *ngIf="signinForm.controls['username'].hasError('required')">
+      <mat-error *ngIf="formData.controls['username'].hasError('required')">
         Username is required.
       </mat-error>
     </mat-form-field>
@@ -47,7 +47,7 @@
         }}</mat-icon>
       </button>
 
-      <mat-error *ngIf="signinForm.controls['password'].hasError('required')">
+      <mat-error *ngIf="formData.controls['password'].hasError('required')">
         Password is required.
       </mat-error>
     </mat-form-field>
@@ -57,7 +57,7 @@
       mat-flat-button
       color="primary"
       type="submit"
-      [disabled]="signinForm.invalid"
+      [disabled]="formData.invalid"
     >
       Login
     </button>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { UserModel } from '../../models/user.model';
 import { TweetModel } from '../../models/tweet.model';
+import { UserModel } from '../../models/user.model';
 import { TweetService } from '../../services/tweet.service';
 import { UserService } from '../../services/user.service';
 import { PostMakerDialogComponent } from '../../ui/post-maker-dialog/post-maker-dialog.component';
@@ -26,12 +26,14 @@ export class FeedComponent implements OnInit {
       this.userAuth = res;
     });
 
-    this.tweetService.getFeedTweets().subscribe((res) => {
+    this.tweetService.tweets.subscribe((res) => {
       this.tweets = res;
     });
+
+    this.tweetService.getTweets();
   }
 
-  openCreatePostDialog() {
+  onCreatePost() {
     const dialogRef = this.dialog.open(PostMakerDialogComponent, {
       width: '500px',
     });

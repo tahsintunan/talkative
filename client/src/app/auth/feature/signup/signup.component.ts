@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { UtilityService } from 'src/app/shared/services/utility.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -18,47 +19,39 @@ export class SignupComponent implements OnInit {
   hidePassword: boolean = true;
   hideConfirmPassword: boolean = true;
 
-  signupForm: FormGroup = this.formBuilder.group({});
+  formData: FormGroup = this.formBuilder.group(
+    {
+      username: [null, [Validators.required]],
+      email: [null, [Validators.email, Validators.required]],
+      dateOfBirth: [null, [Validators.required, this.ageValidator.bind(this)]],
+      password: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern(
+            /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#.,;+_=\/\\\$%\^&\*\-])(?=.{8,})/
+          ),
+          Validators.minLength(8),
+        ],
+      ],
+      confirmPassword: [null, [Validators.required]],
+    },
+    {
+      validators: this.confirmPasswordValidator('password', 'confirmPassword'),
+    }
+  );
 
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
+    private utilityService: UtilityService,
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    this.initForm();
-  }
+  ngOnInit(): void {}
 
-  initForm() {
-    this.signupForm = this.formBuilder.group(
-      {
-        username: ['', Validators.required],
-        email: ['', [Validators.email, Validators.required]],
-        dateOfBirth: ['', [Validators.required, this.ageValidator]],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern(
-              /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#.,;+_=\/\\\$%\^&\*\-])(?=.{8,})/
-            ),
-            Validators.minLength(8),
-          ],
-        ],
-        confirmPassword: ['', [Validators.required]],
-      },
-      {
-        validators: this.confirmPasswordValidator(
-          'password',
-          'confirmPassword'
-        ),
-      }
-    );
-  }
-
-  submitForm() {
-    const formValues = this.signupForm.getRawValue();
+  onSubmit() {
+    const formValues = this.formData.getRawValue();
 
     this.authService.signup(formValues).subscribe({
       next: () => {
@@ -84,18 +77,9 @@ export class SignupComponent implements OnInit {
   }
 
   private ageValidator(control: AbstractControl): ValidationErrors | null {
-    const today = new Date();
-    const birthDate = new Date(control.value);
-    const month = today.getMonth() - birthDate.getMonth();
-
-    let age = today.getFullYear() - birthDate.getFullYear();
-    if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    if (age < 18) {
-      return { underage: true };
-    }
-    return null;
+    return this.utilityService.getAge(control.value) < 18
+      ? { underage: true }
+      : null;
   }
 
   private confirmPasswordValidator(
