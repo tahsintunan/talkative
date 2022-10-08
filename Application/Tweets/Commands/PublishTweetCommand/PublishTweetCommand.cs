@@ -32,10 +32,10 @@ namespace Application.Tweets.Commands.PublishTweetCommand
             {
                 Id = ObjectId.GenerateNewId().ToString(),
                 Text = request.Text,
-                UserId = request.UserId,
+                UserId = ObjectId.Parse(request.UserId),
                 Hashtags = new List<string>(request.Hashtags!),
                 IsRetweet = request.IsRetweet,
-                RetweetId = request.IsRetweet ? request.RetweetId :null ,
+                RetweetId = request.IsRetweet ? ObjectId.Parse(request.RetweetId) : null ,
                 Likes = new List<string>(),
                 CommentId = new List<string>(),
                 CreatedAt = DateTime.Now

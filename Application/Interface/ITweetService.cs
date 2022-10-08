@@ -1,4 +1,5 @@
-﻿using server.Domain.Entities;
+﻿using MongoDB.Bson;
+using server.Domain.Entities;
 
 namespace server.Application.Interface
 {
@@ -8,7 +9,7 @@ namespace server.Application.Interface
         Task DeleteTweet(string id);
         Task UpdateTweet(Tweet tweet);
         Task GetTweetsOfFollowing();
-        Task<Tweet?> GetTweetById(string id);
-        Task<IList<Tweet>> GetTweetsOfSingleUser(string userId);
+        Task<BsonDocument?> GetTweetById(string id);
+        Task<IList<BsonDocument>> GetTweetsOfSingleUser(string userId);
     }
 }

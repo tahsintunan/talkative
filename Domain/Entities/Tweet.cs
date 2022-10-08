@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 
 namespace server.Domain.Entities
 {
+    [BsonIgnoreExtraElements]
     public class Tweet
     {
         [BsonId]
@@ -12,7 +13,7 @@ namespace server.Domain.Entities
         public string? Id { get; set; }
 
         [BsonElement("userId")]
-        public string? UserId { get; set; }
+        public ObjectId? UserId { get; set; }
 
         [BsonElement("text")]
         public string? Text { get; set; }
@@ -30,6 +31,6 @@ namespace server.Domain.Entities
         public bool IsRetweet { get; set; }
 
         [BsonElement("retweetId")]
-        public string? RetweetId { get; set; }
+        public ObjectId? RetweetId { get; set; }
     }
 }
