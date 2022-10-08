@@ -31,7 +31,7 @@ export class TweetItemComponent implements OnInit {
     private userService: UserService,
     private tweetService: TweetService,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userService.userAuth.subscribe((res) => {
@@ -54,6 +54,8 @@ export class TweetItemComponent implements OnInit {
   }
 
   onRetweet() {
+    console.log(this.data);
+
     const dialogRef = this.dialog.open(PostMakerDialogComponent, {
       width: '500px',
       data: {

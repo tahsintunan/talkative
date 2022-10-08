@@ -1,27 +1,13 @@
 <div class="card flex flex-col gap-1">
   <div class="flex gap-3 items-center m-3">
-    <app-avater
-      alt="User"
-      [src]="data?.username"
-      size="50px"
-      [generateAvater]="true"
-    ></app-avater>
+    <app-avater alt="User" [src]="data?.user?.username" size="50px" [generateAvater]="true"></app-avater>
 
     <span class="flex flex-col">
-      <a
-        class="text-md hover:underline"
-        routerLink="/home/profile/{{ data?.userId }}"
-        >{{ data?.username }}</a
-      >
+      <a class="text-md hover:underline" routerLink="/home/profile/{{ data?.user?.id }}">{{ data?.user?.username }}</a>
       <span class="text-gray-500 text-xs">{{ data?.createdAt | dateAgo }}</span>
     </span>
 
-    <button
-      *ngIf="data?.userId === userAuth?.id"
-      class="!ml-auto"
-      mat-icon-button
-      [matMenuTriggerFor]="menu"
-    >
+    <button *ngIf="data?.user?.id === userAuth?.id" class="!ml-auto" mat-icon-button [matMenuTriggerFor]="menu">
       <mat-icon>more_vert</mat-icon>
     </button>
 
@@ -38,10 +24,7 @@
   </div>
 
   <div class="mx-5 mb-5">
-    <div
-      [innerHtml]="data?.text || '' | hashtag"
-      (click)="onTagClick($event)"
-    ></div>
+    <div [innerHtml]="data?.text || '' | hashtag" (click)="onTagClick($event)"></div>
   </div>
 
   <div class="flex p-1 gap-1 border-t border-gray-300">
