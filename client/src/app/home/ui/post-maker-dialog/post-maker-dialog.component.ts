@@ -28,6 +28,7 @@ export class PostMakerDialogComponent implements OnInit {
     id: this.data?.id,
     text: [this.data?.isEdit ? this.data?.text : '', [Validators.required]],
     hashtags: [],
+    userId: this.userAuth?.id,
     isRetweet: !!this.data?.isRetweet,
     retweetId: this.data?.retweetId,
   });
@@ -44,6 +45,9 @@ export class PostMakerDialogComponent implements OnInit {
   ngOnInit(): void {
     this.userService.userAuth.subscribe((res) => {
       this.userAuth = res;
+      this.formData.patchValue({
+        userId: this.userAuth?.id,
+      });
     });
 
     if (this.data?.isRetweet && this.data?.retweetId) {

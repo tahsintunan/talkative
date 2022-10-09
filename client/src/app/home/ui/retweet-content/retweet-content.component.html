@@ -1,14 +1,26 @@
 <div class="card flex flex-col gap-1">
   <div class="flex gap-3 items-center m-3">
-    <app-avater alt="User" [src]="data?.user?.username" size="50px" [generateAvater]="true"></app-avater>
+    <app-avatar
+      alt="User"
+      [src]="data?.user?.username"
+      size="50px"
+      [generateAvater]="true"
+    ></app-avatar>
 
     <span class="flex flex-col">
-      <a class="text-md hover:underline" routerLink="/home/profile/{{ data?.user?.id }}">{{ data?.user?.username }}</a>
+      <a
+        class="text-md hover:underline"
+        routerLink="/home/profile/{{ data?.user?.id }}"
+        >{{ data?.user?.username }}</a
+      >
       <span class="text-gray-500 text-xs">{{ data?.createdAt | dateAgo }}</span>
     </span>
   </div>
 
   <div class="mx-5 mb-5">
-    <div [innerHtml]="data?.text || '' | hashtag" (click)="onTagClick($event)"></div>
+    <div
+      [innerHtml]="data?.text || '' | hashtag"
+      (click)="onTagClick($event)"
+    ></div>
   </div>
 </div>

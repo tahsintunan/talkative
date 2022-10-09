@@ -2,8 +2,10 @@
   [alt]="alt"
   [src]="generateAvater ? (src | generateImage) : src"
   [ngStyle]="{
-    width: size,
-    heigth: size,
+    minWidth: size,
+    minHeigth: size,
+    maxWidth: size,
+    maxHeigth: size,
     backgroundColor: bgColor,
     borderRadius: borderRadius,
     borderWidth: borderWidth,

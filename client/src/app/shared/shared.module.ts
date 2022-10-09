@@ -6,7 +6,7 @@ import { TextInputHighlightModule } from 'angular-text-input-highlight';
 import { DateAgoPipe } from './pipes/date-ago.pipe';
 import { GenerateImagePipe } from './pipes/generate-image.pipe';
 import { HashtagPipe } from './pipes/hashtag.pipe';
-import { AvaterComponent } from './ui/avater/avater.component';
+import { AvatarComponent } from './ui/avatar/avatar.component';
 import { HashtagInputComponent } from './ui/hashtag-input/hashtag-input.component';
 import { SearchInputComponent } from './ui/search-input/search-input.component';
 
@@ -15,7 +15,7 @@ import { SearchInputComponent } from './ui/search-input/search-input.component';
     DateAgoPipe,
     GenerateImagePipe,
     HashtagPipe,
-    AvaterComponent,
+    AvatarComponent,
     HashtagInputComponent,
     SearchInputComponent,
   ],
@@ -30,7 +30,7 @@ import { SearchInputComponent } from './ui/search-input/search-input.component';
     DateAgoPipe,
     GenerateImagePipe,
     HashtagPipe,
-    AvaterComponent,
+    AvatarComponent,
     HashtagInputComponent,
     SearchInputComponent,
   ],

@@ -1,9 +1,9 @@
-import { UserModel } from "./user.model";
+import { UserModel } from './user.model';
 
 export interface TweetModel {
   id?: string;
   text: string;
-  hashtags: string[];
+  hashtags?: string[];
   createdAt?: Date;
   isRetweet?: boolean;
   user: UserModel;

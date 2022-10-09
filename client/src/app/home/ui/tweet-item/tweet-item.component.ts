@@ -31,7 +31,7 @@ export class TweetItemComponent implements OnInit {
     private userService: UserService,
     private tweetService: TweetService,
     private dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.userService.userAuth.subscribe((res) => {
@@ -81,7 +81,7 @@ export class TweetItemComponent implements OnInit {
         id: this.data?.id,
         text: this.data?.text,
         isRetweet: this.data?.isRetweet,
-        retweetId: this.data?.retweetId,
+        retweetId: this.data?.retweet?.id,
       },
     });
 

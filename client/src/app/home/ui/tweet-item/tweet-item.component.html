@@ -1,13 +1,27 @@
 <div class="card flex flex-col gap-1">
   <div class="flex gap-3 items-center m-3">
-    <app-avater alt="User" [src]="data?.user?.username" size="50px" [generateAvater]="true"></app-avater>
+    <app-avatar
+      alt="User"
+      [src]="data?.user?.username"
+      size="50px"
+      [generateAvater]="true"
+    ></app-avatar>
 
     <span class="flex flex-col">
-      <a class="text-md hover:underline" routerLink="/home/profile/{{ data?.user?.id }}">{{ data?.user?.username }}</a>
+      <a
+        class="text-md hover:underline"
+        routerLink="/home/profile/{{ data?.user?.id }}"
+        >{{ data?.user?.username }}</a
+      >
       <span class="text-gray-500 text-xs">{{ data?.createdAt | dateAgo }}</span>
     </span>
 
-    <button *ngIf="data?.user?.id === userAuth?.id" class="!ml-auto" mat-icon-button [matMenuTriggerFor]="menu">
+    <button
+      *ngIf="data?.user?.id === userAuth?.id"
+      class="!ml-auto"
+      mat-icon-button
+      [matMenuTriggerFor]="menu"
+    >
       <mat-icon>more_vert</mat-icon>
     </button>
 
@@ -23,8 +37,16 @@
     </mat-menu>
   </div>
 
-  <div class="mx-5 mb-5">
-    <div [innerHtml]="data?.text || '' | hashtag" (click)="onTagClick($event)"></div>
+  <div class="mx-5 mb-5 flex flex-col gap-3">
+    <div
+      [innerHtml]="data?.text || '' | hashtag"
+      (click)="onTagClick($event)"
+    ></div>
+
+    <app-retweet-content
+      *ngIf="data?.isRetweet"
+      [data]="data?.retweet"
+    ></app-retweet-content>
   </div>
 
   <div class="flex p-1 gap-1 border-t border-gray-300">
