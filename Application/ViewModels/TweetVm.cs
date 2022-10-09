@@ -13,7 +13,7 @@ namespace server.Application.ViewModels
         public string? RetweetId { get; set; }
         public TweetVm? Retweet { get; set; }
         public IList<string?>? Likes { get; set; }
-        public IList<string>? CommentId { get; set; }
+        public IList<string>? Comments { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

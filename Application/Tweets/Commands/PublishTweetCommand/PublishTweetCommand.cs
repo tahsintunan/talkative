@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Application.Tweets.Queries.GetTweetByIdQuery;
+using AutoMapper;
 using MediatR;
 using MongoDB.Bson;
 using server.Application.Interface;
@@ -7,7 +8,7 @@ using server.Domain.Entities;
 
 namespace Application.Tweets.Commands.PublishTweetCommand
 {
-    public class PublishTweetCommand:IRequest<TweetVm>
+    public class PublishTweetCommand:IRequest<TweetVm?>
     {
         public string? Id { get; set; }
         public string? Text { get; set; }
@@ -17,31 +18,32 @@ namespace Application.Tweets.Commands.PublishTweetCommand
         public string? RetweetId { get; set; }
     }
 
-    public class PublishTweetCommandHandler : IRequestHandler<PublishTweetCommand, TweetVm>
+    public class PublishTweetCommandHandler : IRequestHandler<PublishTweetCommand, TweetVm?>
     {
         private readonly ITweetService _tweetService;
-        private readonly IMapper _mapper;
-        public PublishTweetCommandHandler(ITweetService tweetService,IMapper mapper)
+        private readonly IMediator _mediator;
+        public PublishTweetCommandHandler(ITweetService tweetService,IMediator mediator)
         {
             _tweetService = tweetService;
-            _mapper = mapper;
+            _mediator = mediator;
         }
-        public async Task<TweetVm> Handle(PublishTweetCommand request, CancellationToken cancellationToken)
+        public async Task<TweetVm?> Handle(PublishTweetCommand request, CancellationToken cancellationToken)
         {
+            var generatedId = ObjectId.GenerateNewId().ToString();
             Tweet tweet = new Tweet()
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                Id = generatedId,
                 Text = request.Text,
                 UserId = ObjectId.Parse(request.UserId),
                 Hashtags = new List<string>(request.Hashtags!),
                 IsRetweet = request.IsRetweet,
                 RetweetId = request.IsRetweet ? ObjectId.Parse(request.RetweetId) : null ,
                 Likes = new List<string>(),
-                CommentId = new List<string>(),
+                Comments = new List<string>(),
                 CreatedAt = DateTime.Now
             };
             await _tweetService.PublishTweet(tweet);
-            return _mapper.Map<TweetVm>(tweet);
+            return await _mediator.Send(new GetTweetByIdQuery() { Id = generatedId});
         }
     }
 }

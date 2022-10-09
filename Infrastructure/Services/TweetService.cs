@@ -120,6 +120,7 @@ namespace server.Infrastructure.Services
                                                 { "likes", 1 },
                                                 { "comments", 1 },
                                                 { "isRetweet", 1 },
+                                                { "retweetId", 1 },
                                                 { "retweet",
                                         new BsonDocument("$first", "$retweet") },
                                                 { "user",
@@ -146,6 +147,7 @@ namespace server.Infrastructure.Services
                                                 { "likes", 1 },
                                                 { "comments", 1 },
                                                 { "isRetweet", 1 },
+                                                { "retweetId", 1 },
                                                 { "retweet",
                                             new BsonDocument
                                                 {

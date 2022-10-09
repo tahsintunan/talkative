@@ -42,8 +42,9 @@ namespace server.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateTweet(UpdateTweetCommand updateTweetCommand)
         {
-            await Mediator.Send(updateTweetCommand);
-            return NoContent();
+            var userId = HttpContext.Items["User"]!.ToString();
+            updateTweetCommand.UserId = userId;
+            return Ok(await Mediator.Send(updateTweetCommand));
         }
 
         [HttpDelete("{id}")]

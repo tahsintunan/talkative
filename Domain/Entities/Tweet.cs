@@ -26,7 +26,7 @@ namespace server.Domain.Entities
         [BsonElement("likes")]
         public IList<string>? Likes { get; set; }
         [BsonElement("comments")]
-        public IList<string>? CommentId { get; set; }
+        public IList<string>? Comments { get; set; }
         [BsonElement("isRetweet")]
         public bool IsRetweet { get; set; }
 

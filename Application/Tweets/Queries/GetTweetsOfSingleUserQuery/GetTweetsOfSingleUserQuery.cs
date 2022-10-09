@@ -61,7 +61,8 @@ namespace Application.Tweets.Queries.GetTweetsOfSingleUserQuery
                     Retweet = tweet["isRetweet"].AsBoolean ? GetTweetFromBsonDocument(tweet["retweet"].AsBsonDocument) : null,
                     User = GetUserFromBsonValue(tweet["user"].AsBsonDocument),
                     CreatedAt = tweet["createdAt"].ToUniversalTime(),
-                    Likes = tweet.GetValue("likes",null)?.AsBsonArray.Select(p => p.AsString).ToArray()
+                    Likes = tweet.GetValue("likes",null)?.AsBsonArray.Select(p => p.AsString).ToArray(),
+                    Comments = tweet.GetValue("comments",null)?.AsBsonArray.Select(p => p.AsString).ToArray()
                 };
             }catch(Exception e)
             {
