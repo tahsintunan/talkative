@@ -66,9 +66,7 @@ export class TweetItemComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.tweetService.createTweet(result).subscribe((res) => {
-          console.log(res);
-        });
+        this.tweetService.createTweet(result);
       }
     });
   }
@@ -87,9 +85,7 @@ export class TweetItemComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.tweetService.updateTweet(result).subscribe((res) => {
-          console.log(res);
-        });
+        this.tweetService.updateTweet(result);
       }
     });
   }

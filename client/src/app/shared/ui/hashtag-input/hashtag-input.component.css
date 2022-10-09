@@ -11,6 +11,8 @@
   background: none;
   position: relative;
   resize: none;
+  padding-left: 3px;
+  padding-right: 3px;
   z-index: 2;
 }
 

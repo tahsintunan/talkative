@@ -60,9 +60,7 @@ export class NavbarComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: TweetModel) => {
       if (result) {
-        this.tweetService.createTweet(result).subscribe((res) => {
-          console.log(res);
-        });
+        this.tweetService.createTweet(result);
       }
     });
   }

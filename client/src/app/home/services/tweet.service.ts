@@ -19,11 +19,29 @@ export class TweetService {
   constructor(private http: HttpClient, private env: EnvService) {}
 
   createTweet(tweet: TweetModel) {
-    return this.http.post(this.apiUrl, tweet);
+    this.http.post<TweetModel>(this.apiUrl, tweet).subscribe((res) => {
+      this.tweetsSubject.next([res, ...this.tweetsSubject.value]);
+
+      if (res.user.id === this.userTweetSubject.value[0]?.user.id) {
+        this.userTweetSubject.next([res, ...this.userTweetSubject.value]);
+      }
+    });
   }
 
   updateTweet(tweet: TweetModel) {
-    return this.http.put(this.apiUrl, tweet);
+    this.http.put<TweetModel>(this.apiUrl, tweet).subscribe((res) => {
+      this.tweetsSubject.next([
+        ...this.tweetsSubject.value.map((x) => (x.id === res.id ? res : x)),
+      ]);
+
+      if (res.user.id === this.userTweetSubject.value[0]?.user.id) {
+        this.userTweetSubject.next([
+          ...this.userTweetSubject.value.map((x) =>
+            x.id === res.id ? res : x
+          ),
+        ]);
+      }
+    });
   }
 
   deleteTweet(tweetId: string) {

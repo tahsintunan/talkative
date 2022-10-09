@@ -40,9 +40,7 @@ export class FeedComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: TweetModel) => {
       if (result) {
-        this.tweetService.createTweet(result).subscribe((res) => {
-          console.log(result);
-        });
+        this.tweetService.createTweet(result);
       }
     });
   }
