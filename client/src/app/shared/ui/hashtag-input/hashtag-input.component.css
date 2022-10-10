@@ -31,7 +31,7 @@
 
 .text-input-highlight-container .text-highlight-tag {
   border-radius: 4px;
-  padding: 1px 3px;
-  margin: -1px -3px;
+  padding: 1px 2px;
+  margin: -1px -2px;
   overflow-wrap: break-word;
 }
