@@ -1,58 +1,62 @@
-﻿using Application.Tweets.Queries.GetTweetByIdQuery;
-using Application.ViewModels;
-using AutoMapper;
+﻿using Application.ViewModels;
 using MediatR;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 using server.Application.Interface;
 using server.Application.ViewModels;
 using server.Domain.Entities;
 
-namespace Application.Tweets.Commands.UpdateTweetCommand
+namespace Application.Tweets.Commands.LikeTweetCommand
 {
-    public class UpdateTweetCommand:IRequest<TweetVm?>
+    public class LikeTweetCommand:IRequest
     {
-        public string? Id { get; set; }
-        public string? Text { get; set; }
-        public IList<string>? Hashtags { get; set; }
+        public string? TweetId { get; set; }
         public string? UserId { get; set; }
-        public bool IsRetweet { get; set; }
-        public string? RetweetId { get; set; }
+        public bool IsLiked { get; set; }
     }
 
-    public class UpdateTweetCommandHandler : IRequestHandler<UpdateTweetCommand, TweetVm?>
+    public class LikeTweetCommandHandler : IRequestHandler<LikeTweetCommand>
     {
+
         private readonly ITweetService _tweetService;
-        private readonly IMediator _mediator;
-        public UpdateTweetCommandHandler(ITweetService tweetService, IMediator mediator)
+        public LikeTweetCommandHandler(ITweetService tweetService)
         {
             _tweetService = tweetService;
-            _mediator = mediator;
         }
 
-        public async Task<TweetVm?> Handle(UpdateTweetCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(LikeTweetCommand request, CancellationToken cancellationToken)
         {
-            var currentTweet = await _tweetService.GetTweetById(request.Id!);
+            var currentTweet = await _tweetService.GetTweetById(request.TweetId!);
             var tweetVm = GetTweetFromBsonDocument(currentTweet!);
-            if(currentTweet != null && request.UserId == tweetVm.UserId)
+
+            if (request.IsLiked)
             {
+                tweetVm.Likes!.Add(request.UserId);
+            }
+            else
+            {
+                tweetVm.Likes!.Remove(request.UserId);
+            }
+
+
+            if (currentTweet != null && request.UserId == tweetVm.UserId)
+            {
+
                 Tweet updatedTweet = new Tweet()
                 {
-                    Id = request.Id,
-                    Text = request.Text ?? tweetVm.Text,
-                    Hashtags = request.Hashtags ?? tweetVm.Hashtags,
+                    Id = tweetVm.Id,
+                    Text =  tweetVm.Text,
+                    Hashtags = tweetVm.Hashtags,
                     UserId = request.UserId,
                     IsRetweet = tweetVm.IsRetweet,
-                    RetweetId = tweetVm.IsRetweet ? request.UserId : null,
-                    Likes = new List<string>(tweetVm.Likes!),
+                    RetweetId = tweetVm.IsRetweet ? tweetVm.RetweetId : null,
+                    Likes = tweetVm.Likes!,
                     Comments = new List<string>(tweetVm.Comments!),
                     CreatedAt = tweetVm.CreatedAt
                 };
 
                 await _tweetService.UpdateTweet(updatedTweet);
-                return await _mediator.Send(new GetTweetByIdQuery() { Id = request.Id});
             }
-            return tweetVm;
+            return Unit.Value;
         }
 
         private UserVm GetUserFromBsonValue(BsonDocument user)
@@ -79,8 +83,8 @@ namespace Application.Tweets.Commands.UpdateTweetCommand
                 UserId = tweet["userId"].ToString(),
                 RetweetId = tweet["isRetweet"].AsBoolean ? tweet["retweetId"].ToString() : null,
                 CreatedAt = tweet["createdAt"].ToUniversalTime(),
-                Likes = tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.AsString).ToArray(),
-                Comments = tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.AsString).ToArray()
+                Likes = tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.ToString()).ToList(),
+                Comments = tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.ToString()).ToList()
             };
         }
     }

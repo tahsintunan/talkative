@@ -1,4 +1,5 @@
 ﻿using Application.Tweets.Commands.DeleteTweetCommand;
+using Application.Tweets.Commands.LikeTweetCommand;
 using Application.Tweets.Commands.PublishTweetCommand;
 using Application.Tweets.Commands.UpdateTweetCommand;
 using Application.Tweets.Queries.GetTweetByIdQuery;
@@ -45,6 +46,15 @@ namespace server.Controllers
             var userId = HttpContext.Items["User"]!.ToString();
             updateTweetCommand.UserId = userId;
             return Ok(await Mediator.Send(updateTweetCommand));
+        }
+
+        [HttpPut("like")]
+        public async Task<IActionResult> LikeTweet(LikeTweetCommand likeTweetCommand)
+        {
+            var userId = HttpContext.Items["User"]!.ToString();
+            likeTweetCommand.UserId = userId;
+            await Mediator.Send(likeTweetCommand);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]

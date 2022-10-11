@@ -60,8 +60,10 @@ namespace Application.Tweets.Queries.GetTweetByIdQuery
                 Retweet = tweet["isRetweet"].AsBoolean ? GetTweetFromBsonDocument(tweet["retweet"].AsBsonDocument):null,
                 User = GetUserFromBsonValue(tweet["user"].AsBsonDocument),
                 CreatedAt = tweet["createdAt"].ToUniversalTime(),
-                Likes = tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.AsString).ToArray(),
-                Comments = tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.AsString).ToArray()
+                UserId = tweet["userId"].ToString(),
+                RetweetId = tweet["isRetweet"].AsBoolean ? tweet["retweetId"].ToString() : null,
+                Likes = tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.ToString()).ToArray(),
+                Comments = tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.ToString()).ToArray()
             };
         }
     }

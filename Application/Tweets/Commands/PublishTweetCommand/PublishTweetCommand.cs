@@ -1,5 +1,4 @@
 ﻿using Application.Tweets.Queries.GetTweetByIdQuery;
-using AutoMapper;
 using MediatR;
 using MongoDB.Bson;
 using server.Application.Interface;
@@ -34,10 +33,10 @@ namespace Application.Tweets.Commands.PublishTweetCommand
             {
                 Id = generatedId,
                 Text = request.Text,
-                UserId = ObjectId.Parse(request.UserId),
+                UserId = request.UserId,
                 Hashtags = new List<string>(request.Hashtags!),
                 IsRetweet = request.IsRetweet,
-                RetweetId = request.IsRetweet ? ObjectId.Parse(request.RetweetId) : null ,
+                RetweetId = request.IsRetweet ? request.RetweetId : null ,
                 Likes = new List<string>(),
                 Comments = new List<string>(),
                 CreatedAt = DateTime.Now

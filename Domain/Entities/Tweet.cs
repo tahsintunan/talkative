@@ -13,7 +13,8 @@ namespace server.Domain.Entities
         public string? Id { get; set; }
 
         [BsonElement("userId")]
-        public ObjectId? UserId { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? UserId { get; set; }
 
         [BsonElement("text")]
         public string? Text { get; set; }
@@ -24,13 +25,16 @@ namespace server.Domain.Entities
         [BsonElement("hashtags")]
         public IList<string>? Hashtags { get; set; }
         [BsonElement("likes")]
+        [BsonRepresentation(BsonType.ObjectId)]
         public IList<string>? Likes { get; set; }
         [BsonElement("comments")]
+        [BsonRepresentation(BsonType.ObjectId)]
         public IList<string>? Comments { get; set; }
         [BsonElement("isRetweet")]
         public bool IsRetweet { get; set; }
 
         [BsonElement("retweetId")]
-        public ObjectId? RetweetId { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? RetweetId { get; set; }
     }
 }
