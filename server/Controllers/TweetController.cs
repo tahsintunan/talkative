@@ -1,6 +1,7 @@
 ﻿using Application.Tweets.Commands.DeleteTweetCommand;
 using Application.Tweets.Commands.LikeTweetCommand;
 using Application.Tweets.Commands.PublishTweetCommand;
+using Application.Tweets.Commands.RetweetCommand;
 using Application.Tweets.Commands.UpdateTweetCommand;
 using Application.Tweets.Queries.GetTweetByIdQuery;
 using Application.Tweets.Queries.GetTweetsOfSingleUserQuery;
@@ -8,17 +9,25 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace server.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class TweetController : ApiControllerBase
     {
+
         [HttpPost]
         public async Task<ActionResult> PublishTweet(PublishTweetCommand publishTweetCommand)
         {
             var userId = HttpContext.Items["User"]!.ToString();
             publishTweetCommand.UserId = userId;
             var tweet = await Mediator.Send(publishTweetCommand);
-            return CreatedAtAction(nameof(GetTweetById), new { id = tweet.Id }, tweet);
+            return CreatedAtAction(nameof(GetTweetById), new { id = tweet.Id }, await Mediator.Send(new GetTweetByIdQuery() { Id = tweet.Id }));
+        }
+
+        [HttpPost("retweet")]
+        public async Task<ActionResult> Retweet(RetweetCommand retweetCommand)
+        {
+            var userId = HttpContext.Items["User"]!.ToString();
+            retweetCommand.UserId = userId;
+            var retweet = await Mediator.Send(retweetCommand);
+            return NoContent();
         }
 
         [HttpGet("{id}")]
@@ -45,7 +54,8 @@ namespace server.Controllers
         {
             var userId = HttpContext.Items["User"]!.ToString();
             updateTweetCommand.UserId = userId;
-            return Ok(await Mediator.Send(updateTweetCommand));
+            await Mediator.Send(updateTweetCommand);
+            return Ok(await Mediator.Send(new GetTweetByIdQuery() { Id = updateTweetCommand.Id }));
         }
 
         [HttpPut("like")]

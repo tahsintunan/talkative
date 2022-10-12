@@ -62,7 +62,9 @@ namespace Application.Tweets.Queries.GetTweetsOfSingleUserQuery
                     User = GetUserFromBsonValue(tweet["user"].AsBsonDocument),
                     CreatedAt = tweet["createdAt"].ToUniversalTime(),
                     Likes = tweet.GetValue("likes",null)?.AsBsonArray.Select(p => p.AsString).ToArray(),
-                    Comments = tweet.GetValue("comments",null)?.AsBsonArray.Select(p => p.AsString).ToArray()
+                    Comments = tweet.GetValue("comments",null)?.AsBsonArray.Select(p => p.AsString).ToArray(),
+                    RetweetPosts = tweet.GetValue("retweetPosts", null)?.AsBsonArray.Select(p => p.ToString()).ToArray(),
+                    RetweetUsers = tweet.GetValue("retweetUsers", null)?.AsBsonArray.Select(p => p.ToString()).ToArray(),
                 };
             }catch(Exception e)
             {

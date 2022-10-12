@@ -1,16 +1,14 @@
 ﻿using Application.Tweets.Queries.GetTweetByIdQuery;
 using Application.ViewModels;
-using AutoMapper;
 using MediatR;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 using server.Application.Interface;
 using server.Application.ViewModels;
 using server.Domain.Entities;
 
 namespace Application.Tweets.Commands.UpdateTweetCommand
 {
-    public class UpdateTweetCommand:IRequest<TweetVm?>
+    public class UpdateTweetCommand:IRequest
     {
         public string? Id { get; set; }
         public string? Text { get; set; }
@@ -18,19 +16,18 @@ namespace Application.Tweets.Commands.UpdateTweetCommand
         public string? UserId { get; set; }
         public bool IsRetweet { get; set; }
         public string? RetweetId { get; set; }
+        public string? RetweetUser { get; set; }
     }
 
-    public class UpdateTweetCommandHandler : IRequestHandler<UpdateTweetCommand, TweetVm?>
+    public class UpdateTweetCommandHandler : IRequestHandler<UpdateTweetCommand>
     {
         private readonly ITweetService _tweetService;
-        private readonly IMediator _mediator;
-        public UpdateTweetCommandHandler(ITweetService tweetService, IMediator mediator)
+        public UpdateTweetCommandHandler(ITweetService tweetService)
         {
             _tweetService = tweetService;
-            _mediator = mediator;
         }
 
-        public async Task<TweetVm?> Handle(UpdateTweetCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateTweetCommand request, CancellationToken cancellationToken)
         {
             var currentTweet = await _tweetService.GetTweetById(request.Id!);
             var tweetVm = GetTweetFromBsonDocument(currentTweet!);
@@ -46,14 +43,17 @@ namespace Application.Tweets.Commands.UpdateTweetCommand
                     RetweetId = tweetVm.IsRetweet ? request.UserId : null,
                     Likes = new List<string>(tweetVm.Likes!),
                     Comments = new List<string>(tweetVm.Comments!),
+                    RetweetPosts = new List<string>(tweetVm.RetweetPosts!),
+                    RetweetUsers = new List<string>(tweetVm.RetweetUsers!),
                     CreatedAt = tweetVm.CreatedAt
                 };
 
                 await _tweetService.UpdateTweet(updatedTweet);
-                return await _mediator.Send(new GetTweetByIdQuery() { Id = request.Id});
             }
-            return tweetVm;
+            return Unit.Value;
         }
+
+
 
         private UserVm GetUserFromBsonValue(BsonDocument user)
         {
@@ -79,8 +79,9 @@ namespace Application.Tweets.Commands.UpdateTweetCommand
                 UserId = tweet["userId"].ToString(),
                 RetweetId = tweet["isRetweet"].AsBoolean ? tweet["retweetId"].ToString() : null,
                 CreatedAt = tweet["createdAt"].ToUniversalTime(),
-                Likes = tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.AsString).ToArray(),
-                Comments = tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.AsString).ToArray()
+                Likes = tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.ToString()).ToList(),
+                Comments = tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.ToString()).ToList(),
+                RetweetUsers = tweet.GetValue("retweetUsers", null)?.AsBsonArray.Select(p => p.ToString()).ToList()
             };
         }
     }

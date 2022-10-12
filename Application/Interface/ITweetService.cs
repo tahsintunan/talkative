@@ -7,6 +7,7 @@ namespace server.Application.Interface
     {
         Task PublishTweet(Tweet tweet);
         Task DeleteTweet(string id);
+        Task DeleteRetweet(string retweetId, string userId);
         Task UpdateTweet(Tweet tweet);
         Task GetTweetsOfFollowing();
         Task<BsonDocument?> GetTweetById(string id);

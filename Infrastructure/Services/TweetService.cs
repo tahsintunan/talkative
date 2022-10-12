@@ -4,7 +4,6 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using server.Application.Interface;
-using server.Application.ViewModels;
 using server.Domain.Entities;
 using server.Infrastructure.DbConfig;
 
@@ -12,7 +11,6 @@ namespace server.Infrastructure.Services
 {
     public class TweetService : ITweetService
     {
-        private readonly IUserService _userService;
         private readonly IMongoCollection<Tweet> _tweetCollection;
         public TweetService(IOptions<TweetDatabaseConfig> tweetDatabaseConfig, IMapper mapper, IUserService userService)
         {
@@ -24,8 +22,6 @@ namespace server.Infrastructure.Services
 
             _tweetCollection = mongoDatabase.GetCollection<Tweet>(
                 tweetDatabaseConfig.Value.TweetCollectionName);
-
-            _userService = userService;
 
             MongoClientSettings settings = MongoClientSettings.FromConnectionString(tweetDatabaseConfig.Value.ConnectionString);
 
@@ -41,6 +37,12 @@ namespace server.Infrastructure.Services
         {
             await _tweetCollection.DeleteOneAsync(tweet => tweet.Id == id);
         }
+
+        public async Task DeleteRetweet(string retweetId, string userId)
+        {
+            await _tweetCollection.DeleteOneAsync(tweet=>tweet.RetweetId == retweetId && tweet.UserId==userId);
+        }
+
 
         public async Task<BsonDocument?> GetTweetById(string id)
         { 
@@ -121,6 +123,8 @@ namespace server.Infrastructure.Services
                                                 { "comments", 1 },
                                                 { "isRetweet", 1 },
                                                 { "retweetId", 1 },
+                                                {"retweetUsers", 1 },
+                                                {"retweetPosts", 1 },
                                                 { "retweet",
                                         new BsonDocument("$first", "$retweet") },
                                                 { "user",
@@ -148,6 +152,8 @@ namespace server.Infrastructure.Services
                                                 { "comments", 1 },
                                                 { "isRetweet", 1 },
                                                 { "retweetId", 1 },
+                                                {"retweetUsers", 1 },
+                                                {"retweetPosts", 1 },
                                                 { "retweet",
                                             new BsonDocument
                                                 {

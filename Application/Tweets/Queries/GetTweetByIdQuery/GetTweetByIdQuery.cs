@@ -63,7 +63,9 @@ namespace Application.Tweets.Queries.GetTweetByIdQuery
                 UserId = tweet["userId"].ToString(),
                 RetweetId = tweet["isRetweet"].AsBoolean ? tweet["retweetId"].ToString() : null,
                 Likes = tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.ToString()).ToArray(),
-                Comments = tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.ToString()).ToArray()
+                Comments = tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.ToString()).ToArray(),
+                RetweetPosts = tweet.GetValue("retweetPosts", null)?.AsBsonArray.Select(p => p.ToString()).ToArray(),
+                RetweetUsers = tweet.GetValue("retweetUsers", null)?.AsBsonArray.Select(p => p.ToString()).ToArray(),
             };
         }
     }
