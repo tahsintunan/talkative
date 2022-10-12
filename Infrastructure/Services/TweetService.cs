@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -12,7 +11,7 @@ namespace server.Infrastructure.Services
     public class TweetService : ITweetService
     {
         private readonly IMongoCollection<Tweet> _tweetCollection;
-        public TweetService(IOptions<TweetDatabaseConfig> tweetDatabaseConfig, IMapper mapper, IUserService userService)
+        public TweetService(IOptions<TweetDatabaseConfig> tweetDatabaseConfig, IOptions<UserDatabaseConfig> userDatabaseConfig)
         {
             var mongoClient = new MongoClient(
             tweetDatabaseConfig.Value.ConnectionString);
@@ -38,12 +37,6 @@ namespace server.Infrastructure.Services
             await _tweetCollection.DeleteOneAsync(tweet => tweet.Id == id);
         }
 
-        public async Task DeleteRetweet(string retweetId, string userId)
-        {
-            await _tweetCollection.DeleteOneAsync(tweet=>tweet.RetweetId == retweetId && tweet.UserId==userId);
-        }
-
-
         public async Task<BsonDocument?> GetTweetById(string id)
         { 
 
@@ -58,7 +51,6 @@ namespace server.Infrastructure.Services
             BaseJoinPipelines.CopyTo(pipeline, 1);
 
             BsonDocument tweet = await _tweetCollection.Aggregate<BsonDocument>(pipeline).FirstOrDefaultAsync();
-            
             return tweet;
         }
 
@@ -80,11 +72,11 @@ namespace server.Infrastructure.Services
 
             BsonDocument[] BaseJoinPipelines = GetBaseJoinPipelines();
 
-            BsonDocument[] pipeline = new BsonDocument[1 + BaseJoinPipelines.Length];
-            pipeline[0] = pipelineStageZero;
-            BaseJoinPipelines.CopyTo(pipeline, 1);
+            BsonDocument[] pipelines = new BsonDocument[1 + BaseJoinPipelines.Length];
+            pipelines[0] = pipelineStageZero;
+            BaseJoinPipelines.CopyTo(pipelines, 1);
 
-            IList<BsonDocument> tweets = await _tweetCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+            IList<BsonDocument> tweets = await _tweetCollection.Aggregate<BsonDocument>(pipelines).ToListAsync();
 
             return tweets;
 

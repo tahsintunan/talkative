@@ -81,7 +81,8 @@ namespace Application.Tweets.Commands.UpdateTweetCommand
                 CreatedAt = tweet["createdAt"].ToUniversalTime(),
                 Likes = tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.ToString()).ToList(),
                 Comments = tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.ToString()).ToList(),
-                RetweetUsers = tweet.GetValue("retweetUsers", null)?.AsBsonArray.Select(p => p.ToString()).ToList()
+                RetweetUsers = tweet.GetValue("retweetUsers", null)?.AsBsonArray.Select(p => p.ToString()).ToList(),
+                RetweetPosts = tweet.GetValue("retweetPosts", null)?.AsBsonArray.Select(p => p.ToString()).ToList()
             };
         }
     }

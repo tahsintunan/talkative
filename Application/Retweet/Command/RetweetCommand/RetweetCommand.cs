@@ -1,11 +1,12 @@
-﻿using Application.ViewModels;
+﻿using Application.Interface;
+using Application.ViewModels;
 using MediatR;
 using MongoDB.Bson;
 using server.Application.Interface;
 using server.Application.ViewModels;
 using server.Domain.Entities;
 
-namespace Application.Tweets.Commands.RetweetCommand
+namespace Application.Retweet.Commands.RetweetCommand
 {
     public class RetweetCommand:IRequest
     {
@@ -20,16 +21,20 @@ namespace Application.Tweets.Commands.RetweetCommand
     public class RetweetCommandHandler : IRequestHandler<RetweetCommand>
     {
         private readonly ITweetService _tweetService;
+        private readonly IRetweetService _retweetService;
+        private readonly IBsonDocumentMapper<TweetVm> _tweetDocumentMapper;
 
-        public RetweetCommandHandler(ITweetService tweetService)
+        public RetweetCommandHandler(ITweetService tweetService, IBsonDocumentMapper<TweetVm> tweetDocumentMapper, IRetweetService retweetService)
         {
             _tweetService = tweetService;
+            _tweetDocumentMapper = tweetDocumentMapper;
+            _retweetService = retweetService;
         }
 
         public async Task<Unit> Handle(RetweetCommand request, CancellationToken cancellationToken)
         {
             var tweet = await _tweetService.GetTweetById(request.RetweetId!);
-            TweetVm retweetVm = GetTweetFromBsonDocument(tweet!);
+            TweetVm retweetVm = _tweetDocumentMapper.map(tweet!);
 
             if (request.IsRetweet)
             {
@@ -38,46 +43,12 @@ namespace Application.Tweets.Commands.RetweetCommand
             }
             else
             {
-                await _tweetService.DeleteRetweet(request.RetweetId!, request.UserId!);
+                await _retweetService.DeleteRetweet(request.RetweetId!, request.UserId!);
                 await UpdateExistingTweet(retweetVm, request.Id!, request);
             }
             
-            
             return Unit.Value;
         }
-
-
-        private UserVm GetUserFromBsonValue(BsonDocument user)
-        {
-            return new UserVm()
-            {
-                Id = user["_id"].ToString(),
-                Username = user["username"].ToString(),
-                Email = user["email"].ToString(),
-            };
-        }
-
-        private TweetVm GetTweetFromBsonDocument(BsonDocument tweet)
-        {
-
-            return new TweetVm()
-            {
-                Id = tweet["_id"].ToString(),
-                Text = tweet["text"].ToString(),
-                Hashtags = tweet["hashtags"].AsBsonArray.Select(p => p.AsString).ToArray(),
-                IsRetweet = tweet["isRetweet"].AsBoolean,
-                Retweet = tweet["isRetweet"].AsBoolean ? GetTweetFromBsonDocument(tweet["retweet"].AsBsonDocument) : null,
-                User = GetUserFromBsonValue(tweet["user"].AsBsonDocument),
-                UserId = tweet["userId"].ToString(),
-                RetweetId = tweet["isRetweet"].AsBoolean ? tweet["retweetId"].ToString() : null,
-                CreatedAt = tweet["createdAt"].ToUniversalTime(),
-                Likes = tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.ToString()).ToList(),
-                Comments = tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.ToString()).ToList(),
-                RetweetUsers = tweet.GetValue("retweetUsers", null)?.AsBsonArray.Select(p => p.ToString()).ToList(),
-                RetweetPosts = tweet.GetValue("retweetPosts", null)?.AsBsonArray.Select(p => p.ToString()).ToList()
-            };
-        }
-
 
         private async Task<string> CreateNewRetweet(RetweetCommand request)
         {
@@ -130,7 +101,6 @@ namespace Application.Tweets.Commands.RetweetCommand
             };
 
             await _tweetService.UpdateTweet(updatedTweet);
-
         }
     }
 }

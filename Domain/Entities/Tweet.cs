@@ -20,7 +20,7 @@ namespace server.Domain.Entities
         public string? Text { get; set; }
 
         [BsonElement("createdAt")]
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         [BsonElement("hashtags")]
         public IList<string>? Hashtags { get; set; }

@@ -1,4 +1,5 @@
 ﻿using Application.ViewModels;
+using MongoDB.Bson;
 
 namespace server.Application.ViewModels
 {
@@ -16,6 +17,7 @@ namespace server.Application.ViewModels
         public IList<string?>? RetweetPosts { get; set; }
         public IList<string?>? Likes { get; set; }
         public IList<string?>? Comments { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
     }
+
 }

@@ -1,4 +1,5 @@
-﻿using Application.ViewModels;
+﻿using Application.Interface;
+using Application.ViewModels;
 using AutoMapper;
 using MediatR;
 using MongoDB.Bson;
@@ -18,13 +19,11 @@ namespace Application.Tweets.Queries.GetTweetByIdQuery
     public class GetTweetByIdQueryHandler : IRequestHandler<GetTweetByIdQuery, TweetVm?>
     {
         private readonly ITweetService _tweetService;
-        private readonly IUserService _userService;
-        private readonly IMapper _mapper;
-        public GetTweetByIdQueryHandler(ITweetService tweetService, IUserService userService, IMapper mapper)
+        private readonly IBsonDocumentMapper<TweetVm> _tweetBsonMapper;
+        public GetTweetByIdQueryHandler(ITweetService tweetService, IBsonDocumentMapper<TweetVm> tweetBsonMapper)
         {
             _tweetService = tweetService;
-            _userService = userService;
-            _mapper = mapper;
+            _tweetBsonMapper = tweetBsonMapper;
         }
 
         public async Task<TweetVm?> Handle(GetTweetByIdQuery request, CancellationToken cancellationToken)
@@ -34,39 +33,9 @@ namespace Application.Tweets.Queries.GetTweetByIdQuery
             {
                 return null;
             }
-            var tweet = GetTweetFromBsonDocument(tweetBson);
+            var tweet = _tweetBsonMapper.map(tweetBson);
             return tweet;
         }
 
-        private UserVm GetUserFromBsonValue(BsonDocument user)
-        {
-            return new UserVm()
-            {
-                Id = user["_id"].ToString(),
-                Username = user["username"].ToString(),
-                Email = user["email"].ToString(),
-            };
-        }
-
-        private TweetVm GetTweetFromBsonDocument(BsonDocument tweet)
-        {
-            
-            return new TweetVm()
-            {
-                Id = tweet["_id"].ToString(),
-                Text = tweet["text"].ToString(),
-                Hashtags = tweet["hashtags"].AsBsonArray.Select(p => p.AsString).ToArray(),
-                IsRetweet = tweet["isRetweet"].AsBoolean,
-                Retweet = tweet["isRetweet"].AsBoolean ? GetTweetFromBsonDocument(tweet["retweet"].AsBsonDocument):null,
-                User = GetUserFromBsonValue(tweet["user"].AsBsonDocument),
-                CreatedAt = tweet["createdAt"].ToUniversalTime(),
-                UserId = tweet["userId"].ToString(),
-                RetweetId = tweet["isRetweet"].AsBoolean ? tweet["retweetId"].ToString() : null,
-                Likes = tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.ToString()).ToArray(),
-                Comments = tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.ToString()).ToArray(),
-                RetweetPosts = tweet.GetValue("retweetPosts", null)?.AsBsonArray.Select(p => p.ToString()).ToArray(),
-                RetweetUsers = tweet.GetValue("retweetUsers", null)?.AsBsonArray.Select(p => p.ToString()).ToArray(),
-            };
-        }
     }
 }

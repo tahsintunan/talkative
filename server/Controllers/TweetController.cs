@@ -1,7 +1,8 @@
-﻿using Application.Tweets.Commands.DeleteTweetCommand;
+﻿using Application.Retweet.Commands.RetweetCommand;
+using Application.Retweet.Query.GetAllRetweetQuery;
+using Application.Tweets.Commands.DeleteTweetCommand;
 using Application.Tweets.Commands.LikeTweetCommand;
 using Application.Tweets.Commands.PublishTweetCommand;
-using Application.Tweets.Commands.RetweetCommand;
 using Application.Tweets.Commands.UpdateTweetCommand;
 using Application.Tweets.Queries.GetTweetByIdQuery;
 using Application.Tweets.Queries.GetTweetsOfSingleUserQuery;
@@ -47,6 +48,12 @@ namespace server.Controllers
         public async Task<ActionResult> GetTweetOfAUser(string userId)
         {
             return Ok(await Mediator.Send(new GetTweetsOfSingleUserQuery() { UserId = userId }));
+        }
+
+        [HttpGet("retweet/{id}")]
+        public async Task<ActionResult> GetRetweetsOfTweet(string id)
+        {
+            return Ok(await Mediator.Send(new GetAllRetweetQuery() { RetweetId = id }));
         }
 
         [HttpPut]
