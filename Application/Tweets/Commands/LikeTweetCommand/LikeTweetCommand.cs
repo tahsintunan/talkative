@@ -84,7 +84,9 @@ namespace Application.Tweets.Commands.LikeTweetCommand
                 RetweetId = tweet["isRetweet"].AsBoolean ? tweet["retweetId"].ToString() : null,
                 CreatedAt = tweet["createdAt"].ToUniversalTime(),
                 Likes = tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.ToString()).ToList(),
-                Comments = tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.ToString()).ToList()
+                Comments = tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.ToString()).ToList(),
+                RetweetUsers = tweet.GetValue("retweetUsers", null)?.AsBsonArray.Select(p => p.ToString()).ToList(),
+                RetweetPosts = tweet.GetValue("retweetPosts", null)?.AsBsonArray.Select(p => p.ToString()).ToList()
             };
         }
     }
