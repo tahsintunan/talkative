@@ -38,7 +38,7 @@ namespace Application.Tweets.Commands.LikeTweetCommand
             }
 
 
-            if (currentTweet != null && request.UserId == tweetVm.UserId)
+            if (currentTweet != null)
             {
 
                 Tweet updatedTweet = new Tweet()

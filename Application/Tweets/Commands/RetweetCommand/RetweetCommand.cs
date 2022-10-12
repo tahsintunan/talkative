@@ -9,7 +9,7 @@ namespace Application.Tweets.Commands.RetweetCommand
 {
     public class RetweetCommand:IRequest
     {
-        public string? TweetId { get; set; }
+        public string? Id { get; set; }
         public string? Text { get; set; }
         public IList<string>? Hashtags { get; set; }
         public string? RetweetId { get; set; }
@@ -39,7 +39,7 @@ namespace Application.Tweets.Commands.RetweetCommand
             else
             {
                 await _tweetService.DeleteRetweet(request.RetweetId!, request.UserId!);
-                await UpdateExistingTweet(retweetVm, request.TweetId!, request);
+                await UpdateExistingTweet(retweetVm, request.Id!, request);
             }
             
             
