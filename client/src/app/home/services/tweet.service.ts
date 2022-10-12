@@ -75,4 +75,10 @@ export class TweetService {
         this.userTweetSubject.next(res);
       });
   }
+
+  likeTweet(tweetId: string, isLiked: boolean) {
+    this.http
+      .put<TweetModel>(this.apiUrl + '/like', { tweetId, isLiked })
+      .subscribe((res) => {});
+  }
 }

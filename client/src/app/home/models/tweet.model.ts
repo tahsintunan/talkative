@@ -10,4 +10,5 @@ export interface TweetModel {
   retweetId?: string;
   retweet?: TweetModel;
   likes?: string[];
+  comments?: string[];
 }

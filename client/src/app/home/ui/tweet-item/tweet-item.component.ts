@@ -27,6 +27,8 @@ export class TweetItemComponent implements OnInit {
 
   userAuth?: UserModel;
 
+  alreadyLiked: boolean = false;
+
   constructor(
     private userService: UserService,
     private tweetService: TweetService,
@@ -37,6 +39,8 @@ export class TweetItemComponent implements OnInit {
     this.userService.userAuth.subscribe((res) => {
       this.userAuth = res;
     });
+
+    this.alreadyLiked = !!this.data?.likes?.includes(this.userAuth?.id!);
   }
 
   onTagClick(event: any) {
@@ -46,7 +50,17 @@ export class TweetItemComponent implements OnInit {
   }
 
   onLike() {
-    this.onLikeClick.emit(this.data?.id);
+    this.tweetService.likeTweet(this.data?.id!, !this.alreadyLiked);
+
+    if (this.alreadyLiked) {
+      this.data!.likes = this.data?.likes?.filter(
+        (likedBy) => likedBy !== this.userAuth?.id
+      );
+    } else {
+      this.data?.likes?.push(this.userAuth?.id!);
+    }
+
+    this.alreadyLiked = !this.alreadyLiked;
   }
 
   onComment() {

@@ -50,14 +50,27 @@
   </div>
 
   <div class="flex p-1 gap-1 border-t border-gray-300">
-    <button mat-button class="flex-1" (click)="onLike()">
-      <mat-icon class="material-symbols-rounded">favorite</mat-icon>
+    <button
+      mat-button
+      [color]="alreadyLiked && 'primary'"
+      class="flex-1"
+      (click)="onLike()"
+    >
+      <mat-icon
+        class="mx-2 material-symbols-rounded"
+        [ngClass]="{
+          'material-symbols-filled': alreadyLiked
+        }"
+        >favorite</mat-icon
+      >
+      <span class="text-lg">{{ data?.likes?.length }}</span>
     </button>
 
     <mat-divider vertical></mat-divider>
 
     <button mat-button class="flex-1" (click)="onComment()">
-      <mat-icon class="material-symbols-rounded">mode_comment</mat-icon>
+      <mat-icon class="mx-2 material-symbols-rounded">mode_comment</mat-icon>
+      <span class="text-lg">{{ data?.comments?.length }}</span>
     </button>
     <mat-divider vertical></mat-divider>
 
