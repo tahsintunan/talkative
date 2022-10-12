@@ -5,7 +5,7 @@ using server.Application.ViewModels;
 
 namespace Application.Mapper
 {
-    public class TweetBsonDocumentMapper : IBsonDocumentMapper<TweetVm>
+    public class TweetBsonDocumentMapper : IBsonDocumentMapper<TweetVm?>
     {
         private readonly IBsonDocumentMapper<UserVm> _userMapper;
         public TweetBsonDocumentMapper(IBsonDocumentMapper<UserVm> userMapper)
@@ -13,7 +13,7 @@ namespace Application.Mapper
             _userMapper = userMapper;
         }
 
-        public TweetVm map(BsonDocument tweet)
+        public TweetVm? map(BsonDocument tweet)
         {
             if (!tweet.Contains("_id"))
             {
@@ -28,10 +28,10 @@ namespace Application.Mapper
                 Retweet = tweet.Contains("retweet") ? tweet["isRetweet"].AsBoolean ? map(tweet["retweet"].AsBsonDocument) : null : null,
                 User = tweet.Contains("user") ? _userMapper.map(tweet["user"].AsBsonDocument) : null,
                 CreatedAt = tweet.Contains("createdAt") ? tweet["createdAt"].ToUniversalTime() : null,
-                Likes = tweet.Contains("likes") ? tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.AsString).ToArray() : null,
-                Comments = tweet.Contains("comments") ? tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.AsString).ToArray() : null,
-                RetweetPosts = tweet.Contains("retweetPosts") ? tweet.GetValue("retweetPosts", null)?.AsBsonArray.Select(p => p.ToString()).ToArray() : null,
-                RetweetUsers = tweet.Contains("retweetUsers") ? tweet.GetValue("retweetUsers", null)?.AsBsonArray.Select(p => p.ToString()).ToArray() : null,
+                Likes = tweet.Contains("likes") ? tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.ToString()).ToList() : null,
+                Comments = tweet.Contains("comments") ? tweet.GetValue("comments", null)?.AsBsonArray.Select(p => p.ToString()).ToList() : null,
+                RetweetPosts = tweet.Contains("retweetPosts") ? tweet.GetValue("retweetPosts", null)?.AsBsonArray.Select(p => p.ToString()).ToList() : null,
+                RetweetUsers = tweet.Contains("retweetUsers") ? tweet.GetValue("retweetUsers", null)?.AsBsonArray.Select(p => p.ToString()).ToList() : null,
             };
         }
     }

@@ -54,7 +54,10 @@ namespace Application.Tweets.Commands.LikeTweetCommand
                     RetweetId = tweetVm.IsRetweet ? tweetVm.RetweetId : null,
                     Likes = tweetVm.Likes!,
                     Comments = new List<string>(tweetVm.Comments!),
-                    CreatedAt = tweetVm.CreatedAt
+                    CreatedAt = tweetVm.CreatedAt,
+                    RetweetPosts = new List<string>(tweetVm.RetweetPosts!),
+                    RetweetUsers = new List<string>(tweetVm.RetweetUsers!),
+
                 };
 
                 await _tweetService.UpdateTweet(updatedTweet);
