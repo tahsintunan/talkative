@@ -154,7 +154,11 @@ namespace server.Infrastructure.Services
                                                     { "hashtags", 1 },
                                                     { "_id",new BsonDocument("$toString", "$retweet._id") },
                                                     { "isRetweet",1 },
-                                                    { "createdAt", 1 }
+                                                    { "createdAt", 1 },
+                                                    { "likes", 1 },
+                                                    { "comments", 1 },
+                                                    { "retweetPosts", 1 },
+                                                    { "retweetUsers", 1 },
                                                 } },
                                                 { "user", 1 }
                                             });
