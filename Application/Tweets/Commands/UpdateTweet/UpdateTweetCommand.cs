@@ -39,7 +39,7 @@ namespace Application.Tweets.Commands.UpdateTweetCommand
                     Hashtags = request.Hashtags ?? tweetVm.Hashtags,
                     UserId = request.UserId,
                     IsRetweet = tweetVm.IsRetweet,
-                    RetweetId = tweetVm.IsRetweet ? request.UserId : null,
+                    RetweetId = tweetVm.IsRetweet ? request.RetweetId : null,
                     Likes = new List<string>(tweetVm.Likes!),
                     Comments = new List<string>(tweetVm.Comments!),
                     RetweetPosts = new List<string>(tweetVm.RetweetPosts!),
