@@ -10,10 +10,12 @@ namespace Application.Mapper
         {
             return new UserVm()
             {
-                Id = user.Contains("_id") ? user["_id"].ToString(): null,
-                Username = user.Contains("username")? user["username"].ToString():null,
-                Email = user.Contains("email")?user["email"].ToString():null,
-                DateOfBirth = user.Contains("dateOfBirth")?user["dateOfBirth"].ToUniversalTime() : null,
+                Id = user.Contains("_id") ? user["_id"].ToString() : null,
+                Username = user.Contains("username") ? user["username"].ToString() : null,
+                Email = user.Contains("email") ? user["email"].ToString() : null,
+                DateOfBirth = user.Contains("dateOfBirth")
+                    ? user["dateOfBirth"].ToUniversalTime()
+                    : null,
             };
         }
     }
