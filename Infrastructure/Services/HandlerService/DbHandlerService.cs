@@ -1,4 +1,6 @@
 using System.Text;
+using Domain.Entities;
+using Infrastructure.DbConfig;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -6,10 +8,8 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using server.Domain.Entities;
-using server.Infrastructure.DbConfig;
 
-namespace server.Infrastructure.Services.HandlerService;
+namespace Infrastructure.Services.HandlerService;
 
 public class DbHandlerService : IHostedService
 {

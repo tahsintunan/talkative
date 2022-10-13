@@ -1,15 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Application.Dto.UpdateUserDto;
+using Application.Interface;
+using Domain.Entities;
+using Infrastructure.DbConfig;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using server.Application.Dto.UpdateUserDto;
-using server.Application.Interface;
-using server.Domain.Entities;
-using server.Infrastructure.DbConfig;
 using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
 
-namespace server.Infrastructure.Services
+namespace Infrastructure.Services
 {
     public class UserService : IUserService
     {

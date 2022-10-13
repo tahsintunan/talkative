@@ -6,16 +6,16 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Security.Claims;
 using System.Net.Http.Headers;
-using server.Domain.Entities;
-using server.Application.Dto.SignupDto;
-using server.Application.Dto.LoginDto;
-using server.Infrastructure.DbConfig;
-using server.Application.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Application.Interface;
+using Application.Dto.SignupDto;
+using Infrastructure.DbConfig;
+using Application.Dto.LoginDto;
+using Domain.Entities;
 
-namespace server.Infrastructure.Services
+namespace Infrastructure.Services
 {
     public class AuthService : IAuthService
     {
@@ -61,7 +61,7 @@ namespace server.Infrastructure.Services
             var accessToken = GenerateAccessToken(user);
             var value = new AuthenticationHeaderValue("Bearer", accessToken);
             return accessToken;
-            
+
         }
 
         public async Task<bool> CheckIfUserExists(string username, string email)

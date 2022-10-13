@@ -1,8 +1,7 @@
 ﻿using Application.Interface;
+using Application.ViewModels;
 using MediatR;
 using MongoDB.Bson;
-using server.Application.Interface;
-using server.Application.ViewModels;
 
 namespace Application.Tweets.Queries.GetTweetsOfSingleUserQuery
 {

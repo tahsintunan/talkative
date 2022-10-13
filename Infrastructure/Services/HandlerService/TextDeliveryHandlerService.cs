@@ -1,13 +1,13 @@
 using System.Text;
+using Application.Interface;
+using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using server.Application.Interface;
-using server.Domain.Entities;
 
-namespace server.Infrastructure.Services.HandlerService;
+namespace Infrastructure.Services.HandlerService;
 
 public class TextDeliveryHandlerService : IHostedService
 {

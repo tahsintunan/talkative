@@ -1,9 +1,9 @@
 ﻿using Application.Interface;
+using Domain.Entities;
+using Infrastructure.DbConfig;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using server.Domain.Entities;
-using server.Infrastructure.DbConfig;
 
 namespace Infrastructure.Services
 {

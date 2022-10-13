@@ -1,8 +1,8 @@
+using Application.Dto.ChatHistoryDto;
+using Application.Dto.MessageDto;
+using Application.Interface;
+using Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using server.Application.Dto.ChatHistoryDto;
-using server.Application.Dto.MessageDto;
-using server.Application.Interface;
-using server.Application.ViewModels;
 
 namespace server.Controllers;
 

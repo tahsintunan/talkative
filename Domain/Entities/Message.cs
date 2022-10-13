@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
-namespace server.Domain.Entities;
+namespace Domain.Entities;
 
 public class Message
 {

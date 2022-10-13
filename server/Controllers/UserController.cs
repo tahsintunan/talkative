@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using server.Application.Dto.ForgetPasswordDto;
-using server.Application.Dto.UpdateUserDto;
-using server.Application.Interface;
+﻿using Application.Dto.ForgetPasswordDto;
+using Application.Dto.UpdateUserDto;
+using Application.Interface;
+using Microsoft.AspNetCore.Mvc;
 
 namespace server.Controllers
 {

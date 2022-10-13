@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Application.Interface;
+using Domain.Entities;
+using Infrastructure.DbConfig;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using server.Application.Interface;
-using server.Domain.Entities;
-using server.Infrastructure.DbConfig;
 
-namespace server.Infrastructure.Services
+namespace Infrastructure.Services
 {
     public class TweetService : ITweetService
     {
@@ -38,7 +38,7 @@ namespace server.Infrastructure.Services
         }
 
         public async Task<BsonDocument?> GetTweetById(string id)
-        { 
+        {
 
             BsonDocument pipelineStageZero = new BsonDocument("$match",
                 new BsonDocument("_id", new ObjectId(id)));

@@ -1,4 +1,4 @@
-﻿using Application.Retweet.Commands.RetweetCommand;
+﻿using Application.Retweet.Command.RetweetCommand;
 using Application.Retweet.Query.GetAllRetweetQuery;
 using Application.Tweets.Commands.DeleteTweetCommand;
 using Application.Tweets.Commands.LikeTweetCommand;

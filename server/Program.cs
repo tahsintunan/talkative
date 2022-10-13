@@ -1,15 +1,13 @@
+using Application;
 using Application.Interface;
 using Application.Mapper;
 using Application.ViewModels;
 using FluentValidation.AspNetCore;
+using Infrastructure.DbConfig;
 using Infrastructure.Services;
+using Infrastructure.Services.HandlerService;
 using MediatR;
-using server.Application.Interface;
-using server.Application.ViewModels;
 using server.Hub;
-using server.Infrastructure.DbConfig;
-using server.Infrastructure.Services;
-using server.Infrastructure.Services.HandlerService;
 using server.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);

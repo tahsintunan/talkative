@@ -1,4 +1,4 @@
-﻿namespace server.Infrastructure.DbConfig
+﻿namespace Infrastructure.DbConfig
 {
     public class TweetDatabaseConfig
     {

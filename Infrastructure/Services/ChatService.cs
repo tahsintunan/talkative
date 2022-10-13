@@ -1,12 +1,12 @@
+using Application.Dto.ChatHistoryDto;
+using Application.Interface;
+using Application.ViewModels;
+using Domain.Entities;
+using Infrastructure.DbConfig;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using server.Application.Dto.ChatHistoryDto;
-using server.Application.Interface;
-using server.Application.ViewModels;
-using server.Domain.Entities;
-using server.Infrastructure.DbConfig;
 
-namespace server.Infrastructure.Services;
+namespace Infrastructure.Services;
 
 public class ChatService : IChatService
 {

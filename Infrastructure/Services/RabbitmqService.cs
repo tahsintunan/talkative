@@ -1,12 +1,12 @@
 using System.Text;
+using Application.Dto.MessageDto;
+using Application.Interface;
+using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
-using server.Application.Dto.MessageDto;
-using server.Application.Interface;
-using server.Domain.Entities;
 
-namespace server.Infrastructure.Services;
+namespace Infrastructure.Services;
 
 public class RabbitmqService : IRabbitmqService
 {
