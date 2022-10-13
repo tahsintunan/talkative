@@ -1,10 +1,8 @@
 ﻿using Application.Interface;
 using Application.ViewModels;
+using Domain.Entities;
 using MediatR;
 using MongoDB.Bson;
-using server.Application.Interface;
-using server.Application.ViewModels;
-using server.Domain.Entities;
 
 namespace Application.Tweets.Commands.LikeTweetCommand
 {

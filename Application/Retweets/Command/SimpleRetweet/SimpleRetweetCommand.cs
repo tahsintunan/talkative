@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
 namespace Application.Retweets.Command.Retweet
 {
-    internal class RetweetCommand
+    public class SimpleRetweetCommand:IRequest<string>
     {
+        public string? RetweetId { get; set; }
+    }
+
+    public class SimpleRetweetCommandHandler : IRequestHandler<SimpleRetweetCommand, string>
+    {
+        public Task<string> Handle(SimpleRetweetCommand request, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

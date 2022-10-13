@@ -1,14 +1,12 @@
 ﻿using Application.Interface;
 using Application.ViewModels;
+using Domain.Entities;
 using MediatR;
 using MongoDB.Bson;
-using server.Application.Interface;
-using server.Application.ViewModels;
-using server.Domain.Entities;
 
-namespace Application.Retweet.Commands.RetweetCommand
+namespace Application.Retweet.Command.RetweetCommand
 {
-    public class RetweetCommand:IRequest
+    public class RetweetCommand : IRequest
     {
         public string? Id { get; set; }
         public string? Text { get; set; }
@@ -46,7 +44,7 @@ namespace Application.Retweet.Commands.RetweetCommand
                 await _retweetService.DeleteRetweet(request.RetweetId!, request.UserId!);
                 await UpdateExistingTweet(retweetVm, request.Id!, request);
             }
-            
+
             return Unit.Value;
         }
 
@@ -61,7 +59,7 @@ namespace Application.Retweet.Commands.RetweetCommand
                 IsRetweet = true,
                 UserId = request.UserId,
                 Likes = new List<string>(),
-                Comments = new List<string>(),  
+                Comments = new List<string>(),
                 RetweetPosts = new List<string>(),
                 RetweetUsers = new List<string>(),
                 CreatedAt = DateTime.Now,

@@ -2,12 +2,6 @@
 using Application.ViewModels;
 using AutoMapper;
 using MediatR;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Conventions;
-using server.Application.Interface;
-using server.Application.ViewModels;
-using server.Domain.Entities;
 
 namespace Application.Tweets.Queries.GetTweetByIdQuery
 {
