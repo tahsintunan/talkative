@@ -1,9 +1,9 @@
-﻿using Application.Interface;
-using Application.ViewModels;
+﻿using Application.Common.Interface;
+using Application.Common.ViewModels;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Tweets.Commands.UpdateTweetCommand
+namespace Application.Tweets.Commands.UpdateTweet
 {
     public class UpdateTweetCommand:IRequest
     {
@@ -37,13 +37,14 @@ namespace Application.Tweets.Commands.UpdateTweetCommand
                     Id = request.Id,
                     Text = request.Text ?? tweetVm.Text,
                     Hashtags = request.Hashtags ?? tweetVm.Hashtags,
-                    UserId = request.UserId,
+                    UserId = tweetVm.UserId,
                     IsRetweet = tweetVm.IsRetweet,
                     RetweetId = tweetVm.IsRetweet ? request.RetweetId : null,
                     Likes = new List<string>(tweetVm.Likes!),
                     Comments = new List<string>(tweetVm.Comments!),
                     RetweetPosts = new List<string>(tweetVm.RetweetPosts!),
                     RetweetUsers = new List<string>(tweetVm.RetweetUsers!),
+                    Retweets = new Dictionary<string, string>(tweetVm.Retweets!),
                     CreatedAt = tweetVm.CreatedAt
                 };
 

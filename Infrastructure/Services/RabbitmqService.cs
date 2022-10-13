@@ -1,6 +1,6 @@
 using System.Text;
-using Application.Dto.MessageDto;
-using Application.Interface;
+using Application.Common.Dto.MessageDto;
+using Application.Common.Interface;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;

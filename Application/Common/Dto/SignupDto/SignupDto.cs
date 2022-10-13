@@ -1,4 +1,4 @@
-﻿namespace Application.Dto.SignupDto
+﻿namespace Application.Common.Dto.SignupDto
 {
     public class SignupDto
     {

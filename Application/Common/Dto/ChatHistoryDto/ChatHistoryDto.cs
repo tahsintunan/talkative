@@ -1,4 +1,4 @@
-namespace Application.Dto.ChatHistoryDto;
+namespace Application.Common.Dto.ChatHistoryDto;
 
 public class ChatHistoryDto
 {

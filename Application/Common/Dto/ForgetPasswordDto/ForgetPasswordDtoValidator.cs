@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.Dto.ForgetPasswordDto
+namespace Application.Common.Dto.ForgetPasswordDto
 {
     public class ForgetPasswordDtoValidator : AbstractValidator<ForgetPasswordDto>
     {

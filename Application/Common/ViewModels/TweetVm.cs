@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 
-namespace Application.ViewModels
+namespace Application.Common.ViewModels
 {
     public class TweetVm
     {
@@ -16,6 +16,7 @@ namespace Application.ViewModels
         public IList<string?>? RetweetPosts { get; set; }
         public IList<string?>? Likes { get; set; }
         public IList<string?>? Comments { get; set; }
+        public Dictionary<string, string>? Retweets { get; set; }
         public DateTime? CreatedAt { get; set; }
     }
 

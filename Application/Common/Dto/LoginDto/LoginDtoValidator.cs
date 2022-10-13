@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.Dto.LoginDto
+namespace Application.Common.Dto.LoginDto
 {
     public class LoginDtoValidator : AbstractValidator<LoginDto>
     {

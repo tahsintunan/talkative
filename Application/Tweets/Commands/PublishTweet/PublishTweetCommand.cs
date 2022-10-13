@@ -1,9 +1,9 @@
-﻿using Application.Interface;
+﻿using Application.Common.Interface;
 using Domain.Entities;
 using MediatR;
 using MongoDB.Bson;
 
-namespace Application.Tweets.Commands.PublishTweetCommand
+namespace Application.Tweets.Commands.PublishTweet
 {
     public class PublishTweetCommand:IRequest<PublishTweetVm>
     {
@@ -15,10 +15,12 @@ namespace Application.Tweets.Commands.PublishTweetCommand
     public class PublishTweetCommandHandler : IRequestHandler<PublishTweetCommand, PublishTweetVm>
     {
         private readonly ITweetService _tweetService;
+
         public PublishTweetCommandHandler(ITweetService tweetService)
         {
             _tweetService = tweetService;
         }
+
         public async Task<PublishTweetVm> Handle(PublishTweetCommand request, CancellationToken cancellationToken)
         {
             var generatedId = ObjectId.GenerateNewId().ToString();
@@ -27,14 +29,15 @@ namespace Application.Tweets.Commands.PublishTweetCommand
                 Id = generatedId,
                 Text = request.Text,
                 UserId = request.UserId,
-                Hashtags = new List<string>(request.Hashtags!),
+                Hashtags = request.Hashtags != null ? new List<string>(request.Hashtags): null,
                 IsRetweet = false,
                 RetweetId = null,
                 Likes = new List<string>(),
                 Comments = new List<string>(),
                 CreatedAt = DateTime.Now,
                 RetweetUsers = new List<string>(),
-                RetweetPosts = new List<string>()
+                RetweetPosts = new List<string>(),
+                Retweets = new Dictionary<string, string>()
             };
             await _tweetService.PublishTweet(tweet);
 

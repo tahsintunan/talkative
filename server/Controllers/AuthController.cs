@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
-using Application.Interface;
-using Application.Dto.SignupDto;
-using Application.Dto.LoginDto;
+using Application.Common.Dto.LoginDto;
+using Application.Common.Interface;
+using Application.Common.Dto.SignupDto;
 
 namespace server.Controllers
 {

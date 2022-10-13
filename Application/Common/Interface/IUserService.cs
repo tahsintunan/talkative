@@ -1,7 +1,7 @@
-﻿using Application.Dto.UpdateUserDto;
+﻿using Application.Common.Dto.UpdateUserDto;
 using Domain.Entities;
 
-namespace Application.Interface
+namespace Application.Common.Interface
 {
     public interface IUserService
     {

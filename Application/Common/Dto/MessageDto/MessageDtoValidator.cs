@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Application.Dto.MessageDto;
+namespace Application.Common.Dto.MessageDto;
 
 public class MessageDtoValidator : AbstractValidator<MessageDto>
 {

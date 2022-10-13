@@ -1,5 +1,5 @@
 using System.Text;
-using Application.Interface;
+using Application.Common.Interface;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;

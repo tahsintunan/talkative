@@ -1,7 +1,8 @@
-﻿using Application.Interface;
+﻿
+using Application.Common.Interface;
 using MediatR;
 
-namespace Application.Tweets.Commands.DeleteTweetCommand
+namespace Application.Tweets.Commands.DeleteTweet
 {
     public class DeleteTweetCommand:IRequest
     {

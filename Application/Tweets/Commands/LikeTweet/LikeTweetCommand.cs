@@ -1,10 +1,10 @@
-﻿using Application.Interface;
-using Application.ViewModels;
+﻿using Application.Common.Interface;
+using Application.Common.ViewModels;
 using Domain.Entities;
 using MediatR;
 using MongoDB.Bson;
 
-namespace Application.Tweets.Commands.LikeTweetCommand
+namespace Application.Tweets.Commands.LikeTweet
 {
     public class LikeTweetCommand : IRequest
     {

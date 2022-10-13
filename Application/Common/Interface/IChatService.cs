@@ -1,7 +1,7 @@
-using Application.Dto.ChatHistoryDto;
-using Application.ViewModels;
+using Application.Common.Dto.ChatHistoryDto;
+using Application.Common.ViewModels;
 
-namespace Application.Interface;
+namespace Application.Common.Interface;
 
 public interface IChatService
 {

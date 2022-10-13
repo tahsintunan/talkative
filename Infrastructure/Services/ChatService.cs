@@ -1,6 +1,6 @@
-using Application.Dto.ChatHistoryDto;
-using Application.Interface;
-using Application.ViewModels;
+using Application.Common.Dto.ChatHistoryDto;
+using Application.Common.Interface;
+using Application.Common.ViewModels;
 using Domain.Entities;
 using Infrastructure.DbConfig;
 using Microsoft.Extensions.Options;

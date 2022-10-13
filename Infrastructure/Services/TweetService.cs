@@ -1,4 +1,4 @@
-﻿using Application.Interface;
+﻿using Application.Common.Interface;
 using Domain.Entities;
 using Infrastructure.DbConfig;
 using Microsoft.Extensions.Options;

@@ -1,4 +1,4 @@
-﻿namespace Application.Tweets.Commands.PublishTweetCommand
+﻿namespace Application.Tweets.Commands.PublishTweet
 {
     public class PublishTweetVm
     {

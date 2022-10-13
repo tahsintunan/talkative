@@ -1,6 +1,5 @@
-﻿using Application.Interface;
-using Application.ViewModels;
-using AutoMapper;
+﻿using Application.Common.Interface;
+using Application.Common.ViewModels;
 using MediatR;
 
 namespace Application.Tweets.Queries.GetTweetByIdQuery

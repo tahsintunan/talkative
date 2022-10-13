@@ -1,8 +1,8 @@
-﻿using Application.Dto.LoginDto;
-using Application.Dto.SignupDto;
+﻿using Application.Common.Dto.LoginDto;
+using Application.Common.Dto.SignupDto;
 using System.Security.Cryptography;
 
-namespace Application.Interface
+namespace Application.Common.Interface
 {
     public interface IAuthService
     {

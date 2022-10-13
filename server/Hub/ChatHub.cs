@@ -1,7 +1,7 @@
-using Application.Interface;
 using Domain.Entities;
 using Microsoft.AspNetCore.SignalR;
-using Application.Dto.MessageDto;
+using Application.Common.Interface;
+using Application.Common.Dto.MessageDto;
 
 namespace server.Hub;
 

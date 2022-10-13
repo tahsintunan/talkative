@@ -1,5 +1,5 @@
-﻿using Application.Interface;
-using Application.ViewModels;
+﻿using Application.Common.Interface;
+using Application.Common.ViewModels;
 using MediatR;
 using MongoDB.Bson;
 

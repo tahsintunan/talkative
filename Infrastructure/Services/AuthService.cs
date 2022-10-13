@@ -9,11 +9,11 @@ using System.Net.Http.Headers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using Application.Interface;
-using Application.Dto.SignupDto;
 using Infrastructure.DbConfig;
-using Application.Dto.LoginDto;
 using Domain.Entities;
+using Application.Common.Dto.LoginDto;
+using Application.Common.Interface;
+using Application.Common.Dto.SignupDto;
 
 namespace Infrastructure.Services
 {

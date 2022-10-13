@@ -1,22 +1,21 @@
-﻿using Application.Interface;
-using Application.ViewModels;
+﻿using Application.Common.Interface;
+using Application.Common.ViewModels;
 using Domain.Entities;
 using MediatR;
 using MongoDB.Bson;
 
-namespace Application.Retweet.Command.RetweetCommand
+namespace Application.Retweets.Command.Retweet
 {
-    public class RetweetCommand : IRequest
+    public class RetweetCommand : IRequest<RetweetVm>
     {
         public string? Id { get; set; }
         public string? Text { get; set; }
         public IList<string>? Hashtags { get; set; }
         public string? RetweetId { get; set; }
-        public bool IsRetweet { get; set; }
         public string? UserId { get; set; }
     }
 
-    public class RetweetCommandHandler : IRequestHandler<RetweetCommand>
+    public class RetweetCommandHandler : IRequestHandler<RetweetCommand, RetweetVm>
     {
         private readonly ITweetService _tweetService;
         private readonly IRetweetService _retweetService;
@@ -29,23 +28,15 @@ namespace Application.Retweet.Command.RetweetCommand
             _retweetService = retweetService;
         }
 
-        public async Task<Unit> Handle(RetweetCommand request, CancellationToken cancellationToken)
+        public async Task<RetweetVm> Handle(RetweetCommand request, CancellationToken cancellationToken)
         {
             var tweet = await _tweetService.GetTweetById(request.RetweetId!);
             TweetVm retweetVm = _tweetDocumentMapper.map(tweet!);
 
-            if (request.IsRetweet)
-            {
-                var newRetweet = await CreateNewRetweet(request);
-                await UpdateExistingTweet(retweetVm, newRetweet, request);
-            }
-            else
-            {
-                await _retweetService.DeleteRetweet(request.RetweetId!, request.UserId!);
-                await UpdateExistingTweet(retweetVm, request.Id!, request);
-            }
+            var newRetweet = await CreateNewRetweet(request);
+            await UpdateExistingTweet(retweetVm, newRetweet, request);
 
-            return Unit.Value;
+            return new RetweetVm() { Id = newRetweet };
         }
 
         private async Task<string> CreateNewRetweet(RetweetCommand request)
@@ -54,7 +45,7 @@ namespace Application.Retweet.Command.RetweetCommand
             {
                 Id = ObjectId.GenerateNewId().ToString(),
                 Text = request.Text,
-                Hashtags = request.Hashtags,
+                Hashtags = request.Hashtags != null ? new List<string>(request.Hashtags) : new List<string>(),
                 RetweetId = request.RetweetId,
                 IsRetweet = true,
                 UserId = request.UserId,
@@ -72,16 +63,8 @@ namespace Application.Retweet.Command.RetweetCommand
 
         private async Task UpdateExistingTweet(TweetVm retweet, string postId, RetweetCommand request)
         {
-            if (request.IsRetweet)
-            {
-                retweet.RetweetUsers!.Add(retweet.UserId);
-                retweet.RetweetPosts!.Add(postId);
-            }
-            else
-            {
-                retweet.RetweetUsers!.Remove(retweet.UserId);
-                retweet.RetweetPosts!.Remove(postId);
-            }
+            retweet.RetweetUsers!.Add(retweet.UserId);
+            retweet.RetweetPosts!.Add(postId);
 
             Tweet updatedTweet = new Tweet()
             {

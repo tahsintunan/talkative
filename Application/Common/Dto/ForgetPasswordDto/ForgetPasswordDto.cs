@@ -1,4 +1,4 @@
-﻿namespace Application.Dto.ForgetPasswordDto
+﻿namespace Application.Common.Dto.ForgetPasswordDto
 {
     public class ForgetPasswordDto
     {

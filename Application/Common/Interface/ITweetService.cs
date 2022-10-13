@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
 using MongoDB.Bson;
 
-namespace Application.Interface
+namespace Application.Common.Interface
 {
     public interface ITweetService
     {

@@ -1,8 +1,8 @@
-﻿using Application.Interface;
-using Application.ViewModels;
+﻿using Application.Common.Interface;
+using Application.Common.ViewModels;
 using MongoDB.Bson;
 
-namespace Application.Mapper
+namespace Application.Common.Mapper
 {
     public class UserBsonDocumentMapper : IBsonDocumentMapper<UserVm>
     {

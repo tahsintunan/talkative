@@ -1,8 +1,8 @@
-﻿using Application.Interface;
-using Application.ViewModels;
+﻿using Application.Common.Interface;
+using Application.Common.ViewModels;
 using MongoDB.Bson;
 
-namespace Application.Mapper
+namespace Application.Common.Mapper
 {
     public class TweetBsonDocumentMapper : IBsonDocumentMapper<TweetVm?>
     {
@@ -15,56 +15,74 @@ namespace Application.Mapper
 
         public TweetVm? map(BsonDocument tweet)
         {
-            if (!tweet.Contains("_id"))
+            if (!tweet.Contains("_id") || tweet["_id"].BsonType == BsonType.Null)
             {
                 return null;
             }
             return new TweetVm()
             {
-                Id = tweet.Contains("_id") ? tweet["_id"].ToString() : null,
-                Text = tweet.Contains("text") ? tweet["text"].ToString() : null,
-                Hashtags = tweet.Contains("hashtags")
+                Id = CheckIfDocumentExists(tweet, "_id") ? tweet["_id"].ToString() : null,
+
+                Text = CheckIfDocumentExists(tweet, "text") ? tweet["text"].ToString() : null,
+
+                Hashtags = CheckIfDocumentExists(tweet, "hashtags")
                     ? tweet["hashtags"].AsBsonArray.Select(p => p.AsString).ToArray()
                     : null,
-                IsRetweet = tweet.Contains("isRetweet") ? tweet["isRetweet"].AsBoolean : false,
-                Retweet = tweet.Contains("retweet")
+
+                IsRetweet = CheckIfDocumentExists(tweet, "isRetweet") ? tweet["isRetweet"].AsBoolean : false,
+
+                Retweet = CheckIfDocumentExists(tweet, "retweet")
                     ? tweet["isRetweet"].AsBoolean
                         ? map(tweet["retweet"].AsBsonDocument)
                         : null
                     : null,
-                UserId = tweet.Contains("userId") ? tweet["userId"].ToString() : null,
+
+                UserId = CheckIfDocumentExists(tweet, "userId") ? tweet["userId"].ToString() : null,
+
                 RetweetId =
-                    tweet.Contains("retweetId") && tweet["retweetId"].BsonType != BsonType.Null
+                    CheckIfDocumentExists(tweet, "retweetId")
                         ? tweet["retweetId"].ToString()
                         : null,
-                User = tweet.Contains("user")
+
+                User = CheckIfDocumentExists(tweet, "user")
                     ? _userMapper.map(tweet["user"].AsBsonDocument)
                     : null,
-                CreatedAt = tweet.Contains("createdAt")
+
+                CreatedAt = CheckIfDocumentExists(tweet, "createdAt")
                     ? tweet["createdAt"].ToUniversalTime()
                     : null,
-                Likes = tweet.Contains("likes")
+
+                Likes = CheckIfDocumentExists(tweet, "likes")
                     ? tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.ToString()).ToList()
                     : null,
-                Comments = tweet.Contains("comments")
+
+                Comments = CheckIfDocumentExists(tweet, "comments")
                     ? tweet
                         .GetValue("comments", null)
                         ?.AsBsonArray.Select(p => p.ToString())
                         .ToList()
                     : null,
-                RetweetPosts = tweet.Contains("retweetPosts")
+
+                RetweetPosts = CheckIfDocumentExists(tweet, "retweetPosts")
                     ? tweet
                         .GetValue("retweetPosts", null)
                         ?.AsBsonArray.Select(p => p.ToString())
                         .ToList()
                     : null,
-                RetweetUsers = tweet.Contains("retweetUsers")
+
+                RetweetUsers = CheckIfDocumentExists(tweet, "retweetUsers")
                     ? tweet
                         .GetValue("retweetUsers", null)
                         ?.AsBsonArray.Select(p => p.ToString())
                         .ToList()
                     : null,
             };
+        }
+
+        public bool CheckIfDocumentExists(BsonDocument document, string documentKey)
+        {
+            return document.Contains(documentKey) && document[documentKey].BsonType != BsonType.Null;
+
         }
     }
 }

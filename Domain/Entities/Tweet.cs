@@ -50,5 +50,9 @@ namespace Domain.Entities
         [BsonElement("retweetPosts")]
         [BsonRepresentation(BsonType.ObjectId)]
         public IList<string>? RetweetPosts { get; set; }
+
+        [BsonElement("retweets")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public Dictionary<string, string>? Retweets { get; set; }
     }
 }

@@ -1,6 +1,6 @@
-using Application.Dto.MessageDto;
+using Application.Common.Dto.MessageDto;
 
-namespace Application.Interface;
+namespace Application.Common.Interface;
 
 public interface IRabbitmqService
 {

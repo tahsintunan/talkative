@@ -1,11 +1,11 @@
-﻿using Application.Interface;
-using Application.ViewModels;
+﻿using Application.Common.Interface;
+using Application.Common.ViewModels;
 using MediatR;
 using System.Collections.Generic;
 
-namespace Application.Retweet.Query.GetAllRetweetQuery
+namespace Application.Retweets.Query.GetAllRetweetQuery
 {
-    public class GetAllRetweetQuery:IRequest<IList<TweetVm>>
+    public class GetAllRetweetQuery : IRequest<IList<TweetVm>>
     {
         public string? RetweetId { get; set; }
     }
@@ -26,7 +26,7 @@ namespace Application.Retweet.Query.GetAllRetweetQuery
 
             var retweets = retweetsBsonDocument["retweetPosts"].AsBsonArray;
 
-            IList<TweetVm> tweetVm = new List<TweetVm>(); 
+            IList<TweetVm> tweetVm = new List<TweetVm>();
 
             foreach (var tweet in retweets)
             {

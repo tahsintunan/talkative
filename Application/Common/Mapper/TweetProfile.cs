@@ -1,8 +1,8 @@
-﻿using Application.ViewModels;
+﻿using Application.Common.ViewModels;
 using AutoMapper;
 using Domain.Entities;
 
-namespace Application.Mapper
+namespace Application.Common.Mapper
 {
     public class TweetProfile : Profile
     {

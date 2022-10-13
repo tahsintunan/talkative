@@ -1,4 +1,4 @@
-namespace Application.ViewModels;
+namespace Application.Common.ViewModels;
 
 public class ChatHistoryVm
 {

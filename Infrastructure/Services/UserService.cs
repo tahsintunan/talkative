@@ -1,5 +1,5 @@
-﻿using Application.Dto.UpdateUserDto;
-using Application.Interface;
+﻿using Application.Common.Dto.UpdateUserDto;
+using Application.Common.Interface;
 using Domain.Entities;
 using Infrastructure.DbConfig;
 using Microsoft.Extensions.Configuration;
