@@ -22,54 +22,43 @@ namespace Application.Common.Mapper
             return new TweetVm()
             {
                 Id = CheckIfDocumentExists(tweet, "_id") ? tweet["_id"].ToString() : null,
-
                 Text = CheckIfDocumentExists(tweet, "text") ? tweet["text"].ToString() : null,
-
                 Hashtags = CheckIfDocumentExists(tweet, "hashtags")
                     ? tweet["hashtags"].AsBsonArray.Select(p => p.AsString).ToArray()
                     : null,
-
-                IsRetweet = CheckIfDocumentExists(tweet, "isRetweet") ? tweet["isRetweet"].AsBoolean : false,
-
+                IsRetweet = CheckIfDocumentExists(tweet, "isRetweet")
+                    ? tweet["isRetweet"].AsBoolean
+                    : false,
                 Retweet = CheckIfDocumentExists(tweet, "retweet")
                     ? tweet["isRetweet"].AsBoolean
                         ? map(tweet["retweet"].AsBsonDocument)
                         : null
                     : null,
-
                 UserId = CheckIfDocumentExists(tweet, "userId") ? tweet["userId"].ToString() : null,
-
-                RetweetId =
-                    CheckIfDocumentExists(tweet, "retweetId")
-                        ? tweet["retweetId"].ToString()
-                        : null,
-
+                RetweetId = CheckIfDocumentExists(tweet, "retweetId")
+                    ? tweet["retweetId"].ToString()
+                    : null,
                 User = CheckIfDocumentExists(tweet, "user")
                     ? _userMapper.map(tweet["user"].AsBsonDocument)
                     : null,
-
                 CreatedAt = CheckIfDocumentExists(tweet, "createdAt")
                     ? tweet["createdAt"].ToUniversalTime()
                     : null,
-
                 Likes = CheckIfDocumentExists(tweet, "likes")
                     ? tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.ToString()).ToList()
                     : null,
-
                 Comments = CheckIfDocumentExists(tweet, "comments")
                     ? tweet
                         .GetValue("comments", null)
                         ?.AsBsonArray.Select(p => p.ToString())
                         .ToList()
                     : null,
-
                 RetweetPosts = CheckIfDocumentExists(tweet, "retweetPosts")
                     ? tweet
                         .GetValue("retweetPosts", null)
                         ?.AsBsonArray.Select(p => p.ToString())
                         .ToList()
                     : null,
-
                 RetweetUsers = CheckIfDocumentExists(tweet, "retweetUsers")
                     ? tweet
                         .GetValue("retweetUsers", null)
@@ -81,8 +70,8 @@ namespace Application.Common.Mapper
 
         public bool CheckIfDocumentExists(BsonDocument document, string documentKey)
         {
-            return document.Contains(documentKey) && document[documentKey].BsonType != BsonType.Null;
-
+            return document.Contains(documentKey)
+                && document[documentKey].BsonType != BsonType.Null;
         }
     }
 }

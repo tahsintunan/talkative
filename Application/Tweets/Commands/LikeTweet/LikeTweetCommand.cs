@@ -3,6 +3,7 @@ using Application.Common.ViewModels;
 using Domain.Entities;
 using MediatR;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Application.Tweets.Commands.LikeTweet
 {
@@ -44,25 +45,11 @@ namespace Application.Tweets.Commands.LikeTweet
                 tweetVm.Likes!.Remove(request.UserId);
             }
 
-            if (currentTweet != null)
-            {
-                Tweet updatedTweet = new Tweet()
-                {
-                    Id = tweetVm.Id,
-                    Text = tweetVm.Text,
-                    Hashtags = tweetVm.Hashtags,
-                    UserId = tweetVm.UserId,
-                    IsRetweet = tweetVm.IsRetweet,
-                    RetweetId = tweetVm.RetweetId,
-                    Likes = tweetVm.Likes!,
-                    Comments = new List<string>(tweetVm.Comments!),
-                    CreatedAt = tweetVm.CreatedAt,
-                    RetweetPosts = new List<string>(tweetVm.RetweetPosts!),
-                    RetweetUsers = new List<string>(tweetVm.RetweetUsers!),
-                };
+            await _tweetService.PartialUpdate(
+                tweetVm!.Id!,
+                Builders<Tweet>.Update.Set(p => p.Likes, new List<string>(tweetVm.Likes!))
+            );
 
-                await _tweetService.UpdateTweet(updatedTweet);
-            }
             return Unit.Value;
         }
     }
