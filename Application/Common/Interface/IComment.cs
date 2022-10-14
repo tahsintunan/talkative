@@ -1,13 +1,15 @@
-﻿using Domain.Entities;
+﻿using Application.Common.ViewModels;
+using Domain.Entities;
+using MongoDB.Driver;
 
 namespace Application.Common.Interface
 {
     public interface IComment
     {
         Task CreateComment(Comment comment);
-        Task UpdateComment(Comment comment);
+        Task PartialUpdate(string commentId, UpdateDefinition<Comment> update);
         Task DeleteComment(string id);
-        void GetCommentsByTweetId(string tweetId);
-        void GetCommentById(string id);
+        Task<IList<CommentVm>> GetCommentsByTweetId(string tweetId);
+        Task<CommentVm> GetCommentById(string id);
     }
 }

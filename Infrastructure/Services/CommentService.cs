@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interface;
+using Application.Common.ViewModels;
 using Domain.Entities;
 using Infrastructure.DbConfig;
 using Microsoft.Extensions.Options;
@@ -10,8 +11,12 @@ namespace Infrastructure.Services
     public class CommentService : IComment
     {
         private readonly IMongoCollection<Comment> _commentCollection;
+        private readonly IMongoCollection<User> _userCollection;
 
-        public CommentService(IOptions<CommentDatabaseConfig> tweetDatabaseConfig)
+        public CommentService(
+            IOptions<CommentDatabaseConfig> tweetDatabaseConfig,
+            IOptions<UserDatabaseConfig> userDatabaseConfig
+        )
         {
             var mongoClient = new MongoClient(tweetDatabaseConfig.Value.ConnectionString);
 
@@ -19,6 +24,10 @@ namespace Infrastructure.Services
 
             _commentCollection = mongoDatabase.GetCollection<Comment>(
                 tweetDatabaseConfig.Value.CollectionName
+            );
+
+            _userCollection = mongoDatabase.GetCollection<User>(
+                userDatabaseConfig.Value.UserCollectionName
             );
 
             MongoClientSettings settings = MongoClientSettings.FromConnectionString(
@@ -38,19 +47,59 @@ namespace Infrastructure.Services
             await _commentCollection.DeleteOneAsync(comment => comment.Id == id);
         }
 
-        public void GetCommentById(string id)
+        public async Task<CommentVm> GetCommentById(string id)
         {
-            //var comment =
+            var query =
+                from p in _commentCollection.AsQueryable()
+                where p.Id == id
+                join o in _userCollection on p.UserId equals o.Id into joined
+                from sub_o in joined.DefaultIfEmpty()
+                select new CommentVm
+                {
+                    Text = p.Text,
+                    Id = p.Id!.ToString(),
+                    TweetId = p.TweetId!.ToString(),
+                    UserId = p.UserId!.ToString(),
+                    Created = p.CreatedAt,
+                    Likes = p.Likes,
+                    Username = sub_o.Username
+                };
+
+            var commentVm = await query.FirstOrDefaultAsync();
+
+            return commentVm;
         }
 
-        public void GetCommentsByTweetId(string tweetId)
+        public async Task<IList<CommentVm>> GetCommentsByTweetId(string tweetId)
         {
-            throw new NotImplementedException();
+            var query =
+                from p in _commentCollection.AsQueryable()
+                where p.TweetId == tweetId
+                join o in _userCollection on p.UserId equals o.Id into joined
+                from sub_o in joined.DefaultIfEmpty()
+                select new CommentVm
+                {
+                    Text = p.Text,
+                    Id = p.Id!.ToString(),
+                    TweetId = p.TweetId!.ToString(),
+                    UserId = p.UserId!.ToString(),
+                    Created = p.CreatedAt,
+                    Likes = p.Likes,
+                    Username = sub_o.Username
+                };
+
+            var commentVmList = await query.ToListAsync();
+
+            return commentVmList;
         }
 
-        public Task UpdateComment(Comment comment)
+        public async Task PartialUpdate(string commentId, UpdateDefinition<Comment> update)
         {
-            throw new NotImplementedException();
+            await _commentCollection.UpdateOneAsync(
+                p => p.Id == commentId,
+                update,
+                new UpdateOptions { IsUpsert = true }
+            );
         }
     }
 }
