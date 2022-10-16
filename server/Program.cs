@@ -16,16 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services
-    .AddControllers()
-    .AddFluentValidation(options =>
-    {
-        // Validate child properties and root collection elements
-        options.ImplicitlyValidateChildProperties = true;
-        options.ImplicitlyValidateRootCollectionElements = true;
-
-        // Automatic registration of validators in assembly
-        options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-    });
+    .AddControllers();
 
 builder.Services.Configure<UserDatabaseConfig>(
     builder.Configuration.GetSection("UserDatabaseConfig")
@@ -41,6 +32,10 @@ builder.Services.Configure<CommentDatabaseConfig>(
     builder.Configuration.GetSection("CommentDatabaseConfig")
 );
 
+builder.Services.Configure<FollowerDatabaseConfig>(
+    builder.Configuration.GetSection("FollowerDatabaseConfig")
+);
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApplicationServices();
 builder.Services.AddTransient<IBsonDocumentMapper<UserVm>, UserBsonDocumentMapper>();
@@ -49,6 +44,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IChatService, ChatService>();
 builder.Services.AddTransient<IComment, CommentService>();
+builder.Services.AddTransient<IFollow, FollowService>();
 builder.Services.AddTransient<IChatService, ChatService>();
 builder.Services.AddTransient<ITweetService, TweetService>();
 builder.Services.AddTransient<IRetweetService, RetweetService>();
