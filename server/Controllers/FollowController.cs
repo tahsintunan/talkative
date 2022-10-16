@@ -17,7 +17,7 @@ namespace server.Controllers
             return NoContent();
         }
 
-        [HttpGet("follower/current-user")]
+        [HttpGet("follower")]
         public async Task<ActionResult<IList<UserVm>>> GetFollowersOfCurrentUser()
         {
             var userId = HttpContext.Items["User"]!.ToString();
@@ -25,7 +25,7 @@ namespace server.Controllers
             return Ok(await Mediator.Send(getFollowersQuery));
         }
 
-        [HttpGet("following/current-user")]
+        [HttpGet("following")]
         public async Task<ActionResult<IList<UserVm>>> GetFollowingsOfCurrentUser()
         {
             var userId = HttpContext.Items["User"]!.ToString();
@@ -36,7 +36,6 @@ namespace server.Controllers
         [HttpGet("follower/{id}")]
         public async Task<ActionResult<IList<UserVm>>> GetFollowersOfUser(string id)
         {
-            var userId = HttpContext.Items["User"]!.ToString();
             GetFollowersQuery getFollowersQuery = new GetFollowersQuery() { UserId = id };
             return Ok(await Mediator.Send(getFollowersQuery));
         }
@@ -44,7 +43,6 @@ namespace server.Controllers
         [HttpGet("following/{id}")]
         public async Task<ActionResult<IList<UserVm>>> GetFollowingsOfUser(string id)
         {
-            var userId = HttpContext.Items["User"]!.ToString();
             GetFollowingsQuery getFollowingsQuery = new GetFollowingsQuery() { UserId = id };
             return Ok(await Mediator.Send(getFollowingsQuery));
         }
