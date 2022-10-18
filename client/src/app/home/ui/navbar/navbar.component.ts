@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
-import { TweetModel } from '../../models/tweet.model';
+import { TweetWriteModel } from '../../models/tweet.model';
 import { TweetService } from '../../services/tweet.service';
 import { UserService } from '../../services/user.service';
 import { PostMakerDialogComponent } from '../post-maker-dialog/post-maker-dialog.component';
@@ -58,9 +58,12 @@ export class NavbarComponent implements OnInit {
       width: '500px',
     });
 
-    dialogRef.afterClosed().subscribe((result: TweetModel) => {
+    dialogRef.afterClosed().subscribe((result: TweetWriteModel) => {
       if (result) {
-        this.tweetService.createTweet(result);
+        this.tweetService.createTweet({
+          text: result.text!,
+          hashtags: result.hashtags || [],
+        });
       }
     });
   }

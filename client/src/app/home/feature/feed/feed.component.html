@@ -1,5 +1,5 @@
 <section class="flex flex-col items-center gap-6">
-  <div class="container card">
+  <div class="max-w-2xl w-full card">
     <h2 class="font-semibold text-lg m-3">Post Something</h2>
 
     <mat-divider></mat-divider>
@@ -21,7 +21,7 @@
     </div>
   </div>
 
-  <div class="container flex flex-col gap-6">
+  <div class="max-w-2xl w-full flex flex-col gap-6">
     <app-tweet-item
       *ngFor="let tweet of tweets"
       [data]="tweet"

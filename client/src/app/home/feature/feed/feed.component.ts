@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { TweetModel } from '../../models/tweet.model';
+import { TweetModel, TweetWriteModel } from '../../models/tweet.model';
 import { UserModel } from '../../models/user.model';
 import { TweetService } from '../../services/tweet.service';
 import { UserService } from '../../services/user.service';
@@ -26,7 +26,7 @@ export class FeedComponent implements OnInit {
       this.userAuth = res;
     });
 
-    this.tweetService.tweets.subscribe((res) => {
+    this.tweetService.feedTweets.subscribe((res) => {
       this.tweets = res;
     });
 
@@ -38,9 +38,12 @@ export class FeedComponent implements OnInit {
       width: '500px',
     });
 
-    dialogRef.afterClosed().subscribe((result: TweetModel) => {
+    dialogRef.afterClosed().subscribe((result: TweetWriteModel) => {
       if (result) {
-        this.tweetService.createTweet(result);
+        this.tweetService.createTweet({
+          text: result.text!,
+          hashtags: result.hashtags || [],
+        });
       }
     });
   }

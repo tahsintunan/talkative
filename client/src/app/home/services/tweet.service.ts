@@ -1,8 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
-import { TweetModel } from '../models/tweet.model';
+import {
+  TweetCreateReqModel,
+  TweetModel,
+  TweetRetweetReqModel,
+  TweetUpdateReqModel,
+} from '../models/tweet.model';
 
 @Injectable({
   providedIn: 'root',
@@ -10,44 +16,52 @@ import { TweetModel } from '../models/tweet.model';
 export class TweetService {
   apiUrl = this.env.apiUrl + 'api/Tweet';
 
-  private readonly tweetsSubject = new BehaviorSubject<TweetModel[]>([]);
+  private readonly feedTweetsSubject = new BehaviorSubject<TweetModel[]>([]);
   private readonly userTweetSubject = new BehaviorSubject<TweetModel[]>([]);
 
-  public readonly tweets = this.tweetsSubject.asObservable();
+  public readonly feedTweets = this.feedTweetsSubject.asObservable();
   public readonly userTweets = this.userTweetSubject.asObservable();
 
-  constructor(private http: HttpClient, private env: EnvService) {}
+  constructor(
+    private http: HttpClient,
+    private env: EnvService,
+    private router: Router
+  ) {}
 
-  createTweet(tweet: TweetModel) {
+  createTweet(tweet: TweetCreateReqModel) {
     this.http.post<TweetModel>(this.apiUrl, tweet).subscribe((res) => {
-      this.tweetsSubject.next([res, ...this.tweetsSubject.value]);
+      this.feedTweetsSubject.next([res, ...this.feedTweetsSubject.value]);
 
-      if (res.user.id === this.userTweetSubject.value[0]?.user.id) {
-        this.userTweetSubject.next([res, ...this.userTweetSubject.value]);
-      }
+      this.addToUserTweets(res);
     });
   }
 
-  updateTweet(tweet: TweetModel) {
+  retweet(tweet: TweetRetweetReqModel) {
+    this.http
+      .post<TweetModel>(this.apiUrl + '/retweet', tweet)
+      .subscribe((res) => {
+        this.feedTweetsSubject.next([res, ...this.feedTweetsSubject.value]);
+
+        this.addToUserTweets(res);
+      });
+  }
+
+  updateTweet(tweet: TweetUpdateReqModel) {
     this.http.put<TweetModel>(this.apiUrl, tweet).subscribe((res) => {
-      this.tweetsSubject.next([
-        ...this.tweetsSubject.value.map((x) => (x.id === res.id ? res : x)),
+      this.feedTweetsSubject.next([
+        ...this.feedTweetsSubject.value.map((x) => (x.id === res.id ? res : x)),
       ]);
 
-      if (res.user.id === this.userTweetSubject.value[0]?.user.id) {
-        this.userTweetSubject.next([
-          ...this.userTweetSubject.value.map((x) =>
-            x.id === res.id ? res : x
-          ),
-        ]);
-      }
+      this.userTweetSubject.next([
+        ...this.userTweetSubject.value.map((x) => (x.id === res.id ? res : x)),
+      ]);
     });
   }
 
   deleteTweet(tweetId: string) {
     this.http.delete(this.apiUrl + '/' + tweetId).subscribe((res) => {
-      this.tweetsSubject.next(
-        this.tweetsSubject.value.filter((x) => x.id !== tweetId)
+      this.feedTweetsSubject.next(
+        this.feedTweetsSubject.value.filter((x) => x.id !== tweetId)
       );
 
       this.userTweetSubject.next(
@@ -60,7 +74,7 @@ export class TweetService {
     return this.http
       .get<TweetModel[]>(this.apiUrl + '/user/current-user')
       .subscribe((res) => {
-        this.tweetsSubject.next(res);
+        this.feedTweetsSubject.next(res);
       });
   }
 
@@ -80,5 +94,13 @@ export class TweetService {
     this.http
       .put<TweetModel>(this.apiUrl + '/like', { tweetId, isLiked })
       .subscribe((res) => {});
+  }
+
+  private addToUserTweets(tweet: TweetModel) {
+    const currentUserId = this.router.url.split('/profile/')[1];
+
+    if (tweet.user?.id === currentUserId) {
+      this.userTweetSubject.next([tweet, ...this.userTweetSubject.value]);
+    }
   }
 }

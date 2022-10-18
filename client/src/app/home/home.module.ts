@@ -26,6 +26,9 @@ import { ProfileDetailsComponent } from './ui/profile-details/profile-details.co
 import { ProfileUpdateDialogComponent } from './ui/profile-update-dialog/profile-update-dialog.component';
 import { RetweetContentComponent } from './ui/retweet-content/retweet-content.component';
 import { TweetItemComponent } from './ui/tweet-item/tweet-item.component';
+import { TweetDetailsComponent } from './feature/tweet-details/tweet-details.component';
+import { CommentItemComponent } from './ui/comment-item/comment-item.component';
+import { CommentInputComponent } from './ui/comment-input/comment-input.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +43,9 @@ import { TweetItemComponent } from './ui/tweet-item/tweet-item.component';
     ProfileDetailsComponent,
     ProfileUpdateDialogComponent,
     RetweetContentComponent,
+    TweetDetailsComponent,
+    CommentItemComponent,
+    CommentInputComponent,
   ],
   imports: [
     CommonModule,

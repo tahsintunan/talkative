@@ -1,4 +1,4 @@
-<div class="card flex flex-col gap-1">
+<div class="card flex flex-col gap-1" (click)="onTweetClick()">
   <div class="flex gap-3 items-center m-3">
     <app-avatar
       alt="User"
@@ -18,8 +18,9 @@
 
     <button
       *ngIf="data?.user?.id === userAuth?.id"
-      class="!ml-auto"
+      class="!ml-auto hover:text-primaryLight"
       mat-icon-button
+      (click)="$event.stopPropagation()"
       [matMenuTriggerFor]="menu"
     >
       <mat-icon>more_vert</mat-icon>
@@ -49,33 +50,74 @@
     ></app-retweet-content>
   </div>
 
-  <div class="flex p-1 gap-1 border-t border-gray-300">
+  <div
+    class="flex p-1 gap-1 border-t border-gray-300"
+    (click)="$event.stopPropagation()"
+  >
     <button
       mat-button
-      [color]="alreadyLiked && 'primary'"
-      class="flex-1"
+      class="flex-1 hover:text-pink-500"
+      [ngClass]="{
+        'text-pink-500': alreadyLiked
+      }"
       (click)="onLike()"
     >
       <mat-icon
         class="mx-2 material-symbols-rounded"
         [ngClass]="{
-          'material-symbols-filled': alreadyLiked
+          active: alreadyLiked
         }"
         >favorite</mat-icon
       >
-      <span class="text-lg">{{ data?.likes?.length }}</span>
+      <span *ngIf="data?.likes?.length" class="text-lg">{{
+        data?.likes?.length
+      }}</span>
     </button>
 
     <mat-divider vertical></mat-divider>
 
-    <button mat-button class="flex-1" (click)="onComment()">
+    <button mat-button class="flex-1 hover:text-blue-500" (click)="onComment()">
       <mat-icon class="mx-2 material-symbols-rounded">mode_comment</mat-icon>
-      <span class="text-lg">{{ data?.comments?.length }}</span>
+      <span *ngIf="data?.comments?.length" class="text-lg">{{
+        data?.comments?.length
+      }}</span>
     </button>
+
     <mat-divider vertical></mat-divider>
 
-    <button mat-button class="flex-1" (click)="onRetweet()">
-      <mat-icon class="material-symbols-rounded">cycle</mat-icon>
+    <button
+      mat-button
+      class="flex-1 hover:text-primaryLight"
+      [ngClass]="{
+        'text-primaryLight': alreadyRetweeted
+      }"
+      [matMenuTriggerFor]="retweetMenu"
+    >
+      <mat-icon class="mx-2 material-symbols-rounded">cycle</mat-icon>
+      <span *ngIf="data?.retweetPosts?.length" class="text-lg">{{
+        data?.retweetPosts?.length
+      }}</span>
     </button>
+
+    <mat-menu #retweetMenu>
+      <button *ngIf="alreadyRetweeted" mat-menu-item (click)="onDelete()">
+        <mat-icon>sync_disabled</mat-icon>
+        <span>Undo Retweet</span>
+      </button>
+
+      <button
+        *ngIf="!alreadyRetweeted"
+        mat-menu-item
+        (click)="onQuickRetweet()"
+      >
+        <mat-icon>share</mat-icon>
+        <span>Quick Retweet</span>
+      </button>
+
+      <button mat-menu-item (click)="onQuoteRetweet()">
+        <mat-icon>edit_note</mat-icon>
+        <span>Quote Retweet</span>
+      </button>
+    </mat-menu>
   </div>
 </div>

@@ -1,4 +1,8 @@
-<div class="card flex flex-col gap-1">
+<div
+  *ngIf="data?.id; else noContent"
+  class="card flex flex-col gap-1"
+  (click)="onTweetClick()"
+>
   <div class="flex gap-3 items-center m-3">
     <app-avatar
       alt="User"
@@ -24,3 +28,10 @@
     ></div>
   </div>
 </div>
+
+<ng-template #noContent>
+  <div class="card flex gap-3 p-3 text-gray-500">
+    <span class="material-symbols-rounded">error</span>
+    <span>Content Not Available</span>
+  </div>
+</ng-template>

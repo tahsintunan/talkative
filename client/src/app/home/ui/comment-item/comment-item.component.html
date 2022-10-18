@@ -1,0 +1,71 @@
+<div class="flex flex-col py-2 pl-3 pr-1">
+  <div class="flex items-center gap-3">
+    <app-avatar
+      alt="User"
+      [src]="data?.username"
+      size="35px"
+      borderRadius="50%"
+      borderColor="#f0f0f0"
+      borderWidth="1px"
+      [generateAvater]="true"
+    ></app-avatar>
+
+    <a class="hover:underline" routerLink="/home/profile/{{ data?.userId }}"
+      ><strong>{{ data?.username }}</strong></a
+    >
+    <span class="text-xs text-gray-500">{{ data?.created | dateAgo }}</span>
+
+    <button
+      *ngIf="data?.userId === userAuth?.id"
+      class="!ml-auto hover:text-primaryLight"
+      mat-icon-button
+      (click)="$event.stopPropagation()"
+      [matMenuTriggerFor]="menu"
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #menu>
+      <button mat-menu-item (click)="isEditMode = true">
+        <mat-icon>edit</mat-icon>
+        <span>Edit Comment</span>
+      </button>
+      <button mat-menu-item (click)="onDelete()">
+        <mat-icon>delete</mat-icon>
+        <span>Delete Comment</span>
+      </button>
+    </mat-menu>
+  </div>
+
+  <app-comment-input
+    *ngIf="isEditMode; else comment"
+    class="mt-2"
+    [isEditMode]="isEditMode"
+    [defaultValue]="data?.text!"
+    (onCommentSubmit)="onEdit($event)"
+    (onEditCancel)="isEditMode = false"
+  ></app-comment-input>
+
+  <ng-template #comment>
+    <p *ngIf="!isEditMode" class="mx-2 mt-1">{{ data?.text }}</p>
+
+    <button
+      *ngIf="!isEditMode"
+      mat-icon-button
+      class="hover:text-primary"
+      [ngClass]="{
+        'text-primary': alreadyLiked
+      }"
+      (click)="onLike()"
+    >
+      <mat-icon
+        class="mx-2 material-symbols-rounded"
+        [ngClass]="{
+          active: alreadyLiked
+        }"
+        >favorite</mat-icon
+      >
+      <span *ngIf="data?.likes?.length">{{ data?.likes?.length }}</span>
+    </button>
+  </ng-template>
+</div>

@@ -7,6 +7,7 @@ module.exports = {
       colors: {
         primary: "var(--primary)",
         primaryDark: "var(--primary-dark)",
+        primaryLight: "var(--primary-light)",
         secondary: "var(--secondary)",
         error: "var(--error)",
         errorDark: "var(--error-dark)",
@@ -14,6 +15,7 @@ module.exports = {
       backgroundColor: {
         primary: "var(--primary)",
         primaryDark: "var(--primary-dark)",
+        primaryLight: "var(--primary-light)",
         secondary: "var(--secondary)",
         error: "var(--error)",
         errorDark: "var(--error-dark)",
@@ -21,9 +23,17 @@ module.exports = {
       borderColor: {
         primary: "var(--primary)",
         primaryDark: "var(--primary-dark)",
+        primaryLight: "var(--primary-light)",
         secondary: "var(--secondary)",
         error: "var(--error)",
         errorDark: "var(--error-dark)",
+      },
+      ringColor: {
+        primary: "var(--primary)",
+        primaryDark: "var(--primary-dark)",
+        primaryLight: "var(--primary-light)",
+        secondary: "var(--secondary)",
+        error: "var(--error)",
       },
     },
   },
