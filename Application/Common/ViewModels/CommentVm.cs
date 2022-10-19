@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-
-namespace Application.Common.ViewModels
+﻿namespace Application.Common.ViewModels
 {
     public class CommentVm
     {
@@ -13,3 +11,5 @@ namespace Application.Common.ViewModels
         public DateTime? Created { get; set; }
     }
 }
+
+

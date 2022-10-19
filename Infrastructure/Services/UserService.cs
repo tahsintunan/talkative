@@ -1,5 +1,7 @@
 ﻿using Application.Common.Dto.UpdateUserDto;
 using Application.Common.Interface;
+using Application.Common.ViewModels;
+using AutoMapper;
 using Domain.Entities;
 using Infrastructure.DbConfig;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +18,8 @@ namespace Infrastructure.Services
         private readonly IMongoCollection<User>? _userCollection;
         private readonly IAuthService _authService;
         private readonly IConfiguration _configuration;
-        public UserService(IOptions<UserDatabaseConfig> userDatabaseConfig, IAuthService authService, IConfiguration configuration)
+        private readonly IMapper _mapper;
+        public UserService(IOptions<UserDatabaseConfig> userDatabaseConfig, IAuthService authService, IConfiguration configuration, IMapper mapper)
         {
             var mongoClient = new MongoClient(
             userDatabaseConfig.Value.ConnectionString);
@@ -27,21 +30,26 @@ namespace Infrastructure.Services
             _userCollection = mongoDatabase.GetCollection<User>(
                 userDatabaseConfig.Value.UserCollectionName);
 
+            _mapper = mapper;
+
             _authService = authService;
 
             _configuration = configuration;
         }
 
-        public async Task<IList<User>> GetAllUsers()
+        public async Task<IList<UserVm>> GetAllUsers()
         {
             IList<User> users = await _userCollection.Find(users => true).ToListAsync();
-            return users;
+            var usersVm = _mapper.Map<IList<UserVm>>(users);
+
+            return usersVm;
         }
 
-        public async Task<User> GetUserById(string id)
+        public async Task<UserVm> GetUserById(string id)
         {
             var user = await _userCollection.Find(user => user.Id == id).FirstOrDefaultAsync();
-            return user;
+            var userVm = _mapper.Map<UserVm>(user);
+            return userVm;
         }
 
         public async Task UpdateUserInfo(UpdateUserDto updateUserDto)
@@ -91,8 +99,8 @@ namespace Infrastructure.Services
             var systemEmailCredentials = _configuration.GetSection("EmailCredentials");
             var systemEmail = systemEmailCredentials.GetSection("Email").Value;
             var systemEmailPassword = systemEmailCredentials.GetSection("Password").Value;
-            MailMessage message = new MailMessage();
-            SmtpClient smtp = new SmtpClient();
+            MailMessage message = new();
+            SmtpClient smtp = new ();
             message.From = new MailAddress(systemEmail);
             message.To.Add(new MailAddress(email));
             message.Subject = "Your New Password";
@@ -110,7 +118,7 @@ namespace Infrastructure.Services
 
         public static string GenerateRandomString(int length)
         {
-            Random random = new Random();
+            Random random = new();
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());

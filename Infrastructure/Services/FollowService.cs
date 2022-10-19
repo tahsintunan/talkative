@@ -58,7 +58,7 @@ namespace Infrastructure.Services
                         select new UserVm()
                         {
                             Username = user.Username,
-                            Id = user.Id,
+                            UserId = user.Id,
                             Email = user.Email,
                             DateOfBirth = user.DateOfBirth
                         };
@@ -75,7 +75,7 @@ namespace Infrastructure.Services
                         select new UserVm()
                         {
                             Username = user.Username,
-                            Id = user.Id,
+                            UserId = user.Id,
                             Email = user.Email,
                             DateOfBirth = user.DateOfBirth
                         };

@@ -38,6 +38,7 @@ namespace Domain.Entities
         public bool IsRetweet { get; set; }
 
 
+
         [BsonElement("retweetId")]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? RetweetId { get; set; }
