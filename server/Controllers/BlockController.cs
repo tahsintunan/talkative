@@ -1,5 +1,7 @@
 
 using Application.Blocks.Command.Block;
+using Application.Blocks.Queries.GetBlockedUsers;
+using Application.Common.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace server.Controllers;
@@ -16,6 +18,13 @@ public class BlockController: ApiControllerBase
         };
         await Mediator.Send(command);
         return NoContent();
+    }
+
+    [HttpGet("list")]
+    public async Task<ActionResult<UserVm>> GetBlockedUsers()
+    {
+        var userId = HttpContext.Items["User"]!.ToString();
+        return Ok(await Mediator.Send(new GetBlockedUsersQuery() { Id = userId }));
     }
     
 }
