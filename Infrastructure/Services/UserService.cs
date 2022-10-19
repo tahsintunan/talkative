@@ -6,6 +6,7 @@ using Domain.Entities;
 using Infrastructure.DbConfig;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Net;
 using System.Net.Mail;
@@ -19,16 +20,21 @@ namespace Infrastructure.Services
         private readonly IAuthService _authService;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
-        public UserService(IOptions<UserDatabaseConfig> userDatabaseConfig, IAuthService authService, IConfiguration configuration, IMapper mapper)
-        {
-            var mongoClient = new MongoClient(
-            userDatabaseConfig.Value.ConnectionString);
 
-            var mongoDatabase = mongoClient.GetDatabase(
-                userDatabaseConfig.Value.DatabaseName);
+        public UserService(
+            IOptions<UserDatabaseConfig> userDatabaseConfig,
+            IAuthService authService,
+            IConfiguration configuration,
+            IMapper mapper
+        )
+        {
+            var mongoClient = new MongoClient(userDatabaseConfig.Value.ConnectionString);
+
+            var mongoDatabase = mongoClient.GetDatabase(userDatabaseConfig.Value.DatabaseName);
 
             _userCollection = mongoDatabase.GetCollection<User>(
-                userDatabaseConfig.Value.UserCollectionName);
+                userDatabaseConfig.Value.UserCollectionName
+            );
 
             _mapper = mapper;
 
@@ -54,7 +60,9 @@ namespace Infrastructure.Services
 
         public async Task UpdateUserInfo(UpdateUserDto updateUserDto)
         {
-            var user = await _userCollection.Find(user => user.Id == updateUserDto.Id).FirstOrDefaultAsync();
+            var user = await _userCollection
+                .Find(user => user.Id == updateUserDto.Id)
+                .FirstOrDefaultAsync();
             var updatedUser = new User()
             {
                 Id = updateUserDto.Id,
@@ -65,7 +73,7 @@ namespace Infrastructure.Services
             };
             await _userCollection.ReplaceOneAsync(x => x.Id == updateUserDto.Id, updatedUser);
         }
-        
+
         public async Task PartialUpdate(string userId, UpdateDefinition<User> update)
         {
             await _userCollection.UpdateOneAsync(
@@ -83,7 +91,9 @@ namespace Infrastructure.Services
         public async Task ForgetPassword(string email)
         {
             string newPassword = GenerateRandomString(16);
-            var user = await _userCollection.Find(user => user.Email == email).FirstOrDefaultAsync();
+            var user = await _userCollection
+                .Find(user => user.Email == email)
+                .FirstOrDefaultAsync();
             if (user != null)
             {
                 await UpdatePassword(user, newPassword);
@@ -105,15 +115,31 @@ namespace Infrastructure.Services
 
         public async Task<IList<UserVm>> GetBlockedUsers(string userId)
         {
-            var userVmList = await _userCollection.Aggregate()
+            var userVmList = await _userCollection
+                .Aggregate()
                 .Match(x => x.Id == userId)
                 .Lookup("users", "blocked", "_id", "user")
                 .Unwind("user")
                 .ReplaceRoot<User>("$user")
-                .Project(o=> new UserVm() { UserId = o.Id, Username = o.Username })
+                .Project(o => new UserVm() { UserId = o.Id, Username = o.Username })
                 .ToListAsync();
             return userVmList;
+        }
 
+        public async Task<IList<User>> FindWithUsername(string username)
+        {
+            var user = await _userCollection
+                .Find(
+                    new BsonDocument
+                    {
+                        {
+                            "username",
+                            new BsonDocument { { "$regex", username }, { "$options", "i" } }
+                        }
+                    }
+                )
+                .ToListAsync();
+            return user;
         }
 
         private async Task SendPasswordWithMail(string email, string newPassword)
@@ -122,15 +148,15 @@ namespace Infrastructure.Services
             var systemEmail = systemEmailCredentials.GetSection("Email").Value;
             var systemEmailPassword = systemEmailCredentials.GetSection("Password").Value;
             MailMessage message = new();
-            SmtpClient smtp = new ();
+            SmtpClient smtp = new();
             message.From = new MailAddress(systemEmail);
             message.To.Add(new MailAddress(email));
             message.Subject = "Your New Password";
-            message.IsBodyHtml = true; //to make message body as html  
+            message.IsBodyHtml = true; //to make message body as html
             message.Body = "Your new password is " + newPassword;
             smtp.UseDefaultCredentials = true;
             smtp.Port = 587;
-            smtp.Host = "smtp.gmail.com"; //for gmail host  
+            smtp.Host = "smtp.gmail.com"; //for gmail host
             smtp.EnableSsl = true;
             smtp.UseDefaultCredentials = false;
             smtp.Credentials = new NetworkCredential(systemEmail, systemEmailPassword);
@@ -142,8 +168,9 @@ namespace Infrastructure.Services
         {
             Random random = new();
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
+            return new string(
+                Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray()
+            );
         }
     }
 }

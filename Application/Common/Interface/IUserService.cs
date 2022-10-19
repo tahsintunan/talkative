@@ -15,5 +15,6 @@ namespace Application.Common.Interface
         Task<IList<UserVm>> GetBlockedUsers(string userId);
         Task UpdatePassword(User user, string password);
         Task PartialUpdate(string userId, UpdateDefinition<User> update);
+        Task<IList<User>> FindWithUsername(string username);
     }
 }

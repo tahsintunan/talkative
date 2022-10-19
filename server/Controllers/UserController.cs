@@ -1,13 +1,15 @@
 ﻿using Application.Common.Dto.ForgetPasswordDto;
 using Application.Common.Dto.UpdateUserDto;
 using Application.Common.Interface;
+using Application.Common.ViewModels;
+using Application.Users.Queries.SearchUserQuery;
 using Microsoft.AspNetCore.Mvc;
 
 namespace server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : ApiControllerBase
     {
         private readonly IUserService _userService;
         private readonly ILogger<UserController> _logger;
@@ -41,7 +43,13 @@ namespace server.Controllers
                 var user = await _userService.GetUserById(id);
                 if (user == null)
                 {
-                    return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, message = "User doesn't exist" });
+                    return BadRequest(
+                        new
+                        {
+                            StatusCode = StatusCodes.Status400BadRequest,
+                            message = "User doesn't exist"
+                        }
+                    );
                 }
                 return Ok(user);
             }
@@ -52,6 +60,12 @@ namespace server.Controllers
             }
         }
 
+        [HttpGet("username/{username}")]
+        public async Task<ActionResult<IList<UserVm>>> FindByUsername(string username)
+        {
+            return Ok(await _userService.FindWithUsername(username));
+        }
+
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UpdateUserDto updateUserDto)
         {
@@ -59,7 +73,8 @@ namespace server.Controllers
             {
                 await _userService.UpdateUserInfo(updateUserDto);
                 return NoContent();
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError("{ErrorMessage}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
@@ -73,7 +88,8 @@ namespace server.Controllers
             {
                 await _userService.DeleteUserById(id);
                 return NoContent();
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError("{ErrorMessage}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
@@ -86,6 +102,5 @@ namespace server.Controllers
             await _userService.ForgetPassword(forgetPasswordDto.Email!);
             return NoContent();
         }
-
     }
 }
