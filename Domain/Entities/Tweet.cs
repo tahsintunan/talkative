@@ -33,16 +33,12 @@ namespace Domain.Entities
         [BsonRepresentation(BsonType.ObjectId)]
         public IList<string>? Comments { get; set; }
 
-
         [BsonElement("isRetweet")]
         public bool IsRetweet { get; set; }
-
-
 
         [BsonElement("retweetId")]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? RetweetId { get; set; }
-
 
         [BsonElement("retweetUsers")]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -52,8 +48,8 @@ namespace Domain.Entities
         [BsonRepresentation(BsonType.ObjectId)]
         public IList<string>? RetweetPosts { get; set; }
 
-        [BsonElement("retweets")]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public Dictionary<string, string>? Retweets { get; set; }
+        //[BsonElement("retweets")]
+        //[BsonRepresentation(BsonType.ObjectId)]
+        //public Dictionary<string, string>? Retweets { get; set; }
     }
 }

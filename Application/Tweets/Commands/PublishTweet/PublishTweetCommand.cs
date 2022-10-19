@@ -5,7 +5,7 @@ using MongoDB.Bson;
 
 namespace Application.Tweets.Commands.PublishTweet
 {
-    public class PublishTweetCommand:IRequest<PublishTweetVm>
+    public class PublishTweetCommand : IRequest<PublishTweetVm>
     {
         public string? Text { get; set; }
         public IList<string>? Hashtags { get; set; }
@@ -21,7 +21,10 @@ namespace Application.Tweets.Commands.PublishTweet
             _tweetService = tweetService;
         }
 
-        public async Task<PublishTweetVm> Handle(PublishTweetCommand request, CancellationToken cancellationToken)
+        public async Task<PublishTweetVm> Handle(
+            PublishTweetCommand request,
+            CancellationToken cancellationToken
+        )
         {
             var generatedId = ObjectId.GenerateNewId().ToString();
             Tweet tweet = new Tweet()
@@ -29,7 +32,7 @@ namespace Application.Tweets.Commands.PublishTweet
                 Id = generatedId,
                 Text = request.Text,
                 UserId = request.UserId,
-                Hashtags = request.Hashtags != null ? new List<string>(request.Hashtags): null,
+                Hashtags = request.Hashtags != null ? new List<string>(request.Hashtags) : null,
                 IsRetweet = false,
                 RetweetId = null,
                 Likes = new List<string>(),
@@ -37,7 +40,6 @@ namespace Application.Tweets.Commands.PublishTweet
                 CreatedAt = DateTime.Now,
                 RetweetUsers = new List<string>(),
                 RetweetPosts = new List<string>(),
-                Retweets = new Dictionary<string, string>()
             };
             await _tweetService.PublishTweet(tweet);
 
