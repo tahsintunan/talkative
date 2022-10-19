@@ -37,7 +37,7 @@ namespace Infrastructure.Services
             _configuration = configuration;
         }
 
-        public async Task<IList<UserVm>> GetAllUsers()
+        public async Task<IList<UserVm>?> GetAllUsers()
         {
             IList<User> users = await _userCollection.Find(users => true).ToListAsync();
             var usersVm = _mapper.Map<IList<UserVm>>(users);
@@ -45,7 +45,7 @@ namespace Infrastructure.Services
             return usersVm;
         }
 
-        public async Task<UserVm> GetUserById(string id)
+        public async Task<UserVm?> GetUserById(string id)
         {
             var user = await _userCollection.Find(user => user.Id == id).FirstOrDefaultAsync();
             var userVm = _mapper.Map<UserVm>(user);
@@ -64,6 +64,15 @@ namespace Infrastructure.Services
                 Password = user.Password,
             };
             await _userCollection.ReplaceOneAsync(x => x.Id == updateUserDto.Id, updatedUser);
+        }
+        
+        public async Task PartialUpdate(string userId, UpdateDefinition<User> update)
+        {
+            await _userCollection.UpdateOneAsync(
+                p => p.Id == userId,
+                update,
+                new UpdateOptions { IsUpsert = true }
+            );
         }
 
         public async Task DeleteUserById(string id)

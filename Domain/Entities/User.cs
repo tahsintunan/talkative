@@ -10,6 +10,14 @@ namespace Domain.Entities
         [BsonRepresentation(BsonType.ObjectId)]
         [JsonProperty("_id")]
         public string? Id { get; set; }
+        
+        [BsonElement("blockedBy")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public IList<string>? BlockedBy { get; set; }
+        
+        [BsonElement("blocked")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public IList<string>? Blocked { get; set; }
 
         [BsonElement("username")]
         public string? Username { get; set; }
