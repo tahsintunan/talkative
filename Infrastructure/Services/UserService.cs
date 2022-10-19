@@ -103,6 +103,19 @@ namespace Infrastructure.Services
             await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
         }
 
+        public async Task<IList<UserVm>> GetBlockedUsers(string userId)
+        {
+            var userVmList = await _userCollection.Aggregate()
+                .Match(x => x.Id == userId)
+                .Lookup("users", "blocked", "_id", "user")
+                .Unwind("user")
+                .ReplaceRoot<User>("$user")
+                .Project(o=> new UserVm() { UserId = o.Id, Username = o.Username })
+                .ToListAsync();
+            return userVmList;
+
+        }
+
         private async Task SendPasswordWithMail(string email, string newPassword)
         {
             var systemEmailCredentials = _configuration.GetSection("EmailCredentials");
