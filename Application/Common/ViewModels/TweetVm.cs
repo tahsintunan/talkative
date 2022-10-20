@@ -19,5 +19,4 @@ namespace Application.Common.ViewModels
         public Dictionary<string, string>? Retweets { get; set; }
         public DateTime? CreatedAt { get; set; }
     }
-
 }
