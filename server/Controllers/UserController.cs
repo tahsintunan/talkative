@@ -71,6 +71,7 @@ namespace server.Controllers
         {
             try
             {
+                updateUserDto.Id = HttpContext.Items["User"]!.ToString();
                 await _userService.UpdateUserInfo(updateUserDto);
                 return NoContent();
             }
