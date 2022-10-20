@@ -1,5 +1,11 @@
 export interface UserModel {
-  id?: string;
+  userId?: string;
+  username?: string;
+  email?: string;
+  dateOfBirth?: Date;
+}
+
+export interface UserUpdateReqModel {
   username?: string;
   email?: string;
   dateOfBirth?: Date;

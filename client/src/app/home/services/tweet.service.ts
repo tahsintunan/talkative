@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
 import {
   TweetCreateReqModel,
@@ -29,53 +29,63 @@ export class TweetService {
   ) {}
 
   createTweet(tweet: TweetCreateReqModel) {
-    this.http.post<TweetModel>(this.apiUrl, tweet).subscribe((res) => {
-      this.feedTweetsSubject.next([res, ...this.feedTweetsSubject.value]);
-
-      this.addToUserTweets(res);
-    });
-  }
-
-  retweet(tweet: TweetRetweetReqModel) {
-    this.http
-      .post<TweetModel>(this.apiUrl + '/retweet', tweet)
-      .subscribe((res) => {
+    return this.http.post<TweetModel>(this.apiUrl, tweet).pipe(
+      tap((res) => {
         this.feedTweetsSubject.next([res, ...this.feedTweetsSubject.value]);
 
         this.addToUserTweets(res);
-      });
+      })
+    );
+  }
+
+  retweet(tweet: TweetRetweetReqModel) {
+    return this.http.post<TweetModel>(this.apiUrl + '/retweet', tweet).pipe(
+      tap((res) => {
+        this.feedTweetsSubject.next([res, ...this.feedTweetsSubject.value]);
+
+        this.addToUserTweets(res);
+      })
+    );
   }
 
   updateTweet(tweet: TweetUpdateReqModel) {
-    this.http.put<TweetModel>(this.apiUrl, tweet).subscribe((res) => {
-      this.feedTweetsSubject.next([
-        ...this.feedTweetsSubject.value.map((x) => (x.id === res.id ? res : x)),
-      ]);
+    return this.http.put<TweetModel>(this.apiUrl, tweet).pipe(
+      tap((res) => {
+        this.feedTweetsSubject.next([
+          ...this.feedTweetsSubject.value.map((x) =>
+            x.id === res.id ? res : x
+          ),
+        ]);
 
-      this.userTweetSubject.next([
-        ...this.userTweetSubject.value.map((x) => (x.id === res.id ? res : x)),
-      ]);
-    });
+        this.userTweetSubject.next([
+          ...this.userTweetSubject.value.map((x) =>
+            x.id === res.id ? res : x
+          ),
+        ]);
+      })
+    );
   }
 
   deleteTweet(tweetId: string) {
-    this.http.delete(this.apiUrl + '/' + tweetId).subscribe((res) => {
-      this.feedTweetsSubject.next(
-        this.feedTweetsSubject.value.filter((x) => x.id !== tweetId)
-      );
+    return this.http.delete(this.apiUrl + '/' + tweetId).pipe(
+      tap(() => {
+        this.feedTweetsSubject.next(
+          this.feedTweetsSubject.value.filter((x) => x.id !== tweetId)
+        );
 
-      this.userTweetSubject.next(
-        this.userTweetSubject.value.filter((x) => x.id !== tweetId)
-      );
-    });
+        this.userTweetSubject.next(
+          this.userTweetSubject.value.filter((x) => x.id !== tweetId)
+        );
+      })
+    );
   }
 
   getTweets() {
-    return this.http
-      .get<TweetModel[]>(this.apiUrl + '/user/current-user')
-      .subscribe((res) => {
+    return this.http.get<TweetModel[]>(this.apiUrl + '/user/current-user').pipe(
+      tap((res) => {
         this.feedTweetsSubject.next(res);
-      });
+      })
+    );
   }
 
   getTweetById(id: string) {
@@ -83,23 +93,24 @@ export class TweetService {
   }
 
   getUserTweets(userId: string) {
-    this.http
-      .get<TweetModel[]>(this.apiUrl + '/user/' + userId)
-      .subscribe((res) => {
+    return this.http.get<TweetModel[]>(this.apiUrl + '/user/' + userId).pipe(
+      tap((res) => {
         this.userTweetSubject.next(res);
-      });
+      })
+    );
   }
 
   likeTweet(tweetId: string, isLiked: boolean) {
-    this.http
-      .put<TweetModel>(this.apiUrl + '/like', { tweetId, isLiked })
-      .subscribe((res) => {});
+    return this.http.put<TweetModel>(this.apiUrl + '/like', {
+      tweetId,
+      isLiked,
+    });
   }
 
   private addToUserTweets(tweet: TweetModel) {
     const currentUserId = this.router.url.split('/profile/')[1];
 
-    if (tweet.user?.id === currentUserId) {
+    if (tweet.user?.userId === currentUserId) {
       this.userTweetSubject.next([tweet, ...this.userTweetSubject.value]);
     }
   }

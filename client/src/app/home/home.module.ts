@@ -12,23 +12,25 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { SharedModule } from '../shared/shared.module';
 import { FeedComponent } from './feature/feed/feed.component';
 import { HomeComponent } from './feature/home/home.component';
 import { NotificationsComponent } from './feature/notifications/notifications.component';
 import { ProfileComponent } from './feature/profile/profile.component';
-import { HomeRoutingModule } from './home-routing.module';
-import { NavLinkItemComponent } from './ui/nav-link-item/nav-link-item.component';
-import { NavbarComponent } from './ui/navbar/navbar.component';
-import { PostMakerDialogComponent } from './ui/post-maker-dialog/post-maker-dialog.component';
-import { ProfileDetailsComponent } from './ui/profile-details/profile-details.component';
-import { ProfileUpdateDialogComponent } from './ui/profile-update-dialog/profile-update-dialog.component';
-import { RetweetContentComponent } from './ui/retweet-content/retweet-content.component';
-import { TweetItemComponent } from './ui/tweet-item/tweet-item.component';
 import { TweetDetailsComponent } from './feature/tweet-details/tweet-details.component';
-import { CommentItemComponent } from './ui/comment-item/comment-item.component';
-import { CommentInputComponent } from './ui/comment-input/comment-input.component';
+import { HomeRoutingModule } from './home-routing.module';
+import { CommentInputComponent } from './ui/comment/comment-input/comment-input.component';
+import { CommentItemComponent } from './ui/comment/comment-item/comment-item.component';
+import { FollowingItemComponent } from './ui/following-item/following-item.component';
+import { NavLinkItemComponent } from './ui/nav/nav-link-item/nav-link-item.component';
+import { NavbarComponent } from './ui/nav/navbar/navbar.component';
+import { ProfileDetailsComponent } from './ui/profile/profile-details/profile-details.component';
+import { ProfileUpdateDialogComponent } from './ui/profile/profile-update-dialog/profile-update-dialog.component';
+import { PostMakerDialogComponent } from './ui/tweet/post-maker-dialog/post-maker-dialog.component';
+import { RetweetContentComponent } from './ui/tweet/retweet-content/retweet-content.component';
+import { TweetItemComponent } from './ui/tweet/tweet-item/tweet-item.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,7 @@ import { CommentInputComponent } from './ui/comment-input/comment-input.componen
     TweetDetailsComponent,
     CommentItemComponent,
     CommentInputComponent,
+    FollowingItemComponent,
   ],
   imports: [
     CommonModule,
@@ -69,6 +72,7 @@ import { CommentInputComponent } from './ui/comment-input/comment-input.componen
     MatSidenavModule,
     MatDialogModule,
     MatMenuModule,
+    MatTabsModule,
   ],
 })
 export class HomeModule {}

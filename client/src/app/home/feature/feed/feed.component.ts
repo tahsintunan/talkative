@@ -4,7 +4,7 @@ import { TweetModel, TweetWriteModel } from '../../models/tweet.model';
 import { UserModel } from '../../models/user.model';
 import { TweetService } from '../../services/tweet.service';
 import { UserService } from '../../services/user.service';
-import { PostMakerDialogComponent } from '../../ui/post-maker-dialog/post-maker-dialog.component';
+import { PostMakerDialogComponent } from '../../ui/tweet/post-maker-dialog/post-maker-dialog.component';
 
 @Component({
   selector: 'app-feed',
@@ -30,7 +30,7 @@ export class FeedComponent implements OnInit {
       this.tweets = res;
     });
 
-    this.tweetService.getTweets();
+    this.tweetService.getTweets().subscribe();
   }
 
   onCreatePost() {
@@ -40,10 +40,12 @@ export class FeedComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: TweetWriteModel) => {
       if (result) {
-        this.tweetService.createTweet({
-          text: result.text!,
-          hashtags: result.hashtags || [],
-        });
+        this.tweetService
+          .createTweet({
+            text: result.text!,
+            hashtags: result.hashtags || [],
+          })
+          .subscribe();
       }
     });
   }

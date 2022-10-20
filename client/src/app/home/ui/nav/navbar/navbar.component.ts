@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
-import { TweetWriteModel } from '../../models/tweet.model';
-import { TweetService } from '../../services/tweet.service';
-import { UserService } from '../../services/user.service';
-import { PostMakerDialogComponent } from '../post-maker-dialog/post-maker-dialog.component';
+import { TweetWriteModel } from 'src/app/home/models/tweet.model';
+import { TweetService } from 'src/app/home/services/tweet.service';
+import { UserService } from 'src/app/home/services/user.service';
+import { PostMakerDialogComponent } from '../../tweet/post-maker-dialog/post-maker-dialog.component';
 
 @Component({
   selector: 'app-navbar',
@@ -43,7 +43,7 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.userService.userAuth.subscribe((res) => {
-      this.userId = res.id;
+      this.userId = res.userId;
       this.navData[1].link = `./profile/${this.userId}`;
     });
   }
@@ -60,10 +60,12 @@ export class NavbarComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: TweetWriteModel) => {
       if (result) {
-        this.tweetService.createTweet({
-          text: result.text!,
-          hashtags: result.hashtags || [],
-        });
+        this.tweetService
+          .createTweet({
+            text: result.text!,
+            hashtags: result.hashtags || [],
+          })
+          .subscribe();
       }
     });
   }

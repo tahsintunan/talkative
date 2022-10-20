@@ -14,7 +14,7 @@
       <span class="flex flex-col">
         <a
           class="text-md hover:underline"
-          routerLink="/home/profile/{{ tweet?.user?.id }}"
+          routerLink="/home/profile/{{ tweet?.user?.userId }}"
           >{{ tweet?.user?.username }}</a
         >
         <span class="text-gray-500 text-xs">{{
@@ -23,7 +23,7 @@
       </span>
 
       <button
-        *ngIf="tweet?.user?.id === userAuth?.id"
+        *ngIf="tweet?.user?.userId === userAuth?.userId"
         class="!ml-auto hover:text-primaryLight"
         mat-icon-button
         [matMenuTriggerFor]="menu"

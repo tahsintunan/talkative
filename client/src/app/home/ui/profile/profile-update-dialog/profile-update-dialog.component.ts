@@ -10,7 +10,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UtilityService } from 'src/app/shared/services/utility.service';
 
 interface ProfileUpdateDialogData {
-  id: string;
   username: string;
   email: string;
   dateOfBirth: string;
@@ -23,7 +22,6 @@ interface ProfileUpdateDialogData {
 })
 export class ProfileUpdateDialogComponent implements OnInit {
   formData: FormGroup = this.formBuilder.group({
-    id: [this.data?.id, [Validators.required]],
     username: [this.data?.username, [Validators.required]],
     email: [this.data?.email, [Validators.required, Validators.email]],
     dateOfBirth: [

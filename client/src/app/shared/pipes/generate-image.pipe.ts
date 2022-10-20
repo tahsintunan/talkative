@@ -1,13 +1,20 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { profileImageList } from '../data/profile-images.data';
+import {
+  backgroundImageList,
+  profileImageList,
+} from '../data/profile-images.data';
 
 @Pipe({
   name: 'generateImage',
 })
 export class GenerateImagePipe implements PipeTransform {
-  transform(value: any, ...args: unknown[]): unknown {
+  private images: string[] = [];
+
+  transform(value: any, imageType: string = 'profile') {
+    this.updateImages(imageType);
+
     if (!value) {
-      return profileImageList[0];
+      return this.images[0];
     }
 
     value = value.toString();
@@ -17,6 +24,14 @@ export class GenerateImagePipe implements PipeTransform {
     for (let i = 0; i < value.length; i++) {
       stringWeight += value.charCodeAt(i);
     }
-    return profileImageList[stringWeight % profileImageList.length];
+    return this.images[stringWeight % this.images.length];
+  }
+
+  updateImages(imageType: string) {
+    if (imageType === 'profile') {
+      this.images = profileImageList;
+    } else {
+      this.images = backgroundImageList;
+    }
   }
 }

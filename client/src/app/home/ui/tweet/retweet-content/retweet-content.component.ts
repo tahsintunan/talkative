@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { TweetModel } from '../../models/tweet.model';
+import { TweetModel } from '../../../models/tweet.model';
 
 @Component({
   selector: 'app-retweet-content',

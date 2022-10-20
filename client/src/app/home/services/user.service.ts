@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
-import { UserModel } from '../models/user.model';
+import { UserModel, UserUpdateReqModel } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,10 +13,8 @@ export class UserService {
   apiUrl = this.env.apiUrl + 'api/User/';
 
   private readonly userAuthSubject = new BehaviorSubject<UserModel>({});
-  private readonly userProfileSubject = new BehaviorSubject<UserModel>({});
 
   public readonly userAuth = this.userAuthSubject.asObservable();
-  public readonly userProfile = this.userProfileSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -35,7 +33,7 @@ export class UserService {
         const decodedToken: any = jwtDecode(token);
 
         this.userAuthSubject.next({
-          id: decodedToken.user_id,
+          userId: decodedToken.user_id,
           username: decodedToken.unique_name,
           email: decodedToken.email,
         });
@@ -46,14 +44,10 @@ export class UserService {
   }
 
   public getUser(userId: string) {
-    this.http.get<UserModel>(this.apiUrl + userId).subscribe((res) => {
-      this.userProfileSubject.next(res);
-    });
+    return this.http.get<UserModel>(this.apiUrl + userId);
   }
 
-  public updateProfile(user: UserModel) {
-    this.http.put<UserModel>(this.apiUrl, user).subscribe((res) => {
-      if (user.id) this.getUser(user.id);
-    });
+  public updateProfile(user: UserUpdateReqModel) {
+    return this.http.put<UserModel>(this.apiUrl, user);
   }
 }

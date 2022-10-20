@@ -16,7 +16,7 @@
     <span class="text-xs text-gray-500">{{ data?.created | dateAgo }}</span>
 
     <button
-      *ngIf="data?.userId === userAuth?.id"
+      *ngIf="data?.userId === userAuth?.userId"
       class="!ml-auto hover:text-primaryLight"
       mat-icon-button
       (click)="$event.stopPropagation()"

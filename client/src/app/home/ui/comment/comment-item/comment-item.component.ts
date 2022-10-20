@@ -3,9 +3,9 @@ import {
   CommentLikeModel,
   CommentModel,
   CommentUpdateModel,
-} from '../../models/comment.model';
-import { UserModel } from '../../models/user.model';
-import { UserService } from '../../services/user.service';
+} from '../../../models/comment.model';
+import { UserModel } from '../../../models/user.model';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-comment-item',
@@ -32,7 +32,7 @@ export class CommentItemComponent implements OnInit {
     });
 
     this.alreadyLiked = !!this.data?.likes?.some(
-      (likedBy) => likedBy === this.userAuth?.id
+      (likedBy) => likedBy === this.userAuth?.userId
     );
   }
 

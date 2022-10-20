@@ -22,3 +22,9 @@ export const profileImageList = [
   'https://img.icons8.com/fluency/344/rhinoceros-front-view.png',
   'https://img.icons8.com/fluency/344/deer.png',
 ];
+
+export const backgroundImageList = [
+  'https://img.freepik.com/free-vector/brush-strokes-background_53876-90918.jpg',
+  'https://img.freepik.com/free-vector/white-abstract-background_23-2148810113.jpg',
+  'https://img.freepik.com/free-vector/network-mesh-wire-digital-technology-background_1017-27428.jpg',
+];

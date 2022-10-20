@@ -11,7 +11,7 @@ import { UserModel } from '../../models/user.model';
 import { CommentService } from '../../services/comment.service';
 import { TweetService } from '../../services/tweet.service';
 import { UserService } from '../../services/user.service';
-import { PostMakerDialogComponent } from '../../ui/post-maker-dialog/post-maker-dialog.component';
+import { PostMakerDialogComponent } from '../../ui/tweet/post-maker-dialog/post-maker-dialog.component';
 
 @Component({
   selector: 'app-tweet-details',
@@ -55,11 +55,11 @@ export class TweetDetailsComponent implements OnInit {
         this.tweet = res;
 
         this.alreadyLiked = res.likes?.some(
-          (like) => like === this.userAuth?.id
+          (like) => like === this.userAuth?.userId
         );
 
         this.alreadyRetweeted = res.retweetUsers?.some(
-          (retweet) => retweet === this.userAuth?.id
+          (retweet) => retweet === this.userAuth?.userId
         );
       });
     }
@@ -79,14 +79,16 @@ export class TweetDetailsComponent implements OnInit {
   }
 
   onLike() {
-    this.tweetService.likeTweet(this.tweet?.id!, !this.alreadyLiked);
+    this.tweetService
+      .likeTweet(this.tweet?.id!, !this.alreadyLiked)
+      .subscribe();
 
     if (this.alreadyLiked && this.tweet) {
       this.tweet.likes = this.tweet.likes.filter(
-        (likedBy) => likedBy !== this.userAuth?.id
+        (likedBy) => likedBy !== this.userAuth?.userId
       );
     } else {
-      this.tweet?.likes?.push(this.userAuth?.id!);
+      this.tweet?.likes?.push(this.userAuth?.userId!);
     }
 
     this.alreadyLiked = !this.alreadyLiked;
@@ -149,13 +151,15 @@ export class TweetDetailsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: TweetWriteModel) => {
       if (result) {
-        this.tweetService.updateTweet({
-          id: result.id!,
-          text: result.text,
-          hashtags: result.hashtags,
-          isRetweet: result.isRetweet,
-          retweetId: result.retweetId,
-        });
+        this.tweetService
+          .updateTweet({
+            id: result.id!,
+            text: result.text,
+            hashtags: result.hashtags,
+            isRetweet: result.isRetweet,
+            retweetId: result.retweetId,
+          })
+          .subscribe();
 
         this.getTweet();
       }
@@ -164,7 +168,7 @@ export class TweetDetailsComponent implements OnInit {
 
   onDelete() {
     if (this.tweet?.id) {
-      this.tweetService.deleteTweet(this.tweet?.id);
+      this.tweetService.deleteTweet(this.tweet?.id).subscribe();
       this.router.navigate(['..']);
     }
   }
