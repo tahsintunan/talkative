@@ -6,17 +6,17 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using System.Linq.Expressions;
 
 namespace Infrastructure.Services
 {
     public class TweetService : ITweetService
     {
         private readonly IMongoCollection<Tweet> _tweetCollection;
+        private readonly IMongoCollection<Follower> _followerCollection;
 
         public TweetService(
             IOptions<TweetDatabaseConfig> tweetDatabaseConfig,
-            IOptions<UserDatabaseConfig> userDatabaseConfig
+            IOptions<FollowerDatabaseConfig> followerDatabaseConfig
         )
         {
             var mongoClient = new MongoClient(tweetDatabaseConfig.Value.ConnectionString);
@@ -25,6 +25,10 @@ namespace Infrastructure.Services
 
             _tweetCollection = mongoDatabase.GetCollection<Tweet>(
                 tweetDatabaseConfig.Value.TweetCollectionName
+            );
+
+            _followerCollection = mongoDatabase.GetCollection<Follower>(
+                followerDatabaseConfig.Value.CollectionName
             );
 
             MongoClientSettings settings = MongoClientSettings.FromConnectionString(
@@ -90,6 +94,31 @@ namespace Infrastructure.Services
             var tweets = await _tweetCollection
                 .Aggregate()
                 .Match(x => x.UserId == userId)
+                .Lookup("users", "userId", "_id", "user")
+                .Lookup("tweets", "retweetId", "_id", "retweet")
+                .Unwind(
+                    "retweet",
+                    new AggregateUnwindOptions<TweetVm>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Unwind("user")
+                .Lookup("users", "retweet.userId", "_id", "retweet.user")
+                .Unwind(
+                    "retweet.user",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
+                .ToListAsync();
+
+            return tweets;
+        }
+
+        public async Task<IList<BsonDocument>> GenerateFeed(string userId)
+        {
+            var tweets = await _followerCollection
+                .Aggregate()
+                .Match(x => x.FollowerId == userId)
+                .Lookup("tweets", "followingId", "userId", "tweet")
+                .Unwind("tweet")
+                .ReplaceRoot<Tweet>("$tweet")
                 .Lookup("users", "userId", "_id", "user")
                 .Lookup("tweets", "retweetId", "_id", "retweet")
                 .Unwind(

@@ -2,7 +2,7 @@
 using Application.Retweets.Command.Retweet;
 using Application.Retweets.Command.UndoRetweet;
 using Application.Retweets.Query.GetAllRetweetQuery;
-using Application.Tweets.Queries.GetTweetByIdQuery;
+using Application.Tweets.Queries.GetTweetById;
 using Microsoft.AspNetCore.Mvc;
 
 namespace server.Controllers

@@ -13,5 +13,6 @@ namespace Application.Common.Interface
         Task<BsonDocument?> GetTweetById(string id);
         Task<IList<BsonDocument>> GetTweetsOfSingleUser(string userId);
         Task PartialUpdate(string tweetId, UpdateDefinition<Tweet> update);
+        Task<IList<BsonDocument>> GenerateFeed(string userId);
     }
 }
