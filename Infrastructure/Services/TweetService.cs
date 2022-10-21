@@ -135,5 +135,34 @@ namespace Infrastructure.Services
 
             return tweets;
         }
+
+        public async Task<IList<BsonDocument>> GetTweetsByHashtag(string hashtag)
+        {
+            var tweets = await _tweetCollection
+                .Aggregate()
+                .Match(
+                    new BsonDocument
+                    {
+                        {
+                            "hashtags",
+                            new BsonDocument { { "$regex", hashtag }, { "$options", "i" } }
+                        }
+                    }
+                )
+                .Lookup("users", "userId", "_id", "user")
+                .Lookup("tweets", "retweetId", "_id", "retweet")
+                .Unwind(
+                    "retweet",
+                    new AggregateUnwindOptions<TweetVm>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Unwind("user")
+                .Lookup("users", "retweet.userId", "_id", "retweet.user")
+                .Unwind(
+                    "retweet.user",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
+                .ToListAsync();
+            return tweets;
+        }
     }
 }

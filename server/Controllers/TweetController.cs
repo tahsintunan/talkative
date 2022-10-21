@@ -4,6 +4,7 @@ using Application.Tweets.Commands.LikeTweet;
 using Application.Tweets.Commands.PublishTweet;
 using Application.Tweets.Commands.UpdateTweet;
 using Application.Tweets.Queries.GetTweetById;
+using Application.Tweets.Queries.GetTweetsByHashtag;
 using Application.Tweets.Queries.GetTweetsOfSingleUser;
 using Application.Tweets.Queries.TweetsForFeed;
 using Microsoft.AspNetCore.Mvc;
@@ -54,6 +55,12 @@ namespace server.Controllers
         public async Task<ActionResult<List<TweetVm>>> GetTweetOfAUser(string userId)
         {
             return Ok(await Mediator.Send(new GetTweetsOfSingleUserQuery() { UserId = userId }));
+        }
+
+        [HttpGet("search/{hashtag}")]
+        public async Task<ActionResult<IList<TweetVm>>> GetTweetsByHashtags(string hashtag)
+        {
+            return Ok(await Mediator.Send(new GetTweetsByHashtagQuery() { Hashtag = hashtag }));
         }
 
         [HttpPut]
