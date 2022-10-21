@@ -2,15 +2,15 @@
 using Application.Common.ViewModels;
 using MediatR;
 
-namespace Application.Tweets.Queries.GetTweetsByHashtag
+namespace Application.Tweets.Queries.SearchTweetsByHashtag
 {
-    public class GetTweetsByHashtagQuery : IRequest<IList<TweetVm>>
+    public class SearchTweetsByHashtagQuery : IRequest<IList<TweetVm>>
     {
         public string? Hashtag { get; set; }
     }
 
     public class GetTweetsByHashtagQueryHandler
-        : IRequestHandler<GetTweetsByHashtagQuery, IList<TweetVm>>
+        : IRequestHandler<SearchTweetsByHashtagQuery, IList<TweetVm>>
     {
         private readonly ITweetService _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetBsonMapper;
@@ -25,7 +25,7 @@ namespace Application.Tweets.Queries.GetTweetsByHashtag
         }
 
         public async Task<IList<TweetVm>> Handle(
-            GetTweetsByHashtagQuery request,
+            SearchTweetsByHashtagQuery request,
             CancellationToken cancellationToken
         )
         {

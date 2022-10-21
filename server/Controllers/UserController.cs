@@ -1,8 +1,6 @@
 ﻿using Application.Common.Dto.ForgetPasswordDto;
 using Application.Common.Dto.UpdateUserDto;
 using Application.Common.Interface;
-using Application.Common.ViewModels;
-using Application.Users.Queries.SearchUserQuery;
 using Microsoft.AspNetCore.Mvc;
 
 namespace server.Controllers
@@ -58,12 +56,6 @@ namespace server.Controllers
                 _logger.LogError("{ErrorMessage}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
-        }
-
-        [HttpGet("username/{username}")]
-        public async Task<ActionResult<IList<UserVm>>> FindByUsername(string username)
-        {
-            return Ok(await _userService.FindWithUsername(username));
         }
 
         [HttpPut]
