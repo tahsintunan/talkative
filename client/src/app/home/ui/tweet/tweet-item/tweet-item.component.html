@@ -7,14 +7,14 @@
       [generateAvater]="true"
     ></app-avatar>
 
-    <span class="flex flex-col">
+    <div class="flex flex-col" (click)="$event.stopPropagation()">
       <a
         class="text-md hover:underline"
         routerLink="/home/profile/{{ data?.user?.userId }}"
         >{{ data?.user?.username }}</a
       >
       <span class="text-gray-500 text-xs">{{ data?.createdAt | dateAgo }}</span>
-    </span>
+    </div>
 
     <button
       *ngIf="data?.user?.userId === userAuth?.userId"
@@ -23,16 +23,16 @@
       (click)="$event.stopPropagation()"
       [matMenuTriggerFor]="menu"
     >
-      <mat-icon>more_vert</mat-icon>
+      <mat-icon class="material-symbols-rounded">more_vert</mat-icon>
     </button>
 
     <mat-menu #menu>
       <button mat-menu-item (click)="onEdit()">
-        <mat-icon>edit</mat-icon>
+        <mat-icon class="material-symbols-rounded">edit</mat-icon>
         <span>Edit Post</span>
       </button>
       <button mat-menu-item (click)="onDelete()">
-        <mat-icon>delete</mat-icon>
+        <mat-icon class="material-symbols-rounded">delete</mat-icon>
         <span>Delete Post</span>
       </button>
     </mat-menu>
@@ -41,7 +41,7 @@
   <div class="mx-5 mb-5 flex flex-col gap-3">
     <div
       [innerHtml]="data?.text || '' | hashtag"
-      (click)="onTagClick($event)"
+      (click)="$event.stopPropagation(); onTagClick($event)"
     ></div>
 
     <app-retweet-content
@@ -101,8 +101,8 @@
 
     <mat-menu #retweetMenu>
       <button *ngIf="alreadyRetweeted" mat-menu-item (click)="onDelete()">
-        <mat-icon>sync_disabled</mat-icon>
-        <span>Undo Retweet</span>
+        <mat-icon class="material-symbols-rounded">sync_disabled</mat-icon>
+        <span>Undo Share</span>
       </button>
 
       <button
@@ -110,13 +110,13 @@
         mat-menu-item
         (click)="onQuickRetweet()"
       >
-        <mat-icon>share</mat-icon>
-        <span>Quick Retweet</span>
+        <mat-icon class="material-symbols-rounded">share</mat-icon>
+        <span>Quick Share</span>
       </button>
 
       <button mat-menu-item (click)="onQuoteRetweet()">
-        <mat-icon>edit_note</mat-icon>
-        <span>Quote Retweet</span>
+        <mat-icon class="material-symbols-rounded">edit_note</mat-icon>
+        <span>Quote Share</span>
       </button>
     </mat-menu>
   </div>

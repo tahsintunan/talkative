@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { FollowModel } from '../../models/follow.model';
 import { TweetModel } from '../../models/tweet.model';
 import { UserModel, UserUpdateReqModel } from '../../models/user.model';
+import { BlockService } from '../../services/block.service';
 import { FollowService } from '../../services/follow.service';
 import { TweetService } from '../../services/tweet.service';
 import { UserService } from '../../services/user.service';
@@ -16,19 +16,25 @@ import { ProfileUpdateDialogComponent } from '../../ui/profile/profile-update-di
 })
 export class ProfileComponent implements OnInit {
   profileDetails?: UserModel;
-  followers: FollowModel[] = [];
-  followings: FollowModel[] = [];
+  followers: UserModel[] = [];
+  followings: UserModel[] = [];
+  blockList: UserModel[] = [];
   tweets: TweetModel[] = [];
 
   constructor(
     private dialog: MatDialog,
     private userService: UserService,
+    private blockService: BlockService,
     private tweetService: TweetService,
     private followService: FollowService,
     private activeRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.blockService.userBlockList.subscribe((res) => {
+      this.blockList = res;
+    });
+
     this.tweetService.userTweets.subscribe((res) => {
       this.tweets = res;
     });
@@ -97,6 +103,22 @@ export class ProfileComponent implements OnInit {
     this.followService.unfollowUser(userId).subscribe((res) => {
       this.getFollowers(this.profileDetails?.userId!);
       this.getFollowings(this.profileDetails?.userId!);
+    });
+  }
+
+  onBlock(userId: string) {
+    this.blockService.blockUser(userId).subscribe((res) => {
+      this.getFollowers(this.profileDetails?.userId!);
+      this.getFollowings(this.profileDetails?.userId!);
+      this.blockService.init();
+    });
+  }
+
+  onUnblock(userId: string) {
+    this.blockService.unblockUser(userId).subscribe((res) => {
+      this.getFollowers(this.profileDetails?.userId!);
+      this.getFollowings(this.profileDetails?.userId!);
+      this.blockService.init();
     });
   }
 }

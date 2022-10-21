@@ -38,14 +38,14 @@ export class CommentItemComponent implements OnInit {
 
   onLike() {
     this.onLikeClick.emit({
-      commentId: this.data?.id!,
+      id: this.data?.id!,
       isLiked: !this.alreadyLiked,
     });
   }
 
   onEdit(text: string) {
     this.onEditSubmit.emit({
-      commentId: this.data?.id!,
+      id: this.data?.id!,
       text,
     });
     this.isEditMode = false;

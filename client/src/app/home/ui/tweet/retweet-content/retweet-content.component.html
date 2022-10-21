@@ -11,20 +11,20 @@
       [generateAvater]="true"
     ></app-avatar>
 
-    <span class="flex flex-col">
+    <div class="flex flex-col" (click)="$event.stopPropagation()">
       <a
         class="text-md hover:underline"
         routerLink="/home/profile/{{ data?.user?.userId }}"
         >{{ data?.user?.username }}</a
       >
       <span class="text-gray-500 text-xs">{{ data?.createdAt | dateAgo }}</span>
-    </span>
+    </div>
   </div>
 
   <div class="mx-5 mb-5">
     <div
       [innerHtml]="data?.text || '' | hashtag"
-      (click)="onTagClick($event)"
+      (click)="$event.stopPropagation(); onTagClick($event)"
     ></div>
   </div>
 </div>

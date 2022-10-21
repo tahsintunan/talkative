@@ -10,12 +10,19 @@ import { LoaderService } from '../services/loader.service';
 
 @Injectable()
 export class HttpLoadingInterceptor implements HttpInterceptor {
+  noLoadingUrls = ['like', 'unlike'];
   constructor(private loaderService: LoaderService) {}
 
   intercept(
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    if (
+      this.noLoadingUrls.some((url) => request.url.toLowerCase().includes(url))
+    ) {
+      return next.handle(request);
+    }
+
     this.loaderService.setLoading(true, request.url);
 
     return next.handle(request).pipe(

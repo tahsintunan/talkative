@@ -175,7 +175,7 @@ export class TweetDetailsComponent implements OnInit {
 
   onCommentEdit(value: CommentUpdateModel) {
     this.commentService.updateComment(value).subscribe((res) => {
-      this.commentService.getCommentById(value.commentId).subscribe((res) => {
+      this.commentService.getCommentById(value.id).subscribe((res) => {
         this.comments = this.comments.map((comment) =>
           comment.id === res.id ? res : comment
         );
@@ -185,7 +185,7 @@ export class TweetDetailsComponent implements OnInit {
 
   onCommentLike(value: CommentLikeModel) {
     this.commentService.likeComment(value).subscribe((res) => {
-      this.commentService.getCommentById(value.commentId).subscribe((res) => {
+      this.commentService.getCommentById(value.id).subscribe((res) => {
         this.comments = this.comments.map((comment) =>
           comment.id === res.id ? res : comment
         );

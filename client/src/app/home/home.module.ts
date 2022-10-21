@@ -23,10 +23,11 @@ import { TweetDetailsComponent } from './feature/tweet-details/tweet-details.com
 import { HomeRoutingModule } from './home-routing.module';
 import { CommentInputComponent } from './ui/comment/comment-input/comment-input.component';
 import { CommentItemComponent } from './ui/comment/comment-item/comment-item.component';
-import { FollowingItemComponent } from './ui/following-item/following-item.component';
 import { NavLinkItemComponent } from './ui/nav/nav-link-item/nav-link-item.component';
 import { NavbarComponent } from './ui/nav/navbar/navbar.component';
 import { ProfileDetailsComponent } from './ui/profile/profile-details/profile-details.component';
+import { ProfilePeopleItemComponent } from './ui/profile/profile-people-item/profile-people-item.component';
+import { ProfilePeoplesComponent } from './ui/profile/profile-peoples/profile-peoples.component';
 import { ProfileUpdateDialogComponent } from './ui/profile/profile-update-dialog/profile-update-dialog.component';
 import { PostMakerDialogComponent } from './ui/tweet/post-maker-dialog/post-maker-dialog.component';
 import { RetweetContentComponent } from './ui/tweet/retweet-content/retweet-content.component';
@@ -48,7 +49,8 @@ import { TweetItemComponent } from './ui/tweet/tweet-item/tweet-item.component';
     TweetDetailsComponent,
     CommentItemComponent,
     CommentInputComponent,
-    FollowingItemComponent,
+    ProfilePeopleItemComponent,
+    ProfilePeoplesComponent,
   ],
   imports: [
     CommonModule,

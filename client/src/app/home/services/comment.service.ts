@@ -36,6 +36,6 @@ export class CommentService {
   }
 
   likeComment(value: CommentLikeModel) {
-    return this.http.patch(this.apiUrl + '/like/' + value.commentId, value);
+    return this.http.patch(this.apiUrl + '/like/' + value.id, value);
   }
 }

@@ -99,8 +99,8 @@
 
       <mat-menu #retweetMenu>
         <button *ngIf="alreadyRetweeted" mat-menu-item (click)="onDelete()">
-          <mat-icon>sync_disabled</mat-icon>
-          <span>Undo Retweet</span>
+          <mat-icon class="material-symbols-rounded">sync_disabled</mat-icon>
+          <span>Undo Share</span>
         </button>
 
         <button
@@ -108,13 +108,13 @@
           mat-menu-item
           (click)="onQuickRetweet()"
         >
-          <mat-icon>share</mat-icon>
-          <span>Quick Retweet</span>
+          <mat-icon class="material-symbols-rounded">share</mat-icon>
+          <span>Quick Share</span>
         </button>
 
         <button mat-menu-item (click)="onQuoteRetweet()">
-          <mat-icon>edit_note</mat-icon>
-          <span>Quote Retweet</span>
+          <mat-icon class="material-symbols-rounded">edit_note</mat-icon>
+          <span>Quote Share</span>
         </button>
       </mat-menu>
     </div>

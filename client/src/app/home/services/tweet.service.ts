@@ -42,7 +42,6 @@ export class TweetService {
     return this.http.post<TweetModel>(this.apiUrl + '/retweet', tweet).pipe(
       tap((res) => {
         this.feedTweetsSubject.next([res, ...this.feedTweetsSubject.value]);
-
         this.addToUserTweets(res);
       })
     );
@@ -81,11 +80,9 @@ export class TweetService {
   }
 
   getTweets() {
-    return this.http.get<TweetModel[]>(this.apiUrl + '/user/current-user').pipe(
-      tap((res) => {
-        this.feedTweetsSubject.next(res);
-      })
-    );
+    return this.http
+      .get<TweetModel[]>(this.apiUrl + '/user/current-user')
+      .pipe(tap((res) => this.feedTweetsSubject.next(res)));
   }
 
   getTweetById(id: string) {
@@ -93,11 +90,9 @@ export class TweetService {
   }
 
   getUserTweets(userId: string) {
-    return this.http.get<TweetModel[]>(this.apiUrl + '/user/' + userId).pipe(
-      tap((res) => {
-        this.userTweetSubject.next(res);
-      })
-    );
+    return this.http
+      .get<TweetModel[]>(this.apiUrl + '/user/' + userId)
+      .pipe(tap((res) => this.userTweetSubject.next(res)));
   }
 
   likeTweet(tweetId: string, isLiked: boolean) {

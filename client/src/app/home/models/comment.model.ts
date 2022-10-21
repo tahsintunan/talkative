@@ -14,11 +14,11 @@ export interface CommentCreateModel {
 }
 
 export interface CommentUpdateModel {
-  commentId: string;
+  id: string;
   text: string;
 }
 
 export interface CommentLikeModel {
-  commentId: string;
+  id: string;
   isLiked: boolean;
 }

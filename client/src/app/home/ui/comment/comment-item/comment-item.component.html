@@ -22,16 +22,16 @@
       (click)="$event.stopPropagation()"
       [matMenuTriggerFor]="menu"
     >
-      <mat-icon>more_vert</mat-icon>
+      <mat-icon class="material-symbols-rounded">more_vert</mat-icon>
     </button>
 
     <mat-menu #menu>
       <button mat-menu-item (click)="isEditMode = true">
-        <mat-icon>edit</mat-icon>
+        <mat-icon class="material-symbols-rounded">edit</mat-icon>
         <span>Edit Comment</span>
       </button>
       <button mat-menu-item (click)="onDelete()">
-        <mat-icon>delete</mat-icon>
+        <mat-icon class="material-symbols-rounded">delete</mat-icon>
         <span>Delete Comment</span>
       </button>
     </mat-menu>

@@ -1,0 +1,65 @@
+<div
+  class="flex items-center justify-between rounded-md hover:bg-gray-50 p-2 text-gray-700"
+>
+  <a
+    routerLink="/home/profile/{{ data?.userId }}"
+    class="flex gap-3 items-center flex-1"
+  >
+    <app-avatar
+      [alt]="data?.username"
+      [src]="data?.username"
+      size="50px"
+      borderRadius="50%"
+      borderWidth="1px"
+      borderColor="#f0f0f0"
+      [generateAvater]="true"
+    ></app-avatar>
+    <span>{{ data?.username }}</span>
+  </a>
+
+  <button
+    *ngIf="data?.userId !== userAuth?.userId"
+    mat-icon-button
+    class="hover:text-primaryLight"
+    [matMenuTriggerFor]="menu"
+  >
+    <mat-icon class="material-symbols-rounded">more_vert</mat-icon>
+  </button>
+
+  <mat-menu #menu>
+    <button
+      *ngIf="!isFollowed"
+      mat-menu-item
+      (click)="onFollow.emit(data?.userId)"
+    >
+      <mat-icon class="material-symbols-rounded">person_add</mat-icon>
+      <span>Follow</span>
+    </button>
+    <button
+      *ngIf="isFollowed"
+      mat-menu-item
+      (click)="onUnfollow.emit(data?.userId)"
+    >
+      <mat-icon class="material-symbols-rounded">person_remove</mat-icon>
+      <span>Unfollow</span>
+    </button>
+
+    <button
+      *ngIf="!userBlocked"
+      mat-menu-item
+      (click)="onBlock.emit(data?.userId)"
+    >
+      <mat-icon class="material-symbols-rounded">person_off</mat-icon>
+      <span>Block</span>
+    </button>
+
+    <button
+      *ngIf="userBlocked"
+      mat-menu-item
+      (click)="onUnblock.emit(data?.userId)"
+    >
+      <mat-icon class="material-symbols-rounded">how_to_reg</mat-icon>
+      <span>Unblock</span>
+    </button>
+  </mat-menu>
+</div>

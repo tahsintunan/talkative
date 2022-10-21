@@ -3,6 +3,8 @@ export interface UserModel {
   username?: string;
   email?: string;
   dateOfBirth?: Date;
+  blocked?: string[];
+  blockedBy?: string[];
 }
 
 export interface UserUpdateReqModel {

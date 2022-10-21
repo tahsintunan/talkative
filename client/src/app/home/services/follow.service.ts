@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
-import { FollowModel } from '../models/follow.model';
+import { UserModel } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -10,12 +10,8 @@ import { FollowModel } from '../models/follow.model';
 export class FollowService {
   apiUrl = this.env.apiUrl + 'api/Follow';
 
-  private readonly userFollowersSubject = new BehaviorSubject<FollowModel[]>(
-    []
-  );
-  private readonly userFollowingsSubject = new BehaviorSubject<FollowModel[]>(
-    []
-  );
+  private readonly userFollowersSubject = new BehaviorSubject<UserModel[]>([]);
+  private readonly userFollowingsSubject = new BehaviorSubject<UserModel[]>([]);
 
   public readonly userFollowers = this.userFollowersSubject.asObservable();
   public readonly userFollowings = this.userFollowingsSubject.asObservable();
@@ -23,45 +19,39 @@ export class FollowService {
   constructor(private http: HttpClient, private env: EnvService) {}
 
   init() {
-    this.getUserFollowers();
-    this.getUserFollowings();
+    this.getUserFollowers().subscribe();
+    this.getUserFollowings().subscribe();
   }
 
   followUser(followingId: string) {
-    return this.http.post(this.apiUrl, { followingId }).pipe(
-      tap(() => {
-        this.init();
-      })
-    );
+    return this.http
+      .post(this.apiUrl, { followingId })
+      .pipe(tap(() => this.init()));
   }
 
   unfollowUser(followingId: string) {
-    return this.http.delete(this.apiUrl + '/' + followingId).pipe(
-      tap(() => {
-        this.init();
-      })
-    );
+    return this.http
+      .delete(this.apiUrl + '/' + followingId)
+      .pipe(tap(() => this.init()));
   }
 
   getUserFollowers() {
-    this.http.get<FollowModel[]>(this.apiUrl + '/follower').subscribe((res) => {
-      this.userFollowersSubject.next(res);
-    });
+    return this.http
+      .get<UserModel[]>(this.apiUrl + '/follower')
+      .pipe(tap((res) => this.userFollowersSubject.next(res)));
   }
 
   getUserFollowings() {
-    this.http
-      .get<FollowModel[]>(this.apiUrl + '/following')
-      .subscribe((res) => {
-        this.userFollowingsSubject.next(res);
-      });
+    return this.http
+      .get<UserModel[]>(this.apiUrl + '/following')
+      .pipe(tap((res) => this.userFollowingsSubject.next(res)));
   }
 
   getFollowers(userId: string) {
-    return this.http.get<FollowModel[]>(this.apiUrl + '/follower/' + userId);
+    return this.http.get<UserModel[]>(this.apiUrl + '/follower/' + userId);
   }
 
   getFollowings(userId: string) {
-    return this.http.get<FollowModel[]>(this.apiUrl + '/following/' + userId);
+    return this.http.get<UserModel[]>(this.apiUrl + '/following/' + userId);
   }
 }

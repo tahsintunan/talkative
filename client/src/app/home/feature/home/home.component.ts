@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { UserModel } from '../../models/user.model';
+import { BlockService } from '../../services/block.service';
 import { FollowService } from '../../services/follow.service';
 import { UserService } from '../../services/user.service';
 
@@ -10,13 +10,12 @@ import { UserService } from '../../services/user.service';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  profileId: string = '';
   userAuth?: UserModel;
 
   constructor(
     private userService: UserService,
-    private followService: FollowService,
-    private route: ActivatedRoute
+    private blockService: BlockService,
+    private followService: FollowService
   ) {}
 
   ngOnInit(): void {
@@ -24,12 +23,12 @@ export class HomeComponent implements OnInit {
       this.userAuth = res;
     });
 
-    this.userService.init();
-    this.followService.init();
+    this.preloadData();
+  }
 
-    if (this.route.snapshot.children.length > 0) {
-      const childParameter = this.route.children[0].snapshot.params['userId'];
-      this.profileId = childParameter;
-    }
+  preloadData(): void {
+    this.userService.init();
+    this.blockService.init();
+    this.followService.init();
   }
 }

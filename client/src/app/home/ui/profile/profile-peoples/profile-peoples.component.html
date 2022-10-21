@@ -1,0 +1,40 @@
+<mat-tab-group mat-stretch-tabs>
+  <mat-tab label="Following" labelClass="!py-5">
+    <div class="flex flex-col gap-2 p-3">
+      <app-profile-people-item
+        *ngFor="let following of followings"
+        [data]="following"
+        (onFollow)="onFollow.emit($event)"
+        (onUnfollow)="onUnfollow.emit($event)"
+        (onBlock)="onBlock.emit($event)"
+        (onUnblock)="onUnblock.emit($event)"
+      ></app-profile-people-item>
+    </div>
+  </mat-tab>
+  <mat-tab label="Followers" labelClass="!py-5">
+    <div class="flex flex-col gap-2 p-3">
+      <app-profile-people-item
+        *ngFor="let follower of followers"
+        [data]="follower"
+        (onFollow)="onFollow.emit($event)"
+        (onUnfollow)="onUnfollow.emit($event)"
+        (onBlock)="onBlock.emit($event)"
+        (onUnblock)="onUnblock.emit($event)"
+      ></app-profile-people-item>
+    </div>
+  </mat-tab>
+  <mat-tab
+    *ngIf="profileDetails?.userId === userAuth?.userId"
+    label="Block List"
+    labelClass="!py-5"
+  >
+    <div class="flex flex-col gap-2 p-3">
+      <app-profile-people-item
+        *ngFor="let block of blockList"
+        [data]="block"
+        (onBlock)="onBlock.emit($event)"
+        (onUnblock)="onUnblock.emit($event)"
+      ></app-profile-people-item>
+    </div>
+  </mat-tab>
+</mat-tab-group>
