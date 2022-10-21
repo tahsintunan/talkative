@@ -28,13 +28,12 @@ namespace server.Controllers
         }
 
         [HttpGet("feed")]
-        public async Task<ActionResult<IList<TweetVm>>> GetTweetForFeed()
+        public async Task<ActionResult<IList<TweetVm>>> GetTweetForFeed(
+            [FromQuery] TweetsForFeedQuery tweetsForFeedQuery
+        )
         {
-            return Ok(
-                await Mediator.Send(
-                    new TweetsForFeedQuery() { UserId = HttpContext.Items["User"]!.ToString() }
-                )
-            );
+            tweetsForFeedQuery.UserId = HttpContext.Items["User"]!.ToString();
+            return Ok(await Mediator.Send(tweetsForFeedQuery));
         }
 
         [HttpGet("{id}")]
@@ -44,16 +43,22 @@ namespace server.Controllers
         }
 
         [HttpGet("user/current-user")]
-        public async Task<ActionResult<List<TweetVm>>> GetTweetOfCurrentUser()
+        public async Task<ActionResult<List<TweetVm>>> GetTweetOfCurrentUser(
+            [FromQuery] GetTweetsOfSingleUserQuery getTweetsOfSingleUserQuery
+        )
         {
-            var userId = HttpContext.Items["User"]!.ToString();
-            return Ok(await Mediator.Send(new GetTweetsOfSingleUserQuery() { UserId = userId }));
+            getTweetsOfSingleUserQuery.UserId = HttpContext.Items["User"]!.ToString();
+            return Ok(await Mediator.Send(getTweetsOfSingleUserQuery));
         }
 
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<List<TweetVm>>> GetTweetOfAUser(string userId)
+        public async Task<ActionResult<List<TweetVm>>> GetTweetOfAUser(
+            string userId,
+            [FromQuery] GetTweetsOfSingleUserQuery getTweetsOfSingleUserQuery
+        )
         {
-            return Ok(await Mediator.Send(new GetTweetsOfSingleUserQuery() { UserId = userId }));
+            getTweetsOfSingleUserQuery.UserId = userId;
+            return Ok(await Mediator.Send(getTweetsOfSingleUserQuery));
         }
 
         [HttpPut]

@@ -7,6 +7,8 @@ namespace Application.Tweets.Queries.SearchTweetsByHashtag
     public class SearchTweetsByHashtagQuery : IRequest<IList<TweetVm>>
     {
         public string? Hashtag { get; set; }
+        public int? PageNumber { get; set; }
+        public int? ItemCount { get; set; }
     }
 
     public class GetTweetsByHashtagQueryHandler
@@ -29,7 +31,12 @@ namespace Application.Tweets.Queries.SearchTweetsByHashtag
             CancellationToken cancellationToken
         )
         {
-            var tweets = await _tweetService.GetTweetsByHashtag(request.Hashtag!);
+            var pageNumber = request.PageNumber ?? 1;
+            var itemCount = request.ItemCount ?? 20;
+
+            var skip = (pageNumber - 1) * itemCount;
+            var limit = pageNumber * itemCount;
+            var tweets = await _tweetService.GetTweetsByHashtag(request.Hashtag!, skip, limit);
 
             var tweetVmList = new List<TweetVm>();
 

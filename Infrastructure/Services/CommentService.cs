@@ -75,6 +75,7 @@ namespace Infrastructure.Services
             var query =
                 from p in _commentCollection.AsQueryable()
                 where p.TweetId == tweetId
+                orderby p.CreatedAt descending
                 join o in _userCollection on p.UserId equals o.Id into joined
                 from sub_o in joined.DefaultIfEmpty()
                 select new CommentVm

@@ -70,11 +70,6 @@ namespace Infrastructure.Services
             return tweet;
         }
 
-        public Task GetTweetsOfFollowing()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task UpdateTweet(Tweet updatedTweet)
         {
             await _tweetCollection.ReplaceOneAsync(x => x.Id == updatedTweet.Id, updatedTweet);
@@ -89,11 +84,19 @@ namespace Infrastructure.Services
             );
         }
 
-        public async Task<IList<BsonDocument>> GetTweetsOfSingleUser(string userId)
+        public async Task<IList<BsonDocument>> GetTweetsOfSingleUser(
+            string userId,
+            int skip,
+            int limit
+        )
         {
             var tweets = await _tweetCollection
                 .Aggregate()
                 .Match(x => x.UserId == userId)
+                .SortBy(x => x.CreatedAt)
+                .ThenByDescending(x => x.CreatedAt)
+                .Skip(skip)
+                .Limit(limit)
                 .Lookup("users", "userId", "_id", "user")
                 .Lookup("tweets", "retweetId", "_id", "retweet")
                 .Unwind(
@@ -111,7 +114,7 @@ namespace Infrastructure.Services
             return tweets;
         }
 
-        public async Task<IList<BsonDocument>> GenerateFeed(string userId)
+        public async Task<IList<BsonDocument>> GenerateFeed(string userId, int skip, int limit)
         {
             var tweets = await _followerCollection
                 .Aggregate()
@@ -119,6 +122,10 @@ namespace Infrastructure.Services
                 .Lookup("tweets", "followingId", "userId", "tweet")
                 .Unwind("tweet")
                 .ReplaceRoot<Tweet>("$tweet")
+                .SortBy(x => x.CreatedAt)
+                .ThenByDescending(x => x.CreatedAt)
+                .Skip(skip)
+                .Limit(limit)
                 .Lookup("users", "userId", "_id", "user")
                 .Lookup("tweets", "retweetId", "_id", "retweet")
                 .Unwind(
@@ -136,7 +143,11 @@ namespace Infrastructure.Services
             return tweets;
         }
 
-        public async Task<IList<BsonDocument>> GetTweetsByHashtag(string hashtag)
+        public async Task<IList<BsonDocument>> GetTweetsByHashtag(
+            string hashtag,
+            int skip,
+            int limit
+        )
         {
             var tweets = await _tweetCollection
                 .Aggregate()
@@ -149,6 +160,10 @@ namespace Infrastructure.Services
                         }
                     }
                 )
+                .SortBy(x => x.CreatedAt)
+                .ThenByDescending(x => x.CreatedAt)
+                .Skip(skip)
+                .Limit(limit)
                 .Lookup("users", "userId", "_id", "user")
                 .Lookup("tweets", "retweetId", "_id", "retweet")
                 .Unwind(

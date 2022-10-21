@@ -7,6 +7,8 @@ namespace Application.Tweets.Queries.GetTweetsOfSingleUser
 {
     public class GetTweetsOfSingleUserQuery : IRequest<IList<TweetVm>>
     {
+        public int? PageNumber { get; set; }
+        public int? ItemCount { get; set; }
         public string? UserId { get; set; }
     }
 
@@ -30,7 +32,13 @@ namespace Application.Tweets.Queries.GetTweetsOfSingleUser
             CancellationToken cancellationToken
         )
         {
-            var tweets = await _tweetService.GetTweetsOfSingleUser(request.UserId!);
+            var pageNumber = request.PageNumber ?? 1;
+            var itemCount = request.ItemCount ?? 20;
+
+            var skip = (pageNumber - 1) * itemCount;
+            var limit = pageNumber * itemCount;
+
+            var tweets = await _tweetService.GetTweetsOfSingleUser(request.UserId!, skip, limit);
 
             IList<TweetVm> result = new List<TweetVm>();
 

@@ -8,9 +8,13 @@ namespace server.Controllers
     public class SearchController : ApiControllerBase
     {
         [HttpGet("/hashtag/{hashtag}")]
-        public async Task<ActionResult<IList<TweetVm>>> SearchHastag(string hashtag)
+        public async Task<ActionResult<IList<TweetVm>>> SearchHastag(
+            string hashtag,
+            [FromQuery] SearchTweetsByHashtagQuery searchTweetsByHashtagQuery
+        )
         {
-            return Ok(await Mediator.Send(new SearchTweetsByHashtagQuery() { Hashtag = hashtag }));
+            searchTweetsByHashtagQuery.Hashtag = hashtag;
+            return Ok(await Mediator.Send(searchTweetsByHashtagQuery));
         }
 
         [HttpGet("/user/{username}")]

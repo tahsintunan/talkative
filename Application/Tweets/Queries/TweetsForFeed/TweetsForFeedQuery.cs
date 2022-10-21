@@ -7,6 +7,8 @@ namespace Application.Tweets.Queries.TweetsForFeed
     public class TweetsForFeedQuery : IRequest<IList<TweetVm>>
     {
         public string? UserId { get; set; }
+        public int? PageNumber { get; set; }
+        public int? ItemCount { get; set; }
     }
 
     public class TweetForFeedQueryHandler : IRequestHandler<TweetsForFeedQuery, IList<TweetVm>>
@@ -28,7 +30,12 @@ namespace Application.Tweets.Queries.TweetsForFeed
             CancellationToken cancellationToken
         )
         {
-            var tweets = await _tweetService.GenerateFeed(request.UserId!);
+            var pageNumber = request.PageNumber ?? 1;
+            var itemCount = request.ItemCount ?? 20;
+
+            var skip = (pageNumber - 1) * itemCount;
+            var limit = pageNumber * itemCount;
+            var tweets = await _tweetService.GenerateFeed(request.UserId!, skip, limit);
 
             IList<TweetVm> result = new List<TweetVm>();
 
