@@ -54,15 +54,15 @@ namespace Infrastructure.Services
                 .Aggregate()
                 .Match(x => x.Id == id)
                 .Lookup("users", "userId", "_id", "user")
-                .Lookup("tweets", "retweetId", "_id", "retweet")
+                .Lookup("tweets", "originalTweetId", "_id", "originalTweet")
                 .Unwind(
-                    "retweet",
+                    "originalTweet",
                     new AggregateUnwindOptions<TweetVm>() { PreserveNullAndEmptyArrays = true }
                 )
                 .Unwind("user")
-                .Lookup("users", "retweet.userId", "_id", "retweet.user")
+                .Lookup("users", "originalTweet.userId", "_id", "originalTweet.user")
                 .Unwind(
-                    "retweet.user",
+                    "originalTweet.user",
                     new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
                 )
                 .FirstOrDefaultAsync();
@@ -98,15 +98,15 @@ namespace Infrastructure.Services
                 .Skip(skip)
                 .Limit(limit)
                 .Lookup("users", "userId", "_id", "user")
-                .Lookup("tweets", "retweetId", "_id", "retweet")
+                .Lookup("tweets", "originalTweetId", "_id", "originalTweet")
                 .Unwind(
-                    "retweet",
+                    "originalTweet",
                     new AggregateUnwindOptions<TweetVm>() { PreserveNullAndEmptyArrays = true }
                 )
                 .Unwind("user")
-                .Lookup("users", "retweet.userId", "_id", "retweet.user")
+                .Lookup("users", "originalTweet.userId", "_id", "originalTweet.user")
                 .Unwind(
-                    "retweet.user",
+                    "originalTweet.user",
                     new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
                 )
                 .ToListAsync();
@@ -127,15 +127,15 @@ namespace Infrastructure.Services
                 .Skip(skip)
                 .Limit(limit)
                 .Lookup("users", "userId", "_id", "user")
-                .Lookup("tweets", "retweetId", "_id", "retweet")
+                .Lookup("tweets", "originalTweetId", "_id", "originalTweet")
                 .Unwind(
-                    "retweet",
+                    "originalTweet",
                     new AggregateUnwindOptions<TweetVm>() { PreserveNullAndEmptyArrays = true }
                 )
                 .Unwind("user")
-                .Lookup("users", "retweet.userId", "_id", "retweet.user")
+                .Lookup("users", "originalTweet.userId", "_id", "originalTweet.user")
                 .Unwind(
-                    "retweet.user",
+                    "originalTweet.user",
                     new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
                 )
                 .ToListAsync();
@@ -165,15 +165,15 @@ namespace Infrastructure.Services
                 .Skip(skip)
                 .Limit(limit)
                 .Lookup("users", "userId", "_id", "user")
-                .Lookup("tweets", "retweetId", "_id", "retweet")
+                .Lookup("tweets", "originalTweetId", "_id", "originalTweet")
                 .Unwind(
-                    "retweet",
+                    "originalTweet",
                     new AggregateUnwindOptions<TweetVm>() { PreserveNullAndEmptyArrays = true }
                 )
                 .Unwind("user")
-                .Lookup("users", "retweet.userId", "_id", "retweet.user")
+                .Lookup("users", "originalTweet.userId", "_id", "originalTweet.user")
                 .Unwind(
-                    "retweet.user",
+                    "originalTweet.user",
                     new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
                 )
                 .ToListAsync();

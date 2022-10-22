@@ -37,6 +37,16 @@ namespace Application.Tweets.Commands.UpdateTweet
             var tweetVm = _tweetBsonMapper.map(currentTweet!);
             if (currentTweet != null && request.UserId == tweetVm.UserId)
             {
+                var existingTweet = await _tweetService.GetTweetById(request.Id!);
+
+                if (existingTweet == null)
+                    return Unit.Value;
+
+                var existingTweetVm = _tweetBsonMapper.map(existingTweet);
+
+                if (existingTweetVm.IsRetweet)
+                    return Unit.Value;
+
                 await _tweetService.PartialUpdate(
                     request.Id!,
                     Builders<Tweet>.Update

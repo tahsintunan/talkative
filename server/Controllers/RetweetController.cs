@@ -1,7 +1,9 @@
 ﻿using Application.Common.ViewModels;
+using Application.Retweets.Command.DeleteQuoteRetweet;
 using Application.Retweets.Command.Retweet;
 using Application.Retweets.Command.UndoRetweet;
-using Application.Retweets.Query.GetAllRetweetQuery;
+using Application.Retweets.Query.GetQuoteRetweetsOfTweet;
+using Application.Retweets.Query.GetRetweetUsers;
 using Application.Tweets.Queries.GetTweetById;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +12,23 @@ namespace server.Controllers
     public class RetweetController : ApiControllerBase
     {
         [HttpGet("{id}")]
-        public async Task<ActionResult<List<TweetVm>>> GetRetweetsOfTweet(string id)
+        public async Task<ActionResult<List<TweetVm>>> GetRetweetsOfTweet(
+            string id,
+            [FromQuery] GetQuoteRetweetsOfSingleTweetQuery getQuoteRetweetsOfSingleTweetQuery
+        )
         {
-            return Ok(await Mediator.Send(new GetAllRetweetQuery() { RetweetId = id }));
+            getQuoteRetweetsOfSingleTweetQuery.OriginalTweetId = id;
+            return Ok(await Mediator.Send(getQuoteRetweetsOfSingleTweetQuery));
+        }
+
+        [HttpGet("quote-retweet/{id}")]
+        public async Task<ActionResult<IList<UserVm>>> GetRetweetUsers(
+            string id,
+            [FromQuery] GetRetweetUsersQuery getRetweetUsersQuery
+        )
+        {
+            getRetweetUsersQuery.OriginalTweetId = id;
+            return Ok(await Mediator.Send(getRetweetUsersQuery));
         }
 
         [HttpPost]
@@ -25,11 +41,22 @@ namespace server.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> Delete(UndoRetweetCommand undoRetweetCommand)
+        public async Task<ActionResult> UndoRetweet(UndoRetweetCommand undoRetweetCommand)
         {
             var userId = HttpContext.Items["User"]!.ToString();
             undoRetweetCommand.UserId = userId;
             await Mediator.Send(undoRetweetCommand);
+            return NoContent();
+        }
+
+        [HttpDelete("quote-retweet")]
+        public async Task<ActionResult> DeleteQuoteRetweet(
+            DeleteQuoteRetweetCommand deleteQuoteRetweetCommand
+        )
+        {
+            var userId = HttpContext.Items["User"]!.ToString();
+            deleteQuoteRetweetCommand.UserId = userId;
+            await Mediator.Send(deleteQuoteRetweetCommand);
             return NoContent();
         }
     }

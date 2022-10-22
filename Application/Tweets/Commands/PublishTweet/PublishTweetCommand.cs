@@ -34,12 +34,12 @@ namespace Application.Tweets.Commands.PublishTweet
                 UserId = request.UserId,
                 Hashtags = request.Hashtags != null ? new List<string>(request.Hashtags) : null,
                 IsRetweet = false,
-                RetweetId = null,
+                OriginalTweetId = null,
                 Likes = new List<string>(),
                 Comments = new List<string>(),
                 CreatedAt = DateTime.Now,
                 RetweetUsers = new List<string>(),
-                RetweetPosts = new List<string>(),
+                QuoteRetweets = new List<string>(),
             };
             await _tweetService.PublishTweet(tweet);
 

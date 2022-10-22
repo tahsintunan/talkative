@@ -29,14 +29,15 @@ namespace Application.Common.Mapper
                 IsRetweet = CheckIfDocumentExists(tweet, "isRetweet")
                     ? tweet["isRetweet"].AsBoolean
                     : false,
-                Retweet = CheckIfDocumentExists(tweet, "retweet")
-                    ? tweet["isRetweet"].AsBoolean
-                        ? map(tweet["retweet"].AsBsonDocument)
-                        : null
+                IsQuoteRetweet = CheckIfDocumentExists(tweet, "IsQuoteRetweet")
+                    ? tweet["IsQuoteRetweet"].AsBoolean
+                    : false,
+                OriginalTweet = CheckIfDocumentExists(tweet, "originalTweet")
+                    ? map(tweet["originalTweet"].AsBsonDocument)
                     : null,
                 UserId = CheckIfDocumentExists(tweet, "userId") ? tweet["userId"].ToString() : null,
-                RetweetId = CheckIfDocumentExists(tweet, "retweetId")
-                    ? tweet["retweetId"].ToString()
+                OriginalTweetId = CheckIfDocumentExists(tweet, "originalTweetId")
+                    ? tweet["originalTweetId"].ToString()
                     : null,
                 User = CheckIfDocumentExists(tweet, "user")
                     ? _userMapper.map(tweet["user"].AsBsonDocument)
@@ -53,9 +54,9 @@ namespace Application.Common.Mapper
                         ?.AsBsonArray.Select(p => p.ToString())
                         .ToList()
                     : null,
-                RetweetPosts = CheckIfDocumentExists(tweet, "retweetPosts")
+                QuoteRetweets = CheckIfDocumentExists(tweet, "quoteRetweets")
                     ? tweet
-                        .GetValue("retweetPosts", null)
+                        .GetValue("quoteRetweets", null)
                         ?.AsBsonArray.Select(p => p.ToString())
                         .ToList()
                     : null,

@@ -1,10 +1,12 @@
-﻿using MongoDB.Bson;
+﻿using Application.Common.ViewModels;
+using MongoDB.Bson;
 
 namespace Application.Common.Interface
 {
     public interface IRetweetService
     {
-        Task DeleteRetweet(string retweetId, string userId);
-        Task<BsonDocument> GetAllRetweetPosts(string tweetId);
+        Task UndoRetweet(string originalTweetId, string userId);
+        Task<IList<BsonDocument>> GetQuoteRetweets(string tweetId, int skip, int limit);
+        Task<IList<UserVm>> GetRetweetUsers(string tweetId, int skip, int limit);
     }
 }

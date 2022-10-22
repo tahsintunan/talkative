@@ -36,20 +36,19 @@ namespace Domain.Entities
         [BsonElement("isRetweet")]
         public bool IsRetweet { get; set; }
 
-        [BsonElement("retweetId")]
+        [BsonElement("isQuoteRetweet")]
+        public bool IsQuoteRetweet { get; set; }
+
+        [BsonElement("originalTweetId")]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? RetweetId { get; set; }
+        public string? OriginalTweetId { get; set; }
 
         [BsonElement("retweetUsers")]
         [BsonRepresentation(BsonType.ObjectId)]
         public IList<string>? RetweetUsers { get; set; }
 
-        [BsonElement("retweetPosts")]
+        [BsonElement("quoteRetweets")]
         [BsonRepresentation(BsonType.ObjectId)]
-        public IList<string>? RetweetPosts { get; set; }
-
-        //[BsonElement("retweets")]
-        //[BsonRepresentation(BsonType.ObjectId)]
-        //public Dictionary<string, string>? Retweets { get; set; }
+        public IList<string>? QuoteRetweets { get; set; }
     }
 }

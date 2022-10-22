@@ -4,9 +4,10 @@ using Application.Common.ViewModels;
 
 namespace Infrastructure.Services;
 
-public class BlockFilterService: IBlockFilterService
+public class BlockFilterService : IBlockFilterService
 {
     private readonly IUserService _userService;
+
     public BlockFilterService(IUserService userService)
     {
         _userService = userService;
@@ -18,7 +19,10 @@ public class BlockFilterService: IBlockFilterService
         return userVms.Where(b => !IsBlocked(b, blockedUserIds)).ToList();
     }
 
-    public async Task<List<CommentVm>> GetFilteredComments(IEnumerable<CommentVm> commentVms, string userId)
+    public async Task<List<CommentVm>> GetFilteredComments(
+        IEnumerable<CommentVm> commentVms,
+        string userId
+    )
     {
         var blockedUserIds = await GetBlockedUserIds(userId);
         return commentVms.Where(b => !IsBlocked(b, blockedUserIds)).ToList();
@@ -32,21 +36,24 @@ public class BlockFilterService: IBlockFilterService
 
     private static bool IsBlocked(Blockable blockable, IReadOnlySet<string> blockedUserIds)
     {
-        if (blockable is TweetVm vm && (vm.IsRetweet || vm.IsQuotedRetweet))
+        if (blockable is TweetVm vm && (vm.IsRetweet || vm.IsQuoteRetweet))
         {
-            return blockedUserIds.Contains(vm.UserId!) ||
-                   blockedUserIds.Contains(vm.Retweet!.UserId!);
+            return blockedUserIds.Contains(vm.UserId!)
+                || blockedUserIds.Contains(vm.OriginalTweet!.UserId!);
         }
         return blockedUserIds.Contains(blockable.UserId!);
     }
-    
+
     private async Task<HashSet<string>> GetBlockedUserIds(string userId)
     {
         var blockedUserIds = new HashSet<string>();
         var user = await _userService.GetUserById(userId);
-        if (user == null) { return blockedUserIds; }
+        if (user == null)
+        {
+            return blockedUserIds;
+        }
         var (blocked, blockedBy) = (user.Blocked, user.BlockedBy);
-        
+
         if (blocked != null)
         {
             foreach (var id in blocked)
