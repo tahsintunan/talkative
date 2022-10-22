@@ -19,7 +19,7 @@ namespace server.Controllers
 
         [HttpGet("follower")]
         public async Task<ActionResult<IList<UserVm>>> GetFollowersOfCurrentUser(
-            GetFollowersQuery getFollowersQuery
+            [FromQuery] GetFollowersQuery getFollowersQuery
         )
         {
             getFollowersQuery.UserId = HttpContext.Items["User"]!.ToString();

@@ -8,7 +8,7 @@ namespace server.Controllers;
 
 public class BlockController : ApiControllerBase
 {
-    [HttpGet("{id}")]
+    [HttpPost("{id}")]
     public async Task<ActionResult> Block(string id)
     {
         BlockCommand command =
@@ -17,7 +17,7 @@ public class BlockController : ApiControllerBase
         return NoContent();
     }
 
-    [HttpGet("list")]
+    [HttpGet]
     public async Task<ActionResult<UserVm>> GetBlockedUsers(
         [FromQuery] GetBlockedUsersQuery getBlockedUsersQuery
     )
