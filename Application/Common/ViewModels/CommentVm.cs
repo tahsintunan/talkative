@@ -2,7 +2,7 @@
 
 namespace Application.Common.ViewModels
 {
-    public class CommentVm: Blockable
+    public class CommentVm : Blockable
     {
         public string? Id { get; set; }
         public string? Text { get; set; }
@@ -12,5 +12,3 @@ namespace Application.Common.ViewModels
         public DateTime? Created { get; set; }
     }
 }
-
-

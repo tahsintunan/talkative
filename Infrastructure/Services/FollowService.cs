@@ -62,12 +62,12 @@ namespace Infrastructure.Services
             var followerList = await _followerCollection
                 .Aggregate()
                 .Match(x => x.FollowingId == userId)
+                .Skip(skip)
+                .Limit(limit)
                 .Lookup("users", "followerId", "_id", "user")
                 .Unwind("user")
                 .ReplaceRoot<User>("$user")
                 .SortByDescending(x => x.Username)
-                .Skip(skip)
-                .Limit(limit)
                 .Project(user => new UserVm() { UserId = user.Id, Username = user.Username, })
                 .ToListAsync();
 
@@ -83,12 +83,12 @@ namespace Infrastructure.Services
             var followingList = await _followerCollection
                 .Aggregate()
                 .Match(x => x.FollowerId == userId)
+                .Skip(skip)
+                .Limit(limit)
                 .Lookup("users", "followingId", "_id", "user")
                 .Unwind("user")
                 .ReplaceRoot<User>("$user")
                 .SortByDescending(x => x.Username)
-                .Skip(skip)
-                .Limit(limit)
                 .Project(user => new UserVm() { UserId = user.Id, Username = user.Username, })
                 .ToListAsync();
 

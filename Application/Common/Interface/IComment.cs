@@ -9,7 +9,7 @@ namespace Application.Common.Interface
         Task CreateComment(Comment comment);
         Task PartialUpdate(string commentId, UpdateDefinition<Comment> update);
         Task DeleteComment(string id);
-        Task<IList<CommentVm>> GetCommentsByTweetId(string tweetId);
+        Task<IList<CommentVm>> GetCommentsByTweetId(string tweetId, int skip, int limit);
         Task<CommentVm> GetCommentById(string id);
     }
 }

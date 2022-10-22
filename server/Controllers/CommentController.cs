@@ -27,9 +27,13 @@ namespace server.Controllers
         }
 
         [HttpGet("tweet/{id}")]
-        public async Task<ActionResult<IList<CommentVm>>> GetByTweetId(string id)
+        public async Task<ActionResult<IList<CommentVm>>> GetByTweetId(
+            string id,
+            [FromQuery] GetCommentsByTweetIdQuery getCommentsByTweetIdQuery
+        )
         {
-            return Ok(await Mediator.Send(new GetCommentsByTweetIdQuery() { TweetId = id }));
+            getCommentsByTweetIdQuery.TweetId = id;
+            return Ok(await Mediator.Send(getCommentsByTweetIdQuery));
         }
 
         [HttpPatch]

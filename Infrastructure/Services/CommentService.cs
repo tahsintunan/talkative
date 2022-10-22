@@ -70,9 +70,13 @@ namespace Infrastructure.Services
             return commentVm;
         }
 
-        public async Task<IList<CommentVm>> GetCommentsByTweetId(string tweetId)
+        public async Task<IList<CommentVm>> GetCommentsByTweetId(
+            string tweetId,
+            int skip,
+            int limit
+        )
         {
-            var query =
+            var query = (
                 from p in _commentCollection.AsQueryable()
                 where p.TweetId == tweetId
                 orderby p.CreatedAt descending
@@ -87,7 +91,8 @@ namespace Infrastructure.Services
                     Created = p.CreatedAt,
                     Likes = p.Likes,
                     Username = sub_o.Username
-                };
+                }
+            ).Skip(skip).Take(limit);
 
             var commentVmList = await query.ToListAsync();
 

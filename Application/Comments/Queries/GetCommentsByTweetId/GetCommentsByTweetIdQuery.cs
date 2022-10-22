@@ -7,6 +7,8 @@ namespace Application.Comments.Queries.GetCommentsByTweetId
     public class GetCommentsByTweetIdQuery : IRequest<IList<CommentVm>>
     {
         public string? TweetId { get; set; }
+        public int? PageNumber { get; set; }
+        public int? ItemCount { get; set; }
     }
 
     public class GetCommentsByTweetIdQueryHandler
@@ -24,7 +26,12 @@ namespace Application.Comments.Queries.GetCommentsByTweetId
             CancellationToken cancellationToken
         )
         {
-            return await _commentService.GetCommentsByTweetId(request.TweetId!);
+            var pageNumber = request.PageNumber ?? 1;
+            var itemCount = request.ItemCount ?? 20;
+
+            var skip = (pageNumber - 1) * itemCount;
+            var limit = pageNumber * itemCount;
+            return await _commentService.GetCommentsByTweetId(request.TweetId!, skip, limit);
         }
     }
 }

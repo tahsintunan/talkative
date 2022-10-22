@@ -113,11 +113,13 @@ namespace Infrastructure.Services
             await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
         }
 
-        public async Task<IList<UserVm>> GetBlockedUsers(string userId)
+        public async Task<IList<UserVm>> GetBlockedUsers(string userId, int skip, int limit)
         {
             var userVmList = await _userCollection
                 .Aggregate()
                 .Match(x => x.Id == userId)
+                .Skip(skip)
+                .Limit(limit)
                 .Lookup("users", "blocked", "_id", "user")
                 .Unwind("user")
                 .ReplaceRoot<User>("$user")

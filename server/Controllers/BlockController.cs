@@ -18,10 +18,12 @@ public class BlockController : ApiControllerBase
     }
 
     [HttpGet("list")]
-    public async Task<ActionResult<UserVm>> GetBlockedUsers()
+    public async Task<ActionResult<UserVm>> GetBlockedUsers(
+        [FromQuery] GetBlockedUsersQuery getBlockedUsersQuery
+    )
     {
-        var userId = HttpContext.Items["User"]!.ToString();
-        return Ok(await Mediator.Send(new GetBlockedUsersQuery() { Id = userId }));
+        getBlockedUsersQuery.UserId = HttpContext.Items["User"]!.ToString();
+        return Ok(await Mediator.Send(getBlockedUsersQuery));
     }
 
     [HttpDelete("{id}")]
