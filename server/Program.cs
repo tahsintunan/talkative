@@ -48,6 +48,7 @@ builder.Services.AddTransient<IFollow, FollowService>();
 builder.Services.AddTransient<IChatService, ChatService>();
 builder.Services.AddTransient<ITweetService, TweetService>();
 builder.Services.AddTransient<IRetweetService, RetweetService>();
+builder.Services.AddTransient<IBlockFilterService, BlockFilterService>();
 builder.Services.AddTransient<IRabbitmqService, RabbitmqService>();
 builder.Services.AddTransient<IChatHub, ChatHub>();
 builder.Services.AddHostedService<DbHandlerService>();

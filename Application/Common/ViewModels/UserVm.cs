@@ -1,8 +1,9 @@
-﻿namespace Application.Common.ViewModels
+﻿using Application.Common.Class;
+
+namespace Application.Common.ViewModels
 {
-    public class UserVm
+    public class UserVm: Blockable
     {
-        public string? UserId { get; set; }
         public string? Username { get; set; }
         public string? Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
