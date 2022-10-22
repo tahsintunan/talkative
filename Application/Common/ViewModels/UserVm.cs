@@ -9,6 +9,5 @@ namespace Application.Common.ViewModels
         public DateTime? DateOfBirth { get; set; }
         public IList<string?>? BlockedBy { get; set; }
         public IList<string?>? Blocked { get; set; }
-        
     }
 }

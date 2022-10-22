@@ -9,9 +9,10 @@ namespace Application.Common.Interface
         Task PublishTweet(Tweet tweet);
         Task DeleteTweet(string id);
         Task UpdateTweet(Tweet tweet);
-        Task GetTweetsOfFollowing();
         Task<BsonDocument?> GetTweetById(string id);
-        Task<IList<BsonDocument>> GetTweetsOfSingleUser(string userId);
+        Task<IList<BsonDocument>> GetTweetsOfSingleUser(string userId, int skip, int take);
         Task PartialUpdate(string tweetId, UpdateDefinition<Tweet> update);
+        Task<IList<BsonDocument>> GenerateFeed(string userId, int skip, int take);
+        Task<IList<BsonDocument>> GetTweetsByHashtag(string hashtag, int skip, int take);
     }
 }

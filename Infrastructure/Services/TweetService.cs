@@ -1,21 +1,22 @@
 ﻿using Application.Common.Interface;
+using Application.Common.ViewModels;
 using Domain.Entities;
 using Infrastructure.DbConfig;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using System.Linq.Expressions;
 
 namespace Infrastructure.Services
 {
     public class TweetService : ITweetService
     {
         private readonly IMongoCollection<Tweet> _tweetCollection;
+        private readonly IMongoCollection<Follower> _followerCollection;
 
         public TweetService(
             IOptions<TweetDatabaseConfig> tweetDatabaseConfig,
-            IOptions<UserDatabaseConfig> userDatabaseConfig
+            IOptions<FollowerDatabaseConfig> followerDatabaseConfig
         )
         {
             var mongoClient = new MongoClient(tweetDatabaseConfig.Value.ConnectionString);
@@ -24,6 +25,10 @@ namespace Infrastructure.Services
 
             _tweetCollection = mongoDatabase.GetCollection<Tweet>(
                 tweetDatabaseConfig.Value.TweetCollectionName
+            );
+
+            _followerCollection = mongoDatabase.GetCollection<Follower>(
+                followerDatabaseConfig.Value.CollectionName
             );
 
             MongoClientSettings settings = MongoClientSettings.FromConnectionString(
@@ -45,26 +50,24 @@ namespace Infrastructure.Services
 
         public async Task<BsonDocument?> GetTweetById(string id)
         {
-            BsonDocument pipelineStageZero = new BsonDocument(
-                "$match",
-                new BsonDocument("_id", new ObjectId(id))
-            );
-
-            BsonDocument[] BaseJoinPipelines = GetBaseJoinPipelines();
-
-            BsonDocument[] pipeline = new BsonDocument[1 + BaseJoinPipelines.Length];
-            pipeline[0] = pipelineStageZero;
-            BaseJoinPipelines.CopyTo(pipeline, 1);
-
-            BsonDocument tweet = await _tweetCollection
-                .Aggregate<BsonDocument>(pipeline)
+            var tweet = await _tweetCollection
+                .Aggregate()
+                .Match(x => x.Id == id)
+                .Lookup("users", "userId", "_id", "user")
+                .Lookup("tweets", "retweetId", "_id", "retweet")
+                .Unwind(
+                    "retweet",
+                    new AggregateUnwindOptions<TweetVm>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Unwind("user")
+                .Lookup("users", "retweet.userId", "_id", "retweet.user")
+                .Unwind(
+                    "retweet.user",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
                 .FirstOrDefaultAsync();
-            return tweet;
-        }
 
-        public Task GetTweetsOfFollowing()
-        {
-            throw new NotImplementedException();
+            return tweet;
         }
 
         public async Task UpdateTweet(Tweet updatedTweet)
@@ -81,124 +84,100 @@ namespace Infrastructure.Services
             );
         }
 
-        public async Task<IList<BsonDocument>> GetTweetsOfSingleUser(string userId)
+        public async Task<IList<BsonDocument>> GetTweetsOfSingleUser(
+            string userId,
+            int skip,
+            int limit
+        )
         {
-            BsonDocument pipelineStageZero = new BsonDocument(
-                "$match",
-                new BsonDocument("userId", new ObjectId(userId))
-            );
-
-            BsonDocument[] BaseJoinPipelines = GetBaseJoinPipelines();
-
-            BsonDocument[] pipelines = new BsonDocument[1 + BaseJoinPipelines.Length];
-            pipelines[0] = pipelineStageZero;
-            BaseJoinPipelines.CopyTo(pipelines, 1);
-
-            IList<BsonDocument> tweets = await _tweetCollection
-                .Aggregate<BsonDocument>(pipelines)
+            var tweets = await _tweetCollection
+                .Aggregate()
+                .Match(x => x.UserId == userId)
+                .SortBy(x => x.CreatedAt)
+                .ThenByDescending(x => x.CreatedAt)
+                .Skip(skip)
+                .Limit(limit)
+                .Lookup("users", "userId", "_id", "user")
+                .Lookup("tweets", "retweetId", "_id", "retweet")
+                .Unwind(
+                    "retweet",
+                    new AggregateUnwindOptions<TweetVm>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Unwind("user")
+                .Lookup("users", "retweet.userId", "_id", "retweet.user")
+                .Unwind(
+                    "retweet.user",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
                 .ToListAsync();
 
             return tweets;
         }
 
-        private BsonDocument[] GetBaseJoinPipelines()
+        public async Task<IList<BsonDocument>> GenerateFeed(string userId, int skip, int limit)
         {
-            BsonDocument pipelineStageOne = new BsonDocument(
-                "$lookup",
-                new BsonDocument
-                {
-                    { "from", "users" },
-                    { "localField", "userId" },
-                    { "foreignField", "_id" },
-                    { "as", "user" }
-                }
-            );
+            var tweets = await _followerCollection
+                .Aggregate()
+                .Match(x => x.FollowerId == userId)
+                .Lookup("tweets", "followingId", "userId", "tweet")
+                .Unwind("tweet")
+                .ReplaceRoot<Tweet>("$tweet")
+                .SortBy(x => x.CreatedAt)
+                .ThenByDescending(x => x.CreatedAt)
+                .Skip(skip)
+                .Limit(limit)
+                .Lookup("users", "userId", "_id", "user")
+                .Lookup("tweets", "retweetId", "_id", "retweet")
+                .Unwind(
+                    "retweet",
+                    new AggregateUnwindOptions<TweetVm>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Unwind("user")
+                .Lookup("users", "retweet.userId", "_id", "retweet.user")
+                .Unwind(
+                    "retweet.user",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
+                .ToListAsync();
 
-            BsonDocument pipelineStageTwo = new BsonDocument(
-                "$lookup",
-                new BsonDocument
-                {
-                    { "from", "tweets" },
-                    { "localField", "retweetId" },
-                    { "foreignField", "_id" },
-                    { "as", "retweet" }
-                }
-            );
+            return tweets;
+        }
 
-            BsonDocument pipelineStageThree = new BsonDocument(
-                "$project",
-                new BsonDocument
-                {
-                    { "_id", new BsonDocument("$toString", "$_id") },
-                    { "text", 1 },
-                    { "hashtags", 1 },
-                    { "userId", 1 },
-                    { "createdAt", 1 },
-                    { "likes", 1 },
-                    { "comments", 1 },
-                    { "isRetweet", 1 },
-                    { "retweetId", 1 },
-                    { "retweetUsers", 1 },
-                    { "retweetPosts", 1 },
-                    { "retweet", new BsonDocument("$first", "$retweet") },
-                    { "user", new BsonDocument("$first", "$user") }
-                }
-            );
-
-            BsonDocument pipelineStageFour = new BsonDocument(
-                "$lookup",
-                new BsonDocument
-                {
-                    { "from", "users" },
-                    { "localField", "retweet.userId" },
-                    { "foreignField", "_id" },
-                    { "as", "retweet.user" }
-                }
-            );
-
-            BsonDocument pipelineStageFive = new BsonDocument(
-                "$project",
-                new BsonDocument
-                {
-                    { "_id", new BsonDocument("$toString", "$_id") },
-                    { "text", 1 },
-                    { "hashtags", 1 },
-                    { "userId", 1 },
-                    { "createdAt", 1 },
-                    { "likes", 1 },
-                    { "comments", 1 },
-                    { "isRetweet", 1 },
-                    { "retweetId", 1 },
-                    { "retweetUsers", 1 },
-                    { "retweetPosts", 1 },
+        public async Task<IList<BsonDocument>> GetTweetsByHashtag(
+            string hashtag,
+            int skip,
+            int limit
+        )
+        {
+            var tweets = await _tweetCollection
+                .Aggregate()
+                .Match(
+                    new BsonDocument
                     {
-                        "retweet",
-                        new BsonDocument
                         {
-                            { "user", new BsonDocument("$first", "$retweet.user") },
-                            { "text", 1 },
-                            { "hashtags", 1 },
-                            { "_id", new BsonDocument("$toString", "$retweet._id") },
-                            { "isRetweet", 1 },
-                            { "createdAt", 1 },
-                            { "likes", 1 },
-                            { "comments", 1 },
-                            { "retweetPosts", 1 },
-                            { "retweetUsers", 1 },
+                            "hashtags",
+                            new BsonDocument { { "$regex", hashtag }, { "$options", "i" } }
                         }
-                    },
-                    { "user", 1 }
-                }
-            );
-
-            return new BsonDocument[]
-            {
-                pipelineStageOne,
-                pipelineStageTwo,
-                pipelineStageThree,
-                pipelineStageFour,
-                pipelineStageFive
-            };
+                    }
+                )
+                .SortBy(x => x.CreatedAt)
+                .ThenByDescending(x => x.CreatedAt)
+                .Skip(skip)
+                .Limit(limit)
+                .Lookup("users", "userId", "_id", "user")
+                .Lookup("tweets", "retweetId", "_id", "retweet")
+                .Unwind(
+                    "retweet",
+                    new AggregateUnwindOptions<TweetVm>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Unwind("user")
+                .Lookup("users", "retweet.userId", "_id", "retweet.user")
+                .Unwind(
+                    "retweet.user",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
+                .ToListAsync();
+            return tweets;
         }
     }
 }

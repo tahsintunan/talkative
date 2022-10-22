@@ -3,7 +3,7 @@ using Application.Common.ViewModels;
 using AutoMapper;
 using MediatR;
 
-namespace Application.Users.Queries.SearchUserQuery
+namespace Application.Users.Queries.SearchUsers
 {
     public class SearchUserQuery : IRequest<IList<UserVm>>
     {
