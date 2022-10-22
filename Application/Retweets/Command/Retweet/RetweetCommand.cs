@@ -9,7 +9,6 @@ namespace Application.Retweets.Command.Retweet
 {
     public class RetweetCommand : IRequest<RetweetVm>
     {
-        public string? Id { get; set; }
         public string? Text { get; set; }
         public bool IsQuoteRetweet { get; set; }
         public IList<string>? Hashtags { get; set; }

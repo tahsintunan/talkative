@@ -143,6 +143,33 @@ namespace Infrastructure.Services
             return tweets;
         }
 
+        public async Task<IList<string>> SearchHashtags(string hashtag, int skip, int limit)
+        {
+            var hashtagList = new List<string>();
+            var hashtags = await _tweetCollection
+                .Aggregate()
+                .Match(
+                    new BsonDocument
+                    {
+                        {
+                            "hashtags",
+                            new BsonDocument { { "$regex", hashtag }, { "$options", "i" } }
+                        }
+                    }
+                )
+                .SortBy(x => x.CreatedAt)
+                .ThenByDescending(x => x.CreatedAt)
+                .Skip(skip)
+                .Limit(limit)
+                .ToListAsync();
+
+            foreach (var tweet in hashtags)
+            {
+                hashtagList.AddRange(tweet.Hashtags!);
+            }
+            return hashtagList;
+        }
+
         public async Task<IList<BsonDocument>> GetTweetsByHashtag(
             string hashtag,
             int skip,
