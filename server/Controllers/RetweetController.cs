@@ -40,18 +40,22 @@ namespace server.Controllers
             return Ok(await Mediator.Send(new GetTweetByIdQuery() { Id = retweet.Id }));
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> UndoRetweet(UndoRetweetCommand undoRetweetCommand)
+        [HttpDelete("{originalTweetId}")]
+        public async Task<ActionResult> UndoRetweet(string originalTweetId)
         {
             var userId = HttpContext.Items["User"]!.ToString();
-            undoRetweetCommand.UserId = userId;
+            var undoRetweetCommand = new UndoRetweetCommand()
+            {
+                UserId = userId,
+                OriginalTweetId = originalTweetId
+            };
             await Mediator.Send(undoRetweetCommand);
             return NoContent();
         }
 
         [HttpDelete("quote-retweet")]
         public async Task<ActionResult> DeleteQuoteRetweet(
-            DeleteQuoteRetweetCommand deleteQuoteRetweetCommand
+            [FromQuery] DeleteQuoteRetweetCommand deleteQuoteRetweetCommand
         )
         {
             var userId = HttpContext.Items["User"]!.ToString();
