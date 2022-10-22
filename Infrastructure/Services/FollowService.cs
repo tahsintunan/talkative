@@ -12,25 +12,29 @@ namespace Infrastructure.Services
     {
         private readonly IMongoCollection<Follower> _followerCollection;
         private readonly IMongoCollection<User> _userCollection;
-        public FollowService(IOptions<FollowerDatabaseConfig> followerDatabaseConfig, IOptions<UserDatabaseConfig> userDatabaseConfig)
-        {
-            var mongoClient = new MongoClient(
-            followerDatabaseConfig.Value.ConnectionString);
 
-            var mongoDatabase = mongoClient.GetDatabase(
-                followerDatabaseConfig.Value.DatabaseName);
+        public FollowService(
+            IOptions<FollowerDatabaseConfig> followerDatabaseConfig,
+            IOptions<UserDatabaseConfig> userDatabaseConfig
+        )
+        {
+            var mongoClient = new MongoClient(followerDatabaseConfig.Value.ConnectionString);
+
+            var mongoDatabase = mongoClient.GetDatabase(followerDatabaseConfig.Value.DatabaseName);
 
             _followerCollection = mongoDatabase.GetCollection<Follower>(
-                followerDatabaseConfig.Value.CollectionName);
+                followerDatabaseConfig.Value.CollectionName
+            );
 
-            _userCollection = mongoDatabase.GetCollection<User>(userDatabaseConfig.Value.UserCollectionName);
+            _userCollection = mongoDatabase.GetCollection<User>(
+                userDatabaseConfig.Value.UserCollectionName
+            );
 
             MongoClientSettings settings = MongoClientSettings.FromConnectionString(
-               followerDatabaseConfig.Value.ConnectionString
-           );
+                followerDatabaseConfig.Value.ConnectionString
+            );
 
             settings.LinqProvider = LinqProvider.V3;
-
         }
 
         public async Task AddNewFollower(Follower follower)
@@ -40,49 +44,55 @@ namespace Infrastructure.Services
 
         public async Task DeleteFollower(string followerId, string followingId)
         {
-            await _followerCollection.DeleteManyAsync(x => x.FollowingId == followingId && x.FollowerId == followerId);
+            await _followerCollection.DeleteManyAsync(
+                x => x.FollowingId == followingId && x.FollowerId == followerId
+            );
         }
 
         public async Task<bool> CheckIfFollowerExists(string followerId, string followingId)
         {
-            var follower = await _followerCollection.Find(x=>x.FollowerId==followerId && x.FollowingId==followingId).FirstOrDefaultAsync();
+            var follower = await _followerCollection
+                .Find(x => x.FollowerId == followerId && x.FollowingId == followingId)
+                .FirstOrDefaultAsync();
             return follower != null;
         }
 
-        public async Task<IList<UserVm>> GetFollowerOfSingleUser(string userId)
+        public async Task<IList<UserVm>> GetFollowerOfSingleUser(string userId, int skip, int limit)
         {
-            var query = from follower in _followerCollection.AsQueryable()
-                        where follower.FollowingId == userId
-                        join userJoined in _userCollection on follower.FollowerId equals userJoined.Id into joined
-                        from user in joined.DefaultIfEmpty()
-                        select new UserVm()
-                        {
-                            Username = user.Username,
-                            UserId = user.Id,
-                            Email = user.Email,
-                            DateOfBirth = user.DateOfBirth
-                        };
-            var users = await query.ToListAsync<UserVm>();
+            var followerList = await _followerCollection
+                .Aggregate()
+                .Match(x => x.FollowingId == userId)
+                .Lookup("users", "followerId", "_id", "user")
+                .Unwind("user")
+                .ReplaceRoot<User>("$user")
+                .SortByDescending(x => x.Username)
+                .Skip(skip)
+                .Limit(limit)
+                .Project(user => new UserVm() { UserId = user.Id, Username = user.Username, })
+                .ToListAsync();
 
-            return users;
-        }
-        public async Task<IList<UserVm>> GetFollowingsOfSingleUser(string userId)
-        {
-            var query = from follower in _followerCollection.AsQueryable()
-                        where follower.FollowerId == userId
-                        join userJoined in _userCollection on follower.FollowingId equals userJoined.Id into joined
-                        from user in joined.DefaultIfEmpty()
-                        select new UserVm()
-                        {
-                            Username = user.Username,
-                            UserId = user.Id,
-                            Email = user.Email,
-                            DateOfBirth = user.DateOfBirth
-                        };
-            var users = await query.ToListAsync<UserVm>();
-
-            return users;
+            return followerList;
         }
 
+        public async Task<IList<UserVm>> GetFollowingsOfSingleUser(
+            string userId,
+            int skip,
+            int limit
+        )
+        {
+            var followingList = await _followerCollection
+                .Aggregate()
+                .Match(x => x.FollowerId == userId)
+                .Lookup("users", "followingId", "_id", "user")
+                .Unwind("user")
+                .ReplaceRoot<User>("$user")
+                .SortByDescending(x => x.Username)
+                .Skip(skip)
+                .Limit(limit)
+                .Project(user => new UserVm() { UserId = user.Id, Username = user.Username, })
+                .ToListAsync();
+
+            return followingList;
+        }
     }
 }

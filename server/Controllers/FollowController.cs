@@ -18,42 +18,51 @@ namespace server.Controllers
         }
 
         [HttpGet("follower")]
-        public async Task<ActionResult<IList<UserVm>>> GetFollowersOfCurrentUser()
+        public async Task<ActionResult<IList<UserVm>>> GetFollowersOfCurrentUser(
+            GetFollowersQuery getFollowersQuery
+        )
         {
-            var userId = HttpContext.Items["User"]!.ToString();
-            GetFollowersQuery getFollowersQuery = new GetFollowersQuery() { UserId = userId };
+            getFollowersQuery.UserId = HttpContext.Items["User"]!.ToString();
             return Ok(await Mediator.Send(getFollowersQuery));
         }
 
         [HttpGet("following")]
-        public async Task<ActionResult<IList<UserVm>>> GetFollowingsOfCurrentUser()
+        public async Task<ActionResult<IList<UserVm>>> GetFollowingsOfCurrentUser(
+            [FromQuery] GetFollowingsQuery getFollowingsQuery
+        )
         {
-            var userId = HttpContext.Items["User"]!.ToString();
-            GetFollowingsQuery getFollowingsQuery = new GetFollowingsQuery() { UserId = userId };
+            getFollowingsQuery.UserId = HttpContext.Items["User"]!.ToString();
             return Ok(await Mediator.Send(getFollowingsQuery));
         }
 
         [HttpGet("follower/{id}")]
-        public async Task<ActionResult<IList<UserVm>>> GetFollowersOfUser(string id)
+        public async Task<ActionResult<IList<UserVm>>> GetFollowersOfUser(
+            string id,
+            [FromQuery] GetFollowersQuery getFollowersQuery
+        )
         {
-            GetFollowersQuery getFollowersQuery = new GetFollowersQuery() { UserId = id };
+            getFollowersQuery.UserId = id;
             return Ok(await Mediator.Send(getFollowersQuery));
         }
 
         [HttpGet("following/{id}")]
-        public async Task<ActionResult<IList<UserVm>>> GetFollowingsOfUser(string id)
+        public async Task<ActionResult<IList<UserVm>>> GetFollowingsOfUser(
+            string id,
+            [FromQuery] GetFollowingsQuery getFollowingsQuery
+        )
         {
-            GetFollowingsQuery getFollowingsQuery = new GetFollowingsQuery() { UserId = id };
+            getFollowingsQuery.UserId = id;
             return Ok(await Mediator.Send(getFollowingsQuery));
         }
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Unfollow(string id)
         {
             string? userId = HttpContext.Items["User"]!.ToString();
             string followerId = userId!;
-            await Mediator.Send(new DeleteFollowerCommand() { FollowerId = followerId, FollowingId = id });
+            await Mediator.Send(
+                new DeleteFollowerCommand() { FollowerId = followerId, FollowingId = id }
+            );
             return NoContent();
         }
     }

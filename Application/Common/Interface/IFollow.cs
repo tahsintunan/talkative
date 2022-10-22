@@ -6,9 +6,9 @@ namespace Application.Common.Interface
     public interface IFollow
     {
         Task AddNewFollower(Follower follower);
-        Task<IList<UserVm>> GetFollowerOfSingleUser(string userId);
-        Task<IList<UserVm>> GetFollowingsOfSingleUser(string userId);
+        Task<IList<UserVm>> GetFollowerOfSingleUser(string userId, int skip, int limit);
+        Task<IList<UserVm>> GetFollowingsOfSingleUser(string userId, int skip, int limit);
         Task<bool> CheckIfFollowerExists(string followerId, string followingId);
-        Task DeleteFollower(string followerId,string followingId);
+        Task DeleteFollower(string followerId, string followingId);
     }
 }
