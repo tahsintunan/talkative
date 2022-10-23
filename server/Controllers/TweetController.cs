@@ -76,7 +76,9 @@ namespace server.Controllers
             var userId = HttpContext.Items["User"]!.ToString();
             likeTweetCommand.UserId = userId;
             await Mediator.Send(likeTweetCommand);
-            return NoContent();
+            return Ok(
+                await Mediator.Send(new GetTweetByIdQuery() { Id = likeTweetCommand.TweetId })
+            );
         }
 
         [HttpDelete("{id}")]

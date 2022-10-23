@@ -29,8 +29,8 @@ namespace Application.Common.Mapper
                 IsRetweet = CheckIfDocumentExists(tweet, "isRetweet")
                     ? tweet["isRetweet"].AsBoolean
                     : false,
-                IsQuoteRetweet = CheckIfDocumentExists(tweet, "IsQuoteRetweet")
-                    ? tweet["IsQuoteRetweet"].AsBoolean
+                IsQuoteRetweet = CheckIfDocumentExists(tweet, "isQuoteRetweet")
+                    ? tweet["isQuoteRetweet"].AsBoolean
                     : false,
                 OriginalTweet = CheckIfDocumentExists(tweet, "originalTweet")
                     ? map(tweet["originalTweet"].AsBsonDocument)

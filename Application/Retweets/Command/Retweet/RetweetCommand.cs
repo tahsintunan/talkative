@@ -83,7 +83,7 @@ namespace Application.Retweets.Command.Retweet
             }
             else
             {
-                retweet.RetweetUsers!.Add(retweet.UserId);
+                retweet.RetweetUsers!.Add(request.UserId);
             }
 
             await _tweetService.PartialUpdate(
