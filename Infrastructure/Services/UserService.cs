@@ -68,6 +68,19 @@ namespace Infrastructure.Services
                 .Find(user => user.Id == updatedUser.Id)
                 .FirstOrDefaultAsync();
 
+            bool usernameExists = false;
+
+            if (updatedUser.Username != user.Username)
+            {
+                var existingUserWithSameUsername = await _userCollection
+                    .Find(user => user.Username == updatedUser.Username)
+                    .FirstOrDefaultAsync();
+                usernameExists = existingUserWithSameUsername != null;
+            }
+
+            if (usernameExists)
+                return;
+
             updatedUser.Password = user.Password;
 
             await _userCollection.ReplaceOneAsync(x => x.Id == updatedUser.Id, user);

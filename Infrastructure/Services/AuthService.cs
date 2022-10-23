@@ -59,7 +59,7 @@ namespace Infrastructure.Services
         public async Task<string> LoginUser(LoginDto loginRequestDto)
         {
             var user = await _userCollection
-                .Find(user => user.Username == loginRequestDto.Username)
+                .Find(user => user.Username == loginRequestDto.Username && user.IsBanned == false)
                 .FirstOrDefaultAsync();
             var accessToken = GenerateAccessToken(user);
             var value = new AuthenticationHeaderValue("Bearer", accessToken);
