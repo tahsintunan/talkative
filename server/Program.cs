@@ -4,7 +4,7 @@ using Application.Common.Mapper;
 using Application.Common.ViewModels;
 using Infrastructure.DbConfig;
 using Infrastructure.Services;
-using Infrastructure.Services.HandlerService;
+using Infrastructure.Services.RMQHandlerService;
 using server.Hub;
 using server.Middlewares;
 

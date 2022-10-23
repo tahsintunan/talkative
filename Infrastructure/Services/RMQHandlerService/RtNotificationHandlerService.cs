@@ -1,39 +1,35 @@
 using System.Text;
+using Application.Common.Interface;
 using Domain.Entities;
-using Infrastructure.DbConfig;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Infrastructure.Services.HandlerService;
+namespace Infrastructure.Services.RMQHandlerService;
 
-public class DbNotificationHandlerService: IHostedService
+public class RtNotificationHandlerService: IHostedService
 {
-    private const string RabbitmqQueueName = "DbNotificationQueue";
-    
-    private readonly IMongoCollection<Notification> _notificationCollection;
+    private const string RabbitmqQueueName = "RtNotificationQueue";
+
     private readonly IModel _channel;
     private readonly EventingBasicConsumer _consumer;
+    private readonly INotificationHub _notificationHub;
 
-    public DbNotificationHandlerService(IConfiguration configuration, IOptions<NotificationDatabaseConfig> notificationDatabaseConfig)
+    public RtNotificationHandlerService(IConfiguration configuration, INotificationHub notificationHub)
     {
-        var mongoClient = new MongoClient(notificationDatabaseConfig.Value.ConnectionString);
-        var notificationDatabase = mongoClient.GetDatabase(notificationDatabaseConfig.Value.DatabaseName);
-        _notificationCollection = notificationDatabase.GetCollection<Notification>(notificationDatabaseConfig.Value.CollectionName);
-        
+        _notificationHub = notificationHub;
         var connectionFactory = new ConnectionFactory { Uri = new Uri(configuration["RabbitMQ:ConnectionString"]) };
         var connection = connectionFactory.CreateConnection();
         _channel = connection.CreateModel();
         _consumer = new EventingBasicConsumer(_channel);
     }
     
+    
     private async Task ProcessNotification(Notification notification)
     {
-        await _notificationCollection.InsertOneAsync(notification);
+        await _notificationHub.SendNotification(notification);
     }
     
     public Task StartAsync(CancellationToken cancellationToken)
