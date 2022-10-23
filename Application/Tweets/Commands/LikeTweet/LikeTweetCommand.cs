@@ -2,7 +2,6 @@
 using Application.Common.ViewModels;
 using Domain.Entities;
 using MediatR;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Application.Tweets.Commands.LikeTweet
@@ -18,14 +17,17 @@ namespace Application.Tweets.Commands.LikeTweet
     {
         private readonly ITweetService _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetBsonDocumentMapper;
+        private readonly INotificationService _notificationService;
 
         public LikeTweetCommandHandler(
             ITweetService tweetService,
-            IBsonDocumentMapper<TweetVm> tweetBsonDocumentMapper
+            IBsonDocumentMapper<TweetVm> tweetBsonDocumentMapper,
+            INotificationService notificationService
         )
         {
             _tweetService = tweetService;
             _tweetBsonDocumentMapper = tweetBsonDocumentMapper;
+            _notificationService = notificationService;
         }
 
         public async Task<Unit> Handle(
@@ -39,6 +41,7 @@ namespace Application.Tweets.Commands.LikeTweet
             if (request.IsLiked)
             {
                 tweetVm.Likes!.Add(request.UserId);
+                await _notificationService.TriggerLikeTweetNotification(request, tweetVm);
             }
             else
             {

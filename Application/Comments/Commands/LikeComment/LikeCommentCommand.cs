@@ -14,10 +14,12 @@ namespace Application.Comments.Commands.LikeComment
     public class LikeCommentCommandHandler : IRequestHandler<LikeCommentCommand>
     {
         private readonly IComment _commentService;
+        private readonly INotificationService _notificationService;
 
-        public LikeCommentCommandHandler(IComment commentService)
+        public LikeCommentCommandHandler(IComment commentService, INotificationService notificationService)
         {
             _commentService = commentService;
+            _notificationService = notificationService;
         }
 
         public async Task<Unit> Handle(
@@ -25,14 +27,11 @@ namespace Application.Comments.Commands.LikeComment
             CancellationToken cancellationToken
         )
         {
-            var comment = await _commentService.GetCommentById(request.Id!);
-            if (comment == null)
-            {
-                return Unit.Value;
-            }
+            var commentVm = await _commentService.GetCommentById(request.Id!);
+            if (commentVm == null) { return Unit.Value; }
 
-            var likes = new List<string>(comment.Likes!);
-
+            var likes = new List<string>(commentVm.Likes!);
+            
             if (likes.Contains(request.UserId!))
             {
                 likes.Remove(request.UserId!);
@@ -40,6 +39,7 @@ namespace Application.Comments.Commands.LikeComment
             else
             {
                 likes.Add(request.UserId!);
+                await _notificationService.TriggerLikeCommentNotification(request, commentVm);
             }
 
             await _commentService.PartialUpdate(

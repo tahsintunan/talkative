@@ -9,39 +9,37 @@ using RabbitMQ.Client.Events;
 
 namespace Infrastructure.Services.HandlerService;
 
-public class TextDeliveryHandlerService : IHostedService
+public class RtNotificationHandlerService: IHostedService
 {
-    private const string RabbitmqQueueName = "TextDeliveryQueue";
+    private const string RabbitmqQueueName = "RtNotificationQueue";
 
     private readonly IModel _channel;
     private readonly EventingBasicConsumer _consumer;
-    private readonly IChatHub _chatHub;
+    private readonly INotificationHub _notificationHub;
 
-    public TextDeliveryHandlerService(IChatHub chatHub, IConfiguration configuration)
+    public RtNotificationHandlerService(IConfiguration configuration, INotificationHub notificationHub)
     {
-        _chatHub = chatHub;
-
+        _notificationHub = notificationHub;
         var connectionFactory = new ConnectionFactory { Uri = new Uri(configuration["RabbitMQ:ConnectionString"]) };
         var connection = connectionFactory.CreateConnection();
         _channel = connection.CreateModel();
         _consumer = new EventingBasicConsumer(_channel);
     }
-
-
-    private async Task ProcessMessage(Message message)
+    
+    
+    private async Task ProcessNotification(Notification notification)
     {
-        await _chatHub.SendMessage(message);
+        await _notificationHub.SendNotification(notification);
     }
-
-
+    
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _consumer.Received += async (model, eventArgs) =>
+        _consumer.Received += async (_, eventArgs) =>
         {
             var body = eventArgs.Body.ToArray();
-            var marshalledMessageObject = Encoding.UTF8.GetString(body);
-            var messageObject = JsonConvert.DeserializeObject<Message>(marshalledMessageObject);
-            await ProcessMessage(messageObject!);
+            var marshalledNotificationObject = Encoding.UTF8.GetString(body);
+            var notificationObject = JsonConvert.DeserializeObject<Notification>(marshalledNotificationObject);
+            await ProcessNotification(notificationObject!);
         };
 
         _channel.BasicConsume(queue: RabbitmqQueueName, autoAck: true, consumer: _consumer);

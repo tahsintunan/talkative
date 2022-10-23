@@ -20,14 +20,17 @@ namespace Application.Retweets.Command.Retweet
     {
         private readonly ITweetService _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetDocumentMapper;
+        private readonly INotificationService _notificationService;
 
         public RetweetCommandHandler(
             ITweetService tweetService,
-            IBsonDocumentMapper<TweetVm> tweetDocumentMapper
+            IBsonDocumentMapper<TweetVm> tweetDocumentMapper,
+            INotificationService notificationService
         )
         {
             _tweetService = tweetService;
             _tweetDocumentMapper = tweetDocumentMapper;
+            _notificationService = notificationService;
         }
 
         public async Task<RetweetVm> Handle(
@@ -35,19 +38,17 @@ namespace Application.Retweets.Command.Retweet
             CancellationToken cancellationToken
         )
         {
-            var tweet = await _tweetService.GetTweetById(request.OriginalTweetId!);
-
-            TweetVm retweetVm = _tweetDocumentMapper.map(tweet!);
-
+            var originalTweet = await _tweetService.GetTweetById(request.OriginalTweetId!);
+            var originalTweetVm = _tweetDocumentMapper.map(originalTweet!);
             var newRetweet = await CreateNewRetweet(request);
-            await UpdateOriginalTweet(retweetVm, newRetweet, request);
-
-            return new RetweetVm() { Id = newRetweet };
+            await UpdateOriginalTweet(originalTweetVm, newRetweet.Id!, request);
+            await _notificationService.TriggerRetweetNotification(newRetweet, originalTweetVm);
+            return new RetweetVm() { Id = newRetweet.Id };
         }
 
-        private async Task<string> CreateNewRetweet(RetweetCommand request)
+        private async Task<Tweet> CreateNewRetweet(RetweetCommand request)
         {
-            Tweet tweet = new Tweet()
+            var retweet = new Tweet()
             {
                 Id = ObjectId.GenerateNewId().ToString(),
                 Text = request.IsQuoteRetweet ? request.Text : null,
@@ -66,8 +67,8 @@ namespace Application.Retweets.Command.Retweet
                 CreatedAt = DateTime.Now,
             };
 
-            await _tweetService.PublishTweet(tweet);
-            return tweet.Id;
+            await _tweetService.PublishTweet(retweet);
+            return retweet;
         }
 
         private async Task UpdateOriginalTweet(

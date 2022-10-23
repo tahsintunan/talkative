@@ -1,5 +1,4 @@
 using System.Text;
-using Application.Common.Dto.MessageDto;
 using Application.Common.Interface;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
@@ -19,55 +18,23 @@ public class RabbitmqService : IRabbitmqService
         var connection = connectionFactory.CreateConnection();
         _channel = connection.CreateModel();
     }
-
-    public Task FanOut(MessageDto messageDto)
+    
+    public Task FanOut(Notification notification)
     {
         try
         {
-            var messageObject = GetMessageObject(messageDto);
-            var marshalledMessageObject = JsonConvert.SerializeObject(messageObject);
-
-            var messageBuffer = Encoding.Default.GetBytes(marshalledMessageObject);
+            var marshalledNotification = JsonConvert.SerializeObject(notification);
+            var notificationBytes = Encoding.Default.GetBytes(marshalledNotification);
             _channel.BasicPublish(exchange: _rabbitmqServerExchangeName,
                 routingKey: "",
                 basicProperties: null,
-                body: messageBuffer);
-
+                body: notificationBytes);
+            
             return Task.CompletedTask;
-
         }
         catch (Exception e)
         {
             throw new Exception(e.Message);
         }
-    }
-
-    private static Message GetMessageObject(MessageDto messageDto)
-    {
-        var message = new Message
-        {
-            ChatroomId = GetChatroomId(messageDto.SenderId!, messageDto.ReceiverId!),
-            SenderId = messageDto.SenderId,
-            ReceiverId = messageDto.ReceiverId,
-            Datetime = DateTime.Now,
-            MessageText = messageDto.MessageText
-        };
-        return message;
-    }
-
-    private static string GetChatroomId(string senderId, string receiverId)
-    {
-        string a, b;
-        if (string.Compare(senderId, receiverId, StringComparison.Ordinal) < 0)
-        {
-            a = senderId;
-            b = receiverId;
-        }
-        else
-        {
-            a = receiverId;
-            b = senderId;
-        }
-        return a + b;
     }
 }

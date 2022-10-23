@@ -2,14 +2,11 @@ using Application;
 using Application.Common.Interface;
 using Application.Common.Mapper;
 using Application.Common.ViewModels;
-using FluentValidation.AspNetCore;
 using Infrastructure.DbConfig;
 using Infrastructure.Services;
 using Infrastructure.Services.HandlerService;
-using MediatR;
 using server.Hub;
 using server.Middlewares;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,23 +33,26 @@ builder.Services.Configure<FollowerDatabaseConfig>(
     builder.Configuration.GetSection("FollowerDatabaseConfig")
 );
 
+builder.Services.Configure<NotificationDatabaseConfig>(
+    builder.Configuration.GetSection("NotificationDatabaseConfig")
+);
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApplicationServices();
 builder.Services.AddTransient<IBsonDocumentMapper<UserVm>, UserBsonDocumentMapper>();
 builder.Services.AddTransient<IBsonDocumentMapper<TweetVm?>, TweetBsonDocumentMapper>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
-builder.Services.AddTransient<IChatService, ChatService>();
 builder.Services.AddTransient<IComment, CommentService>();
 builder.Services.AddTransient<IFollow, FollowService>();
-builder.Services.AddTransient<IChatService, ChatService>();
 builder.Services.AddTransient<ITweetService, TweetService>();
 builder.Services.AddTransient<IRetweetService, RetweetService>();
 builder.Services.AddTransient<IBlockFilterService, BlockFilterService>();
 builder.Services.AddTransient<IRabbitmqService, RabbitmqService>();
-builder.Services.AddTransient<IChatHub, ChatHub>();
-builder.Services.AddHostedService<DbHandlerService>();
-builder.Services.AddHostedService<TextDeliveryHandlerService>();
+builder.Services.AddTransient<INotificationService, NotificationService>();
+builder.Services.AddTransient<INotificationHub, NotificationHub>();
+builder.Services.AddHostedService<DbNotificationHandlerService>();
+builder.Services.AddHostedService<RtNotificationHandlerService>();
 
 builder.Services.AddSignalR();
 
@@ -94,6 +94,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<ChatHub>("/chathub");
+app.MapHub<NotificationHub>("/notificationhub");
 
 app.Run();

@@ -20,16 +20,19 @@ namespace Application.Comments.Commands.CreateComment
         private readonly IComment _commentService;
         private readonly ITweetService _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _mapper;
+        private readonly INotificationService _notificationService;
 
         public CreateCommentCommandHandler(
             IComment commentService,
             ITweetService tweetService,
-            IBsonDocumentMapper<TweetVm> tweetMapper
+            IBsonDocumentMapper<TweetVm> tweetMapper,
+            INotificationService notificationService
         )
         {
             _commentService = commentService;
             _tweetService = tweetService;
             _mapper = tweetMapper;
+            _notificationService = notificationService;
         }
 
         public async Task<CreateCommentCommandVm> Handle(
@@ -39,7 +42,7 @@ namespace Application.Comments.Commands.CreateComment
         {
             var id = ObjectId.GenerateNewId().ToString();
 
-            Comment comment = new Comment()
+            var comment = new Comment()
             {
                 UserId = request.UserId,
                 CreatedAt = DateTime.Now,
@@ -55,12 +58,13 @@ namespace Application.Comments.Commands.CreateComment
             var tweetVm = _mapper.map(tweet!);
 
             tweetVm.Comments!.Add(id);
-
+            
             await _tweetService.PartialUpdate(
                 request.TweetId!,
                 Builders<Tweet>.Update.Set(p => p.Comments, new List<string>(tweetVm.Comments!))
             );
-
+            
+            await _notificationService.TriggerCommentNotification(comment, tweetVm);
             return new CreateCommentCommandVm() { Id = id };
         }
     }

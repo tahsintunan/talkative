@@ -1,8 +1,8 @@
-using Application.Common.Dto.MessageDto;
+using Domain.Entities;
 
 namespace Application.Common.Interface;
 
 public interface IRabbitmqService
 {
-    Task FanOut(MessageDto messageDto);
+    Task FanOut(Notification notification);
 }
