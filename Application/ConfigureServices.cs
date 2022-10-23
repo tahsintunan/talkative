@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Application.Tweets.Commands.PublishTweet;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +11,6 @@ public static class ConfigureServices
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddMediatR(Assembly.GetExecutingAssembly());
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         return services;
     }
 }

@@ -2,6 +2,9 @@ using Application;
 using Application.Common.Interface;
 using Application.Common.Mapper;
 using Application.Common.ViewModels;
+using Application.Tweets.Commands.PublishTweet;
+using FluentValidation;
+using Infrastructure;
 using Infrastructure.DbConfig;
 using Infrastructure.Services;
 using Infrastructure.Services.RMQHandlerService;
@@ -35,24 +38,11 @@ builder.Services.Configure<FollowerDatabaseConfig>(
 builder.Services.Configure<NotificationDatabaseConfig>(
     builder.Configuration.GetSection("NotificationDatabaseConfig")
 );
-
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApplicationServices();
-builder.Services.AddTransient<IBsonDocumentMapper<UserVm>, UserBsonDocumentMapper>();
-builder.Services.AddTransient<IBsonDocumentMapper<TweetVm?>, TweetBsonDocumentMapper>();
-builder.Services.AddTransient<IUser, UserService>();
-builder.Services.AddTransient<IAuth, AuthService>();
-builder.Services.AddTransient<IComment, CommentService>();
-builder.Services.AddTransient<IFollow, FollowService>();
-builder.Services.AddTransient<ITweet, TweetService>();
-builder.Services.AddTransient<IRetweet, RetweetService>();
-builder.Services.AddTransient<IBlockFilter, BlockFilterService>();
-builder.Services.AddTransient<IRabbitmq, RabbitmqService>();
-builder.Services.AddTransient<INotification, NotificationService>();
-builder.Services.AddTransient<INotificationHub, NotificationHub>();
-builder.Services.AddHostedService<DbNotificationHandlerService>();
-builder.Services.AddHostedService<RtNotificationHandlerService>();
+builder.Services.AddInfrastructureServices();
 
+builder.Services.AddTransient<INotificationHub, NotificationHub>();
 builder.Services.AddSignalR();
 
 builder.Services.AddEndpointsApiExplorer();
