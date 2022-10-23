@@ -51,12 +51,32 @@
       ></div>
 
       <app-retweet-content
-        *ngIf="tweet?.isRetweet"
-        [data]="tweet?.retweet"
+        *ngIf="tweet?.isQuoteRetweet"
+        [data]="tweet?.originalTweet"
       ></app-retweet-content>
     </div>
 
-    <div class="flex p-1 gap-1 border-y border-gray-300">
+    <div
+      class="flex py-3 mx-4 px-10 gap-10 text-gray-600 border-t border-gray-300"
+    >
+      <h3 class="hover:underline cursor-pointer">
+        <strong class="text-gray-900">{{ tweet?.likes?.length }}</strong> Likes
+      </h3>
+
+      <h3 class="hover:underline cursor-pointer">
+        <strong class="text-gray-900">{{ tweet?.retweetUsers?.length }}</strong>
+        Shares
+      </h3>
+
+      <h3 class="hover:underline cursor-pointer">
+        <strong class="text-gray-900">{{
+          tweet?.quoteRetweets?.length
+        }}</strong>
+        Quotes
+      </h3>
+    </div>
+
+    <div class="flex py-1 mx-4 gap-1 border-t border-gray-300">
       <button
         mat-button
         class="flex-1 hover:text-pink-500"
@@ -94,38 +114,40 @@
         }"
         [matMenuTriggerFor]="retweetMenu"
       >
-        <mat-icon class="material-symbols-rounded">cycle</mat-icon>
+        <mat-icon class="material-symbols-rounded">cached</mat-icon>
       </button>
 
       <mat-menu #retweetMenu>
-        <button *ngIf="alreadyRetweeted" mat-menu-item (click)="onDelete()">
+        <button
+          *ngIf="alreadyRetweeted"
+          mat-menu-item
+          (click)="onRetweetUndo()"
+        >
           <mat-icon class="material-symbols-rounded">sync_disabled</mat-icon>
           <span>Undo Share</span>
         </button>
 
-        <button
-          *ngIf="!alreadyRetweeted"
-          mat-menu-item
-          (click)="onQuickRetweet()"
-        >
+        <button *ngIf="!alreadyRetweeted" mat-menu-item (click)="onRetweet()">
           <mat-icon class="material-symbols-rounded">share</mat-icon>
-          <span>Quick Share</span>
+          <span>Share</span>
         </button>
 
-        <button mat-menu-item (click)="onQuoteRetweet()">
+        <button mat-menu-item (click)="onQuote()">
           <mat-icon class="material-symbols-rounded">edit_note</mat-icon>
-          <span>Quote Share</span>
+          <span>Quote</span>
         </button>
       </mat-menu>
     </div>
 
     <app-comment-input
-      class="m-3"
+      class="p-3 border-t border-gray-300"
       (onCommentSubmit)="onComment($event)"
     ></app-comment-input>
 
     <div class="flex flex-col">
-      <h3 class="mb-3 mx-3 text-lg font-semibold text-gray-900">Comments</h3>
+      <h3 class="mb-3 mx-3 text-lg font-semibold text-gray-900">
+        {{ comments.length }} Comments
+      </h3>
 
       <app-comment-item
         *ngFor="let comment of comments"

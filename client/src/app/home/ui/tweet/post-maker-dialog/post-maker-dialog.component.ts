@@ -11,8 +11,8 @@ interface PostMakerDialogData {
   isEdit: boolean;
   id: string;
   text: string;
-  isRetweet?: boolean;
-  retweetId?: string;
+  isQuoteRetweet?: boolean;
+  originalTweetId?: string;
 }
 
 @Component({
@@ -28,8 +28,8 @@ export class PostMakerDialogComponent implements OnInit {
     id: this.data?.id,
     text: [this.data?.isEdit ? this.data?.text : '', [Validators.required]],
     hashtags: [],
-    isRetweet: !!this.data?.isRetweet,
-    retweetId: this.data?.retweetId,
+    isQuoteRetweet: !!this.data?.isQuoteRetweet,
+    originalTweetId: this.data?.originalTweetId,
   });
 
   constructor(
@@ -46,10 +46,12 @@ export class PostMakerDialogComponent implements OnInit {
       this.userAuth = res;
     });
 
-    if (this.data?.isRetweet && this.data?.retweetId) {
-      this.tweetService.getTweetById(this.data?.retweetId).subscribe((res) => {
-        this.retweetContent = res;
-      });
+    if (this.data?.isQuoteRetweet && this.data?.originalTweetId) {
+      this.tweetService
+        .getTweetById(this.data?.originalTweetId)
+        .subscribe((res) => {
+          this.retweetContent = res;
+        });
     }
 
     this.router.events.subscribe((res) => {

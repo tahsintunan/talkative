@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { RetweetService } from 'src/app/home/services/retweet.service';
 import { TweetModel, TweetWriteModel } from '../../../models/tweet.model';
 import { UserModel } from '../../../models/user.model';
 import { TweetService } from '../../../services/tweet.service';
@@ -24,6 +25,8 @@ export class TweetItemComponent implements OnInit {
   @Input() data?: TweetModel;
   @Output() onHashtagClick = new EventEmitter();
 
+  tweet?: TweetModel;
+
   userAuth?: UserModel;
 
   alreadyLiked: boolean = false;
@@ -32,6 +35,7 @@ export class TweetItemComponent implements OnInit {
   constructor(
     private userService: UserService,
     private tweetService: TweetService,
+    private retweetService: RetweetService,
     private dialog: MatDialog,
     private router: Router
   ) {}
@@ -41,14 +45,22 @@ export class TweetItemComponent implements OnInit {
       this.userAuth = res;
     });
 
-    this.alreadyLiked = !!this.data?.likes?.includes(this.userAuth?.userId!);
-    this.alreadyRetweeted = !!this.data?.retweetUsers?.includes(
-      this.userAuth?.userId!
+    if (this.data?.isRetweet) this.tweet = this.data?.originalTweet;
+    else this.tweet = this.data;
+
+    this.alreadyLiked = !!this.tweet?.likes?.some(
+      (likedBy) => likedBy === this.userAuth?.userId
     );
+
+    this.alreadyRetweeted = !!this.tweet?.retweetUsers?.some(
+      (retweetedBy) => retweetedBy === this.userAuth?.userId
+    );
+
+    console.log(this.tweet?.retweetUsers);
   }
 
   onTweetClick() {
-    this.router.navigate([`/home/tweet/${this.data?.id}`]);
+    this.router.navigate([`/home/tweet/${this.tweet?.id}`]);
   }
 
   onTagClick(event: any) {
@@ -58,14 +70,16 @@ export class TweetItemComponent implements OnInit {
   }
 
   onLike() {
-    this.tweetService.likeTweet(this.data?.id!, !this.alreadyLiked).subscribe();
+    this.tweetService
+      .likeTweet(this.tweet?.id!, !this.alreadyLiked)
+      .subscribe();
 
-    if (this.alreadyLiked && this.data) {
-      this.data.likes = this.data.likes.filter(
+    if (this.alreadyLiked && this.tweet) {
+      this.tweet.likes = this.tweet.likes.filter(
         (likedBy) => likedBy !== this.userAuth?.userId
       );
     } else {
-      this.data?.likes?.push(this.userAuth?.userId!);
+      this.tweet?.likes?.push(this.userAuth?.userId!);
     }
 
     this.alreadyLiked = !this.alreadyLiked;
@@ -75,35 +89,34 @@ export class TweetItemComponent implements OnInit {
     this.onTweetClick();
   }
 
-  onQuickRetweet() {
-    this.tweetService
-      .retweet({
-        isRetweet: true,
-        retweetId: this.data?.isRetweet
-          ? this.data?.retweet?.id!
-          : this.data?.id!,
-        hashtags: [],
+  onRetweet() {
+    this.retweetService
+      .createRetweet({
+        isQuoteRetweet: false,
+        originalTweetId: this.tweet?.isQuoteRetweet
+          ? this.tweet?.originalTweet?.id!
+          : this.tweet?.id!,
       })
       .subscribe();
   }
 
-  onQuoteRetweet() {
+  onQuote() {
     const dialogRef = this.dialog.open(PostMakerDialogComponent, {
       width: '500px',
       data: {
-        isRetweet: true,
-        retweetId: this.data?.isRetweet
-          ? this.data?.retweet?.id
-          : this.data?.id,
+        isQuoteRetweet: true,
+        originalTweetId: this.tweet?.isQuoteRetweet
+          ? this.tweet?.originalTweet?.id
+          : this.tweet?.id,
       },
     });
 
     dialogRef.afterClosed().subscribe((result: TweetWriteModel) => {
       if (result) {
-        this.tweetService
-          .retweet({
-            isRetweet: result.isRetweet!,
-            retweetId: result.retweetId!,
+        this.retweetService
+          .createRetweet({
+            isQuoteRetweet: true,
+            originalTweetId: result.originalTweetId!,
             text: result.text,
             hashtags: result.hashtags!,
           })
@@ -112,15 +125,25 @@ export class TweetItemComponent implements OnInit {
     });
   }
 
+  onRetweetUndo() {
+    this.retweetService
+      .undoRetweet(
+        this.tweet?.isQuoteRetweet
+          ? this.tweet?.originalTweet?.id!
+          : this.tweet?.id!
+      )
+      .subscribe();
+  }
+
   onEdit() {
     const dialogRef = this.dialog.open(PostMakerDialogComponent, {
       width: '500px',
       data: {
         isEdit: true,
-        id: this.data?.id,
-        text: this.data?.text,
-        isRetweet: this.data?.isRetweet,
-        retweetId: this.data?.retweet?.id,
+        id: this.tweet?.id,
+        text: this.tweet?.text,
+        isQuoteRetweet: this.tweet?.isQuoteRetweet,
+        originalTweetId: this.tweet?.originalTweet?.id,
       },
     });
 
@@ -131,8 +154,6 @@ export class TweetItemComponent implements OnInit {
             id: result.id!,
             text: result.text,
             hashtags: result.hashtags,
-            isRetweet: result.isRetweet,
-            retweetId: result.retweetId,
           })
           .subscribe();
       }
@@ -140,8 +161,12 @@ export class TweetItemComponent implements OnInit {
   }
 
   onDelete() {
-    if (this.data?.id) {
-      this.tweetService.deleteTweet(this.data?.id).subscribe();
+    if (this.tweet?.id) {
+      if (this.tweet?.isQuoteRetweet)
+        this.retweetService
+          .deleteQuoteRetweet(this.tweet.id, this.tweet?.originalTweet?.id!)
+          .subscribe();
+      else this.tweetService.deleteTweet(this.tweet?.id).subscribe();
     }
   }
 }

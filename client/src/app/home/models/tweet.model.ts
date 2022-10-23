@@ -6,11 +6,12 @@ export interface TweetModel {
   hashtags: string[];
   createdAt: Date;
   isRetweet: boolean;
+  isQuoteRetweet: boolean;
   user: UserModel;
-  retweetId?: string;
-  retweet?: TweetModel;
+  originalTweetId?: string;
+  originalTweet?: TweetModel;
   retweetUsers: string[];
-  retweetPosts: string[];
+  quoteRetweets: string[];
   likes: string[];
   comments: string[];
 }
@@ -19,8 +20,8 @@ export interface TweetWriteModel {
   id?: string;
   text?: string;
   hashtags?: string[];
-  isRetweet?: boolean;
-  retweetId?: string;
+  isQuoteRetweet?: boolean;
+  originalTweetId?: string;
 }
 
 export interface TweetCreateReqModel {
@@ -32,13 +33,11 @@ export interface TweetUpdateReqModel {
   id: string;
   text?: string;
   hashtags?: string[];
-  isRetweet?: boolean;
-  retweetId?: string;
 }
 
-export interface TweetRetweetReqModel {
+export interface RetweetReqModel {
   text?: string;
-  hashtags: string[];
-  isRetweet: boolean;
-  retweetId: string;
+  hashtags?: string[];
+  isQuoteRetweet: boolean;
+  originalTweetId: string;
 }

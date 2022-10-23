@@ -9,6 +9,7 @@ import {
 import { TweetModel, TweetWriteModel } from '../../models/tweet.model';
 import { UserModel } from '../../models/user.model';
 import { CommentService } from '../../services/comment.service';
+import { RetweetService } from '../../services/retweet.service';
 import { TweetService } from '../../services/tweet.service';
 import { UserService } from '../../services/user.service';
 import { PostMakerDialogComponent } from '../../ui/tweet/post-maker-dialog/post-maker-dialog.component';
@@ -30,6 +31,7 @@ export class TweetDetailsComponent implements OnInit {
   constructor(
     private userService: UserService,
     private tweetService: TweetService,
+    private retweetService: RetweetService,
     private commentService: CommentService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -43,10 +45,10 @@ export class TweetDetailsComponent implements OnInit {
 
     this.activatedRoute.params.subscribe((params) => {
       this.tweetId = params['tweetId'];
-    });
 
-    this.getTweet();
-    this.getComments();
+      this.getTweet();
+      this.getComments();
+    });
   }
 
   getTweet() {
@@ -59,7 +61,7 @@ export class TweetDetailsComponent implements OnInit {
         );
 
         this.alreadyRetweeted = res.retweetUsers?.some(
-          (retweet) => retweet === this.userAuth?.userId
+          (retweetBy) => retweetBy === this.userAuth?.userId
         );
       });
     }
@@ -104,37 +106,50 @@ export class TweetDetailsComponent implements OnInit {
     }
   }
 
-  onQuickRetweet() {
-    this.tweetService.retweet({
-      isRetweet: true,
-      retweetId: this.tweet?.isRetweet
-        ? this.tweet?.retweet?.id!
-        : this.tweet?.id!,
-      hashtags: [],
-    });
+  onRetweet() {
+    this.retweetService
+      .createRetweet({
+        isQuoteRetweet: false,
+        originalTweetId: this.tweet?.isQuoteRetweet
+          ? this.tweet?.originalTweet?.id!
+          : this.tweet?.id!,
+      })
+      .subscribe((res) => this.getTweet());
   }
 
-  onQuoteRetweet() {
+  onQuote() {
     const dialogRef = this.dialog.open(PostMakerDialogComponent, {
       width: '500px',
       data: {
-        isRetweet: true,
-        retweetId: this.tweet?.isRetweet
-          ? this.tweet?.retweet?.id
+        isQuoteRetweet: true,
+        originalTweetId: this.tweet?.isRetweet
+          ? this.tweet?.originalTweet?.id
           : this.tweet?.id,
       },
     });
 
     dialogRef.afterClosed().subscribe((result: TweetWriteModel) => {
       if (result) {
-        this.tweetService.retweet({
-          isRetweet: result.isRetweet!,
-          retweetId: result.retweetId!,
-          text: result.text,
-          hashtags: result.hashtags!,
-        });
+        this.retweetService
+          .createRetweet({
+            isQuoteRetweet: true,
+            originalTweetId: result.originalTweetId!,
+            text: result.text,
+            hashtags: result.hashtags!,
+          })
+          .subscribe(() => this.getTweet());
       }
     });
+  }
+
+  onRetweetUndo() {
+    this.retweetService
+      .undoRetweet(
+        this.tweet?.isQuoteRetweet
+          ? this.tweet?.originalTweet?.id!
+          : this.tweet?.id!
+      )
+      .subscribe(() => this.getTweet());
   }
 
   onEdit() {
@@ -144,8 +159,8 @@ export class TweetDetailsComponent implements OnInit {
         isEdit: true,
         id: this.tweet?.id,
         text: this.tweet?.text,
-        isRetweet: this.tweet?.isRetweet,
-        retweetId: this.tweet?.retweet?.id,
+        isQuoteRetweet: this.tweet?.isQuoteRetweet,
+        originalTweetId: this.tweet?.originalTweet?.id,
       },
     });
 
@@ -156,19 +171,23 @@ export class TweetDetailsComponent implements OnInit {
             id: result.id!,
             text: result.text,
             hashtags: result.hashtags,
-            isRetweet: result.isRetweet,
-            retweetId: result.retweetId,
           })
-          .subscribe();
-
-        this.getTweet();
+          .subscribe(() => {
+            this.getTweet();
+          });
       }
     });
   }
 
   onDelete() {
     if (this.tweet?.id) {
-      this.tweetService.deleteTweet(this.tweet?.id).subscribe();
+      if (this.tweet.isQuoteRetweet && this.tweet?.originalTweet?.id) {
+        this.retweetService
+          .deleteQuoteRetweet(this.tweet?.id, this.tweet?.originalTweet?.id)
+          .subscribe();
+      } else {
+        this.tweetService.deleteTweet(this.tweet?.id).subscribe();
+      }
       this.router.navigate(['..']);
     }
   }

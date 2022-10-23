@@ -6,9 +6,9 @@ import { EnvService } from 'src/app/env.service';
 import {
   TweetCreateReqModel,
   TweetModel,
-  TweetRetweetReqModel,
   TweetUpdateReqModel,
 } from '../models/tweet.model';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,64 +25,40 @@ export class TweetService {
   constructor(
     private http: HttpClient,
     private env: EnvService,
+    private userService: UserService,
     private router: Router
   ) {}
 
   createTweet(tweet: TweetCreateReqModel) {
     return this.http.post<TweetModel>(this.apiUrl, tweet).pipe(
       tap((res) => {
-        this.feedTweetsSubject.next([res, ...this.feedTweetsSubject.value]);
-
-        this.addToUserTweets(res);
-      })
-    );
-  }
-
-  retweet(tweet: TweetRetweetReqModel) {
-    return this.http.post<TweetModel>(this.apiUrl + '/retweet', tweet).pipe(
-      tap((res) => {
-        this.feedTweetsSubject.next([res, ...this.feedTweetsSubject.value]);
         this.addToUserTweets(res);
       })
     );
   }
 
   updateTweet(tweet: TweetUpdateReqModel) {
-    return this.http.put<TweetModel>(this.apiUrl, tweet).pipe(
-      tap((res) => {
-        this.feedTweetsSubject.next([
-          ...this.feedTweetsSubject.value.map((x) =>
-            x.id === res.id ? res : x
-          ),
-        ]);
-
-        this.userTweetSubject.next([
-          ...this.userTweetSubject.value.map((x) =>
-            x.id === res.id ? res : x
-          ),
-        ]);
-      })
-    );
+    return this.http
+      .put<TweetModel>(this.apiUrl, tweet)
+      .pipe(tap((res) => this.refreshTweet(res)));
   }
 
   deleteTweet(tweetId: string) {
-    return this.http.delete(this.apiUrl + '/' + tweetId).pipe(
-      tap(() => {
-        this.feedTweetsSubject.next(
-          this.feedTweetsSubject.value.filter((x) => x.id !== tweetId)
-        );
-
-        this.userTweetSubject.next(
-          this.userTweetSubject.value.filter((x) => x.id !== tweetId)
-        );
-      })
-    );
+    return this.http
+      .delete(this.apiUrl + '/' + tweetId)
+      .pipe(tap(() => this.removeTweetFromList(tweetId)));
   }
 
   getTweets() {
     return this.http
-      .get<TweetModel[]>(this.apiUrl + '/user/current-user')
-      .pipe(tap((res) => this.feedTweetsSubject.next(res)));
+      .get<TweetModel[]>(this.apiUrl + '/feed')
+      .pipe(
+        tap((res) =>
+          this.feedTweetsSubject.next(
+            res.filter((x) => !(x.isRetweet && !x.originalTweet))
+          )
+        )
+      );
   }
 
   getTweetById(id: string) {
@@ -92,21 +68,81 @@ export class TweetService {
   getUserTweets(userId: string) {
     return this.http
       .get<TweetModel[]>(this.apiUrl + '/user/' + userId)
-      .pipe(tap((res) => this.userTweetSubject.next(res)));
+      .pipe(
+        tap((res) =>
+          this.userTweetSubject.next(
+            res.filter((x) => !(x.isRetweet && !x.originalTweet))
+          )
+        )
+      );
   }
 
   likeTweet(tweetId: string, isLiked: boolean) {
-    return this.http.put<TweetModel>(this.apiUrl + '/like', {
-      tweetId,
-      isLiked,
+    return this.http
+      .put<TweetModel>(this.apiUrl + '/like', {
+        tweetId,
+        isLiked,
+      })
+      .pipe(tap((res) => this.refreshTweet(res)));
+  }
+
+  addToUserTweets(tweet: TweetModel) {
+    this.userService.userAuth.subscribe((user) => {
+      const activeProfileId = this.router.url.split('/profile/')[1];
+      if (user.userId === activeProfileId && tweet.user.userId === user.userId)
+        this.userTweetSubject.next([
+          tweet,
+          ...this.userTweetSubject.getValue(),
+        ]);
     });
   }
 
-  private addToUserTweets(tweet: TweetModel) {
-    const currentUserId = this.router.url.split('/profile/')[1];
+  refreshTweet(tweet: TweetModel) {
+    if (this.router.url.includes('feed'))
+      this.feedTweetsSubject.next(
+        this.feedTweetsSubject.getValue().map((x) => {
+          if (x.id === tweet.id) return tweet;
+          else if (x.originalTweet?.id === tweet.id)
+            return { ...x, originalTweet: tweet };
+          else return x;
+        })
+      );
 
-    if (tweet.user?.userId === currentUserId) {
-      this.userTweetSubject.next([tweet, ...this.userTweetSubject.value]);
+    if (this.router.url.includes('profile'))
+      this.userTweetSubject.next(
+        this.userTweetSubject.getValue().map((x) => {
+          if (x.id === tweet.id) return tweet;
+          else if (x.originalTweet?.id === tweet.id)
+            return { ...x, originalTweet: tweet };
+          else return x;
+        })
+      );
+  }
+
+  removeTweetFromList(tweetId: string) {
+    if (this.router.url.includes('feed')) {
+      this.feedTweetsSubject.next(
+        this.feedTweetsSubject
+          .getValue()
+          .filter((x) => x.id !== tweetId)
+          .map((x) =>
+            x.originalTweet?.id === tweetId
+              ? { ...x, originalTweet: undefined }
+              : x
+          )
+      );
     }
+
+    if (this.router.url.includes('profile'))
+      this.userTweetSubject.next(
+        this.userTweetSubject
+          .getValue()
+          .filter((x) => x.id !== tweetId)
+          .map((x) =>
+            x.originalTweet?.id === tweetId
+              ? { ...x, originalTweet: undefined }
+              : x
+          )
+      );
   }
 }
