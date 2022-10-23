@@ -13,15 +13,17 @@ namespace Application.Followers.Commands.AddFollower
 
     public class AddFollowerCommandHandler : IRequestHandler<AddFollowerCommand>
     {
-        public IFollow _followerService;
-        public AddFollowerCommandHandler(IFollow followerService)
+        private readonly IFollow _followerService;
+        private readonly INotificationService _notificationService;
+        public AddFollowerCommandHandler(IFollow followerService, INotificationService notificationService)
         {
             _followerService = followerService;
+            _notificationService = notificationService;
         }
 
         public async Task<Unit> Handle(AddFollowerCommand request, CancellationToken cancellationToken)
         {
-            bool followerExists = await _followerService.CheckIfFollowerExists(request.FollowerId!, request.FollowingId!);
+            var followerExists = await _followerService.CheckIfFollowerExists(request.FollowerId!, request.FollowingId!);
             if (!followerExists)
             {
                 await _followerService.AddNewFollower(new Follower()
@@ -31,6 +33,7 @@ namespace Application.Followers.Commands.AddFollower
                     Id = ObjectId.GenerateNewId().ToString(),
                 });
             }
+            await _notificationService.TriggerFollowNotification(request);
             return Unit.Value;
         }
     }

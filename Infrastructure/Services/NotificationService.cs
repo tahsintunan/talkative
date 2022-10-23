@@ -2,6 +2,7 @@ using Application.Comments.Commands.LikeComment;
 using Application.Common.Class;
 using Application.Common.Interface;
 using Application.Common.ViewModels;
+using Application.Followers.Commands.AddFollower;
 using Application.Tweets.Commands.LikeTweet;
 using Domain.Entities;
 using MongoDB.Bson;
@@ -19,6 +20,20 @@ public class NotificationService : INotificationService
         _userService = userService;
     }
     
+    public async Task TriggerFollowNotification(AddFollowerCommand request)
+    {
+        var eventTriggererUsername = await GetUsernameById(request.FollowerId!);
+        var notification = new Notification()
+        {
+            Id = ObjectId.GenerateNewId().ToString(),
+            EventType = "follow",
+            NotificationReceiverId = request.FollowingId,
+            EventTriggererId = request.FollowerId,
+            EventTriggererUsername = eventTriggererUsername,
+            Datetime = DateTime.Now,
+        };
+        await _rabbitmqService.FanOut(notification);
+    }
     
     public async Task TriggerRetweetNotification(Tweet retweet, Blockable originalTweetVm)
     {
