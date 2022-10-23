@@ -1,13 +1,12 @@
-﻿using Application.Common.Dto.LoginDto;
-using Application.Common.Dto.SignupDto;
+﻿using Domain.Entities;
 using System.Security.Cryptography;
 
 namespace Application.Common.Interface
 {
     public interface IAuth
     {
-        Task SignupUser(SignupDto signupRequestDto);
-        Task<string> LoginUser(LoginDto loginRequestDto);
+        Task SignupUser(User user);
+        Task<string?> LoginUser(string username, string password);
         Task<bool> CheckIfUserExists(string username, string email);
         Task<bool> CheckIfUsernameExists(string username);
         Task<bool> CheckIfPasswordMatches(string username, string password);

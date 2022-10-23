@@ -1,7 +1,4 @@
-﻿using Application.Common.Dto.ForgetPasswordDto;
-using Application.Common.Dto.UpdateUserDto;
-using Application.Common.Interface;
-using Application.Common.ViewModels;
+﻿using Application.Common.ViewModels;
 using Application.Users.Commands.BanUser;
 using Application.Users.Commands.ForgetPassword;
 using Application.Users.Commands.UnbanUser;

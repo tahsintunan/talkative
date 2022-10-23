@@ -1,5 +1,4 @@
-﻿using Application.Common.Dto.UpdateUserDto;
-using Application.Common.Interface;
+﻿using Application.Common.Interface;
 using Application.Common.ViewModels;
 using AutoMapper;
 using Domain.Entities;

@@ -1,14 +1,14 @@
+using Application.Auth.Commands.Login;
+using Application.Auth.Commands.Signup;
+using Application.Common.Interface;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
-using Application.Common.Dto.LoginDto;
-using Application.Common.Interface;
-using Application.Common.Dto.SignupDto;
 
 namespace server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    public class AuthController : ApiControllerBase
     {
         private readonly IAuth _authService;
         private readonly ILogger<AuthController> _logger;
@@ -20,85 +20,40 @@ namespace server.Controllers
         }
 
         [HttpPost("signup")]
-        public async Task<IActionResult> Signup(SignupDto signupRequestDto)
+        public async Task<IActionResult> Signup(SignupCommand signupCommand)
         {
-            try
+            var signupSuccess = await Mediator.Send(signupCommand);
+
+            if (!signupSuccess)
             {
-                if (
-                    await _authService.CheckIfUserExists(
-                        signupRequestDto.Username!,
-                        signupRequestDto.Email!
-                    )
-                )
-                    return BadRequest(
-                        new
-                        {
-                            StatusCode = StatusCodes.Status400BadRequest,
-                            message = "User already exists"
-                        }
-                    );
-                await _authService.SignupUser(signupRequestDto);
-                return StatusCode(
-                    StatusCodes.Status201Created,
-                    new { response = "User created successfully" }
+                return BadRequest(
+                    new
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        message = "User already exists"
+                    }
                 );
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError("{ErrorMessage}", ex.Message);
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    new { response = "Something went wrong." }
-                );
+                return NoContent();
             }
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto request)
+        public async Task<IActionResult> Login(LoginCommand request)
         {
-            try
-            {
-                var username = request.Username!;
-                var password = request.Password!;
+            var accessToken = await Mediator.Send(request);
 
-                if (!await _authService.CheckIfUsernameExists(username))
-                    return BadRequest(
-                        new
-                        {
-                            StatusCode = StatusCodes.Status400BadRequest,
-                            message = "Username does not exist"
-                        }
-                    );
+            var value = new AuthenticationHeaderValue("Bearer", accessToken);
 
-                if (!await _authService.CheckIfPasswordMatches(username, password))
-                    return BadRequest(
-                        new
-                        {
-                            StatusCode = StatusCodes.Status400BadRequest,
-                            message = "Password does not match"
-                        }
-                    );
+            HttpContext.Response.Cookies.Append(
+                "authorization",
+                value.ToString(),
+                new CookieOptions { HttpOnly = false, Expires = DateTime.Now.AddDays(7) }
+            );
 
-                string accessToken = await _authService.LoginUser(request);
-
-                var value = new AuthenticationHeaderValue("Bearer", accessToken);
-
-                HttpContext.Response.Cookies.Append(
-                    "authorization",
-                    value.ToString(),
-                    new CookieOptions { HttpOnly = false, Expires = DateTime.Now.AddDays(7) }
-                );
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("{ErrorMessage}", ex.Message);
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    new { response = "Something went wrong." }
-                );
-            }
+            return NoContent();
         }
 
         [HttpPost("logout")]

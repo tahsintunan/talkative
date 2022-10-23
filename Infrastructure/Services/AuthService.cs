@@ -1,19 +1,16 @@
-﻿using System.Globalization;
+﻿using Application.Common.Interface;
+using Domain.Entities;
+using Infrastructure.DbConfig;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Security.Claims;
-using System.Net.Http.Headers;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using Infrastructure.DbConfig;
-using Domain.Entities;
-using Application.Common.Dto.LoginDto;
-using Application.Common.Interface;
-using Application.Common.Dto.SignupDto;
 
 namespace Infrastructure.Services
 {
@@ -38,28 +35,27 @@ namespace Infrastructure.Services
             );
         }
 
-        public async Task SignupUser(SignupDto signupRequestDto)
+        public async Task SignupUser(User user)
         {
             string hashedPassword;
             using (var sha256Hash = SHA256.Create())
             {
-                hashedPassword = GetHash(sha256Hash, signupRequestDto.Password!);
+                hashedPassword = GetHash(sha256Hash, user.Password!);
             }
-            var newUser = new User()
-            {
-                Id = ObjectId.GenerateNewId().ToString(),
-                Username = signupRequestDto.Username,
-                Password = hashedPassword,
-                Email = signupRequestDto.Email,
-                DateOfBirth = signupRequestDto.DateOfBirth.Date
-            };
-            await _userCollection.InsertOneAsync(newUser);
+            user.Password = hashedPassword;
+            await _userCollection.InsertOneAsync(user);
         }
 
-        public async Task<string> LoginUser(LoginDto loginRequestDto)
+        public async Task<string?> LoginUser(string username, string password)
         {
+            if (!await CheckIfUsernameExists(username))
+                return null;
+
+            if (!await CheckIfPasswordMatches(username, password))
+                return null;
+
             var user = await _userCollection
-                .Find(user => user.Username == loginRequestDto.Username && user.IsBanned == false)
+                .Find(user => user.Username == user.Username && user.IsBanned == false)
                 .FirstOrDefaultAsync();
             var accessToken = GenerateAccessToken(user);
             var value = new AuthenticationHeaderValue("Bearer", accessToken);

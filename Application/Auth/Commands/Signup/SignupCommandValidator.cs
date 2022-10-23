@@ -1,11 +1,10 @@
-﻿using Application.Common.Interface;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace Application.Common.Dto.SignupDto
+namespace Application.Auth.Commands.Signup
 {
-    public class SignupDtoValidator : AbstractValidator<SignupDto>
+    public class SignupCommandValidator : AbstractValidator<SignupCommand>
     {
-        public SignupDtoValidator(IAuth authService)
+        public SignupCommandValidator()
         {
             RuleFor(user => user.Username).NotEmpty().WithMessage("Username cannot be empty");
             RuleFor(user => user.Email)

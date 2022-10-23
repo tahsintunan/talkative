@@ -9,7 +9,7 @@ namespace Application.Users.Commands.UpdateUser
         public string? Id { get; set; }
         public string? Username { get; set; }
         public string? Email { get; set; }
-        public DateTime? DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
     }
 
     public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand>
@@ -33,9 +33,9 @@ namespace Application.Users.Commands.UpdateUser
                     new User()
                     {
                         Id = request.Id,
-                        Username = request.Username ?? user.Username,
-                        DateOfBirth = (DateTime)(request.DateOfBirth ?? user.DateOfBirth!),
-                        Email = request.Email ?? user.Email
+                        Username = request.Username,
+                        DateOfBirth = request.DateOfBirth,
+                        Email = request.Email
                     }
                 );
             }

@@ -1,13 +1,8 @@
 using Application;
 using Application.Common.Interface;
-using Application.Common.Mapper;
-using Application.Common.ViewModels;
-using Application.Tweets.Commands.PublishTweet;
-using FluentValidation;
+using FluentValidation.AspNetCore;
 using Infrastructure;
 using Infrastructure.DbConfig;
-using Infrastructure.Services;
-using Infrastructure.Services.RMQHandlerService;
 using server.Hub;
 using server.Middlewares;
 
@@ -15,7 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers()
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 
 builder.Services.Configure<UserDatabaseConfig>(
     builder.Configuration.GetSection("UserDatabaseConfig")
@@ -38,6 +35,7 @@ builder.Services.Configure<FollowerDatabaseConfig>(
 builder.Services.Configure<NotificationDatabaseConfig>(
     builder.Configuration.GetSection("NotificationDatabaseConfig")
 );
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices();

@@ -1,5 +1,4 @@
-﻿using Application.Common.Dto.UpdateUserDto;
-using Application.Common.ViewModels;
+﻿using Application.Common.ViewModels;
 using Domain.Entities;
 using MongoDB.Driver;
 
