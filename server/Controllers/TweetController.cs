@@ -3,6 +3,7 @@ using Application.Tweets.Commands.DeleteTweet;
 using Application.Tweets.Commands.LikeTweet;
 using Application.Tweets.Commands.PublishTweet;
 using Application.Tweets.Commands.UpdateTweet;
+using Application.Tweets.Queries.GetTrendingHashtags;
 using Application.Tweets.Queries.GetTweetById;
 using Application.Tweets.Queries.GetTweetsOfSingleUser;
 using Application.Tweets.Queries.TweetsForFeed;
@@ -34,6 +35,12 @@ namespace server.Controllers
         {
             tweetsForFeedQuery.UserId = HttpContext.Items["User"]!.ToString();
             return Ok(await Mediator.Send(tweetsForFeedQuery));
+        }
+
+        [HttpGet("trending-hashtags")]
+        public async Task<ActionResult<IList<TrendingHashtagVm>>> GetTrendingHashtags()
+        {
+            return Ok(await Mediator.Send(new GetTrendingHashtagsQuery()));
         }
 
         [HttpGet("{id}")]

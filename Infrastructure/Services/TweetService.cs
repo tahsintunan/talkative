@@ -143,6 +143,56 @@ namespace Infrastructure.Services
             return tweets;
         }
 
+        public async Task<IList<TrendingHashtagVm>> GetTrendingHashtags()
+        {
+            BsonDocument pipelineStageOne = new BsonDocument(
+                "$project",
+                new BsonDocument("hashtags", 1)
+            );
+            BsonDocument pipelineStageTwo = new BsonDocument(
+                "$unwind",
+                new BsonDocument("path", "$hashtags")
+            );
+            BsonDocument pipelineStageThree = new BsonDocument(
+                "$group",
+                new BsonDocument
+                {
+                    { "_id", "$hashtags" },
+                    { "count", new BsonDocument("$sum", 1) }
+                }
+            );
+            BsonDocument pipelineStageFour = new BsonDocument(
+                "$sort",
+                new BsonDocument("count", -1)
+            );
+
+            var hashtags = await _tweetCollection
+                .Aggregate<BsonDocument>(
+                    new BsonDocument[]
+                    {
+                        pipelineStageOne,
+                        pipelineStageTwo,
+                        pipelineStageThree,
+                        pipelineStageFour
+                    }
+                )
+                .ToListAsync();
+            IList<TrendingHashtagVm> trendingHashtagVms = new List<TrendingHashtagVm>();
+
+            foreach (var hashtag in hashtags)
+            {
+                trendingHashtagVms.Add(
+                    new TrendingHashtagVm()
+                    {
+                        Hashtag = hashtag.AsBsonDocument.GetElement("_id").Value.ToString(),
+                        Count = hashtag.AsBsonDocument.GetElement("count").Value.ToInt64(),
+                    }
+                );
+            }
+
+            return trendingHashtagVms;
+        }
+
         public async Task<IList<string>> SearchHashtags(string hashtag, int skip, int limit)
         {
             var hashtagList = new List<string>();

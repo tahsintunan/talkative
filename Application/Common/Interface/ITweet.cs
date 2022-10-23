@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Common.ViewModels;
+using Domain.Entities;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -15,5 +16,6 @@ namespace Application.Common.Interface
         Task PartialUpdate(string tweetId, UpdateDefinition<Tweet> update);
         Task<IList<BsonDocument>> GenerateFeed(string userId, int skip, int take);
         Task<IList<BsonDocument>> GetTweetsByHashtag(string hashtag, int skip, int take);
+        Task<IList<TrendingHashtagVm>> GetTrendingHashtags();
     }
 }
