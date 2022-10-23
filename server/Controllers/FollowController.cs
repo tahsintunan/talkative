@@ -2,6 +2,7 @@
 using Application.Followers.Commands.AddFollower;
 using Application.Followers.Commands.DeleteFollower;
 using Application.Followers.Queries.GetFollowers;
+using Application.Followers.Queries.GetFollowingIdsOfCurrentUser;
 using Application.Followers.Queries.GetFollowings;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,6 +34,15 @@ namespace server.Controllers
         {
             getFollowingsQuery.UserId = HttpContext.Items["User"]!.ToString();
             return Ok(await Mediator.Send(getFollowingsQuery));
+        }
+
+        [HttpGet("following-id")]
+        public async Task<ActionResult<IList<string?>>> GetFollowingsOfCurrentUser()
+        {
+            var userId = HttpContext.Items["User"]!.ToString();
+            return Ok(
+                await Mediator.Send(new GetFollowingIdsOfCurrentUserQuery() { UserId = userId })
+            );
         }
 
         [HttpGet("follower/{id}")]

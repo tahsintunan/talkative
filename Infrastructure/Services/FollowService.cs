@@ -57,6 +57,17 @@ namespace Infrastructure.Services
             return follower != null;
         }
 
+        public async Task<IList<string?>> GetFollowingOfCurrentUser(string userId)
+        {
+            var list = await _followerCollection
+                .Aggregate()
+                .Match(x => x.FollowerId == userId)
+                .Project(x => x.FollowingId)
+                .ToListAsync();
+
+            return list;
+        }
+
         public async Task<IList<UserVm>> GetFollowerOfSingleUser(string userId, int skip, int limit)
         {
             var followerList = await _followerCollection
