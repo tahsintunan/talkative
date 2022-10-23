@@ -55,7 +55,11 @@ namespace Infrastructure.Services
                 return null;
 
             var user = await _userCollection
-                .Find(user => user.Username == user.Username && user.IsBanned == false)
+                .Find(
+                    user =>
+                        user.Username == username
+                        && (user.IsBanned == null || user.IsBanned == false)
+                )
                 .FirstOrDefaultAsync();
             var accessToken = GenerateAccessToken(user);
             var value = new AuthenticationHeaderValue("Bearer", accessToken);

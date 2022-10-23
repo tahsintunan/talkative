@@ -32,6 +32,6 @@ namespace Domain.Entities
         public string? Email { get; set; }
 
         [BsonElement("isBanned")]
-        public bool IsBanned { get; set; }
+        public bool? IsBanned { get; set; }
     }
 }
