@@ -18,15 +18,15 @@ namespace Application.Comments.Commands.CreateComment
         : IRequestHandler<CreateCommentCommand, CreateCommentCommandVm>
     {
         private readonly IComment _commentService;
-        private readonly ITweetService _tweetService;
+        private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _mapper;
-        private readonly INotificationService _notificationService;
+        private readonly Common.Interface.INotification _notificationService;
 
         public CreateCommentCommandHandler(
             IComment commentService,
-            ITweetService tweetService,
+            ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetMapper,
-            INotificationService notificationService
+            Common.Interface.INotification notificationService
         )
         {
             _commentService = commentService;
@@ -58,12 +58,12 @@ namespace Application.Comments.Commands.CreateComment
             var tweetVm = _mapper.map(tweet!);
 
             tweetVm.Comments!.Add(id);
-            
+
             await _tweetService.PartialUpdate(
                 request.TweetId!,
                 Builders<Tweet>.Update.Set(p => p.Comments, new List<string>(tweetVm.Comments!))
             );
-            
+
             await _notificationService.TriggerCommentNotification(comment, tweetVm);
             return new CreateCommentCommandVm() { Id = id };
         }

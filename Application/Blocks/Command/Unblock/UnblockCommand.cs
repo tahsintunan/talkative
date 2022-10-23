@@ -18,9 +18,9 @@ namespace Application.Blocks.Command.Unblock
 
     public class UnblockCommandHandler : IRequestHandler<UnblockCommand>
     {
-        private readonly IUserService _userService;
+        private readonly IUser _userService;
 
-        public UnblockCommandHandler(IUserService userService)
+        public UnblockCommandHandler(IUser userService)
         {
             _userService = userService;
         }

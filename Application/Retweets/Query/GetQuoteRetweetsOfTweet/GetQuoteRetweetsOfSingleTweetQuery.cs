@@ -14,11 +14,11 @@ namespace Application.Retweets.Query.GetQuoteRetweetsOfTweet
     public class GetAllRetweetQueryHandler
         : IRequestHandler<GetQuoteRetweetsOfSingleTweetQuery, IList<TweetVm>>
     {
-        private readonly IRetweetService _retweetService;
+        private readonly IRetweet _retweetService;
         private readonly IBsonDocumentMapper<TweetVm> _documentMapper;
 
         public GetAllRetweetQueryHandler(
-            IRetweetService retweetService,
+            IRetweet retweetService,
             IBsonDocumentMapper<TweetVm> documentMapper
         )
         {

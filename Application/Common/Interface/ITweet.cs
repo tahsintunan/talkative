@@ -4,7 +4,7 @@ using MongoDB.Driver;
 
 namespace Application.Common.Interface
 {
-    public interface ITweetService
+    public interface ITweet
     {
         Task PublishTweet(Tweet tweet);
         Task DeleteTweet(string id);

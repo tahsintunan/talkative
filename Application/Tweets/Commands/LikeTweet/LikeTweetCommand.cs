@@ -15,14 +15,14 @@ namespace Application.Tweets.Commands.LikeTweet
 
     public class LikeTweetCommandHandler : IRequestHandler<LikeTweetCommand>
     {
-        private readonly ITweetService _tweetService;
+        private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetBsonDocumentMapper;
-        private readonly INotificationService _notificationService;
+        private readonly Common.Interface.INotification _notificationService;
 
         public LikeTweetCommandHandler(
-            ITweetService tweetService,
+            ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetBsonDocumentMapper,
-            INotificationService notificationService
+            Common.Interface.INotification notificationService
         )
         {
             _tweetService = tweetService;

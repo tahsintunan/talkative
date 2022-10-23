@@ -18,14 +18,14 @@ namespace Application.Retweets.Command.Retweet
 
     public class RetweetCommandHandler : IRequestHandler<RetweetCommand, RetweetVm>
     {
-        private readonly ITweetService _tweetService;
+        private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetDocumentMapper;
-        private readonly INotificationService _notificationService;
+        private readonly Common.Interface.INotification _notificationService;
 
         public RetweetCommandHandler(
-            ITweetService tweetService,
+            ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetDocumentMapper,
-            INotificationService notificationService
+            Common.Interface.INotification notificationService
         )
         {
             _tweetService = tweetService;

@@ -5,21 +5,36 @@ using Application.Common.ViewModels;
 using Application.Followers.Commands.AddFollower;
 using Application.Tweets.Commands.LikeTweet;
 using Domain.Entities;
+using Infrastructure.DbConfig;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Infrastructure.Services;
 
-public class NotificationService : INotificationService
+public class NotificationService : INotification
 {
-    private readonly IRabbitmqService _rabbitmqService;
-    private readonly IUserService _userService;
-    
-    public NotificationService(IRabbitmqService rabbitmqService, IUserService userService)
+    private readonly IRabbitmq _rabbitmqService;
+    private readonly IUser _userService;
+    private readonly IMongoCollection<Notification> _notificationCollection;
+
+    public NotificationService(
+        IRabbitmq rabbitmqService,
+        IUser userService,
+        IOptions<NotificationDatabaseConfig> notificationDatabaseConfig
+    )
     {
         _rabbitmqService = rabbitmqService;
         _userService = userService;
+        var mongoClient = new MongoClient(notificationDatabaseConfig.Value.ConnectionString);
+
+        var mongoDatabase = mongoClient.GetDatabase(notificationDatabaseConfig.Value.DatabaseName);
+
+        _notificationCollection = mongoDatabase.GetCollection<Notification>(
+            notificationDatabaseConfig.Value.CollectionName
+        );
     }
-    
+
     public async Task TriggerFollowNotification(AddFollowerCommand request)
     {
         var eventTriggererUsername = await GetUsernameById(request.FollowerId!);
@@ -34,7 +49,7 @@ public class NotificationService : INotificationService
         };
         await _rabbitmqService.FanOut(notification);
     }
-    
+
     public async Task TriggerRetweetNotification(Tweet retweet, Blockable originalTweetVm)
     {
         var eventTriggererUsername = await GetUsernameById(retweet.UserId!);
@@ -84,7 +99,10 @@ public class NotificationService : INotificationService
         await _rabbitmqService.FanOut(notification);
     }
 
-    public async Task TriggerLikeCommentNotification(LikeCommentCommand request, CommentVm commentVm)
+    public async Task TriggerLikeCommentNotification(
+        LikeCommentCommand request,
+        CommentVm commentVm
+    )
     {
         var eventTriggererUsername = await GetUsernameById(request.UserId!);
         var notification = new Notification()
@@ -105,5 +123,14 @@ public class NotificationService : INotificationService
     {
         var user = await _userService.GetUserById(userId);
         return user == null ? "Unknown" : user.Username!;
+    }
+
+    public async Task<IList<Notification>> GetNotifications(string userId, int skip, int limit)
+    {
+        return await _notificationCollection
+            .Find(x => x.NotificationReceiverId == userId)
+            .Skip(skip)
+            .Limit(limit)
+            .ToListAsync();
     }
 }

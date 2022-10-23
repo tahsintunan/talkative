@@ -14,11 +14,11 @@ namespace Application.Tweets.Queries.SearchTweetsByHashtag
     public class GetTweetsByHashtagQueryHandler
         : IRequestHandler<SearchTweetsByHashtagQuery, IList<TweetVm>>
     {
-        private readonly ITweetService _tweetService;
+        private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetBsonMapper;
 
         public GetTweetsByHashtagQueryHandler(
-            ITweetService tweetService,
+            ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetBsonMapper
         )
         {

@@ -16,11 +16,11 @@ namespace Application.Tweets.Commands.UpdateTweet
 
     public class UpdateTweetCommandHandler : IRequestHandler<UpdateTweetCommand>
     {
-        private readonly ITweetService _tweetService;
+        private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetBsonMapper;
 
         public UpdateTweetCommandHandler(
-            ITweetService tweetService,
+            ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetBsonMapper
         )
         {

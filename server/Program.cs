@@ -12,8 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services
-    .AddControllers();
+builder.Services.AddControllers();
 
 builder.Services.Configure<UserDatabaseConfig>(
     builder.Configuration.GetSection("UserDatabaseConfig")
@@ -41,15 +40,15 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApplicationServices();
 builder.Services.AddTransient<IBsonDocumentMapper<UserVm>, UserBsonDocumentMapper>();
 builder.Services.AddTransient<IBsonDocumentMapper<TweetVm?>, TweetBsonDocumentMapper>();
-builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<IUser, UserService>();
+builder.Services.AddTransient<IAuth, AuthService>();
 builder.Services.AddTransient<IComment, CommentService>();
 builder.Services.AddTransient<IFollow, FollowService>();
-builder.Services.AddTransient<ITweetService, TweetService>();
-builder.Services.AddTransient<IRetweetService, RetweetService>();
-builder.Services.AddTransient<IBlockFilterService, BlockFilterService>();
-builder.Services.AddTransient<IRabbitmqService, RabbitmqService>();
-builder.Services.AddTransient<INotificationService, NotificationService>();
+builder.Services.AddTransient<ITweet, TweetService>();
+builder.Services.AddTransient<IRetweet, RetweetService>();
+builder.Services.AddTransient<IBlockFilter, BlockFilterService>();
+builder.Services.AddTransient<IRabbitmq, RabbitmqService>();
+builder.Services.AddTransient<INotification, NotificationService>();
 builder.Services.AddTransient<INotificationHub, NotificationHub>();
 builder.Services.AddHostedService<DbNotificationHandlerService>();
 builder.Services.AddHostedService<RtNotificationHandlerService>();

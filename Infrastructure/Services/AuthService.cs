@@ -17,24 +17,25 @@ using Application.Common.Dto.SignupDto;
 
 namespace Infrastructure.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService : IAuth
     {
         private readonly IMongoCollection<User> _userCollection;
         private readonly IConfiguration _configuration;
+
         public AuthService(
             IConfiguration configuration,
-            IOptions<UserDatabaseConfig> userDatabaseConfig)
+            IOptions<UserDatabaseConfig> userDatabaseConfig
+        )
         {
             _configuration = configuration;
 
-            var mongoClient = new MongoClient(
-            userDatabaseConfig.Value.ConnectionString);
+            var mongoClient = new MongoClient(userDatabaseConfig.Value.ConnectionString);
 
-            var mongoDatabase = mongoClient.GetDatabase(
-                userDatabaseConfig.Value.DatabaseName);
+            var mongoDatabase = mongoClient.GetDatabase(userDatabaseConfig.Value.DatabaseName);
 
             _userCollection = mongoDatabase.GetCollection<User>(
-                userDatabaseConfig.Value.UserCollectionName);
+                userDatabaseConfig.Value.UserCollectionName
+            );
         }
 
         public async Task SignupUser(SignupDto signupRequestDto)
@@ -57,17 +58,22 @@ namespace Infrastructure.Services
 
         public async Task<string> LoginUser(LoginDto loginRequestDto)
         {
-            var user = await _userCollection.Find(user => user.Username == loginRequestDto.Username).FirstOrDefaultAsync();
+            var user = await _userCollection
+                .Find(user => user.Username == loginRequestDto.Username)
+                .FirstOrDefaultAsync();
             var accessToken = GenerateAccessToken(user);
             var value = new AuthenticationHeaderValue("Bearer", accessToken);
             return accessToken;
-
         }
 
         public async Task<bool> CheckIfUserExists(string username, string email)
         {
-            var findUserByUsername = _userCollection.Find(user => user.Username == username).FirstOrDefaultAsync();
-            var findUserByEmail = _userCollection.Find(user => user.Email == email).FirstOrDefaultAsync();
+            var findUserByUsername = _userCollection
+                .Find(user => user.Username == username)
+                .FirstOrDefaultAsync();
+            var findUserByEmail = _userCollection
+                .Find(user => user.Email == email)
+                .FirstOrDefaultAsync();
 
             await Task.WhenAll(findUserByUsername, findUserByEmail);
 
@@ -79,13 +85,17 @@ namespace Infrastructure.Services
 
         public async Task<bool> CheckIfUsernameExists(string username)
         {
-            var foundUser = await _userCollection.Find(user => user.Username == username).FirstOrDefaultAsync();
+            var foundUser = await _userCollection
+                .Find(user => user.Username == username)
+                .FirstOrDefaultAsync();
             return foundUser != null;
         }
 
         public async Task<bool> CheckIfPasswordMatches(string username, string password)
         {
-            var user = await _userCollection.Find(user => user.Username == username).FirstOrDefaultAsync();
+            var user = await _userCollection
+                .Find(user => user.Username == username)
+                .FirstOrDefaultAsync();
             string hashedPassword;
             using (var sha256Hash = SHA256.Create())
             {
@@ -115,10 +125,16 @@ namespace Infrastructure.Services
                 new Claim(ClaimTypes.Name, user.Username!),
                 new Claim("user_id", user.Id!),
                 new Claim(ClaimTypes.Email, user.Email!),
-                new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString(CultureInfo.CurrentCulture))
+                new Claim(
+                    ClaimTypes.DateOfBirth,
+                    user.DateOfBirth.ToString(CultureInfo.CurrentCulture)
+                )
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("JwtSettings:AccessTokenKey").Value));
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(
+                    _configuration.GetSection("JwtSettings:AccessTokenKey").Value
+                )
+            );
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor

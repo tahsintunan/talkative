@@ -14,9 +14,12 @@ namespace Application.Comments.Commands.LikeComment
     public class LikeCommentCommandHandler : IRequestHandler<LikeCommentCommand>
     {
         private readonly IComment _commentService;
-        private readonly INotificationService _notificationService;
+        private readonly Common.Interface.INotification _notificationService;
 
-        public LikeCommentCommandHandler(IComment commentService, INotificationService notificationService)
+        public LikeCommentCommandHandler(
+            IComment commentService,
+            Common.Interface.INotification notificationService
+        )
         {
             _commentService = commentService;
             _notificationService = notificationService;
@@ -28,10 +31,13 @@ namespace Application.Comments.Commands.LikeComment
         )
         {
             var commentVm = await _commentService.GetCommentById(request.Id!);
-            if (commentVm == null) { return Unit.Value; }
+            if (commentVm == null)
+            {
+                return Unit.Value;
+            }
 
             var likes = new List<string>(commentVm.Likes!);
-            
+
             if (likes.Contains(request.UserId!))
             {
                 likes.Remove(request.UserId!);

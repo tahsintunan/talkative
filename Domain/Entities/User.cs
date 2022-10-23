@@ -10,11 +10,11 @@ namespace Domain.Entities
         [BsonRepresentation(BsonType.ObjectId)]
         [JsonProperty("_id")]
         public string? Id { get; set; }
-        
+
         [BsonElement("blockedBy")]
         [BsonRepresentation(BsonType.ObjectId)]
         public IList<string>? BlockedBy { get; set; }
-        
+
         [BsonElement("blocked")]
         [BsonRepresentation(BsonType.ObjectId)]
         public IList<string>? Blocked { get; set; }
@@ -30,5 +30,8 @@ namespace Domain.Entities
 
         [BsonElement("email")]
         public string? Email { get; set; }
+
+        [BsonElement("isBanned")]
+        public bool IsBanned { get; set; }
     }
 }

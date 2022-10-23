@@ -12,9 +12,9 @@ namespace Application.Tweets.Queries.SearchHashtags
 
     public class SearchHashtagsQueryHandler : IRequestHandler<SearchHashtagsQuery, SearchHashtagsVm>
     {
-        private readonly ITweetService _tweetService;
+        private readonly ITweet _tweetService;
 
-        public SearchHashtagsQueryHandler(ITweetService tweetService)
+        public SearchHashtagsQueryHandler(ITweet tweetService)
         {
             _tweetService = tweetService;
         }

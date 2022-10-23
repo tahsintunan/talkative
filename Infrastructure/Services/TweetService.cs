@@ -9,7 +9,7 @@ using MongoDB.Driver.Linq;
 
 namespace Infrastructure.Services
 {
-    public class TweetService : ITweetService
+    public class TweetService : ITweet
     {
         private readonly IMongoCollection<Tweet> _tweetCollection;
         private readonly IMongoCollection<Follower> _followerCollection;

@@ -4,11 +4,11 @@ using Application.Common.ViewModels;
 
 namespace Infrastructure.Services;
 
-public class BlockFilterService : IBlockFilterService
+public class BlockFilterService : IBlockFilter
 {
-    private readonly IUserService _userService;
+    private readonly IUser _userService;
 
-    public BlockFilterService(IUserService userService)
+    public BlockFilterService(IUser userService)
     {
         _userService = userService;
     }
@@ -19,7 +19,10 @@ public class BlockFilterService : IBlockFilterService
         return userVms.Where(b => !IsBlocked(b, blockedUserIds)).ToList();
     }
 
-    public async Task<List<CommentVm>> GetFilteredComments(IEnumerable<CommentVm> commentVms, string userId)
+    public async Task<List<CommentVm>> GetFilteredComments(
+        IEnumerable<CommentVm> commentVms,
+        string userId
+    )
     {
         var blockedUserIds = await GetBlockedUserIds(userId);
         return commentVms.Where(b => !IsBlocked(b, blockedUserIds)).ToList();

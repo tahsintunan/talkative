@@ -15,11 +15,11 @@ namespace Application.Tweets.Queries.GetTweetsOfSingleUser
     public class GetTweetsOfSingleUserQueryHandler
         : IRequestHandler<GetTweetsOfSingleUserQuery, IList<TweetVm>>
     {
-        private readonly ITweetService _tweetService;
+        private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetMapper;
 
         public GetTweetsOfSingleUserQueryHandler(
-            ITweetService tweetService,
+            ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetMapper
         )
         {

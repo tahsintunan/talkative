@@ -15,11 +15,11 @@ namespace Application.Retweets.Command.DeleteQuoteRetweet
 
     public class DeleteQuoteRetweetCommandHandler : IRequestHandler<DeleteQuoteRetweetCommand>
     {
-        private readonly ITweetService _tweetService;
+        private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetBsonMapper;
 
         public DeleteQuoteRetweetCommandHandler(
-            ITweetService tweetService,
+            ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetBsonMapper
         )
         {

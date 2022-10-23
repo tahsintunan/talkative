@@ -7,11 +7,12 @@ using Domain.Entities;
 
 namespace Application.Common.Interface;
 
-public interface INotificationService
+public interface INotification
 {
     public Task TriggerFollowNotification(AddFollowerCommand request);
     public Task TriggerRetweetNotification(Tweet retweet, Blockable originalTweetVm);
     public Task TriggerLikeTweetNotification(LikeTweetCommand request, Blockable tweetVm);
     public Task TriggerCommentNotification(Comment comment, Blockable tweetVm);
     public Task TriggerLikeCommentNotification(LikeCommentCommand request, CommentVm commentVm);
+    public Task<IList<Notification>> GetNotifications(string userId, int skip, int limit);
 }

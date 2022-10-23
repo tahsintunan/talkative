@@ -12,10 +12,10 @@ namespace Application.Users.Queries.SearchUsers
 
     public class SearchUserQueryHandler : IRequestHandler<SearchUserQuery, IList<UserVm>>
     {
-        private readonly IUserService _userService;
+        private readonly IUser _userService;
         private readonly IMapper _mapper;
 
-        public SearchUserQueryHandler(IUserService userService, IMapper mapper)
+        public SearchUserQueryHandler(IUser userService, IMapper mapper)
         {
             _userService = userService;
             _mapper = mapper;

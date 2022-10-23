@@ -14,12 +14,12 @@ namespace Application.Comments.Commands.DeleteComment
     public class DeleteCommentCommandHandler : IRequestHandler<DeleteCommentCommand>
     {
         private readonly IComment _commentService;
-        private readonly ITweetService _tweetService;
+        private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetMapper;
 
         public DeleteCommentCommandHandler(
             IComment commentService,
-            ITweetService tweetService,
+            ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetMapper
         )
         {

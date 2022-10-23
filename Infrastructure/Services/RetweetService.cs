@@ -8,7 +8,7 @@ using MongoDB.Driver;
 
 namespace Infrastructure.Services
 {
-    public class RetweetService : IRetweetService
+    public class RetweetService : IRetweet
     {
         private readonly IMongoCollection<Tweet> _tweetCollection;
 

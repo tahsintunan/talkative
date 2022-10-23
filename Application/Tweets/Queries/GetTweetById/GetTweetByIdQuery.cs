@@ -11,11 +11,11 @@ namespace Application.Tweets.Queries.GetTweetById
 
     public class GetTweetByIdQueryHandler : IRequestHandler<GetTweetByIdQuery, TweetVm?>
     {
-        private readonly ITweetService _tweetService;
+        private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetBsonMapper;
 
         public GetTweetByIdQueryHandler(
-            ITweetService tweetService,
+            ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetBsonMapper
         )
         {

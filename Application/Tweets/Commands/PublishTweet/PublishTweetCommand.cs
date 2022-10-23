@@ -14,9 +14,9 @@ namespace Application.Tweets.Commands.PublishTweet
 
     public class PublishTweetCommandHandler : IRequestHandler<PublishTweetCommand, PublishTweetVm>
     {
-        private readonly ITweetService _tweetService;
+        private readonly ITweet _tweetService;
 
-        public PublishTweetCommandHandler(ITweetService tweetService)
+        public PublishTweetCommandHandler(ITweet tweetService)
         {
             _tweetService = tweetService;
         }

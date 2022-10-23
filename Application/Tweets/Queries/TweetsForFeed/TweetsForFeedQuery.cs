@@ -13,11 +13,11 @@ namespace Application.Tweets.Queries.TweetsForFeed
 
     public class TweetForFeedQueryHandler : IRequestHandler<TweetsForFeedQuery, IList<TweetVm>>
     {
-        private readonly ITweetService _tweetService;
+        private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetMapper;
 
         public TweetForFeedQueryHandler(
-            ITweetService tweetService,
+            ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetMapper
         )
         {

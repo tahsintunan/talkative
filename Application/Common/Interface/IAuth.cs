@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace Application.Common.Interface
 {
-    public interface IAuthService
+    public interface IAuth
     {
         Task SignupUser(SignupDto signupRequestDto);
         Task<string> LoginUser(LoginDto loginRequestDto);

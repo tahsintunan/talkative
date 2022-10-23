@@ -14,16 +14,16 @@ using System.Security.Cryptography;
 
 namespace Infrastructure.Services
 {
-    public class UserService : IUserService
+    public class UserService : IUser
     {
         private readonly IMongoCollection<User>? _userCollection;
-        private readonly IAuthService _authService;
+        private readonly IAuth _authService;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
         public UserService(
             IOptions<UserDatabaseConfig> userDatabaseConfig,
-            IAuthService authService,
+            IAuth authService,
             IConfiguration configuration,
             IMapper mapper
         )
@@ -43,9 +43,13 @@ namespace Infrastructure.Services
             _configuration = configuration;
         }
 
-        public async Task<IList<UserVm>?> GetAllUsers()
+        public async Task<IList<UserVm>?> GetAllUsers(int skip, int limit)
         {
-            IList<User> users = await _userCollection.Find(users => true).ToListAsync();
+            IList<User> users = await _userCollection
+                .Find(users => true)
+                .Skip(skip)
+                .Limit(limit)
+                .ToListAsync();
             var usersVm = _mapper.Map<IList<UserVm>>(users);
 
             return usersVm;
@@ -58,20 +62,15 @@ namespace Infrastructure.Services
             return userVm;
         }
 
-        public async Task UpdateUserInfo(UpdateUserDto updateUserDto)
+        public async Task UpdateUserInfo(User updatedUser)
         {
             var user = await _userCollection
-                .Find(user => user.Id == updateUserDto.Id)
+                .Find(user => user.Id == updatedUser.Id)
                 .FirstOrDefaultAsync();
-            var updatedUser = new User()
-            {
-                Id = updateUserDto.Id,
-                Username = user.Username,
-                DateOfBirth = updateUserDto.DateOfBirth ?? user.DateOfBirth,
-                Email = updateUserDto.Email ?? user.Email,
-                Password = user.Password,
-            };
-            await _userCollection.ReplaceOneAsync(x => x.Id == updateUserDto.Id, updatedUser);
+
+            updatedUser.Password = user.Password;
+
+            await _userCollection.ReplaceOneAsync(x => x.Id == updatedUser.Id, user);
         }
 
         public async Task PartialUpdate(string userId, UpdateDefinition<User> update)
@@ -88,6 +87,25 @@ namespace Infrastructure.Services
             await _userCollection.DeleteOneAsync(user => user.Id == id);
         }
 
+        public async Task<bool> UpdatePassword(string userId, string oldPassword, string password)
+        {
+            var user = await _userCollection.Find(user => user.Id == userId).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return false;
+            }
+            var hashedPassword = await _authService.CheckIfPasswordMatches(
+                oldPassword,
+                user.Password!
+            );
+            if (hashedPassword)
+            {
+                await UpdatePassword(user, password);
+                return true;
+            }
+            return false;
+        }
+
         public async Task ForgetPassword(string email)
         {
             string newPassword = GenerateRandomString(16);
@@ -101,7 +119,7 @@ namespace Infrastructure.Services
             }
         }
 
-        public async Task UpdatePassword(User user, string password)
+        private async Task UpdatePassword(User user, string password)
         {
             string hashedPassword;
             using (var sha256Hash = SHA256.Create())

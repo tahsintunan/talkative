@@ -18,9 +18,9 @@ namespace Application.Blocks.Queries.GetBlockedUsers
 
     public class GetBlockedUserQueryHandler : IRequestHandler<GetBlockedUsersQuery, IList<UserVm>>
     {
-        private readonly IUserService _userService;
+        private readonly IUser _userService;
 
-        public GetBlockedUserQueryHandler(IUserService userService)
+        public GetBlockedUserQueryHandler(IUser userService)
         {
             _userService = userService;
         }

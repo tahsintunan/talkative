@@ -3,7 +3,7 @@ using MongoDB.Bson;
 
 namespace Application.Common.Interface
 {
-    public interface IRetweetService
+    public interface IRetweet
     {
         Task UndoRetweet(string originalTweetId, string userId);
         Task<IList<BsonDocument>> GetQuoteRetweets(string tweetId, int skip, int limit);

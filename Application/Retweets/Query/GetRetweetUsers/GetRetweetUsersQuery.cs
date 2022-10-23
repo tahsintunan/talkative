@@ -13,9 +13,9 @@ namespace Application.Retweets.Query.GetRetweetUsers
 
     public class GetRetweetUsersQueryHandler : IRequestHandler<GetRetweetUsersQuery, IList<UserVm>>
     {
-        private readonly IRetweetService _retweetService;
+        private readonly IRetweet _retweetService;
 
-        public GetRetweetUsersQueryHandler(IRetweetService retweetService)
+        public GetRetweetUsersQueryHandler(IRetweet retweetService)
         {
             _retweetService = retweetService;
         }

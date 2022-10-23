@@ -14,13 +14,13 @@ namespace Application.Retweets.Command.UndoRetweet
 
     public class UndoRetweetCommandHandler : IRequestHandler<UndoRetweetCommand>
     {
-        private readonly IRetweetService _retweetService;
-        private readonly ITweetService _tweetService;
+        private readonly IRetweet _retweetService;
+        private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetDocumentMapper;
 
         public UndoRetweetCommandHandler(
-            IRetweetService retweetService,
-            ITweetService tweetService,
+            IRetweet retweetService,
+            ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetDocumentMapper
         )
         {
