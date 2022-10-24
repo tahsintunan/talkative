@@ -59,10 +59,33 @@ namespace Infrastructure.Services
                     "originalTweet",
                     new AggregateUnwindOptions<TweetVm>() { PreserveNullAndEmptyArrays = true }
                 )
-                .Unwind("user")
+                .Unwind(
+                    "user",
+                    new AggregateUnwindOptions<TweetVm>() { PreserveNullAndEmptyArrays = true }
+                )
                 .Lookup("users", "originalTweet.userId", "_id", "originalTweet.user")
                 .Unwind(
                     "originalTweet.user",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Lookup(
+                    "tweets",
+                    "originalTweet.originalTweetId",
+                    "_id",
+                    "originalTweet.originalTweet"
+                )
+                .Unwind(
+                    "originalTweet.originalTweet",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Lookup(
+                    "users",
+                    "originalTweet.originalTweet.userId",
+                    "_id",
+                    "originalTweet.originalTweet.user"
+                )
+                .Unwind(
+                    "originalTweet.originalTweet.user",
                     new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
                 )
                 .FirstOrDefaultAsync();
@@ -109,6 +132,26 @@ namespace Infrastructure.Services
                     "originalTweet.user",
                     new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
                 )
+                .Lookup(
+                    "tweets",
+                    "originalTweet.originalTweetId",
+                    "_id",
+                    "originalTweet.originalTweet"
+                )
+                .Unwind(
+                    "originalTweet.originalTweet",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Lookup(
+                    "users",
+                    "originalTweet.originalTweet.userId",
+                    "_id",
+                    "originalTweet.originalTweet.user"
+                )
+                .Unwind(
+                    "originalTweet.originalTweet.user",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
                 .ToListAsync();
 
             return tweets;
@@ -136,6 +179,26 @@ namespace Infrastructure.Services
                 .Lookup("users", "originalTweet.userId", "_id", "originalTweet.user")
                 .Unwind(
                     "originalTweet.user",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Lookup(
+                    "tweets",
+                    "originalTweet.originalTweetId",
+                    "_id",
+                    "originalTweet.originalTweet"
+                )
+                .Unwind(
+                    "originalTweet.originalTweet",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Lookup(
+                    "users",
+                    "originalTweet.originalTweet.userId",
+                    "_id",
+                    "originalTweet.originalTweet.user"
+                )
+                .Unwind(
+                    "originalTweet.originalTweet.user",
                     new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
                 )
                 .ToListAsync();
@@ -251,6 +314,26 @@ namespace Infrastructure.Services
                 .Lookup("users", "originalTweet.userId", "_id", "originalTweet.user")
                 .Unwind(
                     "originalTweet.user",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Lookup(
+                    "tweets",
+                    "originalTweet.originalTweetId",
+                    "_id",
+                    "originalTweet.originalTweet"
+                )
+                .Unwind(
+                    "originalTweet.originalTweet",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Lookup(
+                    "users",
+                    "originalTweet.originalTweet.userId",
+                    "_id",
+                    "originalTweet.originalTweet.user"
+                )
+                .Unwind(
+                    "originalTweet.originalTweet.user",
                     new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
                 )
                 .ToListAsync();
