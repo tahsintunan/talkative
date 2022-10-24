@@ -27,5 +27,9 @@ public class NotificationHub : Microsoft.AspNetCore.SignalR.Hub, INotificationHu
         
         // logic here
         await _hubContext.Clients.All.SendAsync("GetNotification", notificationVm);
+        
+        // send notification to client
+        // var connectionIds = new List<string>() { "sdf", "sdf" };
+        // await _hubContext.Clients.Clients(connectionIds).SendAsync("GetNotification", notificationVm);
     }
 }

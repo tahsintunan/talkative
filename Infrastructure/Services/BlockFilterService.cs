@@ -7,7 +7,6 @@ namespace Infrastructure.Services;
 public class BlockFilterService : IBlockFilter
 {
     private readonly IUser _userService;
-
     public BlockFilterService(IUser userService)
     {
         _userService = userService;
@@ -19,10 +18,7 @@ public class BlockFilterService : IBlockFilter
         return userVms.Where(b => !IsBlocked(b, blockedUserIds)).ToList();
     }
 
-    public async Task<List<CommentVm>> GetFilteredComments(
-        IEnumerable<CommentVm> commentVms,
-        string userId
-    )
+    public async Task<List<CommentVm>> GetFilteredComments(IEnumerable<CommentVm> commentVms, string userId)
     {
         var blockedUserIds = await GetBlockedUserIds(userId);
         return commentVms.Where(b => !IsBlocked(b, blockedUserIds)).ToList();
