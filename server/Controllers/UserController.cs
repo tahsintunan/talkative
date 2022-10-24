@@ -5,6 +5,7 @@ using Application.Users.Commands.UnbanUser;
 using Application.Users.Commands.UpdatePassword;
 using Application.Users.Commands.UpdateUser;
 using Application.Users.Queries.GetAllUsers;
+using Application.Users.Queries.GetTweetAndFollowCountOfUser;
 using Application.Users.Queries.GetUserById;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,12 @@ namespace server.Controllers
         )
         {
             return Ok(await Mediator.Send(getAllUsersQuery));
+        }
+
+        [HttpGet("count/{id}")]
+        public async Task<ActionResult<GetTweetAndFollowCountOfUserVm>> GetCount(string id)
+        {
+            return Ok(await Mediator.Send(new GetTweetAndFollowCountOfUserQuery() { UserId = id }));
         }
 
         [HttpGet("{id}")]

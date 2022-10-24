@@ -17,5 +17,6 @@ namespace Application.Common.Interface
         Task<IList<BsonDocument>> GenerateFeed(string userId, int skip, int take);
         Task<IList<BsonDocument>> GetTweetsByHashtag(string hashtag, int skip, int take);
         Task<IList<TrendingHashtagVm>> GetTrendingHashtags();
+        Task<long> GetNumberOfTweetsOfUser(string userId);
     }
 }

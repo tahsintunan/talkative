@@ -11,5 +11,7 @@ namespace Application.Common.Interface
         Task<bool> CheckIfFollowerExists(string followerId, string followingId);
         Task<IList<string?>> GetFollowingOfCurrentUser(string userId);
         Task DeleteFollower(string followerId, string followingId);
+        Task<long> GetNumberOfFollowingOfSingleUser(string userId);
+        Task<long> GetNumberOfFollowerOfSingleUser(string userId);
     }
 }

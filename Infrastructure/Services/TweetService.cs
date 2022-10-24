@@ -48,6 +48,11 @@ namespace Infrastructure.Services
             await _tweetCollection.DeleteOneAsync(tweet => tweet.Id == id);
         }
 
+        public async Task<long> GetNumberOfTweetsOfUser(string userId)
+        {
+            return await _tweetCollection.CountDocumentsAsync(x => x.UserId == userId);
+        }
+
         public async Task<BsonDocument?> GetTweetById(string id)
         {
             var tweet = await _tweetCollection

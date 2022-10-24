@@ -49,6 +49,16 @@ namespace Infrastructure.Services
             );
         }
 
+        public async Task<long> GetNumberOfFollowerOfSingleUser(string userId)
+        {
+            return await _followerCollection.CountDocumentsAsync(x => x.FollowingId == userId);
+        }
+
+        public async Task<long> GetNumberOfFollowingOfSingleUser(string userId)
+        {
+            return await _followerCollection.CountDocumentsAsync(x => x.FollowerId == userId);
+        }
+
         public async Task<bool> CheckIfFollowerExists(string followerId, string followingId)
         {
             var follower = await _followerCollection
