@@ -6,6 +6,10 @@ namespace Application.Users.Commands.UpdateUser
     {
         public UpdateUserCommandValidator()
         {
+            RuleFor(user => user.Username)
+                .NotEmpty()
+                .NotNull()
+                .WithMessage("Username cannot be null");
             RuleFor(user => user.Email)
                 .NotEmpty()
                 .NotNull()

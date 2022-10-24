@@ -6,7 +6,10 @@ namespace Application.Auth.Commands.Signup
     {
         public SignupCommandValidator()
         {
-            RuleFor(user => user.Username).NotEmpty().WithMessage("Username cannot be empty");
+            RuleFor(user => user.Username)
+                .NotNull()
+                .NotEmpty()
+                .WithMessage("Username cannot be empty");
             RuleFor(user => user.Email)
                 .NotEmpty()
                 .WithMessage("Email cannot be empty")
