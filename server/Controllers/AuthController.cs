@@ -1,6 +1,7 @@
 using Application.Auth.Commands.Login;
 using Application.Auth.Commands.Signup;
 using Application.Common.Interface;
+using Application.Users.Commands.ForgetPassword;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 
@@ -28,6 +29,13 @@ namespace server.Controllers
                 new CookieOptions { HttpOnly = false, Expires = DateTime.Now.AddDays(7) }
             );
 
+            return NoContent();
+        }
+
+        [HttpPost("forget-password")]
+        public async Task<ActionResult> ForgotPassword(ForgetPasswordCommand forgetPasswordCommand)
+        {
+            await Mediator.Send(forgetPasswordCommand);
             return NoContent();
         }
 
