@@ -66,7 +66,7 @@ namespace server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> BanUser(string id)
         {
-            BanUserCommand banUserCommand = new BanUserCommand() { UserId = id };
+            BanUserCommand banUserCommand = new() { UserId = id };
             await Mediator.Send(banUserCommand);
             return NoContent();
         }
