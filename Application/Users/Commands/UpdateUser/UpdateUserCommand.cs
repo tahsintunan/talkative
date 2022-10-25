@@ -6,7 +6,7 @@ namespace Application.Users.Commands.UpdateUser
 {
     public class UpdateUserCommand : IRequest
     {
-        public string? Id { get; set; }
+        public string? UserId { get; set; }
         public string? Username { get; set; }
         public string? Email { get; set; }
         public DateTime DateOfBirth { get; set; }
@@ -26,13 +26,13 @@ namespace Application.Users.Commands.UpdateUser
             CancellationToken cancellationToken
         )
         {
-            var user = await _userService.GetUserById(request.Id!);
+            var user = await _userService.GetUserById(request.UserId!);
             if (user != null)
             {
                 await _userService.UpdateUserInfo(
                     new User()
                     {
-                        Id = request.Id,
+                        Id = request.UserId,
                         Username = request.Username,
                         DateOfBirth = request.DateOfBirth,
                         Email = request.Email
