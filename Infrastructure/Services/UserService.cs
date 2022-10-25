@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
@@ -78,11 +79,14 @@ namespace Infrastructure.Services
             }
 
             if (usernameExists)
-                return;
-
-            updatedUser.Password = user.Password;
-
-            await _userCollection.ReplaceOneAsync(x => x.Id == updatedUser.Id, user);
+                throw new ValidationException("User already exists");
+            await PartialUpdate(
+                updatedUser.Id!,
+                Builders<User>.Update
+                    .Set(x => x.Username, updatedUser.Username)
+                    .Set(x => x.Email, updatedUser.Email)
+                    .Set(x => x.DateOfBirth, updatedUser.DateOfBirth)
+            );
         }
 
         public async Task PartialUpdate(string userId, UpdateDefinition<User> update)

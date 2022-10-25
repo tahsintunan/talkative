@@ -51,7 +51,7 @@ namespace server.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UpdateUserCommand updateUserCommand)
         {
-            updateUserCommand.Id = HttpContext.Items["User"]!.ToString();
+            updateUserCommand.UserId = HttpContext.Items["User"]!.ToString();
             await Mediator.Send(updateUserCommand);
             return NoContent();
         }
