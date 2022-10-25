@@ -5,7 +5,7 @@ using MongoDB.Bson;
 
 namespace Application.Auth.Commands.Signup
 {
-    public class SignupCommand : IRequest<bool>
+    public class SignupCommand : IRequest
     {
         public string? Username { get; set; }
         public DateTime DateOfBirth { get; set; }
@@ -13,7 +13,7 @@ namespace Application.Auth.Commands.Signup
         public string? Email { get; set; }
     }
 
-    public class SignupCommandHandler : IRequestHandler<SignupCommand, bool>
+    public class SignupCommandHandler : IRequestHandler<SignupCommand>
     {
         private readonly IAuth _authService;
 
@@ -22,18 +22,8 @@ namespace Application.Auth.Commands.Signup
             _authService = authService;
         }
 
-        public async Task<bool> Handle(SignupCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(SignupCommand request, CancellationToken cancellationToken)
         {
-            var userExists = await _authService.CheckIfUserExists(
-                request.Username!,
-                request.Email!
-            );
-
-            if (userExists)
-            {
-                return false;
-            }
-
             await _authService.SignupUser(
                 new User()
                 {
@@ -44,7 +34,7 @@ namespace Application.Auth.Commands.Signup
                     Email = request.Email
                 }
             );
-            return true;
+            return Unit.Value;
         }
     }
 }

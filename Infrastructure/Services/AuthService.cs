@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
@@ -37,6 +38,11 @@ namespace Infrastructure.Services
 
         public async Task SignupUser(User user)
         {
+            if (await CheckIfUserExists(user.Username!, user.Email!))
+            {
+                throw new ValidationException("User already exists");
+            }
+
             string hashedPassword;
             using (var sha256Hash = SHA256.Create())
             {
@@ -49,10 +55,10 @@ namespace Infrastructure.Services
         public async Task<string?> LoginUser(string username, string password)
         {
             if (!await CheckIfUsernameExists(username))
-                return null;
+                throw new ValidationException("username doesn't exist");
 
             if (!await CheckIfPasswordMatches(username, password))
-                return null;
+                throw new ValidationException("Password doesn't match");
 
             var user = await _userCollection
                 .Find(
@@ -64,31 +70,6 @@ namespace Infrastructure.Services
             var accessToken = GenerateAccessToken(user);
             var value = new AuthenticationHeaderValue("Bearer", accessToken);
             return accessToken;
-        }
-
-        public async Task<bool> CheckIfUserExists(string username, string email)
-        {
-            var findUserByUsername = _userCollection
-                .Find(user => user.Username == username)
-                .FirstOrDefaultAsync();
-            var findUserByEmail = _userCollection
-                .Find(user => user.Email == email)
-                .FirstOrDefaultAsync();
-
-            await Task.WhenAll(findUserByUsername, findUserByEmail);
-
-            var userByUsername = await findUserByUsername;
-            var userByEmail = await findUserByEmail;
-
-            return userByUsername != null || userByEmail != null;
-        }
-
-        public async Task<bool> CheckIfUsernameExists(string username)
-        {
-            var foundUser = await _userCollection
-                .Find(user => user.Username == username)
-                .FirstOrDefaultAsync();
-            return foundUser != null;
         }
 
         public async Task<bool> CheckIfPasswordMatches(string username, string password)
@@ -113,6 +94,31 @@ namespace Infrastructure.Services
                 sBuilder.Append(t.ToString("x2"));
             }
             return sBuilder.ToString();
+        }
+
+        private async Task<bool> CheckIfUserExists(string username, string email)
+        {
+            var findUserByUsername = _userCollection
+                .Find(user => user.Username == username)
+                .FirstOrDefaultAsync();
+            var findUserByEmail = _userCollection
+                .Find(user => user.Email == email)
+                .FirstOrDefaultAsync();
+
+            await Task.WhenAll(findUserByUsername, findUserByEmail);
+
+            var userByUsername = await findUserByUsername;
+            var userByEmail = await findUserByEmail;
+
+            return userByUsername != null || userByEmail != null;
+        }
+
+        private async Task<bool> CheckIfUsernameExists(string username)
+        {
+            var foundUser = await _userCollection
+                .Find(user => user.Username == username)
+                .FirstOrDefaultAsync();
+            return foundUser != null;
         }
 
         private string GenerateAccessToken(User user)
@@ -147,11 +153,6 @@ namespace Infrastructure.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwt = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(jwt);
-        }
-
-        public Task UpdateUserPassword(string id, string password)
-        {
-            throw new NotImplementedException();
         }
     }
 }

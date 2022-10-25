@@ -88,6 +88,7 @@ namespace Infrastructure.Services
                 .Lookup("users", "followerId", "_id", "user")
                 .Unwind("user")
                 .ReplaceRoot<User>("$user")
+                .Match(x => x.IsBanned == false)
                 .SortByDescending(x => x.Username)
                 .Project(user => new UserVm() { UserId = user.Id, Username = user.Username, })
                 .ToListAsync();
@@ -109,6 +110,7 @@ namespace Infrastructure.Services
                 .Lookup("users", "followingId", "_id", "user")
                 .Unwind("user")
                 .ReplaceRoot<User>("$user")
+                .Match(x => x.IsBanned == false)
                 .SortByDescending(x => x.Username)
                 .Project(user => new UserVm() { UserId = user.Id, Username = user.Username, })
                 .ToListAsync();

@@ -158,7 +158,7 @@ namespace Infrastructure.Services
             return userVmList;
         }
 
-        public async Task<IList<User>> FindWithUsername(string username)
+        public async Task<IList<User>> FindWithUsername(string username, int skip, int limit)
         {
             var user = await _userCollection
                 .Find(
@@ -170,6 +170,8 @@ namespace Infrastructure.Services
                         }
                     }
                 )
+                .Skip(skip)
+                .Limit(limit)
                 .ToListAsync();
             return user;
         }

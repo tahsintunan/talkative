@@ -263,7 +263,7 @@ namespace Infrastructure.Services
 
         public async Task<IList<string>> SearchHashtags(string hashtag, int skip, int limit)
         {
-            var hashtagList = new List<string>();
+            var hashtagSet = new HashSet<string>();
             var hashtags = await _tweetCollection
                 .Aggregate()
                 .Match(
@@ -275,17 +275,16 @@ namespace Infrastructure.Services
                         }
                     }
                 )
-                .SortBy(x => x.CreatedAt)
-                .ThenByDescending(x => x.CreatedAt)
+                .SortByDescending(x => x.CreatedAt)
                 .Skip(skip)
                 .Limit(limit)
                 .ToListAsync();
 
             foreach (var tweet in hashtags)
             {
-                hashtagList.AddRange(tweet.Hashtags!);
+                hashtagSet.UnionWith(tweet.Hashtags!);
             }
-            return hashtagList;
+            return hashtagSet.ToList();
         }
 
         public async Task<IList<BsonDocument>> GetTweetsByHashtag(

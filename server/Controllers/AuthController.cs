@@ -6,38 +6,13 @@ using System.Net.Http.Headers;
 
 namespace server.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
     public class AuthController : ApiControllerBase
     {
-        private readonly IAuth _authService;
-        private readonly ILogger<AuthController> _logger;
-
-        public AuthController(IAuth authService, ILogger<AuthController> logger)
-        {
-            _authService = authService;
-            _logger = logger;
-        }
-
         [HttpPost("signup")]
         public async Task<IActionResult> Signup(SignupCommand signupCommand)
         {
-            var signupSuccess = await Mediator.Send(signupCommand);
-
-            if (!signupSuccess)
-            {
-                return BadRequest(
-                    new
-                    {
-                        StatusCode = StatusCodes.Status400BadRequest,
-                        message = "User already exists"
-                    }
-                );
-            }
-            else
-            {
-                return NoContent();
-            }
+            await Mediator.Send(signupCommand);
+            return NoContent();
         }
 
         [HttpPost("login")]

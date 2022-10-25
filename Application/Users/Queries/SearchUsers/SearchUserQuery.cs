@@ -8,6 +8,8 @@ namespace Application.Users.Queries.SearchUsers
     public class SearchUserQuery : IRequest<IList<UserVm>>
     {
         public string? Username { get; set; }
+        public int? PageNumber { get; set; }
+        public int? ItemCount { get; set; }
     }
 
     public class SearchUserQueryHandler : IRequestHandler<SearchUserQuery, IList<UserVm>>
@@ -26,7 +28,12 @@ namespace Application.Users.Queries.SearchUsers
             CancellationToken cancellationToken
         )
         {
-            var userList = await _userService.FindWithUsername(request.Username!);
+            var pageNumber = request.PageNumber ?? 1;
+            var itemCount = request.ItemCount ?? 20;
+
+            var skip = (pageNumber - 1) * itemCount;
+            var limit = pageNumber * itemCount;
+            var userList = await _userService.FindWithUsername(request.Username!, skip, limit);
             var userVmList = _mapper.Map<IList<UserVm>>(userList);
             return userVmList;
         }

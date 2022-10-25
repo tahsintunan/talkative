@@ -1,8 +1,7 @@
-﻿using System.Reflection;
-using Application.Tweets.Commands.PublishTweet;
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Application;
 

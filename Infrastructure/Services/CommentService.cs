@@ -50,19 +50,20 @@ namespace Infrastructure.Services
         public async Task<CommentVm> GetCommentById(string id)
         {
             var query =
-                from p in _commentCollection.AsQueryable()
-                where p.Id == id
-                join o in _userCollection on p.UserId equals o.Id into joined
-                from sub_o in joined.DefaultIfEmpty()
+                from comments in _commentCollection.AsQueryable()
+                where comments.Id == id
+                join user in _userCollection on comments.UserId equals user.Id into joined
+                from joinedUser in joined.DefaultIfEmpty()
+                where joinedUser.IsBanned == false
                 select new CommentVm
                 {
-                    Text = p.Text,
-                    Id = p.Id!.ToString(),
-                    TweetId = p.TweetId!.ToString(),
-                    UserId = p.UserId!.ToString(),
-                    Created = p.CreatedAt,
-                    Likes = p.Likes,
-                    Username = sub_o.Username
+                    Text = comments.Text,
+                    Id = comments.Id!.ToString(),
+                    TweetId = comments.TweetId!.ToString(),
+                    UserId = comments.UserId!.ToString(),
+                    Created = comments.CreatedAt,
+                    Likes = comments.Likes,
+                    Username = joinedUser.Username
                 };
 
             var commentVm = await query.FirstOrDefaultAsync();
@@ -82,6 +83,7 @@ namespace Infrastructure.Services
                 orderby p.CreatedAt descending
                 join o in _userCollection on p.UserId equals o.Id into joined
                 from sub_o in joined.DefaultIfEmpty()
+                where sub_o.IsBanned == false
                 select new CommentVm
                 {
                     Text = p.Text,
