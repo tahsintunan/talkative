@@ -72,10 +72,15 @@ namespace Infrastructure.Services
             var list = await _followerCollection
                 .Aggregate()
                 .Match(x => x.FollowerId == userId)
-                .Project(x => x.FollowingId)
                 .ToListAsync();
 
-            return list;
+            var followingIds = new List<string?>();
+            foreach (var following in list)
+            {
+                followingIds.Add(following.Id);
+            }
+
+            return followingIds;
         }
 
         public async Task<IList<UserVm>> GetFollowerOfSingleUser(string userId, int skip, int limit)

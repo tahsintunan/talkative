@@ -54,9 +54,6 @@ namespace Infrastructure.Services
                 where comments.Id == id
                 join user in _userCollection on comments.UserId equals user.Id into joined
                 from joinedUser in joined.DefaultIfEmpty()
-                where
-                    (joinedUser.IsBanned == null)
-                    || (joinedUser.IsBanned != null && joinedUser.IsBanned == false)
                 select new CommentVm
                 {
                     Text = comments.Text,
@@ -85,8 +82,6 @@ namespace Infrastructure.Services
                 orderby p.CreatedAt descending
                 join o in _userCollection on p.UserId equals o.Id into joined
                 from sub_o in joined.DefaultIfEmpty()
-                where
-                    (sub_o.IsBanned == null) || (sub_o.IsBanned != null && sub_o.IsBanned == false)
                 select new CommentVm
                 {
                     Text = p.Text,
