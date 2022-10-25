@@ -77,7 +77,7 @@ namespace Infrastructure.Services
             var followingIds = new List<string?>();
             foreach (var following in list)
             {
-                followingIds.Add(following.Id);
+                followingIds.Add(following.FollowingId);
             }
 
             return followingIds;
