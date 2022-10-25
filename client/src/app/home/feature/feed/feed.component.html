@@ -21,7 +21,15 @@
     </div>
   </div>
 
-  <div class="max-w-2xl w-full flex flex-col gap-6">
+  <div
+    class="max-w-2xl w-full flex flex-col gap-6"
+    infiniteScroll
+    [infiniteScrollDistance]="2"
+    [infiniteScrollThrottle]="200"
+    [infiniteScrollContainer]="'#main-panel'"
+    [fromRoot]="true"
+    (scrolled)="onScroll()"
+  >
     <app-tweet-item
       *ngFor="let tweet of tweets"
       [data]="tweet"

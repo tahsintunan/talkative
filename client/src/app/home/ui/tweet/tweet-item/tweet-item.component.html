@@ -13,7 +13,7 @@
 </a>
 
 <div class="card flex flex-col gap-1 cursor-pointer" (click)="onTweetClick()">
-  <div class="flex gap-3 items-center m-3">
+  <div class="flex gap-3 items-center mx-3 mt-3">
     <app-avatar
       alt="User"
       [src]="tweet?.user?.username"
@@ -55,10 +55,10 @@
   </div>
 
   <div class="mx-5 mb-5 flex flex-col gap-3">
-    <div
-      [innerHtml]="tweet?.text || '' | hashtag"
-      (click)="$event.stopPropagation(); onTagClick($event)"
-    ></div>
+    <app-hashtag-renderer
+      [text]="tweet?.text"
+      (onHashtagClick)="onTagClick($event)"
+    ></app-hashtag-renderer>
 
     <app-retweet-content
       *ngIf="tweet?.isQuoteRetweet"

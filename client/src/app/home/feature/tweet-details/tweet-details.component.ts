@@ -6,6 +6,7 @@ import {
   CommentModel,
   CommentUpdateModel,
 } from '../../models/comment.model';
+import { PaginationModel } from '../../models/pagination.model';
 import { TweetModel, TweetWriteModel } from '../../models/tweet.model';
 import { UserModel } from '../../models/user.model';
 import { CommentService } from '../../services/comment.service';
@@ -20,6 +21,10 @@ import { PostMakerDialogComponent } from '../../ui/tweet/post-maker-dialog/post-
   styleUrls: ['./tweet-details.component.css'],
 })
 export class TweetDetailsComponent implements OnInit {
+  pagination: PaginationModel = {
+    pageNumber: 1,
+  };
+
   tweetId?: string;
   tweet?: TweetModel;
   comments: CommentModel[] = [];
@@ -51,16 +56,26 @@ export class TweetDetailsComponent implements OnInit {
     });
   }
 
+  onScroll() {
+    this.pagination.pageNumber++;
+    this.getComments();
+  }
+
   getTweet() {
     if (this.tweetId) {
       this.tweetService.getTweetById(this.tweetId).subscribe((res) => {
         this.tweet = res;
 
-        this.alreadyLiked = res.likes?.some(
+        if (res?.isRetweet) {
+          this.tweet = res.originalTweet;
+          this.tweetId = res.originalTweetId;
+        }
+
+        this.alreadyLiked = !!this.tweet?.likes?.some(
           (like) => like === this.userAuth?.userId
         );
 
-        this.alreadyRetweeted = res.retweetUsers?.some(
+        this.alreadyRetweeted = !!this.tweet?.retweetUsers?.some(
           (retweetBy) => retweetBy === this.userAuth?.userId
         );
       });
@@ -69,15 +84,20 @@ export class TweetDetailsComponent implements OnInit {
 
   getComments() {
     if (this.tweetId) {
-      this.commentService.getTweetComments(this.tweetId).subscribe((res) => {
-        this.comments = res;
-      });
+      this.commentService
+        .getTweetComments(this.tweetId, this.pagination)
+        .subscribe((res) => {
+          if (this.pagination.pageNumber === 1) {
+            this.comments = res;
+          } else {
+            this.comments = this.comments.concat(res);
+          }
+        });
     }
   }
 
-  onTagClick(event: any) {
-    if (event.target.classList.contains('hashtag')) {
-    }
+  onTagClick(hashtag: string) {
+    console.log(hashtag);
   }
 
   onLike() {
@@ -110,11 +130,9 @@ export class TweetDetailsComponent implements OnInit {
     this.retweetService
       .createRetweet({
         isQuoteRetweet: false,
-        originalTweetId: this.tweet?.isQuoteRetweet
-          ? this.tweet?.originalTweet?.id!
-          : this.tweet?.id!,
+        originalTweetId: this.tweet?.id!,
       })
-      .subscribe((res) => this.getTweet());
+      .subscribe(() => this.getTweet());
   }
 
   onQuote() {
@@ -122,9 +140,7 @@ export class TweetDetailsComponent implements OnInit {
       width: '500px',
       data: {
         isQuoteRetweet: true,
-        originalTweetId: this.tweet?.isRetweet
-          ? this.tweet?.originalTweet?.id
-          : this.tweet?.id,
+        originalTweetId: this.tweet?.id,
       },
     });
 
@@ -144,11 +160,7 @@ export class TweetDetailsComponent implements OnInit {
 
   onRetweetUndo() {
     this.retweetService
-      .undoRetweet(
-        this.tweet?.isQuoteRetweet
-          ? this.tweet?.originalTweet?.id!
-          : this.tweet?.id!
-      )
+      .undoRetweet(this.tweet?.id!)
       .subscribe(() => this.getTweet());
   }
 
@@ -172,48 +184,52 @@ export class TweetDetailsComponent implements OnInit {
             text: result.text,
             hashtags: result.hashtags,
           })
-          .subscribe(() => {
-            this.getTweet();
-          });
+          .subscribe(() => this.getTweet());
       }
     });
   }
 
   onDelete() {
     if (this.tweet?.id) {
-      if (this.tweet.isQuoteRetweet && this.tweet?.originalTweet?.id) {
+      if (this.tweet?.isQuoteRetweet)
         this.retweetService
-          .deleteQuoteRetweet(this.tweet?.id, this.tweet?.originalTweet?.id)
+          .deleteQuoteRetweet(this.tweet.id, this.tweet?.originalTweetId!)
           .subscribe();
-      } else {
-        this.tweetService.deleteTweet(this.tweet?.id).subscribe();
-      }
+      else this.tweetService.deleteTweet(this.tweet?.id).subscribe();
       this.router.navigate(['..']);
     }
   }
 
   onCommentEdit(value: CommentUpdateModel) {
-    this.commentService.updateComment(value).subscribe((res) => {
-      this.commentService.getCommentById(value.id).subscribe((res) => {
-        this.comments = this.comments.map((comment) =>
-          comment.id === res.id ? res : comment
-        );
+    this.commentService.updateComment(value).subscribe(() => {
+      this.comments = this.comments.map((comment) => {
+        if (comment.id === value.id) {
+          comment.text = value.text;
+        }
+        return comment;
       });
     });
   }
 
   onCommentLike(value: CommentLikeModel) {
-    this.commentService.likeComment(value).subscribe((res) => {
-      this.commentService.getCommentById(value.id).subscribe((res) => {
-        this.comments = this.comments.map((comment) =>
-          comment.id === res.id ? res : comment
-        );
-      });
+    this.commentService.likeComment(value).subscribe(() => {
+      this.comments = this.comments.map((comment) =>
+        comment.id === value.id
+          ? {
+              ...comment,
+              likes: value.isLiked
+                ? [...comment.likes, this.userAuth?.userId!]
+                : comment.likes.filter(
+                    (like) => like !== this.userAuth?.userId
+                  ),
+            }
+          : comment
+      );
     });
   }
 
   onCommentDelete(commentId: string) {
-    this.commentService.deleteComment(commentId).subscribe((res) => {
+    this.commentService.deleteComment(commentId).subscribe(() => {
       this.comments = this.comments.filter(
         (comment) => comment.id !== commentId
       );

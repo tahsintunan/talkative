@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import {
+  SearchChangeModel,
+  SearchSuggestionModel as SearchResultModel,
+} from '../../models/search.model';
 import { UserModel } from '../../models/user.model';
-import { BlockService } from '../../services/block.service';
 import { FollowService } from '../../services/follow.service';
+import { SearchService } from '../../services/search.service';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -11,11 +16,13 @@ import { UserService } from '../../services/user.service';
 })
 export class HomeComponent implements OnInit {
   userAuth?: UserModel;
+  searchResults: SearchResultModel[] = [];
 
   constructor(
     private userService: UserService,
-    private blockService: BlockService,
-    private followService: FollowService
+    private followService: FollowService,
+    private searchService: SearchService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -27,8 +34,43 @@ export class HomeComponent implements OnInit {
   }
 
   preloadData(): void {
-    this.userService.init();
-    this.blockService.init();
-    this.followService.init();
+    this.userService.loadUserAuth();
+    this.followService.loadUserFollow();
+  }
+
+  onSearchChange(search: SearchChangeModel): void {
+    if (search.value?.trim()) {
+      this.searchService
+        .getSearchSuggestions(search.value.trim(), search.pagination)
+        .subscribe((res) => {
+          if (search.pagination.pageNumber === 1) {
+            this.searchResults = res;
+          } else {
+            this.searchResults = this.searchResults.concat(res);
+          }
+        });
+    } else {
+      this.searchResults = [];
+    }
+  }
+
+  onSearchResultSelect(searchResult: SearchResultModel): void {
+    if (searchResult.type === 'user') {
+      this.router.navigate(['/home/profile', searchResult.key]);
+    } else if (searchResult.type === 'hashtag') {
+      this.onSearchSubmit(searchResult.value);
+    }
+  }
+
+  onSearchSubmit(search: string): void {
+    if (search.startsWith('#')) {
+      this.router.navigate(['/home/search'], {
+        queryParams: { hashtag: search },
+      });
+    } else {
+      this.router.navigate(['/home/search'], {
+        queryParams: { username: search },
+      });
+    }
   }
 }

@@ -22,17 +22,15 @@ export class ProfilePeopleItemComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private blockService: BlockService,
     private followService: FollowService
   ) {}
 
   ngOnInit(): void {
     this.userService.userAuth.subscribe((res) => {
       this.userAuth = res;
-    });
-
-    this.blockService.userBlockList.subscribe((res) => {
-      this.userBlocked = res.some((item) => item.userId === this.data?.userId);
+      this.userBlocked = !!res.blocked?.some(
+        (userId) => userId === this.data?.userId
+      );
     });
 
     this.followService.userFollowings.subscribe((res) => {

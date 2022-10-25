@@ -1,7 +1,7 @@
 <section class="flex justify-center">
-  <div class="flex flex-col gap-8 max-w-6xl w-full">
+  <div class="flex flex-col max-w-6xl w-full">
     <app-profile-details
-      class="flex-1"
+      class="flex-1 mb-10"
       [data]="profileDetails"
       [followers]="followers"
       [followings]="followings"
@@ -14,21 +14,34 @@
     ></app-profile-details>
 
     <div class="flex gap-4">
-      <div class="card h-fit flex-[0.5]">
-        <app-profile-peoples
-          [profileDetails]="profileDetails"
-          [followers]="followers"
-          [followings]="followings"
-          [blockList]="blockList"
-          (onFollow)="onFollow($event)"
-          (onUnfollow)="onUnfollow($event)"
-          (onBlock)="onBlock($event)"
-          (onUnblock)="onUnblock($event)"
-        >
-        </app-profile-peoples>
+      <div class="flex-[0.5] relative">
+        <div class="h-fit sticky top-0">
+          <app-profile-peoples
+            [profileDetails]="profileDetails"
+            [followers]="followers"
+            [followings]="followings"
+            [blockList]="blockList"
+            (onFollow)="onFollow($event)"
+            (onUnfollow)="onUnfollow($event)"
+            (onBlock)="onBlock($event)"
+            (onUnblock)="onUnblock($event)"
+            (onFollowingScroll)="onFollowingScroll()"
+            (onFollowersScroll)="onFollowersScroll()"
+            (onBlockListScroll)="onBlockListScroll()"
+          >
+          </app-profile-peoples>
+        </div>
       </div>
 
-      <div class="flex flex-1 flex-col gap-6">
+      <div
+        class="flex flex-1 flex-col gap-6"
+        infiniteScroll
+        [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="200"
+        [infiniteScrollContainer]="'#main-panel'"
+        [fromRoot]="true"
+        (scrolled)="onScroll()"
+      >
         <app-tweet-item
           *ngFor="let tweet of tweets"
           [data]="tweet"

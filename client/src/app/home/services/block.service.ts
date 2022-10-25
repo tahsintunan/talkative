@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
+import { PaginationModel } from '../models/pagination.model';
 import { UserModel } from '../models/user.model';
 
 @Injectable({
@@ -10,15 +10,7 @@ import { UserModel } from '../models/user.model';
 export class BlockService {
   apiUrl = this.env.apiUrl + 'api/Block';
 
-  private readonly userBlockListSubject = new BehaviorSubject<UserModel[]>([]);
-
-  public readonly userBlockList = this.userBlockListSubject.asObservable();
-
   constructor(private http: HttpClient, private env: EnvService) {}
-
-  init() {
-    this.getUserBlockList().subscribe();
-  }
 
   blockUser(userId: string) {
     return this.http.post(this.apiUrl + '/' + userId, { userId });
@@ -28,9 +20,7 @@ export class BlockService {
     return this.http.delete(this.apiUrl + '/' + userId);
   }
 
-  getUserBlockList() {
-    return this.http
-      .get<UserModel[]>(this.apiUrl)
-      .pipe(tap((res) => this.userBlockListSubject.next(res)));
+  getBlockList(userId: string, pagination:PaginationModel) {
+    return this.http.get<UserModel[]>(this.apiUrl, { params: { userId, ...pagination } });
   }
 }

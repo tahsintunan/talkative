@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
+import { PaginationModel } from '../models/pagination.model';
 import { UserModel } from '../models/user.model';
 
 @Injectable({
@@ -18,21 +19,20 @@ export class FollowService {
 
   constructor(private http: HttpClient, private env: EnvService) {}
 
-  init() {
-    this.getUserFollowers().subscribe();
+  loadUserFollow() {
     this.getUserFollowings().subscribe();
   }
 
   followUser(followingId: string) {
     return this.http
       .post(this.apiUrl, { followingId })
-      .pipe(tap(() => this.init()));
+      .pipe(tap(() => this.loadUserFollow()));
   }
 
   unfollowUser(followingId: string) {
     return this.http
       .delete(this.apiUrl + '/' + followingId)
-      .pipe(tap(() => this.init()));
+      .pipe(tap(() => this.loadUserFollow()));
   }
 
   getUserFollowers() {
@@ -47,11 +47,15 @@ export class FollowService {
       .pipe(tap((res) => this.userFollowingsSubject.next(res)));
   }
 
-  getFollowers(userId: string) {
-    return this.http.get<UserModel[]>(this.apiUrl + '/follower/' + userId);
+  getFollowers(userId: string, pagination: PaginationModel) {
+    return this.http.get<UserModel[]>(this.apiUrl + '/follower/' + userId, {
+      params: { ...pagination },
+    });
   }
 
-  getFollowings(userId: string) {
-    return this.http.get<UserModel[]>(this.apiUrl + '/following/' + userId);
+  getFollowings(userId: string, pagination: PaginationModel) {
+    return this.http.get<UserModel[]>(this.apiUrl + '/following/' + userId, {
+      params: { ...pagination },
+    });
   }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
+import { PaginationModel } from '../../models/pagination.model';
 import { TweetModel } from '../../models/tweet.model';
 import { UserModel, UserUpdateReqModel } from '../../models/user.model';
 import { BlockService } from '../../services/block.service';
@@ -15,6 +16,24 @@ import { ProfileUpdateDialogComponent } from '../../ui/profile/profile-update-di
   styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent implements OnInit {
+  tweetPagination: PaginationModel = {
+    pageNumber: 1,
+  };
+
+  followingPagination: PaginationModel = {
+    pageNumber: 1,
+  };
+
+  followersPagination: PaginationModel = {
+    pageNumber: 1,
+  };
+
+  blockListPagination: PaginationModel = {
+    pageNumber: 1,
+  };
+
+  userAuth?: UserModel;
+  profileId: string = '';
   profileDetails?: UserModel;
   followers: UserModel[] = [];
   followings: UserModel[] = [];
@@ -31,8 +50,8 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.blockService.userBlockList.subscribe((res) => {
-      this.blockList = res;
+    this.userService.userAuth.subscribe((res) => {
+      this.userAuth = res;
     });
 
     this.tweetService.userTweets.subscribe((res) => {
@@ -40,15 +59,37 @@ export class ProfileComponent implements OnInit {
     });
 
     this.activeRoute.params.subscribe((params) => {
-      const userId = params['userId'];
+      this.profileId = params['userId'];
+      this.tweetPagination.pageNumber = 1;
 
-      if (userId) {
-        this.getProfile(userId);
-        this.getUserTweets(userId);
-        this.getFollowers(userId);
-        this.getFollowings(userId);
+      if (this.profileId) {
+        this.getProfile(this.profileId);
+        this.getFollowers(this.profileId);
+        this.getFollowings(this.profileId);
+        this.getBlockList(this.profileId);
+        this.getUserTweets(this.profileId);
       }
     });
+  }
+
+  onScroll() {
+    this.tweetPagination.pageNumber++;
+    this.getUserTweets(this.profileId);
+  }
+
+  onFollowingScroll() {
+    this.followingPagination.pageNumber++;
+    this.getFollowings(this.profileId);
+  }
+
+  onFollowersScroll() {
+    this.followersPagination.pageNumber++;
+    this.getFollowers(this.profileId);
+  }
+
+  onBlockListScroll() {
+    this.blockListPagination.pageNumber++;
+    this.getBlockList(this.profileId);
   }
 
   getProfile(userId: string) {
@@ -58,19 +99,43 @@ export class ProfileComponent implements OnInit {
   }
 
   getUserTweets(userId: string) {
-    this.tweetService.getUserTweets(userId).subscribe();
+    this.tweetService.getUserTweets(userId, this.tweetPagination).subscribe();
   }
 
   getFollowers(userId: string) {
-    this.followService.getFollowers(userId).subscribe((res) => {
-      this.followers = res;
-    });
+    this.followService
+      .getFollowers(userId, this.followersPagination)
+      .subscribe((res) => {
+        if (this.followersPagination.pageNumber === 1) {
+          this.followers = res;
+        } else {
+          this.followers = this.followers.concat(res);
+        }
+      });
   }
 
   getFollowings(userId: string) {
-    this.followService.getFollowings(userId).subscribe((res) => {
-      this.followings = res;
-    });
+    this.followService
+      .getFollowings(userId, this.followingPagination)
+      .subscribe((res) => {
+        if (this.followingPagination.pageNumber === 1) {
+          this.followings = res;
+        } else {
+          this.followings = this.followings.concat(res);
+        }
+      });
+  }
+
+  getBlockList(userId: string) {
+    this.blockService
+      .getBlockList(userId, this.blockListPagination)
+      .subscribe((res) => {
+        if (this.blockListPagination.pageNumber === 1) {
+          this.blockList = res;
+        } else {
+          this.blockList = this.blockList.concat(res);
+        }
+      });
   }
 
   onProfileEdit() {
@@ -86,7 +151,7 @@ export class ProfileComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: UserUpdateReqModel) => {
       if (result) {
         this.userService.updateProfile(result).subscribe((res) => {
-          this.getProfile(this.profileDetails?.userId!);
+          this.getProfile(this.profileId);
         });
       }
     });
@@ -94,31 +159,34 @@ export class ProfileComponent implements OnInit {
 
   onFollow(userId: string) {
     this.followService.followUser(userId).subscribe((res) => {
-      this.getFollowers(this.profileDetails?.userId!);
-      this.getFollowings(this.profileDetails?.userId!);
+      this.reloadData(this.profileId);
     });
   }
 
   onUnfollow(userId: string) {
     this.followService.unfollowUser(userId).subscribe((res) => {
-      this.getFollowers(this.profileDetails?.userId!);
-      this.getFollowings(this.profileDetails?.userId!);
+      this.reloadData(this.profileId);
     });
   }
 
   onBlock(userId: string) {
     this.blockService.blockUser(userId).subscribe((res) => {
-      this.getFollowers(this.profileDetails?.userId!);
-      this.getFollowings(this.profileDetails?.userId!);
-      this.blockService.init();
+      this.userService.loadUserAuth();
+      this.reloadData(this.profileId);
     });
   }
 
   onUnblock(userId: string) {
     this.blockService.unblockUser(userId).subscribe((res) => {
-      this.getFollowers(this.profileDetails?.userId!);
-      this.getFollowings(this.profileDetails?.userId!);
-      this.blockService.init();
+      this.userService.loadUserAuth();
+      this.reloadData(this.profileId);
     });
+  }
+
+  reloadData(userId: string) {
+    this.followService.loadUserFollow();
+    this.getFollowers(userId);
+    this.getFollowings(userId);
+    this.getBlockList(userId);
   }
 }

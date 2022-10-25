@@ -5,6 +5,7 @@ export interface UserModel {
   dateOfBirth?: Date;
   blocked?: string[];
   blockedBy?: string[];
+  isBannded?: boolean;
 }
 
 export interface UserUpdateReqModel {

@@ -1,6 +1,13 @@
-<mat-tab-group mat-stretch-tabs>
+<mat-tab-group mat-stretch-tabs dynamicHeight class="card">
   <mat-tab label="Following" labelClass="!py-5">
-    <div class="flex flex-col gap-2 p-3">
+    <div
+      class="container"
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="200"
+      [scrollWindow]="false"
+      (scrolled)="onFollowingScroll.emit()"
+    >
       <app-profile-people-item
         *ngFor="let following of followings"
         [data]="following"
@@ -12,7 +19,14 @@
     </div>
   </mat-tab>
   <mat-tab label="Followers" labelClass="!py-5">
-    <div class="flex flex-col gap-2 p-3">
+    <div
+      class="container"
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="200"
+      [scrollWindow]="false"
+      (scrolled)="onFollowersScroll.emit()"
+    >
       <app-profile-people-item
         *ngFor="let follower of followers"
         [data]="follower"
@@ -28,7 +42,14 @@
     label="Block List"
     labelClass="!py-5"
   >
-    <div class="flex flex-col gap-2 p-3">
+    <div
+      class="container"
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="200"
+      [scrollWindow]="false"
+      (scrolled)="onBlockListScroll.emit()"
+    >
       <app-profile-people-item
         *ngFor="let block of blockList"
         [data]="block"

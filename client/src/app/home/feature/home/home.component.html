@@ -3,8 +3,14 @@
     <app-navbar></app-navbar>
   </mat-drawer>
   <mat-drawer-content>
-    <mat-toolbar class="bg-white">
-      <app-search-input></app-search-input>
+    <mat-toolbar class="bg-white relative">
+      <app-search-input
+        class="absolute top-3 z-50"
+        [searchResults]="searchResults"
+        (onSearchChange)="onSearchChange($event)"
+        (onSearchResultSelect)="onSearchResultSelect($event)"
+        (onSearchSubmit)="onSearchSubmit($event)"
+      ></app-search-input>
 
       <a
         routerLink="/home/profile/{{ userAuth?.userId }}"
@@ -23,7 +29,7 @@
 
     <mat-divider></mat-divider>
 
-    <main>
+    <main id="main-panel">
       <router-outlet></router-outlet>
     </main>
   </mat-drawer-content>

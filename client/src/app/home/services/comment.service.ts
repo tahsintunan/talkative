@@ -6,6 +6,7 @@ import {
   CommentModel,
   CommentUpdateModel,
 } from '../models/comment.model';
+import { PaginationModel } from '../models/pagination.model';
 
 @Injectable({
   providedIn: 'root',
@@ -19,8 +20,12 @@ export class CommentService {
     return this.http.post<CommentModel>(this.apiUrl, { tweetId, text });
   }
 
-  getTweetComments(tweetId: string) {
-    return this.http.get<CommentModel[]>(this.apiUrl + '/tweet/' + tweetId);
+  getTweetComments(tweetId: string, pagination: PaginationModel) {
+    return this.http.get<CommentModel[]>(this.apiUrl + '/tweet/' + tweetId, {
+      params: {
+        ...pagination,
+      },
+    });
   }
 
   getCommentById(commentId: string) {

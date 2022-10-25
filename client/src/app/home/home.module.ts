@@ -14,6 +14,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { SharedModule } from '../shared/shared.module';
 import { FeedComponent } from './feature/feed/feed.component';
 import { HomeComponent } from './feature/home/home.component';
@@ -32,6 +33,7 @@ import { ProfileUpdateDialogComponent } from './ui/profile/profile-update-dialog
 import { PostMakerDialogComponent } from './ui/tweet/post-maker-dialog/post-maker-dialog.component';
 import { RetweetContentComponent } from './ui/tweet/retweet-content/retweet-content.component';
 import { TweetItemComponent } from './ui/tweet/tweet-item/tweet-item.component';
+import { SearchResultComponent } from './feature/search-result/search-result.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,7 @@ import { TweetItemComponent } from './ui/tweet/tweet-item/tweet-item.component';
     CommentInputComponent,
     ProfilePeopleItemComponent,
     ProfilePeoplesComponent,
+    SearchResultComponent,
   ],
   imports: [
     CommonModule,
@@ -59,6 +62,7 @@ import { TweetItemComponent } from './ui/tweet/tweet-item/tweet-item.component';
     FormsModule,
     ReactiveFormsModule,
     FormsModule,
+    InfiniteScrollModule,
     MatInputModule,
     MatIconModule,
     MatFormFieldModule,

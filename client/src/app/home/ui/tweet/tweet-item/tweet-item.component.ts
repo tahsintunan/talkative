@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RetweetService } from 'src/app/home/services/retweet.service';
@@ -23,7 +16,6 @@ import { PostMakerDialogComponent } from '../post-maker-dialog/post-maker-dialog
 })
 export class TweetItemComponent implements OnInit {
   @Input() data?: TweetModel;
-  @Output() onHashtagClick = new EventEmitter();
 
   tweet?: TweetModel;
 
@@ -55,18 +47,14 @@ export class TweetItemComponent implements OnInit {
     this.alreadyRetweeted = !!this.tweet?.retweetUsers?.some(
       (retweetedBy) => retweetedBy === this.userAuth?.userId
     );
-
-    console.log(this.tweet?.retweetUsers);
   }
 
   onTweetClick() {
     this.router.navigate([`/home/tweet/${this.tweet?.id}`]);
   }
 
-  onTagClick(event: any) {
-    if (event.target.classList.contains('hashtag')) {
-      this.onHashtagClick.emit(event.target.innerText);
-    }
+  onTagClick(hashtag: string) {
+    console.log(hashtag);
   }
 
   onLike() {
@@ -93,9 +81,7 @@ export class TweetItemComponent implements OnInit {
     this.retweetService
       .createRetweet({
         isQuoteRetweet: false,
-        originalTweetId: this.tweet?.isQuoteRetweet
-          ? this.tweet?.originalTweet?.id!
-          : this.tweet?.id!,
+        originalTweetId: this.tweet?.id!,
       })
       .subscribe();
   }
@@ -105,9 +91,7 @@ export class TweetItemComponent implements OnInit {
       width: '500px',
       data: {
         isQuoteRetweet: true,
-        originalTweetId: this.tweet?.isQuoteRetweet
-          ? this.tweet?.originalTweet?.id
-          : this.tweet?.id,
+        originalTweetId: this.tweet?.id,
       },
     });
 
@@ -126,13 +110,7 @@ export class TweetItemComponent implements OnInit {
   }
 
   onRetweetUndo() {
-    this.retweetService
-      .undoRetweet(
-        this.tweet?.isQuoteRetweet
-          ? this.tweet?.originalTweet?.id!
-          : this.tweet?.id!
-      )
-      .subscribe();
+    this.retweetService.undoRetweet(this.tweet?.id!).subscribe();
   }
 
   onEdit() {
@@ -143,7 +121,7 @@ export class TweetItemComponent implements OnInit {
         id: this.tweet?.id,
         text: this.tweet?.text,
         isQuoteRetweet: this.tweet?.isQuoteRetweet,
-        originalTweetId: this.tweet?.originalTweet?.id,
+        originalTweetId: this.tweet?.originalTweetId,
       },
     });
 
@@ -164,7 +142,7 @@ export class TweetItemComponent implements OnInit {
     if (this.tweet?.id) {
       if (this.tweet?.isQuoteRetweet)
         this.retweetService
-          .deleteQuoteRetweet(this.tweet.id, this.tweet?.originalTweet?.id!)
+          .deleteQuoteRetweet(this.tweet.id, this.tweet?.originalTweetId!)
           .subscribe();
       else this.tweetService.deleteTweet(this.tweet?.id).subscribe();
     }

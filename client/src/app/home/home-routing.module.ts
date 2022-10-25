@@ -4,6 +4,7 @@ import { FeedComponent } from './feature/feed/feed.component';
 import { HomeComponent } from './feature/home/home.component';
 import { NotificationsComponent } from './feature/notifications/notifications.component';
 import { ProfileComponent } from './feature/profile/profile.component';
+import { SearchResultComponent } from './feature/search-result/search-result.component';
 import { TweetDetailsComponent } from './feature/tweet-details/tweet-details.component';
 
 const routes: Routes = [
@@ -31,6 +32,10 @@ const routes: Routes = [
       {
         path: 'notifications',
         component: NotificationsComponent,
+      },
+      {
+        path: 'search',
+        component: SearchResultComponent,
       },
     ],
   },

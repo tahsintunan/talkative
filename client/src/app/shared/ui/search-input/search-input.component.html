@@ -1,24 +1,68 @@
-<form class="flex items-center gap-2">
-  <div class="relative w-full">
-    <div
-      class="flex items-center absolute inset-y-0 left-0 pl-3 pointer-events-none"
+<form
+  class="transition rounded border border-gray-300"
+  [ngClass]="{ shadow: focused, 'bg-white': focused, 'bg-gray-50': !focused }"
+>
+  <div class="flex items-center">
+    <button
+      #searchButton
+      class="transition flex items-center outline-none p-2 text-sm text-gray-400 hover:text-gray-900 bg-transparent rounded hover:bg-gray-200"
+      (click)="onSearchSubmit.emit(formControl.value?.trim())"
     >
-      <span class="material-symbols-rounded text-gray-400">search</span>
-    </div>
+      <span class="material-symbols-rounded">search</span>
+    </button>
 
     <input
-      type="text"
-      id="search"
-      class="outline-none bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:border-primary block w-full pl-10 p-2.5"
+      class="transition-all bg-transparent outline-none p-2.5 text-sm"
       placeholder="Search"
-      required
+      [formControl]="formControl"
+      (focus)="focused = true"
+      (blur)="focused = false"
+      (keydown.enter)="searchButton.focus(); searchButton.click()"
     />
+
+    <button
+      class="transition flex items-center outline-none p-2 text-sm text-gray-400 hover:text-gray-900 bg-transparent rounded hover:bg-gray-200"
+      [ngClass]="{ invisible: !formControl.value }"
+      (click)="formControl.reset()"
+    >
+      <span class="material-symbols-rounded">close</span>
+    </button>
   </div>
 
-  <button
-    type="submit"
-    class="flex items-center outline-none p-2 text-sm font-medium text-white bg-primary rounded-lg border border-primary hover:bg-primaryDark"
+  <div
+    class="flex flex-col gap-2 py-2 max-h-96 overflow-y-auto"
+    [ngClass]="{
+      hidden: !(focused && formControl.value && searchResults.length)
+    }"
+    infiniteScroll
+    [infiniteScrollDistance]="2"
+    [infiniteScrollThrottle]="200"
+    [scrollWindow]="false"
+    (scrolled)="onScroll()"
   >
-    <mat-icon class="material-symbols-rounded">search</mat-icon>
-  </button>
+    <div
+      *ngFor="let result of searchResults"
+      class="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer"
+      (mousedown)="onSearchResultClick(result)"
+    >
+      <span
+        *ngIf="result.type === 'hashtag'"
+        class="material-symbols-rounded p-2 rounded-full bg-gray-400 text-white"
+      >
+        tag
+      </span>
+
+      <app-avatar
+        *ngIf="result.type === 'user'"
+        [src]="result.value"
+        size="40px"
+        [generateAvater]="true"
+        borderColor="#f0f0f0"
+        borderWidth="1px"
+        borderRadius="50%"
+      ></app-avatar>
+
+      <span class="text-sm font-bold">{{ result.value }}</span>
+    </div>
+  </div>
 </form>

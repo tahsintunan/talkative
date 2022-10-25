@@ -9,6 +9,9 @@ import { HashtagPipe } from './pipes/hashtag.pipe';
 import { AvatarComponent } from './ui/avatar/avatar.component';
 import { HashtagInputComponent } from './ui/hashtag-input/hashtag-input.component';
 import { SearchInputComponent } from './ui/search-input/search-input.component';
+import { HashtagRendererComponent } from './ui/hashtag-renderer/hashtag-renderer.component';
+import { AlertComponent } from './ui/alert/alert.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @NgModule({
   declarations: [
@@ -18,6 +21,8 @@ import { SearchInputComponent } from './ui/search-input/search-input.component';
     AvatarComponent,
     HashtagInputComponent,
     SearchInputComponent,
+    HashtagRendererComponent,
+    AlertComponent,
   ],
   imports: [
     CommonModule,
@@ -25,6 +30,7 @@ import { SearchInputComponent } from './ui/search-input/search-input.component';
     ReactiveFormsModule,
     TextInputHighlightModule,
     MatIconModule,
+    InfiniteScrollModule,
   ],
   exports: [
     DateAgoPipe,
@@ -33,6 +39,7 @@ import { SearchInputComponent } from './ui/search-input/search-input.component';
     AvatarComponent,
     HashtagInputComponent,
     SearchInputComponent,
+    HashtagRendererComponent,
   ],
 })
 export class SharedModule {}

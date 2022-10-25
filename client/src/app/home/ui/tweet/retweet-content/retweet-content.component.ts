@@ -9,7 +9,6 @@ import { TweetModel } from '../../../models/tweet.model';
 })
 export class RetweetContentComponent implements OnInit {
   @Input() data?: TweetModel;
-  @Output() onHashtagClick = new EventEmitter();
 
   constructor(private router: Router) {}
 
@@ -19,9 +18,7 @@ export class RetweetContentComponent implements OnInit {
     this.router.navigate([`/home/tweet/${this.data?.id}`]);
   }
 
-  onTagClick(event: any) {
-    if (event.target.classList.contains('hashtag')) {
-      this.onHashtagClick.emit(event.target.innerText);
-    }
+  onTagClick(hashtag: string) {
+    console.log(hashtag);
   }
 }

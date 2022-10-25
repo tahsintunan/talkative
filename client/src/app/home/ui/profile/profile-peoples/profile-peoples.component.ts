@@ -17,6 +17,9 @@ export class ProfilePeoplesComponent implements OnInit {
   @Output() onUnfollow = new EventEmitter();
   @Output() onBlock = new EventEmitter();
   @Output() onUnblock = new EventEmitter();
+  @Output() onFollowingScroll = new EventEmitter();
+  @Output() onFollowersScroll = new EventEmitter();
+  @Output() onBlockListScroll = new EventEmitter();
 
   userAuth?: UserModel;
 

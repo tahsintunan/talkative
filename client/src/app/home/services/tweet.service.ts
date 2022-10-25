@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
+import { PaginationModel } from '../models/pagination.model';
 import {
   TweetCreateReqModel,
   TweetModel,
@@ -49,31 +50,41 @@ export class TweetService {
       .pipe(tap(() => this.removeTweetFromList(tweetId)));
   }
 
-  getTweets() {
-    return this.http
-      .get<TweetModel[]>(this.apiUrl + '/feed')
-      .pipe(
-        tap((res) =>
-          this.feedTweetsSubject.next(
-            res.filter((x) => !(x.isRetweet && !x.originalTweet))
-          )
-        )
-      );
-  }
-
   getTweetById(id: string) {
     return this.http.get<TweetModel>(this.apiUrl + '/' + id);
   }
 
-  getUserTweets(userId: string) {
+  getTweets(pagination: PaginationModel) {
     return this.http
-      .get<TweetModel[]>(this.apiUrl + '/user/' + userId)
+      .get<TweetModel[]>(this.apiUrl + '/feed', { params: { ...pagination } })
       .pipe(
-        tap((res) =>
-          this.userTweetSubject.next(
-            res.filter((x) => !(x.isRetweet && !x.originalTweet))
-          )
-        )
+        tap((res) => {
+          res = this.filterNullRetweets(res);
+          if (pagination?.pageNumber == 1) this.feedTweetsSubject.next(res);
+          else
+            this.feedTweetsSubject.next([
+              ...this.feedTweetsSubject.getValue(),
+              ...res,
+            ]);
+        })
+      );
+  }
+
+  getUserTweets(userId: string, pagination: PaginationModel) {
+    return this.http
+      .get<TweetModel[]>(this.apiUrl + '/user/' + userId, {
+        params: { ...pagination },
+      })
+      .pipe(
+        tap((res) => {
+          res = this.filterNullRetweets(res);
+          if (pagination?.pageNumber == 1) this.userTweetSubject.next(res);
+          else
+            this.userTweetSubject.next([
+              ...this.userTweetSubject.getValue(),
+              ...res,
+            ]);
+        })
       );
   }
 
@@ -100,49 +111,53 @@ export class TweetService {
   refreshTweet(tweet: TweetModel) {
     if (this.router.url.includes('feed'))
       this.feedTweetsSubject.next(
-        this.feedTweetsSubject.getValue().map((x) => {
-          if (x.id === tweet.id) return tweet;
-          else if (x.originalTweet?.id === tweet.id)
-            return { ...x, originalTweet: tweet };
-          else return x;
-        })
+        this.refreshTweetInList(tweet, this.feedTweetsSubject.getValue())
       );
 
     if (this.router.url.includes('profile'))
       this.userTweetSubject.next(
-        this.userTweetSubject.getValue().map((x) => {
-          if (x.id === tweet.id) return tweet;
-          else if (x.originalTweet?.id === tweet.id)
-            return { ...x, originalTweet: tweet };
-          else return x;
-        })
+        this.refreshTweetInList(tweet, this.userTweetSubject.getValue())
       );
+  }
+
+  refreshTweetInList(tweet: TweetModel, tweets: TweetModel[]) {
+    return tweets.map((x) => {
+      if (x.id === tweet.id) return tweet;
+      else if (x.originalTweet?.id === tweet.id)
+        return { ...x, originalTweet: tweet };
+      else return x;
+    });
   }
 
   removeTweetFromList(tweetId: string) {
     if (this.router.url.includes('feed')) {
       this.feedTweetsSubject.next(
-        this.feedTweetsSubject
-          .getValue()
-          .filter((x) => x.id !== tweetId)
-          .map((x) =>
-            x.originalTweet?.id === tweetId
-              ? { ...x, originalTweet: undefined }
-              : x
-          )
+        this.filterDeletedTweet(tweetId, this.feedTweetsSubject.getValue())
       );
     }
 
     if (this.router.url.includes('profile'))
       this.userTweetSubject.next(
-        this.userTweetSubject
-          .getValue()
-          .filter((x) => x.id !== tweetId)
-          .map((x) =>
-            x.originalTweet?.id === tweetId
-              ? { ...x, originalTweet: undefined }
-              : x
-          )
+        this.filterDeletedTweet(tweetId, this.userTweetSubject.getValue())
       );
+  }
+
+  filterDeletedTweet(tweetId: string, tweets: TweetModel[]) {
+    return this.filterNullRetweets(
+      tweets
+        .filter(
+          (x) =>
+            x.id !== tweetId || (x.isRetweet && x.originalTweet?.id !== tweetId)
+        )
+        .map((x) =>
+          x.originalTweet?.id === tweetId
+            ? { ...x, originalTweet: undefined }
+            : x
+        )
+    );
+  }
+
+  filterNullRetweets(tweets: TweetModel[]) {
+    return tweets.filter((x) => !(x.isRetweet && !x.originalTweet));
   }
 }

@@ -9,7 +9,7 @@ export class HashtagPipe implements PipeTransform {
 
     if (text.indexOf('#') !== -1) {
       transformedText = text + ' ';
-      const matches = transformedText.match(/#(.*?) /g) || [];
+      const matches = transformedText.match(/(#\w+) ?/g) || [];
       for (let i = 0; i < matches.length; i++) {
         transformedText = transformedText.replace(
           matches[i],

@@ -6,7 +6,7 @@ mat-drawer {
   background: #222222;
 }
 
-main {
+#main-panel {
   padding: 1rem;
   height: calc(100vh - 65px);
   overflow-y: auto;
