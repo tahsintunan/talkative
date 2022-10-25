@@ -29,10 +29,13 @@ namespace server.Controllers
         }
 
         [HttpGet("user/{username}")]
-        public async Task<ActionResult<IList<UserVm>>> SearchUser(string username, [FromQuery] SearchUserQuery searchUserQuery)
+        public async Task<ActionResult<IList<UserVm>>> SearchUser(
+            string username,
+            [FromQuery] SearchUserQuery searchUserQuery
+        )
         {
             searchUserQuery.Username = username;
-            return Ok(await Mediator.Send(searchUserQuery);
+            return Ok(await Mediator.Send(searchUserQuery));
         }
     }
 }
