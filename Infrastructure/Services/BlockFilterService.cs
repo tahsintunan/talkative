@@ -30,7 +30,7 @@ public class BlockFilterService : IBlockFilter
         return tweetVms.Where(b => !IsBlocked(b, blockedUserIds)).ToList();
     }
 
-    private static bool IsBlocked(Blockable blockable, IReadOnlySet<string> blockedUserIds)
+    public bool IsBlocked(Blockable blockable, IReadOnlySet<string> blockedUserIds)
     {
         if (blockable is TweetVm vm && (vm.IsRetweet || vm.IsQuoteRetweet))
         {
@@ -40,7 +40,7 @@ public class BlockFilterService : IBlockFilter
         return blockedUserIds.Contains(blockable.UserId!);
     }
 
-    private async Task<HashSet<string>> GetBlockedUserIds(string userId)
+    public async Task<HashSet<string>> GetBlockedUserIds(string userId)
     {
         var blockedUserIds = new HashSet<string>();
         var user = await _userService.GetUserById(userId);
@@ -48,21 +48,12 @@ public class BlockFilterService : IBlockFilter
         {
             return blockedUserIds;
         }
-        var (blocked, blockedBy) = (user.Blocked, user.BlockedBy);
-
-        if (blocked != null)
+        var blockedBy = user.BlockedBy;
+        if (blockedBy == null) return blockedUserIds;
+        
+        foreach (var id in blockedBy)
         {
-            foreach (var id in blocked)
-            {
-                blockedUserIds.Add(id!);
-            }
-        }
-        if (blockedBy != null)
-        {
-            foreach (var id in blockedBy)
-            {
-                blockedUserIds.Add(id!);
-            }
+            blockedUserIds.Add(id!);
         }
         return blockedUserIds;
     }
