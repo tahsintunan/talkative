@@ -67,8 +67,9 @@ namespace Infrastructure.Services
             return follower != null;
         }
 
-        public async Task<IList<string?>> GetFollowingOfCurrentUser(string userId)
+        public async Task<Dictionary<string, bool>> GetFollowingOfCurrentUser(string userId)
         {
+            Dictionary<string, bool> followingHashmap = new Dictionary<string, bool>();
             var list = await _followerCollection
                 .Aggregate()
                 .Match(x => x.FollowerId == userId)
@@ -77,10 +78,10 @@ namespace Infrastructure.Services
             var followingIds = new List<string?>();
             foreach (var following in list)
             {
-                followingIds.Add(following.FollowingId);
+                followingHashmap.Add(following.FollowingId!, true);
             }
 
-            return followingIds;
+            return followingHashmap;
         }
 
         public async Task<IList<UserVm>> GetFollowerOfSingleUser(string userId, int skip, int limit)

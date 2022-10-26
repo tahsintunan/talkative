@@ -147,6 +147,24 @@ namespace Infrastructure.Services
             await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
         }
 
+        public async Task<Dictionary<string, bool>> GetBlockedUserIds(string userId)
+        {
+            Dictionary<string, bool> blockedHashmap = new Dictionary<string, bool>();
+            var userVmList = await _userCollection
+                .Aggregate()
+                .Match(x => x.Id == userId)
+                .Lookup("users", "blocked", "_id", "user")
+                .Unwind("user")
+                .ReplaceRoot<User>("$user")
+                .ToListAsync();
+
+            foreach (var userVm in userVmList)
+            {
+                blockedHashmap.Add(userVm.Id!, true);
+            }
+            return blockedHashmap;
+        }
+
         public async Task<IList<UserVm>> GetBlockedUsers(string userId, int skip, int limit)
         {
             var userVmList = await _userCollection

@@ -3,13 +3,13 @@ using MediatR;
 
 namespace Application.Followers.Queries.GetFollowingIdsOfCurrentUser
 {
-    public class GetFollowingIdsOfCurrentUserQuery : IRequest<IList<string?>>
+    public class GetFollowingIdsOfCurrentUserQuery : IRequest<Dictionary<string, bool>>
     {
         public string? UserId { get; set; }
     }
 
     public class GetFollowingIdsOfCUrrentUserQueryHandler
-        : IRequestHandler<GetFollowingIdsOfCurrentUserQuery, IList<string?>>
+        : IRequestHandler<GetFollowingIdsOfCurrentUserQuery, Dictionary<string, bool>>
     {
         private readonly IFollow _followService;
 
@@ -18,7 +18,7 @@ namespace Application.Followers.Queries.GetFollowingIdsOfCurrentUser
             _followService = followService;
         }
 
-        public Task<IList<string?>> Handle(
+        public Task<Dictionary<string, bool>> Handle(
             GetFollowingIdsOfCurrentUserQuery request,
             CancellationToken cancellationToken
         )

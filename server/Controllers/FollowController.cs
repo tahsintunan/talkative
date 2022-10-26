@@ -37,7 +37,7 @@ namespace server.Controllers
         }
 
         [HttpGet("following-id")]
-        public async Task<ActionResult<IList<string?>>> GetFollowingsOfCurrentUser()
+        public async Task<ActionResult<Dictionary<string, bool>>> GetFollowingsOfCurrentUser()
         {
             var userId = HttpContext.Items["User"]!.ToString();
             return Ok(

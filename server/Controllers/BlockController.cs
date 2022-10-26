@@ -1,5 +1,6 @@
 using Application.Blocks.Command.Block;
 using Application.Blocks.Command.Unblock;
+using Application.Blocks.Queries.GetBlockedUserIds;
 using Application.Blocks.Queries.GetBlockedUsers;
 using Application.Common.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,14 @@ public class BlockController : ApiControllerBase
     {
         getBlockedUsersQuery.UserId = HttpContext.Items["User"]!.ToString();
         return Ok(await Mediator.Send(getBlockedUsersQuery));
+    }
+
+    [HttpGet("blocked-id")]
+    public async Task<ActionResult<Dictionary<string, bool>>> GetBlockedUserIds(
+            )
+    {
+        var userId = HttpContext.Items["User"]!.ToString();
+        return Ok(await Mediator.Send(new GetBlockedUserIdsQuery() { UserId = userId }));
     }
 
     [HttpDelete("{id}")]
