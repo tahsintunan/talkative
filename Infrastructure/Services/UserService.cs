@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using AutoMapper;
 using Domain.Entities;
@@ -7,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
@@ -79,7 +79,7 @@ namespace Infrastructure.Services
             }
 
             if (usernameExists)
-                throw new ValidationException("User already exists");
+                throw new BadRequestException("User already exists");
             await PartialUpdate(
                 updatedUser.Id!,
                 Builders<User>.Update

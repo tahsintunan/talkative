@@ -1,11 +1,11 @@
-﻿using Application.Common.Interface;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interface;
 using Domain.Entities;
 using Infrastructure.DbConfig;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
@@ -40,7 +40,7 @@ namespace Infrastructure.Services
         {
             if (await CheckIfUserExists(user.Username!, user.Email!))
             {
-                throw new ValidationException("User already exists");
+                throw new BadRequestException("User already exists");
             }
 
             string hashedPassword;
@@ -55,10 +55,10 @@ namespace Infrastructure.Services
         public async Task<string?> LoginUser(string username, string password)
         {
             if (!await CheckIfUsernameExists(username))
-                throw new ValidationException("username doesn't exist");
+                throw new BadRequestException("username doesn't exist");
 
             if (!await CheckIfPasswordMatches(username, password))
-                throw new ValidationException("Password doesn't match");
+                throw new BadRequestException("Password doesn't match");
 
             var user = await _userCollection
                 .Find(
