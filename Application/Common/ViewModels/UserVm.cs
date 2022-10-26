@@ -1,4 +1,5 @@
-﻿using Application.Common.Class;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Class;
 
 namespace Application.Common.ViewModels
 {
@@ -7,7 +8,9 @@ namespace Application.Common.ViewModels
         public string? Username { get; set; }
         public string? Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
+        [JsonIgnore]
         public IList<string?>? BlockedBy { get; set; }
+        [JsonIgnore]
         public IList<string?>? Blocked { get; set; }
         public bool IsBanned { get; set; }
     }
