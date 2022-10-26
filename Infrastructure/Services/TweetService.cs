@@ -121,8 +121,7 @@ namespace Infrastructure.Services
             var tweets = await _tweetCollection
                 .Aggregate()
                 .Match(x => x.UserId == userId)
-                .SortBy(x => x.CreatedAt)
-                .ThenByDescending(x => x.CreatedAt)
+                .SortByDescending(x => x.CreatedAt)
                 .Skip(skip)
                 .Limit(limit)
                 .Lookup("users", "userId", "_id", "user")

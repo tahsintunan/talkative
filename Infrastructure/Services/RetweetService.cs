@@ -57,7 +57,42 @@ namespace Infrastructure.Services
                 .Limit(limit)
                 .Lookup("tweets", "quoteRetweets", "_id", "tweets")
                 .Unwind("tweets")
-                .ReplaceRoot<BsonDocument>("$tweets")
+                .ReplaceRoot<Tweet>("$tweets")
+                .SortByDescending(x => x.CreatedAt)
+                .Skip(skip)
+                .Limit(limit)
+                .Lookup("users", "userId", "_id", "user")
+                .Lookup("tweets", "originalTweetId", "_id", "originalTweet")
+                .Unwind(
+                    "originalTweet",
+                    new AggregateUnwindOptions<TweetVm>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Unwind("user")
+                .Lookup("users", "originalTweet.userId", "_id", "originalTweet.user")
+                .Unwind(
+                    "originalTweet.user",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Lookup(
+                    "tweets",
+                    "originalTweet.originalTweetId",
+                    "_id",
+                    "originalTweet.originalTweet"
+                )
+                .Unwind(
+                    "originalTweet.originalTweet",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
+                .Lookup(
+                    "users",
+                    "originalTweet.originalTweet.userId",
+                    "_id",
+                    "originalTweet.originalTweet.user"
+                )
+                .Unwind(
+                    "originalTweet.originalTweet.user",
+                    new AggregateUnwindOptions<BsonDocument>() { PreserveNullAndEmptyArrays = true }
+                )
                 .ToListAsync();
         }
     }
