@@ -9,17 +9,20 @@ using Infrastructure.DbConfig;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace Infrastructure.Services;
 
 public class NotificationService : INotification
 {
     private readonly IRabbitmq _rabbitmqService;
+    private readonly IMongoCollection<User> _userCollection;
     private readonly IMongoCollection<Notification> _notificationCollection;
 
     public NotificationService(
         IRabbitmq rabbitmqService,
-        IOptions<NotificationDatabaseConfig> notificationDatabaseConfig
+        IOptions<NotificationDatabaseConfig> notificationDatabaseConfig,
+        IOptions<UserDatabaseConfig> userDatabaseConfig
     )
     {
         _rabbitmqService = rabbitmqService;
@@ -29,6 +32,16 @@ public class NotificationService : INotification
         _notificationCollection = mongoDatabase.GetCollection<Notification>(
             notificationDatabaseConfig.Value.CollectionName
         );
+
+        _userCollection = mongoDatabase.GetCollection<User>(
+               userDatabaseConfig.Value.UserCollectionName
+           );
+
+        MongoClientSettings settings = MongoClientSettings.FromConnectionString(
+                notificationDatabaseConfig.Value.ConnectionString
+            );
+
+        settings.LinqProvider = LinqProvider.V3;
     }
 
     public async Task TriggerFollowNotification(AddFollowerCommand request)
@@ -105,12 +118,27 @@ public class NotificationService : INotification
         await _rabbitmqService.FanOut(notification);
     }
 
-    public async Task<IList<Notification>> GetNotifications(string userId, int skip, int limit)
+    public async Task<IList<NotificationVm>> GetNotifications(string userId, int skip, int limit)
     {
-        return await _notificationCollection
-            .Find(x => x.NotificationReceiverId == userId)
-            .Skip(skip)
-            .Limit(limit)
-            .ToListAsync();
+        var query = (
+            from notification in _notificationCollection.AsQueryable()
+            where notification.NotificationReceiverId == userId
+            orderby notification.Datetime descending
+            join o in _userCollection on notification.EventTriggererId equals o.Id into joined
+            from sub_o in joined.DefaultIfEmpty()
+            select new NotificationVm
+            {
+                EventType = notification.EventType,
+                EventTriggererId = notification.EventTriggererId,
+                EventTriggererUsername = sub_o.Username,
+                TweetId = notification.TweetId,
+                CommentId = notification.CommentId,
+                DateTime = notification.Datetime
+            }
+            ).Skip(skip).Take(limit);
+
+        var notificationVms = await query.ToListAsync();
+
+        return notificationVms;
     }
 }

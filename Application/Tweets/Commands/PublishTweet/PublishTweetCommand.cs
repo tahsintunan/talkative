@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Domain.Entities;
 using MediatR;
 using MongoDB.Bson;
@@ -9,6 +10,7 @@ namespace Application.Tweets.Commands.PublishTweet
     {
         public string? Text { get; set; }
         public IList<string>? Hashtags { get; set; }
+        [JsonIgnore]
         public string? UserId { get; set; }
     }
 

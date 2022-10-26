@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using AutoMapper;
 using MediatR;
@@ -7,6 +8,8 @@ namespace Application.Users.Queries.SearchUsers
 {
     public class SearchUserQuery : IRequest<IList<UserVm>>
     {
+        [JsonIgnore]
+        public string? UserId { get; set; }
         public string? Username { get; set; }
         public int? PageNumber { get; set; }
         public int? ItemCount { get; set; }
@@ -15,12 +18,14 @@ namespace Application.Users.Queries.SearchUsers
     public class SearchUserQueryHandler : IRequestHandler<SearchUserQuery, IList<UserVm>>
     {
         private readonly IUser _userService;
+        private readonly IBlockFilter _blockFilter;
         private readonly IMapper _mapper;
 
-        public SearchUserQueryHandler(IUser userService, IMapper mapper)
+        public SearchUserQueryHandler(IUser userService, IMapper mapper, IBlockFilter blockFilter)
         {
             _userService = userService;
             _mapper = mapper;
+            _blockFilter = blockFilter;
         }
 
         public async Task<IList<UserVm>> Handle(
@@ -35,7 +40,7 @@ namespace Application.Users.Queries.SearchUsers
             var limit = pageNumber * itemCount;
             var userList = await _userService.FindWithUsername(request.Username!, skip, limit);
             var userVmList = _mapper.Map<IList<UserVm>>(userList);
-            return userVmList;
+            return await _blockFilter.GetFilteredUsers(userVmList, request.UserId!);
         }
     }
 }

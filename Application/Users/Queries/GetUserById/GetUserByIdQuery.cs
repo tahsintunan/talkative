@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using MediatR;
 
@@ -7,15 +8,19 @@ namespace Application.Users.Queries.GetUserById
     public class GetUserByIdQuery : IRequest<UserVm?>
     {
         public string? UserId { get; set; }
+        [JsonIgnore]
+        public string? CurrentUser { get; set; }
     }
 
     public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserVm?>
     {
         private readonly IUser _userService;
+        private readonly IBlockFilter _blockFilter;
 
-        public GetUserByIdQueryHandler(IUser userService)
+        public GetUserByIdQueryHandler(IUser userService, IBlockFilter blockFilter)
         {
             _userService = userService;
+            _blockFilter = blockFilter;
         }
 
         public async Task<UserVm?> Handle(
@@ -23,7 +28,14 @@ namespace Application.Users.Queries.GetUserById
             CancellationToken cancellationToken
         )
         {
-            return await _userService.GetUserById(request.UserId!);
+            var user = await _userService.GetUserById(request.UserId!);
+            var blockedUser = await _blockFilter.GetBlockedUserIds(request.CurrentUser!);
+            if (user == null || _blockFilter.IsBlocked(user, blockedUser))
+            {
+                return null;
+            }
+
+            return user;
         }
     }
 }

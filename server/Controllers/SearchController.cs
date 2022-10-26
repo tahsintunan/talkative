@@ -9,17 +9,18 @@ namespace server.Controllers
     public class SearchController : ApiControllerBase
     {
         [HttpGet("tweet/{hashtag}")]
-        public async Task<ActionResult<IList<TweetVm>>> SearchHastag(
+        public async Task<ActionResult<IList<TweetVm>>> SearchTweetsByHastag(
             string hashtag,
             [FromQuery] SearchTweetsByHashtagQuery searchTweetsByHashtagQuery
         )
         {
+            searchTweetsByHashtagQuery.UserId = HttpContext.Items["User"]!.ToString();
             searchTweetsByHashtagQuery.Hashtag = hashtag;
             return Ok(await Mediator.Send(searchTweetsByHashtagQuery));
         }
 
         [HttpGet("hashtag/{hashtag}")]
-        public async Task<ActionResult<SearchHashtagsVm>> GetHashtags(
+        public async Task<ActionResult<SearchHashtagsVm>> SearchHashtags(
             string hashtag,
             [FromQuery] SearchHashtagsQuery searchHashtagsQuery
         )
@@ -34,6 +35,7 @@ namespace server.Controllers
             [FromQuery] SearchUserQuery searchUserQuery
         )
         {
+            searchUserQuery.UserId = HttpContext.Items["User"]!.ToString();
             searchUserQuery.Username = username;
             return Ok(await Mediator.Send(searchUserQuery));
         }

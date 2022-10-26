@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using MediatR;
 
@@ -6,6 +7,8 @@ namespace Application.Retweets.Query.GetQuoteRetweetsOfTweet
 {
     public class GetQuoteRetweetsOfSingleTweetQuery : IRequest<IList<TweetVm>>
     {
+        [JsonIgnore]
+        public string? UserId { get; set; }
         public string? OriginalTweetId { get; set; }
         public int? PageNumber { get; set; }
         public int? ItemCount { get; set; }
@@ -16,12 +19,15 @@ namespace Application.Retweets.Query.GetQuoteRetweetsOfTweet
     {
         private readonly IRetweet _retweetService;
         private readonly IBsonDocumentMapper<TweetVm> _documentMapper;
+        private readonly IBlockFilter _blockFilter;
 
         public GetAllRetweetQueryHandler(
             IRetweet retweetService,
+            IBlockFilter blockFilter,
             IBsonDocumentMapper<TweetVm> documentMapper
         )
         {
+            _blockFilter = blockFilter;
             _retweetService = retweetService;
             _documentMapper = documentMapper;
         }
@@ -49,7 +55,7 @@ namespace Application.Retweets.Query.GetQuoteRetweetsOfTweet
                 tweetVmList.Add(_documentMapper.map(tweet.AsBsonDocument));
             }
 
-            return tweetVmList;
+            return await _blockFilter.GetFilteredTweets(tweetVmList, request.UserId!);
         }
     }
 }

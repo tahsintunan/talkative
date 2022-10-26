@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using MediatR;
 
@@ -6,6 +7,8 @@ namespace Application.Retweets.Query.GetRetweetUsers
 {
     public class GetRetweetUsersQuery : IRequest<IList<UserVm>>
     {
+        [JsonIgnore]
+        public string? UserId { get; set; }
         public string? OriginalTweetId { get; set; }
         public int? PageNumber { get; set; }
         public int? ItemCount { get; set; }
@@ -14,10 +17,12 @@ namespace Application.Retweets.Query.GetRetweetUsers
     public class GetRetweetUsersQueryHandler : IRequestHandler<GetRetweetUsersQuery, IList<UserVm>>
     {
         private readonly IRetweet _retweetService;
+        private readonly IBlockFilter _blockFilter;
 
-        public GetRetweetUsersQueryHandler(IRetweet retweetService)
+        public GetRetweetUsersQueryHandler(IRetweet retweetService, IBlockFilter blockFilter)
         {
             _retweetService = retweetService;
+            _blockFilter = blockFilter;
         }
 
         public async Task<IList<UserVm>> Handle(
@@ -31,7 +36,9 @@ namespace Application.Retweets.Query.GetRetweetUsers
             var skip = (pageNumber - 1) * itemCount;
             var limit = pageNumber * itemCount;
 
-            return await _retweetService.GetRetweetUsers(request.OriginalTweetId!, skip, limit);
+            var retweetUsers = await _retweetService.GetRetweetUsers(request.OriginalTweetId!, skip, limit);
+
+            return await _blockFilter.GetFilteredUsers(retweetUsers, request.UserId!);
         }
     }
 }

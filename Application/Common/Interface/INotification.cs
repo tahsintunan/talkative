@@ -14,5 +14,5 @@ public interface INotification
     public Task TriggerLikeTweetNotification(LikeTweetCommand request, Blockable tweetVm);
     public Task TriggerCommentNotification(Comment comment, Blockable tweetVm);
     public Task TriggerLikeCommentNotification(LikeCommentCommand request, CommentVm commentVm);
-    public Task<IList<Notification>> GetNotifications(string userId, int skip, int limit);
+    public Task<IList<NotificationVm>> GetNotifications(string userId, int skip, int limit);
 }

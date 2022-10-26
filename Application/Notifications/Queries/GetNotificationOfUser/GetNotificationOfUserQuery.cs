@@ -1,4 +1,5 @@
-﻿using Application.Common.ViewModels;
+﻿using System.Text.Json.Serialization;
+using Application.Common.ViewModels;
 using AutoMapper;
 using MediatR;
 using INotification = Application.Common.Interface.INotification;
@@ -7,6 +8,7 @@ namespace Application.Notifications.Queries.GetNotificationOfUser
 {
     public class GetNotificationOfUserQuery : IRequest<IList<NotificationVm>>
     {
+        [JsonIgnore]
         public string? UserId { get; set; }
         public int? PageNumber { get; set; }
         public int? ItemCount { get; set; }
@@ -34,8 +36,7 @@ namespace Application.Notifications.Queries.GetNotificationOfUser
 
             var skip = (pageNumber - 1) * itemCount;
             var limit = pageNumber * itemCount;
-            var notifications = await _notification.GetNotifications(request.UserId!, skip, limit);
-            return _mapper.Map<IList<NotificationVm>>(notifications);
+            return await _notification.GetNotifications(request.UserId!, skip, limit);
         }
     }
 }

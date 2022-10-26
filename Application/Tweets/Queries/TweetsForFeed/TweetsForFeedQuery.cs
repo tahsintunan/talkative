@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using MediatR;
 
@@ -6,6 +7,7 @@ namespace Application.Tweets.Queries.TweetsForFeed
 {
     public class TweetsForFeedQuery : IRequest<IList<TweetVm>>
     {
+        [JsonIgnore]
         public string? UserId { get; set; }
         public int? PageNumber { get; set; }
         public int? ItemCount { get; set; }
@@ -14,13 +16,16 @@ namespace Application.Tweets.Queries.TweetsForFeed
     public class TweetForFeedQueryHandler : IRequestHandler<TweetsForFeedQuery, IList<TweetVm>>
     {
         private readonly ITweet _tweetService;
+        private readonly IBlockFilter _blockFilter;
         private readonly IBsonDocumentMapper<TweetVm> _tweetMapper;
 
         public TweetForFeedQueryHandler(
             ITweet tweetService,
+            IBlockFilter blockFilter,
             IBsonDocumentMapper<TweetVm> tweetMapper
         )
         {
+            _blockFilter = blockFilter;
             _tweetService = tweetService;
             _tweetMapper = tweetMapper;
         }
@@ -37,13 +42,13 @@ namespace Application.Tweets.Queries.TweetsForFeed
             var limit = pageNumber * itemCount;
             var tweets = await _tweetService.GenerateFeed(request.UserId!, skip, limit);
 
-            IList<TweetVm> result = new List<TweetVm>();
+            IList<TweetVm> tweetVmList = new List<TweetVm>();
 
             foreach (var tweet in tweets)
             {
-                result.Add(_tweetMapper.map(tweet));
+                tweetVmList.Add(_tweetMapper.map(tweet));
             }
-            return result;
+            return await _blockFilter.GetFilteredTweets(tweetVmList, request.UserId!);
         }
     }
 }

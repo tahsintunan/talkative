@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using Domain.Entities;
 using MediatR;
@@ -10,6 +11,7 @@ namespace Application.Retweets.Command.DeleteQuoteRetweet
     {
         public string? TweetId { get; set; }
         public string? OriginalTweetId { get; set; }
+        [JsonIgnore]
         public string? UserId { get; set; }
     }
 

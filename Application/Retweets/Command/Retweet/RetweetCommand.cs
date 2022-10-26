@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using Domain.Entities;
 using MediatR;
@@ -13,6 +14,7 @@ namespace Application.Retweets.Command.Retweet
         public bool IsQuoteRetweet { get; set; }
         public IList<string>? Hashtags { get; set; }
         public string? OriginalTweetId { get; set; }
+        [JsonIgnore]
         public string? UserId { get; set; }
     }
 

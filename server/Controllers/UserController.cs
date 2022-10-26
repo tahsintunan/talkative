@@ -18,6 +18,7 @@ namespace server.Controllers
             [FromQuery] GetAllUsersQuery getAllUsersQuery
         )
         {
+            getAllUsersQuery.UserId = HttpContext.Items["User"]!.ToString();
             return Ok(await Mediator.Send(getAllUsersQuery));
         }
 
@@ -30,7 +31,8 @@ namespace server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserVm>> GetUser(string id)
         {
-            return Ok(await Mediator.Send(new GetUserByIdQuery() { UserId = id }));
+            GetUserByIdQuery getUserByIdQuery = new() { UserId = id, CurrentUser = HttpContext.Items["User"]!.ToString() };
+            return Ok(await Mediator.Send(getUserByIdQuery));
         }
 
         [HttpPost("forget-password")]
@@ -63,7 +65,7 @@ namespace server.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("ban/{id}")]
         public async Task<IActionResult> BanUser(string id)
         {
             BanUserCommand banUserCommand = new() { UserId = id };

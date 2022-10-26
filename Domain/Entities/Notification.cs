@@ -14,9 +14,11 @@ public class Notification
     [BsonElement("eventType")]
     public string? EventType { get; set; }
 
+    [BsonRepresentation(BsonType.ObjectId)]
     [BsonElement("notificationReceiverId")]
     public string? NotificationReceiverId { get; set; }
 
+    [BsonRepresentation(BsonType.ObjectId)]
     [BsonElement("eventTriggererId")]
     public string? EventTriggererId { get; set; }
 

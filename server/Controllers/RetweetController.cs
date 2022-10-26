@@ -17,6 +17,7 @@ namespace server.Controllers
             [FromQuery] GetQuoteRetweetsOfSingleTweetQuery getQuoteRetweetsOfSingleTweetQuery
         )
         {
+            getQuoteRetweetsOfSingleTweetQuery.UserId = HttpContext.Items["User"]!.ToString();
             getQuoteRetweetsOfSingleTweetQuery.OriginalTweetId = id;
             return Ok(await Mediator.Send(getQuoteRetweetsOfSingleTweetQuery));
         }
@@ -27,6 +28,7 @@ namespace server.Controllers
             [FromQuery] GetRetweetUsersQuery getRetweetUsersQuery
         )
         {
+            getRetweetUsersQuery.UserId = HttpContext.Items["User"]!.ToString();
             getRetweetUsersQuery.OriginalTweetId = id;
             return Ok(await Mediator.Send(getRetweetUsersQuery));
         }

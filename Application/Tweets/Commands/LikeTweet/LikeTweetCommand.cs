@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using Domain.Entities;
 using MediatR;
@@ -9,6 +10,7 @@ namespace Application.Tweets.Commands.LikeTweet
     public class LikeTweetCommand : IRequest
     {
         public string? TweetId { get; set; }
+        [JsonIgnore]
         public string? UserId { get; set; }
         public bool IsLiked { get; set; }
     }

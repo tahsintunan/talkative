@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using Domain.Entities;
 using MediatR;
@@ -11,6 +12,7 @@ namespace Application.Tweets.Commands.UpdateTweet
         public string? Id { get; set; }
         public string? Text { get; set; }
         public IList<string>? Hashtags { get; set; }
+        [JsonIgnore]
         public string? UserId { get; set; }
     }
 

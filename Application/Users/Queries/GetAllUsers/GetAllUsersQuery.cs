@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using MediatR;
 
@@ -6,6 +7,8 @@ namespace Application.Users.Queries.GetAllUsers
 {
     public class GetAllUsersQuery : IRequest<IList<UserVm>?>
     {
+        [JsonIgnore]
+        public string? UserId { get; set; }
         public int? PageNumber { get; set; }
         public int? ItemCount { get; set; }
     }
@@ -13,10 +16,12 @@ namespace Application.Users.Queries.GetAllUsers
     public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, IList<UserVm>?>
     {
         private readonly IUser _userService;
+        private readonly IBlockFilter _blockFilter;
 
-        public GetAllUsersQueryHandler(IUser userService)
+        public GetAllUsersQueryHandler(IUser userService, IBlockFilter blockFilter)
         {
             _userService = userService;
+            _blockFilter = blockFilter;
         }
 
         public async Task<IList<UserVm>?> Handle(
@@ -29,7 +34,9 @@ namespace Application.Users.Queries.GetAllUsers
 
             var skip = (pageNumber - 1) * itemCount;
             var limit = pageNumber * itemCount;
-            return await _userService.GetAllUsers(skip, limit);
+            var users = await _userService.GetAllUsers(skip, limit);
+            if (users == null) return null;
+            return await _blockFilter.GetFilteredUsers(users, request.UserId!);
         }
     }
 }

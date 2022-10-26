@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using MediatR;
 using MongoDB.Bson;
@@ -10,19 +11,24 @@ namespace Application.Tweets.Queries.GetTweetsOfSingleUser
         public int? PageNumber { get; set; }
         public int? ItemCount { get; set; }
         public string? UserId { get; set; }
+        [JsonIgnore]
+        public string? CurrentUserId { get; set; }
     }
 
     public class GetTweetsOfSingleUserQueryHandler
         : IRequestHandler<GetTweetsOfSingleUserQuery, IList<TweetVm>>
     {
         private readonly ITweet _tweetService;
+        private readonly IBlockFilter _blockFilter;
         private readonly IBsonDocumentMapper<TweetVm> _tweetMapper;
 
         public GetTweetsOfSingleUserQueryHandler(
             ITweet tweetService,
+            IBlockFilter blockFilter,
             IBsonDocumentMapper<TweetVm> tweetMapper
         )
         {
+            _blockFilter = blockFilter;
             _tweetService = tweetService;
             _tweetMapper = tweetMapper;
         }
@@ -46,7 +52,11 @@ namespace Application.Tweets.Queries.GetTweetsOfSingleUser
             {
                 result.Add(_tweetMapper.map(tweet));
             }
-            return result;
+            if (request.CurrentUserId == request.UserId)
+            {
+                return result;
+            }
+            return await _blockFilter.GetFilteredTweets(result, request.CurrentUserId!);
         }
     }
 }

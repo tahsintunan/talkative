@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using MediatR;
 
@@ -6,6 +7,8 @@ namespace Application.Tweets.Queries.SearchTweetsByHashtag
 {
     public class SearchTweetsByHashtagQuery : IRequest<IList<TweetVm>>
     {
+        [JsonIgnore]
+        public string? UserId { get; set; }
         public string? Hashtag { get; set; }
         public int? PageNumber { get; set; }
         public int? ItemCount { get; set; }
@@ -15,13 +18,16 @@ namespace Application.Tweets.Queries.SearchTweetsByHashtag
         : IRequestHandler<SearchTweetsByHashtagQuery, IList<TweetVm>>
     {
         private readonly ITweet _tweetService;
+        private IBlockFilter _blockFilter;
         private readonly IBsonDocumentMapper<TweetVm> _tweetBsonMapper;
 
         public GetTweetsByHashtagQueryHandler(
             ITweet tweetService,
+            IBlockFilter blockFilter,
             IBsonDocumentMapper<TweetVm> tweetBsonMapper
         )
         {
+            _blockFilter = blockFilter;
             _tweetService = tweetService;
             _tweetBsonMapper = tweetBsonMapper;
         }
@@ -45,7 +51,7 @@ namespace Application.Tweets.Queries.SearchTweetsByHashtag
                 tweetVmList.Add(_tweetBsonMapper.map(tweet));
             }
 
-            return tweetVmList;
+            return await _blockFilter.GetFilteredTweets(tweetVmList, request.UserId!);
         }
     }
 }
