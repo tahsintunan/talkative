@@ -1,8 +1,8 @@
-using Domain.Entities;
+using Application.Common.ViewModels;
 
 namespace Application.Common.Interface;
 
 public interface INotificationHub
 {
-    public Task SendNotification(Notification notification);
+    public Task SendNotification(NotificationVm notificationVm);
 }

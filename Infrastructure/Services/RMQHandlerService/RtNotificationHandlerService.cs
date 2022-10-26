@@ -1,5 +1,6 @@
 using System.Text;
 using Application.Common.Interface;
+using Application.Common.ViewModels;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -16,9 +17,11 @@ public class RtNotificationHandlerService: IHostedService
     private readonly IModel _channel;
     private readonly EventingBasicConsumer _consumer;
     private readonly INotificationHub _notificationHub;
+    private readonly IUser _userService;
 
-    public RtNotificationHandlerService(IConfiguration configuration, INotificationHub notificationHub)
+    public RtNotificationHandlerService(IConfiguration configuration, INotificationHub notificationHub, IUser userService)
     {
+        _userService = userService;
         _notificationHub = notificationHub;
         var connectionFactory = new ConnectionFactory { Uri = new Uri(configuration["RabbitMQ:ConnectionString"]) };
         var connection = connectionFactory.CreateConnection();
@@ -29,7 +32,23 @@ public class RtNotificationHandlerService: IHostedService
     
     private async Task ProcessNotification(Notification notification)
     {
-        await _notificationHub.SendNotification(notification);
+        var eventTriggererUsername = await GetUsernameById(notification.EventTriggererId!);
+        var notificationVm = new NotificationVm()
+        {
+            EventType = notification.EventType,
+            EventTriggererId = notification.EventTriggererId,
+            EventTriggererUsername = eventTriggererUsername,
+            TweetId = notification.TweetId,
+            CommentId = notification.CommentId,
+            DateTime = DateTime.Now
+        };
+        await _notificationHub.SendNotification(notificationVm);
+    }
+    
+    private async Task<string> GetUsernameById(string userId)
+    {
+        var user = await _userService.GetUserById(userId);
+        return user == null ? "Unknown" : user.Username!;
     }
     
     public Task StartAsync(CancellationToken cancellationToken)

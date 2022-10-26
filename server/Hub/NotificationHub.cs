@@ -13,22 +13,10 @@ public class NotificationHub : Microsoft.AspNetCore.SignalR.Hub, INotificationHu
         _hubContext = hubContext;
     }
     
-    public async Task SendNotification(Notification notification)
+    public async Task SendNotification(NotificationVm notificationVm)
     {
-        var notificationVm = new NotificationVm()
-        {
-            EventType = notification.EventType,
-            EventTriggererId = notification.EventTriggererId,
-            EventTriggererUsername = notification.EventTriggererUsername,
-            TweetId = notification.TweetId,
-            CommentId = notification.CommentId,
-            DateTime = notification.Datetime
-        };
-        
-        // logic here
         await _hubContext.Clients.All.SendAsync("GetNotification", notificationVm);
         
-        // send notification to client
         // var connectionIds = new List<string>() { "sdf", "sdf" };
         // await _hubContext.Clients.Clients(connectionIds).SendAsync("GetNotification", notificationVm);
     }

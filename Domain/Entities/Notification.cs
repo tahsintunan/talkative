@@ -20,10 +20,6 @@ public class Notification
     [BsonElement("eventTriggererId")]
     public string? EventTriggererId { get; set; }
 
-    [BsonElement("eventTriggererUsername")]
-    [BsonIgnore]
-    public string? EventTriggererUsername { get; set; }
-
     [BsonElement("tweetId")]
     public string? TweetId { get; set; }
 
