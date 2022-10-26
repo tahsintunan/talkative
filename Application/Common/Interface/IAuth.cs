@@ -1,5 +1,5 @@
-﻿using Domain.Entities;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
+using Domain.Entities;
 
 namespace Application.Common.Interface
 {

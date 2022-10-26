@@ -4,6 +4,7 @@ using Application.Common.ViewModels;
 using Domain.Entities;
 using MediatR;
 using MongoDB.Driver;
+using INotification = Application.Common.Interface.INotification;
 
 namespace Application.Tweets.Commands.LikeTweet
 {
@@ -19,12 +20,12 @@ namespace Application.Tweets.Commands.LikeTweet
     {
         private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetBsonDocumentMapper;
-        private readonly Common.Interface.INotification _notificationService;
+        private readonly INotification _notificationService;
 
         public LikeTweetCommandHandler(
             ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetBsonDocumentMapper,
-            Common.Interface.INotification notificationService
+            INotification notificationService
         )
         {
             _tweetService = tweetService;

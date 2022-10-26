@@ -5,6 +5,7 @@ using Domain.Entities;
 using MediatR;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using INotification = Application.Common.Interface.INotification;
 
 namespace Application.Retweets.Command.Retweet
 {
@@ -22,12 +23,12 @@ namespace Application.Retweets.Command.Retweet
     {
         private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _tweetDocumentMapper;
-        private readonly Common.Interface.INotification _notificationService;
+        private readonly INotification _notificationService;
 
         public RetweetCommandHandler(
             ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetDocumentMapper,
-            Common.Interface.INotification notificationService
+            INotification notificationService
         )
         {
             _tweetService = tweetService;

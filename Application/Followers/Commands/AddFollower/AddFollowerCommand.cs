@@ -2,6 +2,7 @@
 using Domain.Entities;
 using MediatR;
 using MongoDB.Bson;
+using INotification = Application.Common.Interface.INotification;
 
 namespace Application.Followers.Commands.AddFollower
 {
@@ -14,11 +15,11 @@ namespace Application.Followers.Commands.AddFollower
     public class AddFollowerCommandHandler : IRequestHandler<AddFollowerCommand>
     {
         private readonly IFollow _followerService;
-        private readonly Common.Interface.INotification _notificationService;
+        private readonly INotification _notificationService;
 
         public AddFollowerCommandHandler(
             IFollow followerService,
-            Common.Interface.INotification notificationService
+            INotification notificationService
         )
         {
             _followerService = followerService;

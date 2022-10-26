@@ -1,6 +1,5 @@
 using Application.Common.Interface;
 using Application.Common.ViewModels;
-using Domain.Entities;
 using Microsoft.AspNetCore.SignalR;
 
 namespace server.Hub;

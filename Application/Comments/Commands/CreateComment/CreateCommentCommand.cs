@@ -5,6 +5,7 @@ using Domain.Entities;
 using MediatR;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using INotification = Application.Common.Interface.INotification;
 
 namespace Application.Comments.Commands.CreateComment
 {
@@ -22,13 +23,13 @@ namespace Application.Comments.Commands.CreateComment
         private readonly IComment _commentService;
         private readonly ITweet _tweetService;
         private readonly IBsonDocumentMapper<TweetVm> _mapper;
-        private readonly Common.Interface.INotification _notificationService;
+        private readonly INotification _notificationService;
 
         public CreateCommentCommandHandler(
             IComment commentService,
             ITweet tweetService,
             IBsonDocumentMapper<TweetVm> tweetMapper,
-            Common.Interface.INotification notificationService
+            INotification notificationService
         )
         {
             _commentService = commentService;

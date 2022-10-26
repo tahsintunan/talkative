@@ -3,6 +3,7 @@ using Application.Common.Interface;
 using Domain.Entities;
 using MediatR;
 using MongoDB.Driver;
+using INotification = Application.Common.Interface.INotification;
 
 namespace Application.Comments.Commands.LikeComment
 {
@@ -16,11 +17,11 @@ namespace Application.Comments.Commands.LikeComment
     public class LikeCommentCommandHandler : IRequestHandler<LikeCommentCommand>
     {
         private readonly IComment _commentService;
-        private readonly Common.Interface.INotification _notificationService;
+        private readonly INotification _notificationService;
 
         public LikeCommentCommandHandler(
             IComment commentService,
-            Common.Interface.INotification notificationService
+            INotification notificationService
         )
         {
             _commentService = commentService;
