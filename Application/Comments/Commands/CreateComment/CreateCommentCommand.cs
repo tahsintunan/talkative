@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using Domain.Entities;
 using MediatR;
@@ -9,6 +10,7 @@ namespace Application.Comments.Commands.CreateComment
 {
     public class CreateCommentCommand : IRequest<CreateCommentCommandVm>
     {
+        [JsonIgnore]
         public string? UserId { get; set; }
         public string? TweetId { get; set; }
         public string? Text { get; set; }

@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Domain.Entities;
 using MediatR;
 using MongoDB.Driver;
@@ -9,6 +10,7 @@ namespace Application.Comments.Commands.UpdateComment
     {
         public string? Id { get; set; }
         public string? Text { get; set; }
+        [JsonIgnore]
         public string? UserId { get; set; }
     }
 

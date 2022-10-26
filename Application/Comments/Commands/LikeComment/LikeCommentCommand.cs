@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Domain.Entities;
 using MediatR;
 using MongoDB.Driver;
@@ -8,6 +9,7 @@ namespace Application.Comments.Commands.LikeComment
     public class LikeCommentCommand : IRequest
     {
         public string? Id { get; set; }
+        [JsonIgnore]
         public string? UserId { get; set; }
     }
 

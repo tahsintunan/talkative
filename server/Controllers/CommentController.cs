@@ -23,7 +23,9 @@ namespace server.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            return Ok(await Mediator.Send(new GetCommentByIdQuery() { Id = id }));
+            var getCommentsByTweetIdQuery = new GetCommentByIdQuery() { Id = id };
+            getCommentsByTweetIdQuery.UserId = HttpContext.Items["User"]!.ToString();
+            return Ok(await Mediator.Send(getCommentsByTweetIdQuery));
         }
 
         [HttpGet("tweet/{id}")]
@@ -32,6 +34,7 @@ namespace server.Controllers
             [FromQuery] GetCommentsByTweetIdQuery getCommentsByTweetIdQuery
         )
         {
+            getCommentsByTweetIdQuery.UserId = HttpContext.Items["User"]!.ToString();
             getCommentsByTweetIdQuery.TweetId = id;
             return Ok(await Mediator.Send(getCommentsByTweetIdQuery));
         }

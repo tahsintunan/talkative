@@ -1,4 +1,5 @@
-﻿using Application.Common.Interface;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using MediatR;
 
@@ -6,6 +7,8 @@ namespace Application.Comments.Queries.GetCommentsByTweetId
 {
     public class GetCommentsByTweetIdQuery : IRequest<IList<CommentVm>>
     {
+        [JsonIgnore]
+        public string? UserId { get; set; }
         public string? TweetId { get; set; }
         public int? PageNumber { get; set; }
         public int? ItemCount { get; set; }
@@ -15,10 +18,12 @@ namespace Application.Comments.Queries.GetCommentsByTweetId
         : IRequestHandler<GetCommentsByTweetIdQuery, IList<CommentVm>>
     {
         private readonly IComment _commentService;
+        private readonly IBlockFilter _blockFilter;
 
-        public GetCommentsByTweetIdQueryHandler(IComment commentService)
+        public GetCommentsByTweetIdQueryHandler(IComment commentService, IBlockFilter blockFilter)
         {
             _commentService = commentService;
+            _blockFilter = blockFilter;
         }
 
         public async Task<IList<CommentVm>> Handle(
@@ -31,7 +36,9 @@ namespace Application.Comments.Queries.GetCommentsByTweetId
 
             var skip = (pageNumber - 1) * itemCount;
             var limit = pageNumber * itemCount;
-            return await _commentService.GetCommentsByTweetId(request.TweetId!, skip, limit);
+            var commentVmList = await _commentService.GetCommentsByTweetId(request.TweetId!, skip, limit);
+
+            return await _blockFilter.GetFilteredComments(commentVmList, request.UserId!);
         }
     }
 }
