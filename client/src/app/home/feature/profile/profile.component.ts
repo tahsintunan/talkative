@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
+import { TweetStore } from '../../../shared/store/tweet.store';
 import { PaginationModel } from '../../models/pagination.model';
 import { TweetModel } from '../../models/tweet.model';
 import { UserModel, UserUpdateReqModel } from '../../models/user.model';
@@ -8,6 +9,7 @@ import { BlockService } from '../../services/block.service';
 import { FollowService } from '../../services/follow.service';
 import { TweetService } from '../../services/tweet.service';
 import { UserService } from '../../services/user.service';
+import { PasswordUpdateDialogComponent } from '../../ui/profile/password-update-dialog/password-update-dialog.component';
 import { ProfileUpdateDialogComponent } from '../../ui/profile/profile-update-dialog/profile-update-dialog.component';
 
 @Component({
@@ -46,6 +48,7 @@ export class ProfileComponent implements OnInit {
     private blockService: BlockService,
     private tweetService: TweetService,
     private followService: FollowService,
+    private storeService: TweetStore,
     private activeRoute: ActivatedRoute
   ) {}
 
@@ -54,7 +57,7 @@ export class ProfileComponent implements OnInit {
       this.userAuth = res;
     });
 
-    this.tweetService.userTweets.subscribe((res) => {
+    this.storeService.tweetList.subscribe((res) => {
       this.tweets = res;
     });
 
@@ -153,6 +156,20 @@ export class ProfileComponent implements OnInit {
         this.userService.updateProfile(result).subscribe((res) => {
           this.getProfile(this.profileId);
         });
+      }
+    });
+  }
+
+  onPasswordEdit() {
+    const dialogRef = this.dialog.open(PasswordUpdateDialogComponent, {
+      width: '500px',
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        this.userService
+          .updatePassword(result.oldPassword, result.newPassword)
+          .subscribe();
       }
     });
   }

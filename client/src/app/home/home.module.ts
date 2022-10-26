@@ -34,6 +34,7 @@ import { PostMakerDialogComponent } from './ui/tweet/post-maker-dialog/post-make
 import { RetweetContentComponent } from './ui/tweet/retweet-content/retweet-content.component';
 import { TweetItemComponent } from './ui/tweet/tweet-item/tweet-item.component';
 import { SearchResultComponent } from './feature/search-result/search-result.component';
+import { PasswordUpdateDialogComponent } from './ui/profile/password-update-dialog/password-update-dialog.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { SearchResultComponent } from './feature/search-result/search-result.com
     ProfilePeopleItemComponent,
     ProfilePeoplesComponent,
     SearchResultComponent,
+    PasswordUpdateDialogComponent,
   ],
   imports: [
     CommonModule,

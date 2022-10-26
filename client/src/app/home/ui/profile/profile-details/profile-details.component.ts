@@ -23,6 +23,7 @@ export class ProfileDetailsComponent implements OnInit, OnChanges {
   @Input() followings?: UserModel[];
   @Input() postCount: number = 0;
   @Output() onProfileEdit = new EventEmitter();
+  @Output() onPasswordEdit = new EventEmitter();
   @Output() onFollow = new EventEmitter();
   @Output() onUnfollow = new EventEmitter();
   @Output() onBlock = new EventEmitter();
@@ -47,7 +48,7 @@ export class ProfileDetailsComponent implements OnInit, OnChanges {
     });
 
     this.followService.userFollowings.subscribe((res) => {
-      this.isFollowed = res.some((item) => item.userId === this.data?.userId);
+      this.isFollowed = res.includes(this.data?.userId!);
     });
   }
 
@@ -60,7 +61,7 @@ export class ProfileDetailsComponent implements OnInit, OnChanges {
     });
 
     this.followService.userFollowings.subscribe((res) => {
-      this.isFollowed = res.some((item) => item.userId === this.data?.userId);
+      this.isFollowed = res.includes(this.data?.userId!);
     });
   }
 }

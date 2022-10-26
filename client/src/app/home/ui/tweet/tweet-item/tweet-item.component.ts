@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RetweetService } from 'src/app/home/services/retweet.service';
+import { TweetStore } from 'src/app/shared/store/tweet.store';
 import { TweetModel, TweetWriteModel } from '../../../models/tweet.model';
 import { UserModel } from '../../../models/user.model';
 import { TweetService } from '../../../services/tweet.service';
@@ -28,8 +29,9 @@ export class TweetItemComponent implements OnInit {
     private userService: UserService,
     private tweetService: TweetService,
     private retweetService: RetweetService,
-    private dialog: MatDialog,
-    private router: Router
+    private storeService: TweetStore,
+    private router: Router,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -54,7 +56,9 @@ export class TweetItemComponent implements OnInit {
   }
 
   onTagClick(hashtag: string) {
-    console.log(hashtag);
+    this.router.navigate(['/home/search'], {
+      queryParams: { hashtag: hashtag },
+    });
   }
 
   onLike() {
@@ -110,7 +114,23 @@ export class TweetItemComponent implements OnInit {
   }
 
   onRetweetUndo() {
-    this.retweetService.undoRetweet(this.tweet?.id!).subscribe();
+    this.retweetService.undoRetweet(this.tweet?.id!).subscribe(() => {
+      if (this.data?.isRetweet) {
+        this.storeService.removeTweetFromTweetList(this.data?.id!);
+      } else {
+        this.storeService.tweetList.subscribe((res) => {
+          res?.forEach((tweet) => {
+            if (
+              tweet.isRetweet &&
+              tweet.originalTweetId === this.tweet?.id &&
+              tweet.user.userId === this.userAuth?.userId
+            ) {
+              this.storeService.removeTweetFromTweetList(tweet.id);
+            }
+          });
+        });
+      }
+    });
   }
 
   onEdit() {

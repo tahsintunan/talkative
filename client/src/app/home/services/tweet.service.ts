@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
+import { TweetStore } from '../../shared/store/tweet.store';
 import { PaginationModel } from '../models/pagination.model';
 import {
   TweetCreateReqModel,
@@ -17,37 +18,30 @@ import { UserService } from './user.service';
 export class TweetService {
   apiUrl = this.env.apiUrl + 'api/Tweet';
 
-  private readonly feedTweetsSubject = new BehaviorSubject<TweetModel[]>([]);
-  private readonly userTweetSubject = new BehaviorSubject<TweetModel[]>([]);
-
-  public readonly feedTweets = this.feedTweetsSubject.asObservable();
-  public readonly userTweets = this.userTweetSubject.asObservable();
-
   constructor(
     private http: HttpClient,
     private env: EnvService,
+    private storeService: TweetStore,
     private userService: UserService,
     private router: Router
   ) {}
 
   createTweet(tweet: TweetCreateReqModel) {
-    return this.http.post<TweetModel>(this.apiUrl, tweet).pipe(
-      tap((res) => {
-        this.addToUserTweets(res);
-      })
-    );
+    return this.http
+      .post<TweetModel>(this.apiUrl, tweet)
+      .pipe(tap((res) => this.addToUserTweets(res)));
   }
 
   updateTweet(tweet: TweetUpdateReqModel) {
     return this.http
       .put<TweetModel>(this.apiUrl, tweet)
-      .pipe(tap((res) => this.refreshTweet(res)));
+      .pipe(tap((res) => this.storeService.updateTweetInTweetList(res)));
   }
 
   deleteTweet(tweetId: string) {
     return this.http
       .delete(this.apiUrl + '/' + tweetId)
-      .pipe(tap(() => this.removeTweetFromList(tweetId)));
+      .pipe(tap(() => this.storeService.removeTweetFromTweetList(tweetId)));
   }
 
   getTweetById(id: string) {
@@ -58,15 +52,9 @@ export class TweetService {
     return this.http
       .get<TweetModel[]>(this.apiUrl + '/feed', { params: { ...pagination } })
       .pipe(
-        tap((res) => {
-          res = this.filterNullRetweets(res);
-          if (pagination?.pageNumber == 1) this.feedTweetsSubject.next(res);
-          else
-            this.feedTweetsSubject.next([
-              ...this.feedTweetsSubject.getValue(),
-              ...res,
-            ]);
-        })
+        tap((res) =>
+          this.storeService.addTweetsToTweetList(res, pagination.pageNumber)
+        )
       );
   }
 
@@ -76,15 +64,9 @@ export class TweetService {
         params: { ...pagination },
       })
       .pipe(
-        tap((res) => {
-          res = this.filterNullRetweets(res);
-          if (pagination?.pageNumber == 1) this.userTweetSubject.next(res);
-          else
-            this.userTweetSubject.next([
-              ...this.userTweetSubject.getValue(),
-              ...res,
-            ]);
-        })
+        tap((res) =>
+          this.storeService.addTweetsToTweetList(res, pagination.pageNumber)
+        )
       );
   }
 
@@ -94,70 +76,14 @@ export class TweetService {
         tweetId,
         isLiked,
       })
-      .pipe(tap((res) => this.refreshTweet(res)));
+      .pipe(tap((res) => this.storeService.updateTweetInTweetList(res)));
   }
 
   addToUserTweets(tweet: TweetModel) {
     this.userService.userAuth.subscribe((user) => {
       const activeProfileId = this.router.url.split('/profile/')[1];
       if (user.userId === activeProfileId && tweet.user.userId === user.userId)
-        this.userTweetSubject.next([
-          tweet,
-          ...this.userTweetSubject.getValue(),
-        ]);
+        this.storeService.addTweetToTweetList(tweet);
     });
-  }
-
-  refreshTweet(tweet: TweetModel) {
-    if (this.router.url.includes('feed'))
-      this.feedTweetsSubject.next(
-        this.refreshTweetInList(tweet, this.feedTweetsSubject.getValue())
-      );
-
-    if (this.router.url.includes('profile'))
-      this.userTweetSubject.next(
-        this.refreshTweetInList(tweet, this.userTweetSubject.getValue())
-      );
-  }
-
-  refreshTweetInList(tweet: TweetModel, tweets: TweetModel[]) {
-    return tweets.map((x) => {
-      if (x.id === tweet.id) return tweet;
-      else if (x.originalTweet?.id === tweet.id)
-        return { ...x, originalTweet: tweet };
-      else return x;
-    });
-  }
-
-  removeTweetFromList(tweetId: string) {
-    if (this.router.url.includes('feed')) {
-      this.feedTweetsSubject.next(
-        this.filterDeletedTweet(tweetId, this.feedTweetsSubject.getValue())
-      );
-    }
-
-    if (this.router.url.includes('profile'))
-      this.userTweetSubject.next(
-        this.filterDeletedTweet(tweetId, this.userTweetSubject.getValue())
-      );
-  }
-
-  filterDeletedTweet(tweetId: string, tweets: TweetModel[]) {
-    return this.filterNullRetweets(
-      tweets
-        .filter(
-          (x) =>
-            x.id !== tweetId || (x.isRetweet && x.originalTweet?.id !== tweetId)
-        )
-        .map((x) =>
-          x.originalTweet?.id === tweetId
-            ? { ...x, originalTweet: undefined }
-            : x
-        )
-    );
-  }
-
-  filterNullRetweets(tweets: TweetModel[]) {
-    return tweets.filter((x) => !(x.isRetweet && !x.originalTweet));
   }
 }

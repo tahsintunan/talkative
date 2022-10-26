@@ -99,7 +99,7 @@
       <button
         mat-button
         class="flex-1 hover:text-blue-500"
-        (click)="getComments()"
+        (click)="pagination.pageNumber = 1; getComments()"
       >
         <mat-icon class="material-symbols-rounded">mode_comment</mat-icon>
       </button>
@@ -144,16 +144,17 @@
       (onCommentSubmit)="onComment($event)"
     ></app-comment-input>
 
-    <div class="flex flex-col"
-     infiniteScroll
-    [infiniteScrollDistance]="2"
-    [infiniteScrollThrottle]="200"
-    [infiniteScrollContainer]="'#main-panel'"
-    [fromRoot]="true"
-    (scrolled)="onScroll()"
+    <div
+      class="flex flex-col"
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="200"
+      [infiniteScrollContainer]="'#main-panel'"
+      [fromRoot]="true"
+      (scrolled)="onScroll()"
     >
       <h3 class="mb-3 mx-3 text-lg font-semibold text-gray-900">
-        {{ comments.length }} Comments
+        {{ tweet?.comments?.length }} Comments
       </h3>
 
       <app-comment-item

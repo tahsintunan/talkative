@@ -68,6 +68,17 @@ input::-ms-clear {
   display: none;
 }
 
+.mat-dialog-container {
+  padding: 0px !important;
+  overflow-x: hidden !important;
+  height: fit-content !important;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .hashtag {
   color: forestgreen;
   font-weight: 600;

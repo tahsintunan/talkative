@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BlockService } from 'src/app/home/services/block.service';
 import { UserModel } from '../../../models/user.model';
 import { FollowService } from '../../../services/follow.service';
 import { UserService } from '../../../services/user.service';
@@ -34,9 +33,7 @@ export class ProfilePeopleItemComponent implements OnInit {
     });
 
     this.followService.userFollowings.subscribe((res) => {
-      this.isFollowed = res.some(
-        (follow) => follow.userId === this.data?.userId
-      );
+      this.isFollowed = res.includes(this.data?.userId!);
     });
   }
 }

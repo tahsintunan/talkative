@@ -6,6 +6,7 @@
     <button
       #searchButton
       class="transition flex items-center outline-none p-2 text-sm text-gray-400 hover:text-gray-900 bg-transparent rounded hover:bg-gray-200"
+      [disabled]="!formControl.value"
       (click)="onSearchSubmit.emit(formControl.value?.trim())"
     >
       <span class="material-symbols-rounded">search</span>

@@ -1,1 +1,15 @@
-<p>alert works!</p>
+<ng-container [ngSwitch]="alertType">
+  <div
+    *ngSwitchDefault
+    class="p-4 border text-gray-900 border-gray-300 rounded-lg bg-gray-50"
+    role="alert"
+  >
+    <div class="flex gap-2">
+      <span class="material-symbols-rounded">info</span>
+      <div>
+        <p class="font-bold">{{ alertTitle }}</p>
+        <p class="text-sm">{{ massage }}</p>
+      </div>
+    </div>
+  </div>
+</ng-container>

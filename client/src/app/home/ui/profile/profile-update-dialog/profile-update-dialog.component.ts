@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -19,6 +19,7 @@ interface ProfileUpdateDialogData {
   selector: 'app-profile-update-dialog',
   templateUrl: './profile-update-dialog.component.html',
   styleUrls: ['./profile-update-dialog.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class ProfileUpdateDialogComponent implements OnInit {
   formData: FormGroup = this.formBuilder.group({

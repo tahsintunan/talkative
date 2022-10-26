@@ -11,10 +11,8 @@ import { UserModel } from '../models/user.model';
 export class FollowService {
   apiUrl = this.env.apiUrl + 'api/Follow';
 
-  private readonly userFollowersSubject = new BehaviorSubject<UserModel[]>([]);
-  private readonly userFollowingsSubject = new BehaviorSubject<UserModel[]>([]);
+  private readonly userFollowingsSubject = new BehaviorSubject<string[]>([]);
 
-  public readonly userFollowers = this.userFollowersSubject.asObservable();
   public readonly userFollowings = this.userFollowingsSubject.asObservable();
 
   constructor(private http: HttpClient, private env: EnvService) {}
@@ -35,15 +33,9 @@ export class FollowService {
       .pipe(tap(() => this.loadUserFollow()));
   }
 
-  getUserFollowers() {
-    return this.http
-      .get<UserModel[]>(this.apiUrl + '/follower')
-      .pipe(tap((res) => this.userFollowersSubject.next(res)));
-  }
-
   getUserFollowings() {
     return this.http
-      .get<UserModel[]>(this.apiUrl + '/following')
+      .get<string[]>(this.apiUrl + '/following-id')
       .pipe(tap((res) => this.userFollowingsSubject.next(res)));
   }
 

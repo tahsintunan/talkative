@@ -97,7 +97,9 @@ export class TweetDetailsComponent implements OnInit {
   }
 
   onTagClick(hashtag: string) {
-    console.log(hashtag);
+    this.router.navigate(['/home/search'], {
+      queryParams: { hashtag: hashtag },
+    });
   }
 
   onLike() {
@@ -122,6 +124,7 @@ export class TweetDetailsComponent implements OnInit {
         .createComment(this.tweetId, commentText)
         .subscribe((res) => {
           this.comments = [res, ...this.comments];
+          this.tweet?.comments?.push(res.id);
         });
     }
   }
@@ -230,6 +233,7 @@ export class TweetDetailsComponent implements OnInit {
 
   onCommentDelete(commentId: string) {
     this.commentService.deleteComment(commentId).subscribe(() => {
+      this.tweet?.comments?.splice(this.tweet?.comments?.indexOf(commentId), 1);
       this.comments = this.comments.filter(
         (comment) => comment.id !== commentId
       );

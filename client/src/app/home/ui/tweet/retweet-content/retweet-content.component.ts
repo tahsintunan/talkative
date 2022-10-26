@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TweetModel } from '../../../models/tweet.model';
 
@@ -19,6 +19,8 @@ export class RetweetContentComponent implements OnInit {
   }
 
   onTagClick(hashtag: string) {
-    console.log(hashtag);
+    this.router.navigate(['/home/search'], {
+      queryParams: { hashtag: hashtag },
+    });
   }
 }

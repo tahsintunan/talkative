@@ -51,4 +51,15 @@ export class UserService {
       .put<UserModel>(this.apiUrl, user)
       .pipe(tap((res) => this.loadUserAuth()));
   }
+
+  updatePassword(oldPassword: string, newPassword: string) {
+    return this.http.post(this.apiUrl + '/update-password', {
+      oldPassword,
+      newPassword,
+    });
+  }
+
+  getUserAnalytics(userId: string) {
+    return this.http.get(this.apiUrl + '/count/' + userId);
+  }
 }

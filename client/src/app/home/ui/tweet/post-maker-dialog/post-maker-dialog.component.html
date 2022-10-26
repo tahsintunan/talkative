@@ -1,53 +1,50 @@
-<div
-  mat-dialog-title
-  class="!flex !items-center pb-3 justify-between border-b border-gray-200"
->
-  <h3 class="text-xl font-semibold text-gray-900">
-    {{ data?.isEdit ? "Edit Post" : "Create Post" }}
-  </h3>
-  <button
-    class="outline-none text-gray-900 bg-transparent hover:bg-gray-200 focus:bg-gray-200 rounded-full text-sm p-1.5 ml-auto inline-flex items-center"
-    mat-dialog-close
+<div>
+  <div
+    class="relative flex items-center p-4 justify-center border-b border-gray-200"
   >
-    <span class="material-symbols-rounded">close</span>
-  </button>
-</div>
+    <h3 class="text-xl font-semibold text-gray-900">
+      {{ data?.isEdit ? "Edit Post" : "Create Post" }}
+    </h3>
+    <button
+      class="absolute right-3 outline-none text-gray-900 bg-transparent hover:bg-gray-200 focus:bg-gray-200 rounded-full text-sm p-1.5 inline-flex items-center"
+      mat-dialog-close
+    >
+      <span class="material-symbols-rounded">close</span>
+    </button>
+  </div>
 
-<div mat-dialog-content>
-  <span
-    class="mb-2 p-1 rounded-full text-gray-500 bg-gray-100 font-bold text-md flex items-center w-max"
-  >
-    <app-avatar
-      alt="User"
-      bgColor="#fff"
-      [src]="userAuth?.username"
-      size="36px"
-      [generateAvater]="true"
-    ></app-avatar>
-    <span class="px-2">
-      {{ userAuth?.username }}
+  <div class="p-4">
+    <span
+      class="mb-2 p-1 rounded-full text-gray-500 bg-gray-100 font-bold text-md flex items-center w-max"
+    >
+      <app-avatar
+        alt="User"
+        bgColor="#fff"
+        [src]="userAuth?.username"
+        size="36px"
+        [generateAvater]="true"
+      ></app-avatar>
+      <span class="px-2">
+        {{ userAuth?.username }}
+      </span>
     </span>
-  </span>
 
-  <app-retweet-content
-    *ngIf="data?.isQuoteRetweet"
-    [data]="retweetContent"
-  ></app-retweet-content>
+    <app-retweet-content
+      *ngIf="data?.isQuoteRetweet"
+      [data]="retweetContent"
+    ></app-retweet-content>
 
-  <app-hashtag-input
-    [rows]="8"
-    [placeholder]="'What do you want to say?'"
-    classExpression="w-full pt-3 text-lg outline-0"
-    [text]="formData.controls['text'].value"
-    (onChange)="onHashtagInputChanged($event)"
-  ></app-hashtag-input>
-</div>
+    <app-hashtag-input
+      [rows]="8"
+      [placeholder]="'What do you want to say?'"
+      classExpression="w-full pt-3 text-lg outline-0"
+      [text]="formData.controls['text'].value"
+      (onChange)="onHashtagInputChanged($event)"
+    ></app-hashtag-input>
+  </div>
 
-<div mat-dialog-actions>
   <button
-    mat-raised-button
-    color="primary"
-    class="w-full"
+    class="w-full text-white bg-primary hover:bg-primaryDark outline-none font-lg rounded-b text-sm px-5 py-3 text-center"
     [disabled]="formData.invalid"
     (click)="onSubmit()"
   >

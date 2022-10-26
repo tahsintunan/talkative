@@ -9,7 +9,7 @@
       size="170px"
       [src]="data?.username"
       [generateAvater]="true"
-      borderColor="#fafafa"
+      borderColor="#fdfdfd"
       borderWidth="10px"
       borderRadius="50%"
       bgColor="#fff"
@@ -56,7 +56,7 @@
         Edit Profile <span class="material-symbols-rounded">edit</span>
       </button>
 
-      <button mat-raised-button color="basic">
+      <button mat-raised-button color="basic" (click)="onPasswordEdit.emit()">
         Change Password <span class="material-symbols-rounded">key</span>
       </button>
     </ng-container>

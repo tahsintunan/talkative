@@ -40,6 +40,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     HashtagInputComponent,
     SearchInputComponent,
     HashtagRendererComponent,
+    AlertComponent,
   ],
 })
 export class SharedModule {}

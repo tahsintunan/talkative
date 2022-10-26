@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { TweetStore } from '../../../shared/store/tweet.store';
 import { PaginationModel } from '../../models/pagination.model';
 import { TweetModel, TweetWriteModel } from '../../models/tweet.model';
 import { UserModel } from '../../models/user.model';
@@ -23,6 +24,7 @@ export class FeedComponent implements OnInit {
   constructor(
     private userService: UserService,
     private tweetService: TweetService,
+    private storeService: TweetStore,
     private dialog: MatDialog
   ) {}
 
@@ -31,7 +33,7 @@ export class FeedComponent implements OnInit {
       this.userAuth = res;
     });
 
-    this.tweetService.feedTweets.subscribe((res) => {
+    this.storeService.tweetList.subscribe((res) => {
       this.tweets = res;
     });
 
