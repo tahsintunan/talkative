@@ -147,4 +147,20 @@ public class NotificationService : INotification
 
         return notificationVms;
     }
+
+    public async Task DeleteNotification(string notificationId)
+    {
+        await _notificationCollection.DeleteOneAsync(x => x.Id == notificationId);
+    }
+
+    public async Task UpdateReadStatus(string notificationId)
+    {
+        var notification = await GetNotification(notificationId);
+        await _notificationCollection.UpdateOneAsync(x => x.Id == notificationId, Builders<Notification>.Update.Set(x => x.IsRead, !notification.IsRead));
+    }
+
+    private async Task<Notification> GetNotification(string notificationId)
+    {
+        return await _notificationCollection.Find(x => x.Id == notificationId).FirstOrDefaultAsync();
+    }
 }

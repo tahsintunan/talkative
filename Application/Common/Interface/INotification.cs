@@ -9,10 +9,12 @@ namespace Application.Common.Interface;
 
 public interface INotification
 {
-    public Task TriggerFollowNotification(AddFollowerCommand request);
-    public Task TriggerRetweetNotification(Tweet retweet, Blockable originalTweetVm);
-    public Task TriggerLikeTweetNotification(LikeTweetCommand request, Blockable tweetVm);
-    public Task TriggerCommentNotification(Comment comment, Blockable tweetVm);
-    public Task TriggerLikeCommentNotification(LikeCommentCommand request, CommentVm commentVm);
-    public Task<IList<NotificationVm>> GetNotifications(string userId, int skip, int limit);
+    Task TriggerFollowNotification(AddFollowerCommand request);
+    Task TriggerRetweetNotification(Tweet retweet, Blockable originalTweetVm);
+    Task TriggerLikeTweetNotification(LikeTweetCommand request, Blockable tweetVm);
+    Task TriggerCommentNotification(Comment comment, Blockable tweetVm);
+    Task TriggerLikeCommentNotification(LikeCommentCommand request, CommentVm commentVm);
+    Task<IList<NotificationVm>> GetNotifications(string userId, int skip, int limit);
+    Task DeleteNotification(string notificationId);
+    Task UpdateReadStatus(string notificationId);
 }
