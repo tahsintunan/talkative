@@ -38,7 +38,8 @@ public class AuthService : IAuth
 
     public async Task SignupUser(User user)
     {
-        if (await CheckIfUserExists(user.Username!, user.Email!)) throw new BadRequestException("User already exists");
+        if (await CheckIfUserExists(user.Username!, user.Email!))
+            throw new BadRequestException("User already exists.");
 
         string hashedPassword;
         using (var sha256Hash = SHA256.Create())
@@ -53,16 +54,15 @@ public class AuthService : IAuth
     public async Task<string?> LoginUser(string username, string password)
     {
         if (!await CheckIfUsernameExists(username))
-            throw new BadRequestException("username doesn't exist");
+            throw new BadRequestException("Username doesn't exist.");
 
         if (!await CheckIfPasswordMatches(username, password))
-            throw new BadRequestException("Password doesn't match");
+            throw new BadRequestException("Password doesn't match.");
 
         var user = await _userCollection
             .Find(
                 user =>
-                    user.Username == username
-                    && (user.IsBanned == null || user.IsBanned == false)
+                    user.Username == username && (user.IsBanned == null || user.IsBanned == false)
             )
             .FirstOrDefaultAsync();
         var accessToken = GenerateAccessToken(user);
@@ -88,7 +88,8 @@ public class AuthService : IAuth
     {
         var data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(password));
         var sBuilder = new StringBuilder();
-        foreach (var t in data) sBuilder.Append(t.ToString("x2"));
+        foreach (var t in data)
+            sBuilder.Append(t.ToString("x2"));
         return sBuilder.ToString();
     }
 
@@ -127,15 +128,10 @@ public class AuthService : IAuth
             new Claim(ClaimTypes.Name, user.Username!),
             new Claim("user_id", user.Id!),
             new Claim(ClaimTypes.Email, user.Email!),
-            new Claim(
-                ClaimTypes.DateOfBirth,
-                user.DateOfBirth.ToString(CultureInfo.CurrentCulture)
-            )
+            new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString(CultureInfo.CurrentCulture))
         };
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(
-                _configuration.GetSection("JwtSettings:AccessTokenKey").Value
-            )
+            Encoding.UTF8.GetBytes(_configuration.GetSection("JwtSettings:AccessTokenKey").Value)
         );
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
