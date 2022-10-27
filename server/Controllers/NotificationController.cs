@@ -17,7 +17,7 @@ public class NotificationController : ApiControllerBase
         return Ok(await Mediator.Send(getNotificationOfUserQuery));
     }
 
-    [HttpPatch("notificationId")]
+    [HttpPatch("{notificationId}")]
     public async Task<IActionResult> UpdateReadStatus(string notificationId)
     {
         UpdateReadStatusCommand updateReadStatusCommand = new() { NotificationId = notificationId };
@@ -25,10 +25,11 @@ public class NotificationController : ApiControllerBase
         return NoContent();
     }
 
-    [HttpDelete("notificationId")]
+    [HttpDelete("{notificationId}")]
     public async Task<IActionResult> DeleteNotification(string notificationId)
     {
-        DeleteNotificationCommand deleteNotificationCommand = new() { NotificationId = notificationId };
+        DeleteNotificationCommand deleteNotificationCommand =
+            new() { NotificationId = notificationId };
         await Mediator.Send(deleteNotificationCommand);
         return NoContent();
     }
