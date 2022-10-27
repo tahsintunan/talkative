@@ -41,12 +41,19 @@ public class BlockFilterService : IBlockFilter
     public async Task<HashSet<string>> GetBlockedUserIds(string userId)
     {
         var blockedUserIds = new HashSet<string>();
+
         var user = await _userService.GetUserById(userId);
         if (user == null) return blockedUserIds;
-        var blockedBy = user.BlockedBy;
-        if (blockedBy == null) return blockedUserIds;
+        var (blocked, blockedBy) = (user.Blocked, user.BlockedBy);
 
-        foreach (var id in blockedBy) blockedUserIds.Add(id!);
+        if (blocked != null)
+            foreach (var id in blocked)
+                blockedUserIds.Add(id!);
+
+        if (blockedBy != null)
+            foreach (var id in blockedBy)
+                blockedUserIds.Add(id!);
+
         return blockedUserIds;
     }
 }
