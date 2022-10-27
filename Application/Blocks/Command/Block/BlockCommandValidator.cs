@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 
-namespace Application.Blocks.Command.Block
+namespace Application.Blocks.Command.Block;
+
+public class BlockCommandValidator : AbstractValidator<BlockCommand>
 {
-    public class BlockCommandValidator : AbstractValidator<BlockCommand>
+    public BlockCommandValidator()
     {
-        public BlockCommandValidator()
-        {
-            RuleFor(x => x.Blocked).NotEmpty().NotNull().WithMessage("Blocked id cannot be null");
-        }
+        RuleFor(x => x.Blocked).NotEmpty().NotNull().WithMessage("Blocked id cannot be null");
     }
 }

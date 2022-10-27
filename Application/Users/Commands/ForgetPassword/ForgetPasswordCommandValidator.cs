@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 
-namespace Application.Users.Commands.ForgetPassword
+namespace Application.Users.Commands.ForgetPassword;
+
+public class ForgetPasswordCommandValidator : AbstractValidator<ForgetPasswordCommand>
 {
-    public class ForgetPasswordCommandValidator : AbstractValidator<ForgetPasswordCommand>
+    public ForgetPasswordCommandValidator()
     {
-        public ForgetPasswordCommandValidator()
-        {
-            RuleFor(x => x.Email).NotEmpty().NotNull().WithMessage("Must provide an email");
-        }
+        RuleFor(x => x.Email).NotEmpty().NotNull().WithMessage("Must provide an email");
     }
 }

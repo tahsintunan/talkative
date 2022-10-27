@@ -13,8 +13,8 @@ public class BlockCommand : IRequest
 
 public class BlockCommandHandler : IRequestHandler<BlockCommand>
 {
-    private readonly IUser _userService;
     private readonly IFollow _followService;
+    private readonly IUser _userService;
 
     public BlockCommandHandler(IUser userService, IFollow followService)
     {

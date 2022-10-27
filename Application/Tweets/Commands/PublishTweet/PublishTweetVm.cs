@@ -1,7 +1,6 @@
-﻿namespace Application.Tweets.Commands.PublishTweet
+﻿namespace Application.Tweets.Commands.PublishTweet;
+
+public class PublishTweetVm
 {
-    public class PublishTweetVm
-    {
-        public string? Id { get; set; }
-    }
+    public string? Id { get; set; }
 }

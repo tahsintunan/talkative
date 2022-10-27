@@ -4,59 +4,55 @@ using Domain.Entities;
 using MediatR;
 using MongoDB.Driver;
 
-namespace Application.Comments.Commands.DeleteComment
+namespace Application.Comments.Commands.DeleteComment;
+
+public class DeleteCommentCommand : IRequest
 {
-    public class DeleteCommentCommand : IRequest
+    public string? Id { get; set; }
+}
+
+public class DeleteCommentCommandHandler : IRequestHandler<DeleteCommentCommand>
+{
+    private readonly IComment _commentService;
+    private readonly IBsonDocumentMapper<TweetVm> _tweetMapper;
+    private readonly ITweet _tweetService;
+
+    public DeleteCommentCommandHandler(
+        IComment commentService,
+        ITweet tweetService,
+        IBsonDocumentMapper<TweetVm> tweetMapper
+    )
     {
-        public string? Id { get; set; }
+        _commentService = commentService;
+        _tweetService = tweetService;
+        _tweetMapper = tweetMapper;
     }
 
-    public class DeleteCommentCommandHandler : IRequestHandler<DeleteCommentCommand>
+    public async Task<Unit> Handle(
+        DeleteCommentCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        private readonly IComment _commentService;
-        private readonly ITweet _tweetService;
-        private readonly IBsonDocumentMapper<TweetVm> _tweetMapper;
+        var comment = await _commentService.GetCommentById(request.Id!);
 
-        public DeleteCommentCommandHandler(
-            IComment commentService,
-            ITweet tweetService,
-            IBsonDocumentMapper<TweetVm> tweetMapper
-        )
+        if (comment == null) return Unit.Value;
+
+        var tweetDoc = await _tweetService.GetTweetById(comment.TweetId!);
+
+        if (tweetDoc != null)
         {
-            _commentService = commentService;
-            _tweetService = tweetService;
-            _tweetMapper = tweetMapper;
+            var tweetVm = _tweetMapper.map(tweetDoc);
+
+            var comments = new List<string>(tweetVm.Comments!);
+            comments.Remove(request.Id!);
+
+            await _tweetService.PartialUpdate(
+                tweetVm!.Id!,
+                Builders<Tweet>.Update.Set(p => p.Comments, comments)
+            );
         }
 
-        public async Task<Unit> Handle(
-            DeleteCommentCommand request,
-            CancellationToken cancellationToken
-        )
-        {
-            var comment = await _commentService.GetCommentById(request.Id!);
-
-            if (comment == null)
-            {
-                return Unit.Value;
-            }
-
-            var tweetDoc = await _tweetService.GetTweetById(comment.TweetId!);
-
-            if (tweetDoc != null)
-            {
-                var tweetVm = _tweetMapper.map(tweetDoc);
-
-                var comments = new List<string>(tweetVm.Comments!);
-                comments.Remove(request.Id!);
-
-                await _tweetService.PartialUpdate(
-                    tweetVm!.Id!,
-                    Builders<Tweet>.Update.Set(p => p.Comments, comments)
-                );
-            }
-
-            await _commentService.DeleteComment(request.Id!);
-            return Unit.Value;
-        }
+        await _commentService.DeleteComment(request.Id!);
+        return Unit.Value;
     }
 }

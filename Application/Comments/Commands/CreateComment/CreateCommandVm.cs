@@ -1,7 +1,6 @@
-﻿namespace Application.Comments.Commands.CreateComment
+﻿namespace Application.Comments.Commands.CreateComment;
+
+public class CreateCommentCommandVm
 {
-    public class CreateCommentCommandVm
-    {
-        public string? Id { get; set; }
-    }
+    public string? Id { get; set; }
 }

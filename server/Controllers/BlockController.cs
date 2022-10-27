@@ -29,10 +29,10 @@ public class BlockController : ApiControllerBase
 
     [HttpGet("blocked-id")]
     public async Task<ActionResult<Dictionary<string, bool>>> GetBlockedUserIds(
-            )
+    )
     {
         var userId = HttpContext.Items["User"]!.ToString();
-        return Ok(await Mediator.Send(new GetBlockedUserIdsQuery() { UserId = userId }));
+        return Ok(await Mediator.Send(new GetBlockedUserIdsQuery { UserId = userId }));
     }
 
     [HttpDelete("{id}")]

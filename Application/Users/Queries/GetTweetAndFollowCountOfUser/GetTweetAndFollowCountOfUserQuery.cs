@@ -1,40 +1,39 @@
 ﻿using Application.Common.Interface;
 using MediatR;
 
-namespace Application.Users.Queries.GetTweetAndFollowCountOfUser
+namespace Application.Users.Queries.GetTweetAndFollowCountOfUser;
+
+public class GetTweetAndFollowCountOfUserQuery : IRequest<GetTweetAndFollowCountOfUserVm>
 {
-    public class GetTweetAndFollowCountOfUserQuery : IRequest<GetTweetAndFollowCountOfUserVm>
+    public string? UserId { get; set; }
+}
+
+public class GetTweetAndFollowCountOfUserQueryHandler
+    : IRequestHandler<GetTweetAndFollowCountOfUserQuery, GetTweetAndFollowCountOfUserVm>
+{
+    private readonly IFollow _followService;
+    private readonly ITweet _tweetService;
+
+    public GetTweetAndFollowCountOfUserQueryHandler(ITweet tweetService, IFollow followService)
     {
-        public string? UserId { get; set; }
+        _tweetService = tweetService;
+        _followService = followService;
     }
 
-    public class GetTweetAndFollowCountOfUserQueryHandler
-        : IRequestHandler<GetTweetAndFollowCountOfUserQuery, GetTweetAndFollowCountOfUserVm>
+    public async Task<GetTweetAndFollowCountOfUserVm> Handle(
+        GetTweetAndFollowCountOfUserQuery request,
+        CancellationToken cancellationToken
+    )
     {
-        private readonly ITweet _tweetService;
-        private readonly IFollow _followService;
-
-        public GetTweetAndFollowCountOfUserQueryHandler(ITweet tweetService, IFollow followService)
+        return new GetTweetAndFollowCountOfUserVm
         {
-            _tweetService = tweetService;
-            _followService = followService;
-        }
-
-        public async Task<GetTweetAndFollowCountOfUserVm> Handle(
-            GetTweetAndFollowCountOfUserQuery request,
-            CancellationToken cancellationToken
-        )
-        {
-            return new GetTweetAndFollowCountOfUserVm()
-            {
-                TweetCount = await _tweetService.GetNumberOfTweetsOfUser(request.UserId!),
-                FollowerCount = await _followService.GetNumberOfFollowerOfSingleUser(
-                    request.UserId!
-                ),
-                FollowingCount = await _followService.GetNumberOfFollowingOfSingleUser(
-                    request.UserId!
-                )
-            };
-        }
+            TweetCount = await _tweetService.GetNumberOfTweetsOfUser(request.UserId!),
+            FollowerCount = await _followService.GetNumberOfFollowerOfSingleUser(
+                request.UserId!
+            ),
+            FollowingCount = await _followService.GetNumberOfFollowingOfSingleUser(
+                request.UserId!
+            )
+        };
     }
 }

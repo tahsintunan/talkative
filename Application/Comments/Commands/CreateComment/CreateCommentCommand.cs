@@ -7,68 +7,67 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using INotification = Application.Common.Interface.INotification;
 
-namespace Application.Comments.Commands.CreateComment
+namespace Application.Comments.Commands.CreateComment;
+
+public class CreateCommentCommand : IRequest<CreateCommentCommandVm>
 {
-    public class CreateCommentCommand : IRequest<CreateCommentCommandVm>
+    [JsonIgnore] public string? UserId { get; set; }
+
+    public string? TweetId { get; set; }
+    public string? Text { get; set; }
+}
+
+public class CreateCommentCommandHandler
+    : IRequestHandler<CreateCommentCommand, CreateCommentCommandVm>
+{
+    private readonly IComment _commentService;
+    private readonly IBsonDocumentMapper<TweetVm> _mapper;
+    private readonly INotification _notificationService;
+    private readonly ITweet _tweetService;
+
+    public CreateCommentCommandHandler(
+        IComment commentService,
+        ITweet tweetService,
+        IBsonDocumentMapper<TweetVm> tweetMapper,
+        INotification notificationService
+    )
     {
-        [JsonIgnore]
-        public string? UserId { get; set; }
-        public string? TweetId { get; set; }
-        public string? Text { get; set; }
+        _commentService = commentService;
+        _tweetService = tweetService;
+        _mapper = tweetMapper;
+        _notificationService = notificationService;
     }
 
-    public class CreateCommentCommandHandler
-        : IRequestHandler<CreateCommentCommand, CreateCommentCommandVm>
+    public async Task<CreateCommentCommandVm> Handle(
+        CreateCommentCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        private readonly IComment _commentService;
-        private readonly ITweet _tweetService;
-        private readonly IBsonDocumentMapper<TweetVm> _mapper;
-        private readonly INotification _notificationService;
+        var id = ObjectId.GenerateNewId().ToString();
 
-        public CreateCommentCommandHandler(
-            IComment commentService,
-            ITweet tweetService,
-            IBsonDocumentMapper<TweetVm> tweetMapper,
-            INotification notificationService
-        )
+        var comment = new Comment
         {
-            _commentService = commentService;
-            _tweetService = tweetService;
-            _mapper = tweetMapper;
-            _notificationService = notificationService;
-        }
+            UserId = request.UserId,
+            CreatedAt = DateTime.Now,
+            TweetId = request.TweetId,
+            Likes = new List<string>(),
+            Id = id,
+            Text = request.Text
+        };
 
-        public async Task<CreateCommentCommandVm> Handle(
-            CreateCommentCommand request,
-            CancellationToken cancellationToken
-        )
-        {
-            var id = ObjectId.GenerateNewId().ToString();
+        await _commentService.CreateComment(comment);
 
-            var comment = new Comment()
-            {
-                UserId = request.UserId,
-                CreatedAt = DateTime.Now,
-                TweetId = request.TweetId,
-                Likes = new List<string>(),
-                Id = id,
-                Text = request.Text,
-            };
+        var tweet = await _tweetService.GetTweetById(request.TweetId!);
+        var tweetVm = _mapper.map(tweet!);
 
-            await _commentService.CreateComment(comment);
+        tweetVm.Comments!.Add(id);
 
-            var tweet = await _tweetService.GetTweetById(request.TweetId!);
-            var tweetVm = _mapper.map(tweet!);
+        await _tweetService.PartialUpdate(
+            request.TweetId!,
+            Builders<Tweet>.Update.Set(p => p.Comments, new List<string>(tweetVm.Comments!))
+        );
 
-            tweetVm.Comments!.Add(id);
-
-            await _tweetService.PartialUpdate(
-                request.TweetId!,
-                Builders<Tweet>.Update.Set(p => p.Comments, new List<string>(tweetVm.Comments!))
-            );
-
-            await _notificationService.TriggerCommentNotification(comment, tweetVm);
-            return new CreateCommentCommandVm() { Id = id };
-        }
+        await _notificationService.TriggerCommentNotification(comment, tweetVm);
+        return new CreateCommentCommandVm { Id = id };
     }
 }

@@ -3,39 +3,35 @@ using Application.Common.Interface;
 using Application.Common.ViewModels;
 using MediatR;
 
-namespace Application.Comments.Queries.GetCommentById
+namespace Application.Comments.Queries.GetCommentById;
+
+public class GetCommentByIdQuery : IRequest<CommentVm?>
 {
-    public class GetCommentByIdQuery : IRequest<CommentVm?>
+    public string? Id { get; set; }
+
+    [JsonIgnore] public string? UserId { get; set; }
+}
+
+public class GetCommentByIdQueryHandler : IRequestHandler<GetCommentByIdQuery, CommentVm?>
+{
+    private readonly IBlockFilter _blockFilterService;
+    private readonly IComment _commentService;
+
+    public GetCommentByIdQueryHandler(IComment commentService, IBlockFilter blockFilterService)
     {
-        public string? Id { get; set; }
-        [JsonIgnore]
-        public string? UserId { get; set; }
+        _commentService = commentService;
+        _blockFilterService = blockFilterService;
     }
 
-    public class GetCommentByIdQueryHandler : IRequestHandler<GetCommentByIdQuery, CommentVm?>
+    public async Task<CommentVm?> Handle(
+        GetCommentByIdQuery request,
+        CancellationToken cancellationToken
+    )
     {
-        private readonly IComment _commentService;
-        private readonly IBlockFilter _blockFilterService;
-        public GetCommentByIdQueryHandler(IComment commentService, IBlockFilter blockFilterService)
-        {
-            _commentService = commentService;
-            _blockFilterService = blockFilterService;
-        }
+        var blockedUserList = await _blockFilterService.GetBlockedUserIds(request.UserId!);
+        var commentVm = await _commentService.GetCommentById(request.Id!);
 
-        public async Task<CommentVm?> Handle(
-            GetCommentByIdQuery request,
-            CancellationToken cancellationToken
-        )
-        {
-
-            var blockedUserList = await _blockFilterService.GetBlockedUserIds(request.UserId!);
-            var commentVm = await _commentService.GetCommentById(request.Id!);
-
-            if (commentVm == null || _blockFilterService.IsBlocked(commentVm, blockedUserList))
-            {
-                return null;
-            }
-            return commentVm;
-        }
+        if (commentVm == null || _blockFilterService.IsBlocked(commentVm, blockedUserList)) return null;
+        return commentVm;
     }
 }

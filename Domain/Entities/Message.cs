@@ -11,18 +11,13 @@ public class Message
     [JsonProperty("_id")]
     public string? Id { get; set; }
 
-    [BsonElement("chatroomId")]
-    public string? ChatroomId { get; set; }
+    [BsonElement("chatroomId")] public string? ChatroomId { get; set; }
 
-    [BsonElement("senderId")]
-    public string? SenderId { get; set; }
+    [BsonElement("senderId")] public string? SenderId { get; set; }
 
-    [BsonElement("receiverId")]
-    public string? ReceiverId { get; set; }
+    [BsonElement("receiverId")] public string? ReceiverId { get; set; }
 
-    [BsonElement("datetime")]
-    public DateTime Datetime { get; set; }
+    [BsonElement("datetime")] public DateTime Datetime { get; set; }
 
-    [BsonElement("messageText")]
-    public string? MessageText { get; set; }
+    [BsonElement("messageText")] public string? MessageText { get; set; }
 }

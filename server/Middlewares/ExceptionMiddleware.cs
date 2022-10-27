@@ -2,52 +2,51 @@ using System.Text.Json;
 using Application.Common.Exceptions;
 using Application.Common.ViewModels;
 
-namespace server.Middlewares
+namespace server.Middlewares;
+
+public class ExceptionMiddleware
 {
-    public class ExceptionMiddleware
+    private readonly IHostEnvironment _env;
+    private readonly ILogger<ExceptionMiddleware> _logger;
+    private readonly RequestDelegate _next;
+
+    public ExceptionMiddleware(
+        RequestDelegate next,
+        ILogger<ExceptionMiddleware> logger,
+        IHostEnvironment env
+    )
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ExceptionMiddleware> _logger;
-        private readonly IHostEnvironment _env;
+        _env = env;
+        _logger = logger;
+        _next = next;
+    }
 
-        public ExceptionMiddleware(
-            RequestDelegate next,
-            ILogger<ExceptionMiddleware> logger,
-            IHostEnvironment env
-        )
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
         {
-            _env = env;
-            _logger = logger;
-            _next = next;
+            await _next(context);
         }
-
-        public async Task InvokeAsync(HttpContext context)
+        catch (Exception ex)
         {
-            try
+            _logger.LogError(ex, ex.Message);
+
+            context.Response.ContentType = "application/json";
+
+            var statusCode = ex is ApiException e ? e.StatusCode : 500;
+
+            context.Response.StatusCode = statusCode;
+
+            var response = _env.IsDevelopment()
+                ? new ErrorVm(statusCode, ex.Message, ex.StackTrace)
+                : new ErrorVm(statusCode, "Internal server error");
+
+            var options = new JsonSerializerOptions
             {
-                await _next(context);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
 
-                context.Response.ContentType = "application/json";
-
-                var statusCode = ex is ApiException e ? e.StatusCode : 500;
-
-                context.Response.StatusCode = statusCode;
-
-                var response = _env.IsDevelopment()
-                    ? new ErrorVm(statusCode, ex.Message, ex.StackTrace?.ToString())
-                    : new ErrorVm(statusCode, "Internal server error");
-
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-
-                await context.Response.WriteAsJsonAsync<ErrorVm>(response, options);
-            }
+            await context.Response.WriteAsJsonAsync(response, options);
         }
     }
 }

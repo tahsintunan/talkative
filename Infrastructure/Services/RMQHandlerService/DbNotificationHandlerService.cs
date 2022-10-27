@@ -14,10 +14,10 @@ namespace Infrastructure.Services.RMQHandlerService;
 public class DbNotificationHandlerService : IHostedService
 {
     private const string RabbitmqQueueName = "DbNotificationQueue";
-
-    private readonly IMongoCollection<Notification> _notificationCollection;
     private readonly IModel _channel;
     private readonly EventingBasicConsumer _consumer;
+
+    private readonly IMongoCollection<Notification> _notificationCollection;
 
     public DbNotificationHandlerService(
         IConfiguration configuration,
@@ -41,11 +41,6 @@ public class DbNotificationHandlerService : IHostedService
         _consumer = new EventingBasicConsumer(_channel);
     }
 
-    private async Task ProcessNotification(Notification notification)
-    {
-        await _notificationCollection.InsertOneAsync(notification);
-    }
-
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _consumer.Received += async (_, eventArgs) =>
@@ -58,12 +53,17 @@ public class DbNotificationHandlerService : IHostedService
             await ProcessNotification(notificationObject!);
         };
 
-        _channel.BasicConsume(queue: RabbitmqQueueName, autoAck: true, consumer: _consumer);
+        _channel.BasicConsume(RabbitmqQueueName, true, _consumer);
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
+    }
+
+    private async Task ProcessNotification(Notification notification)
+    {
+        await _notificationCollection.InsertOneAsync(notification);
     }
 }

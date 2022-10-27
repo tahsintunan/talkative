@@ -11,8 +11,7 @@ public class Notification
     [JsonProperty("_id")]
     public string? Id { get; set; }
 
-    [BsonElement("eventType")]
-    public string? EventType { get; set; }
+    [BsonElement("eventType")] public string? EventType { get; set; }
 
     [BsonRepresentation(BsonType.ObjectId)]
     [BsonElement("notificationReceiverId")]
@@ -22,12 +21,9 @@ public class Notification
     [BsonElement("eventTriggererId")]
     public string? EventTriggererId { get; set; }
 
-    [BsonElement("tweetId")]
-    public string? TweetId { get; set; }
+    [BsonElement("tweetId")] public string? TweetId { get; set; }
 
-    [BsonElement("commentId")]
-    public string? CommentId { get; set; }
+    [BsonElement("commentId")] public string? CommentId { get; set; }
 
-    [BsonElement("datetime")]
-    public DateTime Datetime { get; set; }
+    [BsonElement("datetime")] public DateTime Datetime { get; set; }
 }

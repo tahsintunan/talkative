@@ -1,15 +1,14 @@
 ﻿using FluentValidation;
 
-namespace Application.Retweets.Command.Retweet
+namespace Application.Retweets.Command.Retweet;
+
+public class RetweetCommandValidator : AbstractValidator<RetweetCommand>
 {
-    public class RetweetCommandValidator : AbstractValidator<RetweetCommand>
+    public RetweetCommandValidator()
     {
-        public RetweetCommandValidator()
-        {
-            RuleFor(x => x.OriginalTweetId)
-                .NotEmpty()
-                .NotNull()
-                .WithMessage("Must provide the main tweet");
-        }
+        RuleFor(x => x.OriginalTweetId)
+            .NotEmpty()
+            .NotNull()
+            .WithMessage("Must provide the main tweet");
     }
 }

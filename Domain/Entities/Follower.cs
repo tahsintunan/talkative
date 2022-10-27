@@ -1,22 +1,21 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 
-namespace Domain.Entities
+namespace Domain.Entities;
+
+public class Follower
 {
-    public class Follower
-    {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        [JsonProperty("_id")]
-        public string? Id { get; set; }
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    [JsonProperty("_id")]
+    public string? Id { get; set; }
 
-        [BsonElement("followerId")]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string? FollowerId { get; set; }
+    [BsonElement("followerId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? FollowerId { get; set; }
 
-        [BsonElement("followingId")]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string? FollowingId { get; set; }
-    }
+    [BsonElement("followingId")]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? FollowingId { get; set; }
 }

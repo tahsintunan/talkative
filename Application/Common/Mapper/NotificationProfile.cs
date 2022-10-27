@@ -2,13 +2,12 @@
 using AutoMapper;
 using Domain.Entities;
 
-namespace Application.Common.Mapper
+namespace Application.Common.Mapper;
+
+public class NotificationProfile : Profile
 {
-    public class NotificationProfile : Profile
+    public NotificationProfile()
     {
-        public NotificationProfile()
-        {
-            CreateMap<Notification, NotificationVm>().ReverseMap();
-        }
+        CreateMap<Notification, NotificationVm>().ReverseMap();
     }
 }

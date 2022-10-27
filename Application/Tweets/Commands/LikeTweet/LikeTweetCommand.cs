@@ -6,57 +6,57 @@ using MediatR;
 using MongoDB.Driver;
 using INotification = Application.Common.Interface.INotification;
 
-namespace Application.Tweets.Commands.LikeTweet
+namespace Application.Tweets.Commands.LikeTweet;
+
+public class LikeTweetCommand : IRequest
 {
-    public class LikeTweetCommand : IRequest
+    public string? TweetId { get; set; }
+
+    [JsonIgnore] public string? UserId { get; set; }
+
+    public bool IsLiked { get; set; }
+}
+
+public class LikeTweetCommandHandler : IRequestHandler<LikeTweetCommand>
+{
+    private readonly INotification _notificationService;
+    private readonly IBsonDocumentMapper<TweetVm> _tweetBsonDocumentMapper;
+    private readonly ITweet _tweetService;
+
+    public LikeTweetCommandHandler(
+        ITweet tweetService,
+        IBsonDocumentMapper<TweetVm> tweetBsonDocumentMapper,
+        INotification notificationService
+    )
     {
-        public string? TweetId { get; set; }
-        [JsonIgnore]
-        public string? UserId { get; set; }
-        public bool IsLiked { get; set; }
+        _tweetService = tweetService;
+        _tweetBsonDocumentMapper = tweetBsonDocumentMapper;
+        _notificationService = notificationService;
     }
 
-    public class LikeTweetCommandHandler : IRequestHandler<LikeTweetCommand>
+    public async Task<Unit> Handle(
+        LikeTweetCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        private readonly ITweet _tweetService;
-        private readonly IBsonDocumentMapper<TweetVm> _tweetBsonDocumentMapper;
-        private readonly INotification _notificationService;
+        var currentTweet = await _tweetService.GetTweetById(request.TweetId!);
+        var tweetVm = _tweetBsonDocumentMapper.map(currentTweet!);
 
-        public LikeTweetCommandHandler(
-            ITweet tweetService,
-            IBsonDocumentMapper<TweetVm> tweetBsonDocumentMapper,
-            INotification notificationService
-        )
+        if (request.IsLiked)
         {
-            _tweetService = tweetService;
-            _tweetBsonDocumentMapper = tweetBsonDocumentMapper;
-            _notificationService = notificationService;
+            tweetVm.Likes!.Add(request.UserId);
+            await _notificationService.TriggerLikeTweetNotification(request, tweetVm);
+        }
+        else
+        {
+            tweetVm.Likes!.Remove(request.UserId);
         }
 
-        public async Task<Unit> Handle(
-            LikeTweetCommand request,
-            CancellationToken cancellationToken
-        )
-        {
-            var currentTweet = await _tweetService.GetTweetById(request.TweetId!);
-            var tweetVm = _tweetBsonDocumentMapper.map(currentTweet!);
+        await _tweetService.PartialUpdate(
+            tweetVm!.Id!,
+            Builders<Tweet>.Update.Set(p => p.Likes, new List<string>(tweetVm.Likes!))
+        );
 
-            if (request.IsLiked)
-            {
-                tweetVm.Likes!.Add(request.UserId);
-                await _notificationService.TriggerLikeTweetNotification(request, tweetVm);
-            }
-            else
-            {
-                tweetVm.Likes!.Remove(request.UserId);
-            }
-
-            await _tweetService.PartialUpdate(
-                tweetVm!.Id!,
-                Builders<Tweet>.Update.Set(p => p.Likes, new List<string>(tweetVm.Likes!))
-            );
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

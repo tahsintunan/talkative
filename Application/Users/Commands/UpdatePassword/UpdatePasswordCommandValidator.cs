@@ -1,4 +1,5 @@
-﻿namespace Application.Users.Commands.UpdatePassword
+﻿namespace Application.Users.Commands.UpdatePassword;
+
+internal class UpdatePasswordCommandValidator
 {
-    internal class UpdatePasswordCommandValidator { }
 }

@@ -2,13 +2,12 @@
 using AutoMapper;
 using Domain.Entities;
 
-namespace Application.Common.Mapper
+namespace Application.Common.Mapper;
+
+public class TweetProfile : Profile
 {
-    public class TweetProfile : Profile
+    public TweetProfile()
     {
-        public TweetProfile()
-        {
-            CreateMap<Tweet, TweetVm>().ReverseMap();
-        }
+        CreateMap<Tweet, TweetVm>().ReverseMap();
     }
 }

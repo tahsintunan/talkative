@@ -9,13 +9,13 @@ namespace Infrastructure.Services;
 
 public class RabbitmqService : IRabbitmq
 {
-    private readonly string _rabbitmqServerExchangeName;
     private readonly IModel _channel;
+    private readonly string _rabbitmqServerExchangeName;
 
     public RabbitmqService(IConfiguration configuration)
     {
         _rabbitmqServerExchangeName = configuration["RabbitMQ:ExchangeName"];
-        var connectionFactory = new ConnectionFactory()
+        var connectionFactory = new ConnectionFactory
         {
             Uri = new Uri(configuration["RabbitMQ:ConnectionString"])
         };
@@ -30,10 +30,10 @@ public class RabbitmqService : IRabbitmq
             var marshalledNotification = JsonConvert.SerializeObject(notification);
             var notificationBytes = Encoding.Default.GetBytes(marshalledNotification);
             _channel.BasicPublish(
-                exchange: _rabbitmqServerExchangeName,
-                routingKey: "",
-                basicProperties: null,
-                body: notificationBytes
+                _rabbitmqServerExchangeName,
+                "",
+                null,
+                notificationBytes
             );
 
             return Task.CompletedTask;

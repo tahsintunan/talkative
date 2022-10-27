@@ -1,13 +1,12 @@
 ﻿using FluentValidation;
 
-namespace Application.Auth.Commands.Login
+namespace Application.Auth.Commands.Login;
+
+public class LoginCommandValidator : AbstractValidator<LoginCommand>
 {
-    public class LoginCommandValidator : AbstractValidator<LoginCommand>
+    public LoginCommandValidator()
     {
-        public LoginCommandValidator()
-        {
-            RuleFor(x => x.Password).NotEmpty().NotNull().WithMessage("Password cannot be empty");
-            RuleFor(x => x.Username).NotEmpty().NotNull().WithMessage("Username cannot be null");
-        }
+        RuleFor(x => x.Password).NotEmpty().NotNull().WithMessage("Password cannot be empty");
+        RuleFor(x => x.Username).NotEmpty().NotNull().WithMessage("Username cannot be null");
     }
 }

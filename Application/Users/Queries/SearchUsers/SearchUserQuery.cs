@@ -4,43 +4,42 @@ using Application.Common.ViewModels;
 using AutoMapper;
 using MediatR;
 
-namespace Application.Users.Queries.SearchUsers
+namespace Application.Users.Queries.SearchUsers;
+
+public class SearchUserQuery : IRequest<IList<UserVm>>
 {
-    public class SearchUserQuery : IRequest<IList<UserVm>>
+    [JsonIgnore] public string? UserId { get; set; }
+
+    public string? Username { get; set; }
+    public int? PageNumber { get; set; }
+    public int? ItemCount { get; set; }
+}
+
+public class SearchUserQueryHandler : IRequestHandler<SearchUserQuery, IList<UserVm>>
+{
+    private readonly IBlockFilter _blockFilter;
+    private readonly IMapper _mapper;
+    private readonly IUser _userService;
+
+    public SearchUserQueryHandler(IUser userService, IMapper mapper, IBlockFilter blockFilter)
     {
-        [JsonIgnore]
-        public string? UserId { get; set; }
-        public string? Username { get; set; }
-        public int? PageNumber { get; set; }
-        public int? ItemCount { get; set; }
+        _userService = userService;
+        _mapper = mapper;
+        _blockFilter = blockFilter;
     }
 
-    public class SearchUserQueryHandler : IRequestHandler<SearchUserQuery, IList<UserVm>>
+    public async Task<IList<UserVm>> Handle(
+        SearchUserQuery request,
+        CancellationToken cancellationToken
+    )
     {
-        private readonly IUser _userService;
-        private readonly IBlockFilter _blockFilter;
-        private readonly IMapper _mapper;
+        var pageNumber = request.PageNumber ?? 1;
+        var itemCount = request.ItemCount ?? 20;
 
-        public SearchUserQueryHandler(IUser userService, IMapper mapper, IBlockFilter blockFilter)
-        {
-            _userService = userService;
-            _mapper = mapper;
-            _blockFilter = blockFilter;
-        }
-
-        public async Task<IList<UserVm>> Handle(
-            SearchUserQuery request,
-            CancellationToken cancellationToken
-        )
-        {
-            var pageNumber = request.PageNumber ?? 1;
-            var itemCount = request.ItemCount ?? 20;
-
-            var skip = (pageNumber - 1) * itemCount;
-            var limit = pageNumber * itemCount;
-            var userList = await _userService.FindWithUsername(request.Username!, skip, limit);
-            var userVmList = _mapper.Map<IList<UserVm>>(userList);
-            return await _blockFilter.GetFilteredUsers(userVmList, request.UserId!);
-        }
+        var skip = (pageNumber - 1) * itemCount;
+        var limit = pageNumber * itemCount;
+        var userList = await _userService.FindWithUsername(request.Username!, skip, limit);
+        var userVmList = _mapper.Map<IList<UserVm>>(userList);
+        return await _blockFilter.GetFilteredUsers(userVmList, request.UserId!);
     }
 }

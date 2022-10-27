@@ -3,52 +3,48 @@ using Application.Common.Interface;
 using Application.Common.ViewModels;
 using MediatR;
 
-namespace Application.Tweets.Queries.TweetsForFeed
+namespace Application.Tweets.Queries.TweetsForFeed;
+
+public class TweetsForFeedQuery : IRequest<IList<TweetVm>>
 {
-    public class TweetsForFeedQuery : IRequest<IList<TweetVm>>
+    [JsonIgnore] public string? UserId { get; set; }
+
+    public int? PageNumber { get; set; }
+    public int? ItemCount { get; set; }
+}
+
+public class TweetForFeedQueryHandler : IRequestHandler<TweetsForFeedQuery, IList<TweetVm>>
+{
+    private readonly IBlockFilter _blockFilter;
+    private readonly IBsonDocumentMapper<TweetVm> _tweetMapper;
+    private readonly ITweet _tweetService;
+
+    public TweetForFeedQueryHandler(
+        ITweet tweetService,
+        IBlockFilter blockFilter,
+        IBsonDocumentMapper<TweetVm> tweetMapper
+    )
     {
-        [JsonIgnore]
-        public string? UserId { get; set; }
-        public int? PageNumber { get; set; }
-        public int? ItemCount { get; set; }
+        _blockFilter = blockFilter;
+        _tweetService = tweetService;
+        _tweetMapper = tweetMapper;
     }
 
-    public class TweetForFeedQueryHandler : IRequestHandler<TweetsForFeedQuery, IList<TweetVm>>
+    public async Task<IList<TweetVm>> Handle(
+        TweetsForFeedQuery request,
+        CancellationToken cancellationToken
+    )
     {
-        private readonly ITweet _tweetService;
-        private readonly IBlockFilter _blockFilter;
-        private readonly IBsonDocumentMapper<TweetVm> _tweetMapper;
+        var pageNumber = request.PageNumber ?? 1;
+        var itemCount = request.ItemCount ?? 20;
 
-        public TweetForFeedQueryHandler(
-            ITweet tweetService,
-            IBlockFilter blockFilter,
-            IBsonDocumentMapper<TweetVm> tweetMapper
-        )
-        {
-            _blockFilter = blockFilter;
-            _tweetService = tweetService;
-            _tweetMapper = tweetMapper;
-        }
+        var skip = (pageNumber - 1) * itemCount;
+        var limit = pageNumber * itemCount;
+        var tweets = await _tweetService.GenerateFeed(request.UserId!, skip, limit);
 
-        public async Task<IList<TweetVm>> Handle(
-            TweetsForFeedQuery request,
-            CancellationToken cancellationToken
-        )
-        {
-            var pageNumber = request.PageNumber ?? 1;
-            var itemCount = request.ItemCount ?? 20;
+        IList<TweetVm> tweetVmList = new List<TweetVm>();
 
-            var skip = (pageNumber - 1) * itemCount;
-            var limit = pageNumber * itemCount;
-            var tweets = await _tweetService.GenerateFeed(request.UserId!, skip, limit);
-
-            IList<TweetVm> tweetVmList = new List<TweetVm>();
-
-            foreach (var tweet in tweets)
-            {
-                tweetVmList.Add(_tweetMapper.map(tweet));
-            }
-            return await _blockFilter.GetFilteredTweets(tweetVmList, request.UserId!);
-        }
+        foreach (var tweet in tweets) tweetVmList.Add(_tweetMapper.map(tweet));
+        return await _blockFilter.GetFilteredTweets(tweetVmList, request.UserId!);
     }
 }

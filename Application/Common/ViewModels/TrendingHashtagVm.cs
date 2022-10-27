@@ -1,8 +1,7 @@
-﻿namespace Application.Common.ViewModels
+﻿namespace Application.Common.ViewModels;
+
+public class TrendingHashtagVm
 {
-    public class TrendingHashtagVm
-    {
-        public string? Hashtag { get; set; }
-        public long Count { get; set; }
-    }
+    public string? Hashtag { get; set; }
+    public long Count { get; set; }
 }

@@ -7,94 +7,89 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using INotification = Application.Common.Interface.INotification;
 
-namespace Application.Retweets.Command.Retweet
+namespace Application.Retweets.Command.Retweet;
+
+public class RetweetCommand : IRequest<RetweetVm>
 {
-    public class RetweetCommand : IRequest<RetweetVm>
+    public string? Text { get; set; }
+    public bool IsQuoteRetweet { get; set; }
+    public IList<string>? Hashtags { get; set; }
+    public string? OriginalTweetId { get; set; }
+
+    [JsonIgnore] public string? UserId { get; set; }
+}
+
+public class RetweetCommandHandler : IRequestHandler<RetweetCommand, RetweetVm>
+{
+    private readonly INotification _notificationService;
+    private readonly IBsonDocumentMapper<TweetVm> _tweetDocumentMapper;
+    private readonly ITweet _tweetService;
+
+    public RetweetCommandHandler(
+        ITweet tweetService,
+        IBsonDocumentMapper<TweetVm> tweetDocumentMapper,
+        INotification notificationService
+    )
     {
-        public string? Text { get; set; }
-        public bool IsQuoteRetweet { get; set; }
-        public IList<string>? Hashtags { get; set; }
-        public string? OriginalTweetId { get; set; }
-        [JsonIgnore]
-        public string? UserId { get; set; }
+        _tweetService = tweetService;
+        _tweetDocumentMapper = tweetDocumentMapper;
+        _notificationService = notificationService;
     }
 
-    public class RetweetCommandHandler : IRequestHandler<RetweetCommand, RetweetVm>
+    public async Task<RetweetVm> Handle(
+        RetweetCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        private readonly ITweet _tweetService;
-        private readonly IBsonDocumentMapper<TweetVm> _tweetDocumentMapper;
-        private readonly INotification _notificationService;
+        var originalTweet = await _tweetService.GetTweetById(request.OriginalTweetId!);
+        var originalTweetVm = _tweetDocumentMapper.map(originalTweet!);
+        var newRetweet = await CreateNewRetweet(request);
+        await UpdateOriginalTweet(originalTweetVm, newRetweet.Id!, request);
+        await _notificationService.TriggerRetweetNotification(newRetweet, originalTweetVm);
+        return new RetweetVm { Id = newRetweet.Id };
+    }
 
-        public RetweetCommandHandler(
-            ITweet tweetService,
-            IBsonDocumentMapper<TweetVm> tweetDocumentMapper,
-            INotification notificationService
-        )
+    private async Task<Tweet> CreateNewRetweet(RetweetCommand request)
+    {
+        var retweet = new Tweet
         {
-            _tweetService = tweetService;
-            _tweetDocumentMapper = tweetDocumentMapper;
-            _notificationService = notificationService;
-        }
+            Id = ObjectId.GenerateNewId().ToString(),
+            Text = request.IsQuoteRetweet ? request.Text : null,
+            Hashtags =
+                request.Hashtags == null || !request.IsQuoteRetweet
+                    ? new List<string>()
+                    : new List<string>(request.Hashtags),
+            OriginalTweetId = request.OriginalTweetId,
+            IsRetweet = !request.IsQuoteRetweet,
+            IsQuoteRetweet = request.IsQuoteRetweet,
+            UserId = request.UserId,
+            Likes = new List<string>(),
+            Comments = new List<string>(),
+            QuoteRetweets = new List<string>(),
+            RetweetUsers = new List<string>(),
+            CreatedAt = DateTime.Now
+        };
 
-        public async Task<RetweetVm> Handle(
-            RetweetCommand request,
-            CancellationToken cancellationToken
-        )
-        {
-            var originalTweet = await _tweetService.GetTweetById(request.OriginalTweetId!);
-            var originalTweetVm = _tweetDocumentMapper.map(originalTweet!);
-            var newRetweet = await CreateNewRetweet(request);
-            await UpdateOriginalTweet(originalTweetVm, newRetweet.Id!, request);
-            await _notificationService.TriggerRetweetNotification(newRetweet, originalTweetVm);
-            return new RetweetVm() { Id = newRetweet.Id };
-        }
+        await _tweetService.PublishTweet(retweet);
+        return retweet;
+    }
 
-        private async Task<Tweet> CreateNewRetweet(RetweetCommand request)
-        {
-            var retweet = new Tweet()
-            {
-                Id = ObjectId.GenerateNewId().ToString(),
-                Text = request.IsQuoteRetweet ? request.Text : null,
-                Hashtags =
-                    request.Hashtags == null || !request.IsQuoteRetweet
-                        ? new List<string>()
-                        : new List<string>(request.Hashtags),
-                OriginalTweetId = request.OriginalTweetId,
-                IsRetweet = !request.IsQuoteRetweet,
-                IsQuoteRetweet = request.IsQuoteRetweet,
-                UserId = request.UserId,
-                Likes = new List<string>(),
-                Comments = new List<string>(),
-                QuoteRetweets = new List<string>(),
-                RetweetUsers = new List<string>(),
-                CreatedAt = DateTime.Now,
-            };
+    private async Task UpdateOriginalTweet(
+        TweetVm retweet,
+        string postId,
+        RetweetCommand request
+    )
+    {
+        if (request.IsQuoteRetweet)
+            retweet.QuoteRetweets!.Add(postId);
+        else
+            retweet.RetweetUsers!.Add(request.UserId);
 
-            await _tweetService.PublishTweet(retweet);
-            return retweet;
-        }
-
-        private async Task UpdateOriginalTweet(
-            TweetVm retweet,
-            string postId,
-            RetweetCommand request
-        )
-        {
-            if (request.IsQuoteRetweet)
-            {
-                retweet.QuoteRetweets!.Add(postId);
-            }
-            else
-            {
-                retweet.RetweetUsers!.Add(request.UserId);
-            }
-
-            await _tweetService.PartialUpdate(
-                retweet.Id!,
-                Builders<Tweet>.Update
-                    .Set(x => x.QuoteRetweets, retweet.QuoteRetweets!)
-                    .Set(x => x.RetweetUsers, retweet.RetweetUsers!)
-            );
-        }
+        await _tweetService.PartialUpdate(
+            retweet.Id!,
+            Builders<Tweet>.Update
+                .Set(x => x.QuoteRetweets, retweet.QuoteRetweets!)
+                .Set(x => x.RetweetUsers, retweet.RetweetUsers!)
+        );
     }
 }

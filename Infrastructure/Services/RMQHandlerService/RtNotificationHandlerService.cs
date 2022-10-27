@@ -10,7 +10,7 @@ using RabbitMQ.Client.Events;
 
 namespace Infrastructure.Services.RMQHandlerService;
 
-public class RtNotificationHandlerService: IHostedService
+public class RtNotificationHandlerService : IHostedService
 {
     private const string RabbitmqQueueName = "RtNotificationQueue";
 
@@ -19,7 +19,8 @@ public class RtNotificationHandlerService: IHostedService
     private readonly INotificationHub _notificationHub;
     private readonly IUser _userService;
 
-    public RtNotificationHandlerService(IConfiguration configuration, INotificationHub notificationHub, IUser userService)
+    public RtNotificationHandlerService(IConfiguration configuration, INotificationHub notificationHub,
+        IUser userService)
     {
         _userService = userService;
         _notificationHub = notificationHub;
@@ -28,29 +29,7 @@ public class RtNotificationHandlerService: IHostedService
         _channel = connection.CreateModel();
         _consumer = new EventingBasicConsumer(_channel);
     }
-    
-    
-    private async Task ProcessNotification(Notification notification)
-    {
-        var eventTriggererUsername = await GetUsernameById(notification.EventTriggererId!);
-        var notificationVm = new NotificationVm()
-        {
-            EventType = notification.EventType,
-            EventTriggererId = notification.EventTriggererId,
-            EventTriggererUsername = eventTriggererUsername,
-            TweetId = notification.TweetId,
-            CommentId = notification.CommentId,
-            DateTime = DateTime.Now
-        };
-        await _notificationHub.SendNotification(notificationVm);
-    }
-    
-    private async Task<string> GetUsernameById(string userId)
-    {
-        var user = await _userService.GetUserById(userId);
-        return user == null ? "Unknown" : user.Username!;
-    }
-    
+
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _consumer.Received += async (_, eventArgs) =>
@@ -61,12 +40,34 @@ public class RtNotificationHandlerService: IHostedService
             await ProcessNotification(notificationObject!);
         };
 
-        _channel.BasicConsume(queue: RabbitmqQueueName, autoAck: true, consumer: _consumer);
+        _channel.BasicConsume(RabbitmqQueueName, true, _consumer);
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
+    }
+
+
+    private async Task ProcessNotification(Notification notification)
+    {
+        var eventTriggererUsername = await GetUsernameById(notification.EventTriggererId!);
+        var notificationVm = new NotificationVm
+        {
+            EventType = notification.EventType,
+            EventTriggererId = notification.EventTriggererId,
+            EventTriggererUsername = eventTriggererUsername,
+            TweetId = notification.TweetId,
+            CommentId = notification.CommentId,
+            DateTime = DateTime.Now
+        };
+        await _notificationHub.SendNotification(notificationVm);
+    }
+
+    private async Task<string> GetUsernameById(string userId)
+    {
+        var user = await _userService.GetUserById(userId);
+        return user == null ? "Unknown" : user.Username!;
     }
 }

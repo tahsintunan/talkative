@@ -3,9 +3,7 @@ using Application.Common.Mapper;
 using Application.Common.ViewModels;
 using Infrastructure.Services;
 using Infrastructure.Services.RMQHandlerService;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using INotification = Application.Common.Interface.INotification;
 
 namespace Infrastructure;
 

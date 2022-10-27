@@ -4,50 +4,47 @@ using MediatR;
 using MongoDB.Bson;
 using INotification = Application.Common.Interface.INotification;
 
-namespace Application.Followers.Commands.AddFollower
+namespace Application.Followers.Commands.AddFollower;
+
+public class AddFollowerCommand : IRequest
 {
-    public class AddFollowerCommand : IRequest
+    public string? FollowerId { get; set; }
+    public string? FollowingId { get; set; }
+}
+
+public class AddFollowerCommandHandler : IRequestHandler<AddFollowerCommand>
+{
+    private readonly IFollow _followerService;
+    private readonly INotification _notificationService;
+
+    public AddFollowerCommandHandler(
+        IFollow followerService,
+        INotification notificationService
+    )
     {
-        public string? FollowerId { get; set; }
-        public string? FollowingId { get; set; }
+        _followerService = followerService;
+        _notificationService = notificationService;
     }
 
-    public class AddFollowerCommandHandler : IRequestHandler<AddFollowerCommand>
+    public async Task<Unit> Handle(
+        AddFollowerCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        private readonly IFollow _followerService;
-        private readonly INotification _notificationService;
-
-        public AddFollowerCommandHandler(
-            IFollow followerService,
-            INotification notificationService
-        )
-        {
-            _followerService = followerService;
-            _notificationService = notificationService;
-        }
-
-        public async Task<Unit> Handle(
-            AddFollowerCommand request,
-            CancellationToken cancellationToken
-        )
-        {
-            var followerExists = await _followerService.CheckIfFollowerExists(
-                request.FollowerId!,
-                request.FollowingId!
+        var followerExists = await _followerService.CheckIfFollowerExists(
+            request.FollowerId!,
+            request.FollowingId!
+        );
+        if (!followerExists)
+            await _followerService.AddNewFollower(
+                new Follower
+                {
+                    FollowerId = request.FollowerId,
+                    FollowingId = request.FollowingId,
+                    Id = ObjectId.GenerateNewId().ToString()
+                }
             );
-            if (!followerExists)
-            {
-                await _followerService.AddNewFollower(
-                    new Follower()
-                    {
-                        FollowerId = request.FollowerId,
-                        FollowingId = request.FollowingId,
-                        Id = ObjectId.GenerateNewId().ToString(),
-                    }
-                );
-            }
-            await _notificationService.TriggerFollowNotification(request);
-            return Unit.Value;
-        }
+        await _notificationService.TriggerFollowNotification(request);
+        return Unit.Value;
     }
 }

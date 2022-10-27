@@ -7,6 +7,7 @@ namespace Infrastructure.Services;
 public class BlockFilterService : IBlockFilter
 {
     private readonly IUser _userService;
+
     public BlockFilterService(IUser userService)
     {
         _userService = userService;
@@ -33,9 +34,7 @@ public class BlockFilterService : IBlockFilter
     public bool IsBlocked(Blockable blockable, IReadOnlySet<string> blockedUserIds)
     {
         if (blockable is TweetVm { OriginalTweet: { } } vm)
-        {
             return blockedUserIds.Contains(vm.UserId!) || IsBlocked(vm.OriginalTweet, blockedUserIds);
-        }
         return blockedUserIds.Contains(blockable.UserId!);
     }
 
@@ -43,17 +42,11 @@ public class BlockFilterService : IBlockFilter
     {
         var blockedUserIds = new HashSet<string>();
         var user = await _userService.GetUserById(userId);
-        if (user == null)
-        {
-            return blockedUserIds;
-        }
+        if (user == null) return blockedUserIds;
         var blockedBy = user.BlockedBy;
         if (blockedBy == null) return blockedUserIds;
-        
-        foreach (var id in blockedBy)
-        {
-            blockedUserIds.Add(id!);
-        }
+
+        foreach (var id in blockedBy) blockedUserIds.Add(id!);
         return blockedUserIds;
     }
 }

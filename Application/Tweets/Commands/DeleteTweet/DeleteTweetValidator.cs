@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 
-namespace Application.Tweets.Commands.DeleteTweet
+namespace Application.Tweets.Commands.DeleteTweet;
+
+public class DeleteTweetValidator : AbstractValidator<DeleteTweetCommand>
 {
-    public class DeleteTweetValidator:AbstractValidator<DeleteTweetCommand>
+    public DeleteTweetValidator()
     {
-        public DeleteTweetValidator()
-        {
-            RuleFor(x => x.Id).NotNull().NotEmpty().WithMessage("Id cannot be null");
-        }
+        RuleFor(x => x.Id).NotNull().NotEmpty().WithMessage("Id cannot be null");
     }
 }

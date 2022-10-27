@@ -1,23 +1,25 @@
 using Application.Common.Interface;
 using MediatR;
 
-namespace Application.Blocks.Queries.GetBlockedUserIds
+namespace Application.Blocks.Queries.GetBlockedUserIds;
+
+public class GetBlockedUserIdsQuery : IRequest<Dictionary<string, bool>>
 {
-    public class GetBlockedUserIdsQuery : IRequest<Dictionary<string, bool>>
+    public string? UserId { get; set; }
+}
+
+public class GetBlockedUserIdsQueryHandler : IRequestHandler<GetBlockedUserIdsQuery, Dictionary<string, bool>>
+{
+    private readonly IUser _userService;
+
+    public GetBlockedUserIdsQueryHandler(IUser userService)
     {
-        public string? UserId { get; set; }
+        _userService = userService;
     }
 
-    public class GetBlockedUserIdsQueryHandler : IRequestHandler<GetBlockedUserIdsQuery, Dictionary<string, bool>>
+    public async Task<Dictionary<string, bool>> Handle(GetBlockedUserIdsQuery request,
+        CancellationToken cancellationToken)
     {
-        private readonly IUser _userService;
-        public GetBlockedUserIdsQueryHandler(IUser userService)
-        {
-            _userService = userService;
-        }
-        public async Task<Dictionary<string, bool>> Handle(GetBlockedUserIdsQuery request, CancellationToken cancellationToken)
-        {
-            return await _userService.GetBlockedUserIds(request.UserId!);
-        }
+        return await _userService.GetBlockedUserIds(request.UserId!);
     }
 }

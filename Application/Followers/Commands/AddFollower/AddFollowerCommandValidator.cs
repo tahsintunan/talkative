@@ -1,15 +1,14 @@
 ﻿using FluentValidation;
 
-namespace Application.Followers.Commands.AddFollower
+namespace Application.Followers.Commands.AddFollower;
+
+public class AddFollowerCommandValidator : AbstractValidator<AddFollowerCommand>
 {
-    public class AddFollowerCommandValidator : AbstractValidator<AddFollowerCommand>
+    public AddFollowerCommandValidator()
     {
-        public AddFollowerCommandValidator()
-        {
-            RuleFor(x => x.FollowingId)
-                .NotNull()
-                .NotEmpty()
-                .WithMessage("FollowingId cannot be null");
-        }
+        RuleFor(x => x.FollowingId)
+            .NotNull()
+            .NotEmpty()
+            .WithMessage("FollowingId cannot be null");
     }
 }

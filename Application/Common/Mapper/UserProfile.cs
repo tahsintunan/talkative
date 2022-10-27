@@ -2,13 +2,12 @@
 using AutoMapper;
 using Domain.Entities;
 
-namespace Application.Common.Mapper
+namespace Application.Common.Mapper;
+
+public class UserProfile : Profile
 {
-    public class UserProfile:Profile
+    public UserProfile()
     {
-        public UserProfile()
-        {
-            CreateMap<User, UserVm>().ForMember(dest => dest.UserId!, opt => opt.MapFrom(src => src.Id!)).ReverseMap();
-        }
+        CreateMap<User, UserVm>().ForMember(dest => dest.UserId!, opt => opt.MapFrom(src => src.Id!)).ReverseMap();
     }
 }

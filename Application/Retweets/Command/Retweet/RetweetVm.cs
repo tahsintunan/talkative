@@ -1,7 +1,6 @@
-﻿namespace Application.Retweets.Command.Retweet
+﻿namespace Application.Retweets.Command.Retweet;
+
+public class RetweetVm
 {
-    public class RetweetVm
-    {
-        public string? Id { get; set; }
-    }
+    public string? Id { get; set; }
 }

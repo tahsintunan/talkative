@@ -15,9 +15,9 @@ namespace Infrastructure.Services;
 
 public class NotificationService : INotification
 {
+    private readonly IMongoCollection<Notification> _notificationCollection;
     private readonly IRabbitmq _rabbitmqService;
     private readonly IMongoCollection<User> _userCollection;
-    private readonly IMongoCollection<Notification> _notificationCollection;
 
     public NotificationService(
         IRabbitmq rabbitmqService,
@@ -34,60 +34,60 @@ public class NotificationService : INotification
         );
 
         _userCollection = mongoDatabase.GetCollection<User>(
-               userDatabaseConfig.Value.UserCollectionName
-           );
+            userDatabaseConfig.Value.UserCollectionName
+        );
 
-        MongoClientSettings settings = MongoClientSettings.FromConnectionString(
-                notificationDatabaseConfig.Value.ConnectionString
-            );
+        var settings = MongoClientSettings.FromConnectionString(
+            notificationDatabaseConfig.Value.ConnectionString
+        );
 
         settings.LinqProvider = LinqProvider.V3;
     }
 
     public async Task TriggerFollowNotification(AddFollowerCommand request)
     {
-        var notification = new Notification()
+        var notification = new Notification
         {
             Id = ObjectId.GenerateNewId().ToString(),
             EventType = "follow",
             NotificationReceiverId = request.FollowingId,
             EventTriggererId = request.FollowerId,
-            Datetime = DateTime.Now,
+            Datetime = DateTime.Now
         };
         await _rabbitmqService.FanOut(notification);
     }
 
     public async Task TriggerRetweetNotification(Tweet retweet, Blockable originalTweetVm)
     {
-        var notification = new Notification()
+        var notification = new Notification
         {
             Id = ObjectId.GenerateNewId().ToString(),
             EventType = retweet.IsQuoteRetweet ? "quoteRetweet" : "retweet",
             NotificationReceiverId = originalTweetVm.UserId,
             EventTriggererId = retweet.UserId,
             TweetId = retweet.IsQuoteRetweet ? retweet.Id : retweet.OriginalTweetId,
-            Datetime = DateTime.Now,
+            Datetime = DateTime.Now
         };
         await _rabbitmqService.FanOut(notification);
     }
 
     public async Task TriggerLikeTweetNotification(LikeTweetCommand request, Blockable tweetVm)
     {
-        var notification = new Notification()
+        var notification = new Notification
         {
             Id = ObjectId.GenerateNewId().ToString(),
             EventType = "likeTweet",
             NotificationReceiverId = tweetVm.UserId,
             EventTriggererId = request.UserId,
             TweetId = request.TweetId,
-            Datetime = DateTime.Now,
+            Datetime = DateTime.Now
         };
         await _rabbitmqService.FanOut(notification);
     }
 
     public async Task TriggerCommentNotification(Comment comment, Blockable tweetVm)
     {
-        var notification = new Notification()
+        var notification = new Notification
         {
             Id = ObjectId.GenerateNewId().ToString(),
             EventType = "createComment",
@@ -95,7 +95,7 @@ public class NotificationService : INotification
             EventTriggererId = comment.UserId,
             TweetId = comment.TweetId,
             CommentId = comment.Id,
-            Datetime = DateTime.Now,
+            Datetime = DateTime.Now
         };
         await _rabbitmqService.FanOut(notification);
     }
@@ -105,7 +105,7 @@ public class NotificationService : INotification
         CommentVm commentVm
     )
     {
-        var notification = new Notification()
+        var notification = new Notification
         {
             Id = ObjectId.GenerateNewId().ToString(),
             EventType = "likeComment",
@@ -113,7 +113,7 @@ public class NotificationService : INotification
             EventTriggererId = request.UserId,
             TweetId = commentVm.TweetId,
             CommentId = commentVm.Id,
-            Datetime = DateTime.Now,
+            Datetime = DateTime.Now
         };
         await _rabbitmqService.FanOut(notification);
     }
@@ -125,17 +125,17 @@ public class NotificationService : INotification
             where notification.NotificationReceiverId == userId
             orderby notification.Datetime descending
             join o in _userCollection on notification.EventTriggererId equals o.Id into joined
-            from sub_o in joined.DefaultIfEmpty()
+            from subO in joined.DefaultIfEmpty()
             select new NotificationVm
             {
                 EventType = notification.EventType,
                 EventTriggererId = notification.EventTriggererId,
-                EventTriggererUsername = sub_o.Username,
+                EventTriggererUsername = subO.Username,
                 TweetId = notification.TweetId,
                 CommentId = notification.CommentId,
                 DateTime = notification.Datetime
             }
-            ).Skip(skip).Take(limit);
+        ).Skip(skip).Take(limit);
 
         var notificationVms = await query.ToListAsync();
 

@@ -1,51 +1,49 @@
+using System.Net.Http.Headers;
 using Application.Auth.Commands.Login;
 using Application.Auth.Commands.Signup;
-using Application.Common.Interface;
 using Application.Users.Commands.ForgetPassword;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
 
-namespace server.Controllers
+namespace server.Controllers;
+
+public class AuthController : ApiControllerBase
 {
-    public class AuthController : ApiControllerBase
+    [HttpPost("signup")]
+    public async Task<IActionResult> Signup(SignupCommand signupCommand)
     {
-        [HttpPost("signup")]
-        public async Task<IActionResult> Signup(SignupCommand signupCommand)
-        {
-            await Mediator.Send(signupCommand);
-            return NoContent();
-        }
+        await Mediator.Send(signupCommand);
+        return NoContent();
+    }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginCommand request)
-        {
-            var accessToken = await Mediator.Send(request);
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginCommand request)
+    {
+        var accessToken = await Mediator.Send(request);
 
-            var value = new AuthenticationHeaderValue("Bearer", accessToken);
+        var value = new AuthenticationHeaderValue("Bearer", accessToken);
 
-            HttpContext.Response.Cookies.Append(
-                "authorization",
-                value.ToString(),
-                new CookieOptions { HttpOnly = false, Expires = DateTime.Now.AddDays(7) }
-            );
+        HttpContext.Response.Cookies.Append(
+            "authorization",
+            value.ToString(),
+            new CookieOptions { HttpOnly = false, Expires = DateTime.Now.AddDays(7) }
+        );
 
-            return NoContent();
-        }
+        return NoContent();
+    }
 
-        [HttpPost("forget-password")]
-        public async Task<ActionResult> ForgotPassword(ForgetPasswordCommand forgetPasswordCommand)
-        {
-            await Mediator.Send(forgetPasswordCommand);
-            return NoContent();
-        }
+    [HttpPost("forget-password")]
+    public async Task<ActionResult> ForgotPassword(ForgetPasswordCommand forgetPasswordCommand)
+    {
+        await Mediator.Send(forgetPasswordCommand);
+        return NoContent();
+    }
 
-        [HttpPost("logout")]
-        public Task<IActionResult> Logout()
-        {
-            HttpContext.Response.Cookies.Delete("authorization");
-            return Task.FromResult<IActionResult>(
-                new OkObjectResult(new { message = "User logged out" })
-            );
-        }
+    [HttpPost("logout")]
+    public Task<IActionResult> Logout()
+    {
+        HttpContext.Response.Cookies.Delete("authorization");
+        return Task.FromResult<IActionResult>(
+            new OkObjectResult(new { message = "User logged out" })
+        );
     }
 }
