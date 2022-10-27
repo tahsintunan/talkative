@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UserUpdateReqModel } from 'src/app/home/models/user.model';
 
 @Component({
   selector: 'app-password-update-dialog',
@@ -15,6 +16,7 @@ export class PasswordUpdateDialogComponent implements OnInit {
 
   formData: FormGroup = this.formBuilder.group(
     {
+      userId: [this.data.userId, Validators.required],
       oldPassword: ['', [Validators.required]],
       newPassword: [
         '',
@@ -38,7 +40,8 @@ export class PasswordUpdateDialogComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<PasswordUpdateDialogComponent>
+    public dialogRef: MatDialogRef<PasswordUpdateDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: UserUpdateReqModel
   ) {}
 
   ngOnInit(): void {}

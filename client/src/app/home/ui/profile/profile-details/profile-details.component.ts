@@ -7,7 +7,8 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { UserModel } from 'src/app/home/models/user.model';
+import { UserAnalyticsModel, UserModel } from 'src/app/home/models/user.model';
+import { BlockService } from 'src/app/home/services/block.service';
 import { UtilityService } from 'src/app/shared/services/utility.service';
 import { FollowService } from '../../../services/follow.service';
 import { UserService } from '../../../services/user.service';
@@ -21,7 +22,7 @@ export class ProfileDetailsComponent implements OnInit, OnChanges {
   @Input() data?: UserModel;
   @Input() followers?: UserModel[];
   @Input() followings?: UserModel[];
-  @Input() postCount: number = 0;
+  @Input() analytics?: UserAnalyticsModel;
   @Output() onProfileEdit = new EventEmitter();
   @Output() onPasswordEdit = new EventEmitter();
   @Output() onFollow = new EventEmitter();
@@ -31,37 +32,30 @@ export class ProfileDetailsComponent implements OnInit, OnChanges {
 
   userAuth?: UserModel;
   userBlocked: boolean = false;
-  isFollowed: boolean = false;
+  isFollowing: boolean = false;
 
   constructor(
     private userService: UserService,
     private followService: FollowService,
+    private blockService: BlockService,
     protected utilityService: UtilityService
   ) {}
 
   ngOnInit(): void {
     this.userService.userAuth.subscribe((res) => {
       this.userAuth = res;
-      this.userBlocked = !!res.blocked?.some(
-        (userId) => userId === this.data?.userId
-      );
     });
 
     this.followService.userFollowings.subscribe((res) => {
-      this.isFollowed = res.includes(this.data?.userId!);
+      this.isFollowing = res[this.data?.userId!];
+    });
+
+    this.blockService.userBlockList.subscribe((res) => {
+      this.userBlocked = res[this.data?.userId!];
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.userService.userAuth.subscribe((res) => {
-      this.userAuth = res;
-      this.userBlocked = !!res.blocked?.some(
-        (userId) => userId === this.data?.userId
-      );
-    });
-
-    this.followService.userFollowings.subscribe((res) => {
-      this.isFollowed = res.includes(this.data?.userId!);
-    });
+    this.ngOnInit();
   }
 }

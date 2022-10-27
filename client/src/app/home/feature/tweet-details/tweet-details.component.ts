@@ -98,7 +98,7 @@ export class TweetDetailsComponent implements OnInit {
 
   onTagClick(hashtag: string) {
     this.router.navigate(['/home/search'], {
-      queryParams: { hashtag: hashtag },
+      queryParams: { type: 'hashtag', value: hashtag },
     });
   }
 

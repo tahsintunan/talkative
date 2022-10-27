@@ -4,7 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 import { TweetStore } from '../../../shared/store/tweet.store';
 import { PaginationModel } from '../../models/pagination.model';
 import { TweetModel } from '../../models/tweet.model';
-import { UserModel, UserUpdateReqModel } from '../../models/user.model';
+import {
+  UserAnalyticsModel,
+  UserModel,
+  UserUpdateReqModel,
+} from '../../models/user.model';
 import { BlockService } from '../../services/block.service';
 import { FollowService } from '../../services/follow.service';
 import { TweetService } from '../../services/tweet.service';
@@ -36,11 +40,12 @@ export class ProfileComponent implements OnInit {
 
   userAuth?: UserModel;
   profileId: string = '';
-  profileDetails?: UserModel;
+  profile?: UserModel;
   followers: UserModel[] = [];
   followings: UserModel[] = [];
   blockList: UserModel[] = [];
   tweets: TweetModel[] = [];
+  userAnalytics?: UserAnalyticsModel;
 
   constructor(
     private dialog: MatDialog,
@@ -63,16 +68,24 @@ export class ProfileComponent implements OnInit {
 
     this.activeRoute.params.subscribe((params) => {
       this.profileId = params['userId'];
-      this.tweetPagination.pageNumber = 1;
-
-      if (this.profileId) {
-        this.getProfile(this.profileId);
-        this.getFollowers(this.profileId);
-        this.getFollowings(this.profileId);
-        this.getBlockList(this.profileId);
-        this.getUserTweets(this.profileId);
-      }
+      this.refreshData();
     });
+  }
+
+  refreshData() {
+    if (this.profileId) {
+      this.tweetPagination.pageNumber = 1;
+      this.followingPagination.pageNumber = 1;
+      this.followersPagination.pageNumber = 1;
+      this.blockListPagination.pageNumber = 1;
+
+      this.getProfile(this.profileId);
+      this.getAnalytics(this.profileId);
+      this.getFollowers(this.profileId);
+      this.getFollowings(this.profileId);
+      this.getBlockList(this.profileId);
+      this.getUserTweets(this.profileId);
+    }
   }
 
   onScroll() {
@@ -97,7 +110,13 @@ export class ProfileComponent implements OnInit {
 
   getProfile(userId: string) {
     this.userService.getUser(userId).subscribe((res) => {
-      this.profileDetails = res;
+      this.profile = res;
+    });
+  }
+
+  getAnalytics(userId: string) {
+    this.userService.getUserAnalytics(userId).subscribe((res) => {
+      this.userAnalytics = res;
     });
   }
 
@@ -144,11 +163,7 @@ export class ProfileComponent implements OnInit {
   onProfileEdit() {
     const dialogRef = this.dialog.open(ProfileUpdateDialogComponent, {
       width: '500px',
-      data: {
-        username: this.profileDetails?.username,
-        email: this.profileDetails?.email,
-        dateOfBirth: this.profileDetails?.dateOfBirth,
-      },
+      data: this.profile,
     });
 
     dialogRef.afterClosed().subscribe((result: UserUpdateReqModel) => {
@@ -163,6 +178,7 @@ export class ProfileComponent implements OnInit {
   onPasswordEdit() {
     const dialogRef = this.dialog.open(PasswordUpdateDialogComponent, {
       width: '500px',
+      data: this.profile,
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
@@ -176,34 +192,35 @@ export class ProfileComponent implements OnInit {
 
   onFollow(userId: string) {
     this.followService.followUser(userId).subscribe((res) => {
-      this.reloadData(this.profileId);
+      this.followers = this.followers.concat(this.userAuth!);
+      this.userAnalytics!.followerCount++;
     });
   }
 
   onUnfollow(userId: string) {
     this.followService.unfollowUser(userId).subscribe((res) => {
-      this.reloadData(this.profileId);
+      this.followers = this.followers.filter(
+        (x) => x.userId !== this.userAuth?.userId
+      );
+      this.userAnalytics!.followerCount--;
     });
   }
 
   onBlock(userId: string) {
     this.blockService.blockUser(userId).subscribe((res) => {
+      this.userAnalytics!.followerCount--;
+      this.followService.removeFromUserFollowings(userId);
       this.userService.loadUserAuth();
-      this.reloadData(this.profileId);
+      this.getBlockList(this.profileId);
     });
   }
 
   onUnblock(userId: string) {
     this.blockService.unblockUser(userId).subscribe((res) => {
+      this.blockList = this.blockList.filter(
+        (x) => x.userId !== this.userAuth?.userId
+      );
       this.userService.loadUserAuth();
-      this.reloadData(this.profileId);
     });
-  }
-
-  reloadData(userId: string) {
-    this.followService.loadUserFollow();
-    this.getFollowers(userId);
-    this.getFollowings(userId);
-    this.getBlockList(userId);
   }
 }

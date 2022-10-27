@@ -3,13 +3,18 @@ export interface UserModel {
   username?: string;
   email?: string;
   dateOfBirth?: Date;
-  blocked?: string[];
-  blockedBy?: string[];
   isBannded?: boolean;
 }
 
+export interface UserAnalyticsModel {
+  tweetCount: number;
+  followerCount: number;
+  followingCount: number;
+}
+
 export interface UserUpdateReqModel {
-  username?: string;
-  email?: string;
-  dateOfBirth?: Date;
+  userId: string;
+  username: string;
+  email: string;
+  dateOfBirth: Date;
 }

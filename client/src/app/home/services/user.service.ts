@@ -4,7 +4,7 @@ import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject, tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
-import { UserModel, UserUpdateReqModel } from '../models/user.model';
+import { UserAnalyticsModel, UserModel, UserUpdateReqModel } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -60,6 +60,6 @@ export class UserService {
   }
 
   getUserAnalytics(userId: string) {
-    return this.http.get(this.apiUrl + '/count/' + userId);
+    return this.http.get<UserAnalyticsModel>(this.apiUrl + '/count/' + userId);
   }
 }

@@ -1,0 +1,59 @@
+<div class="flex flex-col gap-2 p-4 w-full text-gray-900">
+  <div class="flex gap-2 items-center text-primary">
+    <span class="material-symbols-rounded">notifications_active</span>
+    <span class="text-sm font-bold">New notification</span>
+    <button
+      type="button"
+      class="ml-auto outline-none text-gray-900 bg-transparent hover:bg-gray-200 focus:bg-gray-200 rounded-full text-sm p-0.5 inline-flex items-center"
+      (click)="onClose()"
+    >
+      <span class="material-symbols-rounded">close</span>
+    </button>
+  </div>
+
+  <div class="flex gap-3">
+    <app-avatar
+      alt="User"
+      [src]="data.eventTriggererUsername"
+      size="50px"
+      borderRadius="50%"
+      borderColor="#f0f0f0"
+      borderWidth="1px"
+      [generateAvater]="true"
+    ></app-avatar>
+
+    <div class="flex flex-col gap-1 text-sm font-normal">
+      <span class="text-sm font-semibold text-gray-900">
+        {{ data.eventTriggererUsername }}
+      </span>
+
+      <span [ngSwitch]="data.eventType" class="text-sm font-normal">
+        <ng-container *ngSwitchCase="'follow'">
+          Started following you
+        </ng-container>
+        <ng-container *ngSwitchCase="'likeTweet'">
+          Liked your post
+        </ng-container>
+        <ng-container *ngSwitchCase="'likeComment'">
+          Liked your comment
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'comment'">
+          Commented on your post
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'retweet'">
+          Shared your post
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'quoteRetweet'">
+          Quoted your post
+        </ng-container>
+      </span>
+
+      <span class="text-xs font-medium text-primary">
+        {{ data.dateTime | dateAgo }}
+      </span>
+    </div>
+  </div>
+</div>

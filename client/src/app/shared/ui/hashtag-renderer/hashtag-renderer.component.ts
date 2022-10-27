@@ -16,7 +16,7 @@ export class HashtagRendererComponent implements OnInit {
   onTagClick(event: any) {
     if (event.target.classList.contains('hashtag')) {
       event.stopPropagation();
-      this.onHashtagClick.emit(event.target.innerText);
+      this.onHashtagClick.emit(event.target.innerText.trim());
     }
   }
 }

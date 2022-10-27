@@ -47,7 +47,7 @@
   ></app-comment-input>
 
   <ng-template #comment>
-    <p *ngIf="!isEditMode" class="mx-2 mt-1">{{ data?.text }}</p>
+    <p *ngIf="!isEditMode" class="mx-2 mt-1 whitespace-pre">{{ data?.text }}</p>
 
     <button
       *ngIf="!isEditMode"

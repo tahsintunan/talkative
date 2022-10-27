@@ -7,13 +7,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UserUpdateReqModel } from 'src/app/home/models/user.model';
 import { UtilityService } from 'src/app/shared/services/utility.service';
-
-interface ProfileUpdateDialogData {
-  username: string;
-  email: string;
-  dateOfBirth: string;
-}
 
 @Component({
   selector: 'app-profile-update-dialog',
@@ -23,10 +18,11 @@ interface ProfileUpdateDialogData {
 })
 export class ProfileUpdateDialogComponent implements OnInit {
   formData: FormGroup = this.formBuilder.group({
-    username: [this.data?.username, [Validators.required]],
-    email: [this.data?.email, [Validators.required, Validators.email]],
+    userId: [this.data.userId, Validators.required],
+    username: [this.data.username, [Validators.required]],
+    email: [this.data.email, [Validators.required, Validators.email]],
     dateOfBirth: [
-      this.data?.dateOfBirth,
+      this.data.dateOfBirth,
       [Validators.required, this.ageValidator.bind(this)],
     ],
   });
@@ -35,7 +31,7 @@ export class ProfileUpdateDialogComponent implements OnInit {
     private utilityService: UtilityService,
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<ProfileUpdateDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data?: ProfileUpdateDialogData
+    @Inject(MAT_DIALOG_DATA) public data: UserUpdateReqModel
   ) {}
 
   ngOnInit(): void {}

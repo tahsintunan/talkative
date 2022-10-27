@@ -1,38 +1,47 @@
-<section class="flex flex-col items-center gap-6">
-  <div class="max-w-2xl w-full card">
-    <h2 class="font-semibold text-lg m-3">Post Something</h2>
+<section
+  class="flex justify-center h-full"
+  infiniteScroll
+  [infiniteScrollDistance]="2"
+  [infiniteScrollThrottle]="200"
+  [infiniteScrollContainer]="'#main-panel'"
+  [fromRoot]="true"
+  (scrolled)="onScroll()"
+>
+  <div class="flex flex-col gap-6 max-w-2xl w-full">
+    <div class="card">
+      <h2 class="font-semibold text-lg p-3 border-b">Post Something</h2>
 
-    <mat-divider></mat-divider>
+      <div class="flex items-center gap-3 m-3">
+        <app-avatar
+          alt="User"
+          [src]="userAuth?.username"
+          size="50px"
+          [generateAvater]="true"
+        ></app-avatar>
 
-    <div class="flex items-center gap-3 m-3">
-      <app-avatar
-        alt="User"
-        [src]="userAuth?.username"
-        size="50px"
-        [generateAvater]="true"
-      ></app-avatar>
+        <button
+          class="w-full py-2.5 px-5 text-start text-md font-medium rounded-full outline-none transition duration-200 ease-in-out text-gray-500 bg-gray-100 hover:bg-gray-200"
+          (click)="onCreatePost()"
+        >
+          What's on your mind?
+        </button>
+      </div>
+    </div>
 
-      <button
-        class="w-full py-2.5 px-5 text-start text-md font-medium rounded-full outline-none transition duration-200 ease-in-out text-gray-500 bg-gray-100 hover:bg-gray-200"
-        (click)="onCreatePost()"
-      >
-        What's on your mind?
-      </button>
+    <div class="flex flex-col gap-6" *ngIf="tweets?.length; else noPosts">
+      <app-tweet-item
+        *ngFor="let tweet of tweets"
+        [data]="tweet"
+      ></app-tweet-item>
     </div>
   </div>
-
-  <div
-    class="max-w-2xl w-full flex flex-col gap-6"
-    infiniteScroll
-    [infiniteScrollDistance]="2"
-    [infiniteScrollThrottle]="200"
-    [infiniteScrollContainer]="'#main-panel'"
-    [fromRoot]="true"
-    (scrolled)="onScroll()"
-  >
-    <app-tweet-item
-      *ngFor="let tweet of tweets"
-      [data]="tweet"
-    ></app-tweet-item>
-  </div>
 </section>
+
+<ng-template #noPosts>
+  <app-empty-result-overlay
+    class="my-auto"
+    type="noData"
+    title="No Posts!"
+    message="There are no posts to show. Refresh the page to see if there are any new posts."
+  ></app-empty-result-overlay>
+</ng-template>

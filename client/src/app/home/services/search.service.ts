@@ -1,7 +1,8 @@
 import { HttpClient, HttpUrlEncodingCodec } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
+import { TweetStore } from 'src/app/shared/store/tweet.store';
 import { PaginationModel } from '../models/pagination.model';
 import { SearchSuggestionModel } from '../models/search.model';
 import { TweetModel } from '../models/tweet.model';
@@ -13,7 +14,11 @@ import { UserModel } from '../models/user.model';
 export class SearchService {
   apiUrl = this.env.apiUrl + 'api/Search';
 
-  constructor(private http: HttpClient, private env: EnvService) {}
+  constructor(
+    private http: HttpClient,
+    private env: EnvService,
+    private tweetStore: TweetStore
+  ) {}
 
   getSearchSuggestions(search: string, pagination: PaginationModel) {
     if (search.startsWith('#')) {
@@ -72,12 +77,20 @@ export class SearchService {
   }
 
   getTweetsByHashtag(hashtag: string, pagination: PaginationModel) {
-    return this.http.get<TweetModel[]>(
-      this.apiUrl + '/tweet/' + new HttpUrlEncodingCodec().encodeValue(hashtag),
-      {
-        params: { ...pagination },
-      }
-    );
+    return this.http
+      .get<TweetModel[]>(
+        this.apiUrl +
+          '/tweet/' +
+          new HttpUrlEncodingCodec().encodeValue(hashtag),
+        {
+          params: { ...pagination },
+        }
+      )
+      .pipe(
+        tap((res) =>
+          this.tweetStore.addTweetsToTweetList(res, pagination.pageNumber)
+        )
+      );
   }
 
   getUsersByUsername(username: string, pagination: PaginationModel) {

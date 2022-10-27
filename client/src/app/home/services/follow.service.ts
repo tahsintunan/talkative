@@ -11,31 +11,57 @@ import { UserModel } from '../models/user.model';
 export class FollowService {
   apiUrl = this.env.apiUrl + 'api/Follow';
 
-  private readonly userFollowingsSubject = new BehaviorSubject<string[]>([]);
+  private readonly userFollowingsSubject = new BehaviorSubject<
+    Record<string, boolean>
+  >({});
 
   public readonly userFollowings = this.userFollowingsSubject.asObservable();
 
   constructor(private http: HttpClient, private env: EnvService) {}
 
-  loadUserFollow() {
+  loadUserFollowings() {
     this.getUserFollowings().subscribe();
   }
 
+  addToUserFollowings(followingId: string) {
+    this.userFollowingsSubject.next({
+      ...this.userFollowingsSubject.getValue(),
+      [followingId]: true,
+    });
+  }
+
+  removeFromUserFollowings(followingId: string) {
+    this.userFollowingsSubject.next({
+      ...this.userFollowingsSubject.getValue(),
+      [followingId]: false,
+    });
+  }
+
   followUser(followingId: string) {
-    return this.http
-      .post(this.apiUrl, { followingId })
-      .pipe(tap(() => this.loadUserFollow()));
+    return this.http.post(this.apiUrl, { followingId }).pipe(
+      tap(() =>
+        this.userFollowingsSubject.next({
+          ...this.userFollowingsSubject.getValue(),
+          [followingId]: true,
+        })
+      )
+    );
   }
 
   unfollowUser(followingId: string) {
-    return this.http
-      .delete(this.apiUrl + '/' + followingId)
-      .pipe(tap(() => this.loadUserFollow()));
+    return this.http.delete(this.apiUrl + '/' + followingId).pipe(
+      tap(() =>
+        this.userFollowingsSubject.next({
+          ...this.userFollowingsSubject.getValue(),
+          [followingId]: false,
+        })
+      )
+    );
   }
 
   getUserFollowings() {
     return this.http
-      .get<string[]>(this.apiUrl + '/following-id')
+      .get<Record<string, boolean>>(this.apiUrl + '/following-id')
       .pipe(tap((res) => this.userFollowingsSubject.next(res)));
   }
 

@@ -1,0 +1,38 @@
+<div class="card flex items-center px-6 hover:shadow">
+  <a
+    routerLink="/home/profile/{{ user?.userId }}"
+    class="flex-1 flex items-center gap-3 py-6"
+  >
+    <app-avatar
+      [src]="user?.username"
+      size="50px"
+      borderRadius="50%"
+      borderColor="#f0f0f0"
+      borderWidth="1px"
+      [generateAvater]="true"
+    ></app-avatar>
+
+    <div>
+      <h3 class="text-lg font-semibold">{{ user?.username }}</h3>
+      <p class="text-sm text-gray-500">{{ user?.email }}</p>
+    </div>
+  </a>
+
+  <button
+    *ngIf="!isFollowing"
+    class="inline-flex items-center gap-2 rounded border border-primary px-5 py-2 text-sm font-medium text-primary hover:bg-primary hover:text-white focus:outline-none active:bg-primary"
+    (click)="followUser()"
+  >
+    Follow
+    <span class="material-symbols-rounded">person_add</span>
+  </button>
+
+  <button
+    *ngIf="isFollowing"
+    class="inline-flex items-center gap-2 rounded border border-error px-5 py-2 text-sm font-medium text-error hover:bg-error hover:text-white focus:outline-none active:bg-error"
+    (click)="unfollowUser()"
+  >
+    Unfollow
+    <span class="material-symbols-rounded">person_remove</span>
+  </button>
+</div>

@@ -86,7 +86,7 @@
         >favorite</mat-icon
       >
       <span *ngIf="tweet?.likes?.length" class="text-lg">{{
-        tweet?.likes?.length
+        tweet?.likes?.length | shortNumber
       }}</span>
     </button>
 
@@ -95,7 +95,7 @@
     <button mat-button class="flex-1 hover:text-blue-500" (click)="onComment()">
       <mat-icon class="mx-2 material-symbols-rounded">mode_comment</mat-icon>
       <span *ngIf="tweet?.comments?.length" class="text-lg">{{
-        tweet?.comments?.length
+        tweet?.comments?.length | shortNumber
       }}</span>
     </button>
 
@@ -115,6 +115,7 @@
         class="text-lg"
         >{{
           tweet?.retweetUsers?.length! + tweet?.quoteRetweets?.length!
+            | shortNumber
         }}</span
       >
     </button>

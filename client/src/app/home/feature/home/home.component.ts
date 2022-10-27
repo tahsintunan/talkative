@@ -5,7 +5,9 @@ import {
   SearchSuggestionModel as SearchResultModel,
 } from '../../models/search.model';
 import { UserModel } from '../../models/user.model';
+import { BlockService } from '../../services/block.service';
 import { FollowService } from '../../services/follow.service';
+import { NotificationService } from '../../services/notification.service';
 import { SearchService } from '../../services/search.service';
 import { UserService } from '../../services/user.service';
 
@@ -21,7 +23,9 @@ export class HomeComponent implements OnInit {
   constructor(
     private userService: UserService,
     private followService: FollowService,
+    private blockService: BlockService,
     private searchService: SearchService,
+    private notificationService: NotificationService,
     private router: Router
   ) {}
 
@@ -35,7 +39,8 @@ export class HomeComponent implements OnInit {
 
   preloadData(): void {
     this.userService.loadUserAuth();
-    this.followService.loadUserFollow();
+    this.followService.loadUserFollowings();
+    this.blockService.loadUserBlockList();
   }
 
   onSearchChange(search: SearchChangeModel): void {
@@ -63,14 +68,9 @@ export class HomeComponent implements OnInit {
   }
 
   onSearchSubmit(search: string): void {
-    if (search.startsWith('#')) {
-      this.router.navigate(['/home/search'], {
-        queryParams: { hashtag: search },
-      });
-    } else {
-      this.router.navigate(['/home/search'], {
-        queryParams: { username: search },
-      });
-    }
+    const type = search.startsWith('#') ? 'hashtag' : 'username';
+    this.router.navigate(['/home/search'], {
+      queryParams: { type, value: search },
+    });
   }
 }

@@ -6,9 +6,10 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./alert.component.css'],
 })
 export class AlertComponent implements OnInit {
-  @Input() alertType: string = 'default';
-  @Input() alertTitle: string = 'Alert';
-  @Input() massage: string = 'Alert message';
+  @Input() type: 'default' | 'info' | 'success' | 'warning' | 'danger' =
+    'default';
+  @Input() title: string = 'Alert';
+  @Input() message: string = 'Alert message';
 
   constructor() {}
 

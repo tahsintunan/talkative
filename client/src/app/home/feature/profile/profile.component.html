@@ -2,10 +2,10 @@
   <div class="flex flex-col max-w-6xl w-full">
     <app-profile-details
       class="flex-1 mb-10"
-      [data]="profileDetails"
+      [data]="profile"
       [followers]="followers"
       [followings]="followings"
-      [postCount]="tweets.length"
+      [analytics]="userAnalytics"
       (onProfileEdit)="onProfileEdit()"
       (onPasswordEdit)="onPasswordEdit()"
       (onFollow)="onFollow($event)"
@@ -18,7 +18,7 @@
       <div class="flex-[0.5] relative">
         <div class="h-fit sticky top-0">
           <app-profile-peoples
-            [profileDetails]="profileDetails"
+            [profileDetails]="profile"
             [followers]="followers"
             [followings]="followings"
             [blockList]="blockList"
@@ -35,6 +35,7 @@
       </div>
 
       <div
+        *ngIf="tweets?.length; else noPosts"
         class="flex flex-1 flex-col gap-6"
         infiniteScroll
         [infiniteScrollDistance]="2"
@@ -51,3 +52,12 @@
     </div>
   </div>
 </section>
+
+<ng-template #noPosts>
+  <app-empty-result-overlay
+    class="my-auto flex-[0.7] mx-10"
+    type="noData"
+    title="No Posts By {{ profile?.username }}!"
+    message="Come back later to see if there are any new posts."
+  ></app-empty-result-overlay>
+</ng-template>
