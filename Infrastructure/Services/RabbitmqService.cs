@@ -27,6 +27,9 @@ public class RabbitmqService : IRabbitmq
     {
         try
         {
+            if (notification.EventTriggererId == notification.NotificationReceiverId)
+                return Task.CompletedTask;
+
             var marshalledNotification = JsonConvert.SerializeObject(notification);
             var notificationBytes = Encoding.Default.GetBytes(marshalledNotification);
             _channel.BasicPublish(
