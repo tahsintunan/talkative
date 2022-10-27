@@ -5,6 +5,7 @@ using Application.Users.Commands.UnbanUser;
 using Application.Users.Commands.UpdatePassword;
 using Application.Users.Commands.UpdateUser;
 using Application.Users.Queries.GetAllUsers;
+using Application.Users.Queries.GetTopActiveUsers;
 using Application.Users.Queries.GetTweetAndFollowCountOfUser;
 using Application.Users.Queries.GetUserById;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,13 @@ public class UserController : ApiControllerBase
     {
         getAllUsersQuery.UserId = HttpContext.Items["User"]!.ToString();
         return Ok(await Mediator.Send(getAllUsersQuery));
+    }
+
+    [HttpGet("top-active-users")]
+    public async Task<ActionResult<IList<UserVm>>> GetTopActiveUsers([FromQuery] GetTopActiveUsersQuery getTopActiveUsersQuery)
+    {
+        getTopActiveUsersQuery.UserId = HttpContext.Items["User"]!.ToString();
+        return Ok(await Mediator.Send(getTopActiveUsersQuery));
     }
 
     [HttpGet("count/{id}")]

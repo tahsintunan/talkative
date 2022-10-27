@@ -18,4 +18,5 @@ public interface ITweet
     Task<IList<BsonDocument>> GetTweetsByHashtag(string hashtag, int skip, int take);
     Task<IList<TrendingHashtagVm>> GetTrendingHashtags();
     Task<long> GetNumberOfTweetsOfUser(string userId);
+    Task<IList<User>> GetTopActiveUsers(int skip, int limit);
 }
