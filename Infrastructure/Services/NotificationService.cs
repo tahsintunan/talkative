@@ -138,7 +138,8 @@ public class NotificationService : INotification
                 EventTriggererUsername = subO.Username,
                 TweetId = notification.TweetId,
                 CommentId = notification.CommentId,
-                DateTime = notification.Datetime
+                DateTime = notification.Datetime,
+                IsRead = notification.IsRead
             }
         ).Skip(skip).Take(limit);
 

@@ -10,4 +10,5 @@ public class NotificationVm
     public string? TweetId { get; set; }
     public string? CommentId { get; set; }
     public DateTime DateTime { get; set; }
+    public bool IsRead { get; set; }
 }

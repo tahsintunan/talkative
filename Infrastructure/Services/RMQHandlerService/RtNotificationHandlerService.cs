@@ -62,7 +62,8 @@ public class RtNotificationHandlerService : IHostedService
             EventTriggererUsername = eventTriggererUsername,
             TweetId = notification.TweetId,
             CommentId = notification.CommentId,
-            DateTime = DateTime.Now
+            DateTime = DateTime.Now,
+            IsRead = notification.IsRead
         };
         await _notificationHub.SendNotification(notificationVm);
     }

@@ -26,4 +26,6 @@ public class Notification
     [BsonElement("commentId")] public string? CommentId { get; set; }
 
     [BsonElement("datetime")] public DateTime Datetime { get; set; }
+    
+    [BsonElement("isRead")] public bool IsRead { get; set; }
 }
