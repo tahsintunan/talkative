@@ -20,8 +20,8 @@ public static class ConfigureServices
         services.AddTransient<ITweet, TweetService>();
         services.AddTransient<IRetweet, RetweetService>();
         services.AddTransient<IBlockFilter, BlockFilterService>();
-        services.AddTransient<IRabbitmq, RabbitmqService>();
         services.AddTransient<INotification, NotificationService>();
+        services.AddSingleton<IRabbitmq, RabbitmqService>();
         services.AddHostedService<DbNotificationHandlerService>();
         services.AddHostedService<RtNotificationHandlerService>();
         return services;
