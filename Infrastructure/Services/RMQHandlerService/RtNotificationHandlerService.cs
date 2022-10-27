@@ -56,6 +56,7 @@ public class RtNotificationHandlerService : IHostedService
         var notificationVm = new NotificationVm
         {
             EventType = notification.EventType,
+            NotificationReceiverId = notification.NotificationReceiverId,
             EventTriggererId = notification.EventTriggererId,
             EventTriggererUsername = eventTriggererUsername,
             TweetId = notification.TweetId,

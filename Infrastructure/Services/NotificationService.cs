@@ -132,6 +132,7 @@ public class NotificationService : INotification
             select new NotificationVm
             {
                 EventType = notification.EventType,
+                NotificationReceiverId = notification.NotificationReceiverId,
                 EventTriggererId = notification.EventTriggererId,
                 EventTriggererUsername = subO.Username,
                 TweetId = notification.TweetId,
