@@ -131,6 +131,7 @@ public class NotificationService : INotification
             from subO in joined.DefaultIfEmpty()
             select new NotificationVm
             {
+                NotificationId = notification.Id,
                 EventType = notification.EventType,
                 NotificationReceiverId = notification.NotificationReceiverId,
                 EventTriggererId = notification.EventTriggererId,

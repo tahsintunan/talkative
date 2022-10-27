@@ -55,6 +55,7 @@ public class RtNotificationHandlerService : IHostedService
         var eventTriggererUsername = await GetUsernameById(notification.EventTriggererId!);
         var notificationVm = new NotificationVm
         {
+            NotificationId = notification.Id,
             EventType = notification.EventType,
             NotificationReceiverId = notification.NotificationReceiverId,
             EventTriggererId = notification.EventTriggererId,

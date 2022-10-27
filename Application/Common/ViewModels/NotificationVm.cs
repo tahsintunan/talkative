@@ -2,6 +2,7 @@ namespace Application.Common.ViewModels;
 
 public class NotificationVm
 {
+    public string? NotificationId { get; set; }
     public string? EventType { get; set; }
     public string? NotificationReceiverId { get; set; }
     public string? EventTriggererId { get; set; }
