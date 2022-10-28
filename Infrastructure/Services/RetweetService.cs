@@ -43,7 +43,6 @@ public class RetweetService : IRetweet
             .Lookup("users", "retweetUsers", "_id", "users")
             .Unwind("users")
             .ReplaceRoot<User>("$users")
-            .Match(x => x.IsBanned == null || (x.IsBanned != null && x.IsBanned == false))
             .Project(user => new UserVm { UserId = user.Id, Username = user.Username })
             .ToListAsync();
     }

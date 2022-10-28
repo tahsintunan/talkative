@@ -34,6 +34,13 @@ public class AuthMiddleware
             return;
         }
 
+        if (user.IsBanned)
+        {
+            httpContext.Response.StatusCode = 401;
+            await httpContext.Response.WriteAsync("Unauthorized");
+            return;
+        }
+
         httpContext.Items["User"] = userId;
         httpContext.Items["Admin"] = user.IsAdmin;
         await _next.Invoke(httpContext);

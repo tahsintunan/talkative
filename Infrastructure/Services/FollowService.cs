@@ -91,7 +91,6 @@ public class FollowService : IFollow
             .Lookup("users", "followerId", "_id", "user")
             .Unwind("user")
             .ReplaceRoot<User>("$user")
-            .Match(x => x.IsBanned == null || (x.IsBanned != null && x.IsBanned == false))
             .SortByDescending(x => x.Username)
             .Project(user => new UserVm { UserId = user.Id, Username = user.Username })
             .ToListAsync();
@@ -113,7 +112,6 @@ public class FollowService : IFollow
             .Lookup("users", "followingId", "_id", "user")
             .Unwind("user")
             .ReplaceRoot<User>("$user")
-            .Match(x => x.IsBanned == null || (x.IsBanned != null && x.IsBanned == false))
             .SortByDescending(x => x.Username)
             .Project(user => new UserVm { UserId = user.Id, Username = user.Username })
             .ToListAsync();
