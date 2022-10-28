@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Application.Common.Enums;
 using Application.Common.Exceptions;
 using Application.Common.Interface;
 using Domain.Entities;
@@ -128,8 +129,7 @@ public class AuthService : IAuth
             new Claim("user_id", user.Id!),
             new Claim(ClaimTypes.Email, user.Email!),
             new Claim(
-                ClaimTypes.DateOfBirth,
-                user.DateOfBirth.ToString(CultureInfo.CurrentCulture)
+                ClaimTypes.Role,user.IsAdmin?Role.ADMIN.ToString() : Role.USER.ToString()
             )
         };
         var key = new SymmetricSecurityKey(

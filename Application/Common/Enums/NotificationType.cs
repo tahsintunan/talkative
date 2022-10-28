@@ -1,6 +1,6 @@
 namespace Application.Common.Enums;
 
-public class NotificationTypeEnum
+public class NotificationType
 {
     public const string Follow = "follow";
     public const string LikeComment = "likeComment";

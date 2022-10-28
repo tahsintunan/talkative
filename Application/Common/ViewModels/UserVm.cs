@@ -12,6 +12,7 @@ public class UserVm : Blockable
     [JsonIgnore] public IList<string?>? BlockedBy { get; set; }
 
     [JsonIgnore] public IList<string?>? Blocked { get; set; }
+    [JsonIgnore] public bool IsAdmin { get; set; }
 
     public bool IsBanned { get; set; }
 }

@@ -35,6 +35,7 @@ public class AuthMiddleware
         }
 
         httpContext.Items["User"] = userId;
+        httpContext.Items["Admin"] = user.IsAdmin;
         await _next.Invoke(httpContext);
     }
 

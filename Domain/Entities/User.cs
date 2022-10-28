@@ -28,4 +28,6 @@ public class User
     [BsonElement("email")] public string? Email { get; set; }
 
     [BsonElement("isBanned")] public bool? IsBanned { get; set; }
+
+    [BsonElement("isAdmin")] public bool IsAdmin { get; set; }
 }

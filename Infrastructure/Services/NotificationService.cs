@@ -50,7 +50,7 @@ public class NotificationService : INotification
         var notification = new Notification
         {
             Id = ObjectId.GenerateNewId().ToString(),
-            EventType = NotificationTypeEnum.Follow,
+            EventType = NotificationType.Follow,
             NotificationReceiverId = request.FollowingId,
             EventTriggererId = request.FollowerId,
             Datetime = DateTime.Now
@@ -64,8 +64,8 @@ public class NotificationService : INotification
         {
             Id = ObjectId.GenerateNewId().ToString(),
             EventType = retweet.IsQuoteRetweet
-                ? NotificationTypeEnum.QuoteRetweet
-                : NotificationTypeEnum.Retweet,
+                ? NotificationType.QuoteRetweet
+                : NotificationType.Retweet,
             NotificationReceiverId = originalTweetVm.UserId,
             EventTriggererId = retweet.UserId,
             TweetId = retweet.IsQuoteRetweet ? retweet.Id : retweet.OriginalTweetId,
@@ -79,7 +79,7 @@ public class NotificationService : INotification
         var notification = new Notification
         {
             Id = ObjectId.GenerateNewId().ToString(),
-            EventType = NotificationTypeEnum.LikeTweet,
+            EventType = NotificationType.LikeTweet,
             NotificationReceiverId = tweetVm.UserId,
             EventTriggererId = request.UserId,
             TweetId = request.TweetId,
@@ -93,7 +93,7 @@ public class NotificationService : INotification
         var notification = new Notification
         {
             Id = ObjectId.GenerateNewId().ToString(),
-            EventType = NotificationTypeEnum.Comment,
+            EventType = NotificationType.Comment,
             NotificationReceiverId = tweetVm.UserId,
             EventTriggererId = comment.UserId,
             TweetId = comment.TweetId,
@@ -111,7 +111,7 @@ public class NotificationService : INotification
         var notification = new Notification
         {
             Id = ObjectId.GenerateNewId().ToString(),
-            EventType = NotificationTypeEnum.LikeComment,
+            EventType = NotificationType.LikeComment,
             NotificationReceiverId = commentVm.UserId,
             EventTriggererId = request.UserId,
             TweetId = commentVm.TweetId,

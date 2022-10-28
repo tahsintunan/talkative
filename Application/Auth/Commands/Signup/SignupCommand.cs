@@ -31,7 +31,9 @@ public class SignupCommandHandler : IRequestHandler<SignupCommand>
                 Username = request.Username,
                 Password = request.Password,
                 DateOfBirth = request.DateOfBirth.Date,
-                Email = request.Email
+                Email = request.Email,
+                IsBanned = false,
+                IsAdmin = false,
             }
         );
         return Unit.Value;

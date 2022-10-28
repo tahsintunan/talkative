@@ -61,7 +61,10 @@ public class UserController : ApiControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateUser(UpdateUserCommand updateUserCommand)
     {
-        updateUserCommand.UserId = HttpContext.Items["User"]!.ToString();
+        if (updateUserCommand.UserId != HttpContext.Items["User"]!.ToString() || (bool)HttpContext.Items["Admin"]!)
+        {
+            return Unauthorized();
+        }
         await Mediator.Send(updateUserCommand);
         return NoContent();
     }
@@ -69,6 +72,10 @@ public class UserController : ApiControllerBase
     [HttpPut("unban/{id}")]
     public async Task<ActionResult> UnbanUser(string id)
     {
+        if (!(bool)HttpContext.Items["Admin"]!)
+        {
+            return Unauthorized();
+        }
         await Mediator.Send(new UnbanUserCommand { UserId = id });
         return NoContent();
     }
@@ -76,6 +83,10 @@ public class UserController : ApiControllerBase
     [HttpDelete("ban/{id}")]
     public async Task<IActionResult> BanUser(string id)
     {
+        if (!(bool)HttpContext.Items["Admin"]!)
+        {
+            return Unauthorized();
+        }
         BanUserCommand banUserCommand = new() { UserId = id };
         await Mediator.Send(banUserCommand);
         return NoContent();
