@@ -210,7 +210,6 @@ export class ProfileComponent implements OnInit {
     this.blockService.blockUser(userId).subscribe((res) => {
       this.userAnalytics!.followerCount--;
       this.followService.removeFromUserFollowings(userId);
-      this.userService.loadUserAuth();
       this.getBlockList(this.profileId);
     });
   }
@@ -220,7 +219,6 @@ export class ProfileComponent implements OnInit {
       this.blockList = this.blockList.filter(
         (x) => x.userId !== this.userAuth?.userId
       );
-      this.userService.loadUserAuth();
     });
   }
 }

@@ -1,5 +1,5 @@
 <mat-drawer-container class="h-full">
-  <mat-drawer mode="side" opened class="h-full w-80 p-4">
+  <mat-drawer mode="side" opened class="h-full w-80 p-4 bg-white">
     <app-navbar></app-navbar>
   </mat-drawer>
   <mat-drawer-content>
@@ -30,7 +30,7 @@
     <mat-divider></mat-divider>
 
     <main id="main-panel">
-      <router-outlet></router-outlet>
+      <router-outlet class="self-center"></router-outlet>
     </main>
   </mat-drawer-content>
 </mat-drawer-container>

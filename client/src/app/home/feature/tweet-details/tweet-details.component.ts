@@ -53,6 +53,26 @@ export class TweetDetailsComponent implements OnInit {
 
       this.getTweet();
       this.getComments();
+
+      this.getCommentToShowAtTop();
+    });
+  }
+
+  getCommentToShowAtTop() {
+    this.activatedRoute.queryParams.subscribe((res) => {
+      const commentId = res['comment'];
+      if (commentId) {
+        const index = this.comments.findIndex((c) => c.id === commentId);
+        if (index !== -1) {
+          this.comments[0],
+            (this.comments[index] = this.comments[index]),
+            this.comments[0];
+        } else {
+          this.commentService.getCommentById(commentId).subscribe((res) => {
+            if (res) this.comments.unshift(res);
+          });
+        }
+      }
     });
   }
 

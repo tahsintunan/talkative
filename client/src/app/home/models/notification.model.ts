@@ -1,4 +1,6 @@
 export interface NotificationModel {
+  notificationId: string;
+  notificationReceiverId: string;
   eventType:
     | 'follow'
     | 'likeTweet'
@@ -11,4 +13,5 @@ export interface NotificationModel {
   tweetId?: string;
   commentId?: string;
   dateTime: Date;
+  isRead: boolean;
 }

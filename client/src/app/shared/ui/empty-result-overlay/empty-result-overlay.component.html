@@ -2,13 +2,18 @@
   <ng-container [ngSwitch]="type">
     <img
       *ngSwitchCase="'noSearchResult'"
-      src="../../assets/images/no-search-result.png"
+      src="../../assets/images/no-search-data.png"
       alt="No Search Result"
     />
     <img
       *ngSwitchCase="'noData'"
       src="../../assets/images/no-data.png"
       alt="No Data"
+    />
+    <img
+      *ngSwitchCase="'noDataAlt'"
+      src="../../assets/images/no-data-2.png"
+      alt="No Data Alt"
     />
   </ng-container>
 

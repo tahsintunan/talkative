@@ -25,9 +25,9 @@ import { TweetDetailsComponent } from './feature/tweet-details/tweet-details.com
 import { HomeRoutingModule } from './home-routing.module';
 import { CommentInputComponent } from './ui/comment/comment-input/comment-input.component';
 import { CommentItemComponent } from './ui/comment/comment-item/comment-item.component';
-import { NavLinkItemComponent } from './ui/nav/nav-link-item/nav-link-item.component';
 import { NavbarComponent } from './ui/nav/navbar/navbar.component';
-import { NotificationSnackbarComponent } from './ui/notification-snackbar/notification-snackbar.component';
+import { NotificationItemComponent } from './ui/notification/notification-item/notification-item.component';
+import { NotificationSnackbarComponent } from './ui/notification/notification-snackbar/notification-snackbar.component';
 import { PasswordUpdateDialogComponent } from './ui/profile/password-update-dialog/password-update-dialog.component';
 import { ProfileDetailsComponent } from './ui/profile/profile-details/profile-details.component';
 import { ProfilePeopleItemComponent } from './ui/profile/profile-people-item/profile-people-item.component';
@@ -42,7 +42,6 @@ import { UserListItemComponent } from './ui/user-list-item/user-list-item.compon
   declarations: [
     HomeComponent,
     NavbarComponent,
-    NavLinkItemComponent,
     FeedComponent,
     ProfileComponent,
     NotificationsComponent,
@@ -60,6 +59,7 @@ import { UserListItemComponent } from './ui/user-list-item/user-list-item.compon
     PasswordUpdateDialogComponent,
     UserListItemComponent,
     NotificationSnackbarComponent,
+    NotificationItemComponent,
   ],
   imports: [
     CommonModule,

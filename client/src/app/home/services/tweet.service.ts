@@ -6,6 +6,7 @@ import { EnvService } from 'src/app/env.service';
 import { TweetStore } from '../../shared/store/tweet.store';
 import { PaginationModel } from '../models/pagination.model';
 import {
+  TrendingHashtagModel,
   TweetCreateReqModel,
   TweetModel,
   TweetUpdateReqModel,
@@ -77,6 +78,12 @@ export class TweetService {
         isLiked,
       })
       .pipe(tap((res) => this.storeService.updateTweetInTweetList(res)));
+  }
+
+  getTrendingHashtags() {
+    return this.http.get<TrendingHashtagModel[]>(
+      this.apiUrl + '/trending-hashtags'
+    );
   }
 
   addToUserTweets(tweet: TweetModel) {

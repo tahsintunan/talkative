@@ -24,7 +24,7 @@
 
       <button
         *ngIf="tweet?.user?.userId === userAuth?.userId"
-        class="!ml-auto hover:text-primaryLight"
+        class="!ml-auto transition hover:text-primary hover:shadow hover:bg-white"
         mat-icon-button
         [matMenuTriggerFor]="menu"
       >
@@ -108,9 +108,9 @@
 
       <button
         mat-button
-        class="flex-1 hover:text-primaryLight"
+        class="flex-1 hover:text-primary"
         [ngClass]="{
-          'text-primaryLight': alreadyRetweeted
+          'text-primary': alreadyRetweeted
         }"
         [matMenuTriggerFor]="retweetMenu"
       >

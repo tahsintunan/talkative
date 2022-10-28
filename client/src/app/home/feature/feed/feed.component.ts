@@ -1,8 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { TweetStore } from '../../../shared/store/tweet.store';
 import { PaginationModel } from '../../models/pagination.model';
-import { TweetModel, TweetWriteModel } from '../../models/tweet.model';
+import {
+  TrendingHashtagModel,
+  TweetModel,
+  TweetWriteModel,
+} from '../../models/tweet.model';
 import { UserModel } from '../../models/user.model';
 import { TweetService } from '../../services/tweet.service';
 import { UserService } from '../../services/user.service';
@@ -20,11 +25,14 @@ export class FeedComponent implements OnInit {
 
   userAuth?: UserModel;
   tweets?: TweetModel[];
+  topUsers: UserModel[] = [];
+  trendingHashtags: TrendingHashtagModel[] = [];
 
   constructor(
     private userService: UserService,
     private tweetService: TweetService,
     private storeService: TweetStore,
+    private router: Router,
     private dialog: MatDialog
   ) {}
 
@@ -38,6 +46,14 @@ export class FeedComponent implements OnInit {
     });
 
     this.tweetService.getTweets(this.pagination).subscribe();
+
+    this.userService.getTopUsers().subscribe((res) => {
+      this.topUsers = res.slice(0, 10);
+    });
+
+    this.tweetService.getTrendingHashtags().subscribe((res) => {
+      this.trendingHashtags = res.slice(0, 10);
+    });
   }
 
   onScroll() {
@@ -48,6 +64,12 @@ export class FeedComponent implements OnInit {
   onScrollToTop() {
     this.pagination.pageNumber = 1;
     this.tweetService.getTweets(this.pagination).subscribe();
+  }
+
+  onTrendingHashtagClick(hashtag: string) {
+    this.router.navigate(['/home/search'], {
+      queryParams: { type: 'hashtag', value: hashtag },
+    });
   }
 
   onCreatePost() {

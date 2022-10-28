@@ -41,3 +41,8 @@ export interface RetweetReqModel {
   isQuoteRetweet: boolean;
   originalTweetId: string;
 }
+
+export interface TrendingHashtagModel {
+  hashtag: string;
+  count: number;
+}

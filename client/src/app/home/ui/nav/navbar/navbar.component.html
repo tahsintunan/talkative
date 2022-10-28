@@ -7,13 +7,13 @@
     >
     </mat-icon>
 
-    <span class="text-4xl font-bold text-white">Talkative</span>
+    <span class="text-4xl font-bold text-primary">Talkative</span>
   </a>
 
   <hr />
 
   <button
-    class="w-full flex items-center justify-center gap-3 px-8 py-4 rounded border-none outline-none bg-zinc-900 text-white hover:bg-zinc-800"
+    class="w-full flex items-center justify-center gap-3 px-8 py-4 rounded outline-none bg-primary text-white hover:bg-primaryDark"
     (click)="openCreatePostDialog()"
   >
     <span>CREATE POST</span>
@@ -21,12 +21,23 @@
   </button>
 
   <div class="mb-auto flex flex-col gap-2">
-    <app-nav-link-item
+    <a
       *ngFor="let data of navData"
-      [link]="data.link"
-      [icon]="data.icon"
-      [text]="data.text"
-    ></app-nav-link-item>
+      [routerLink]="data.link"
+      routerLinkActive="active"
+      class="nav-link"
+    >
+      <mat-icon class="material-symbols-rounded">{{ data.icon }}</mat-icon>
+      <span>{{ data.text }}</span>
+
+      <span
+        *ngIf="data.notificationCount"
+        class="inline-flex justify-center items-center ml-2 w-5 h-5 text-xs font-semibold bg-red-500 text-white rounded-full"
+        >{{
+          data.notificationCount > 10 ? "10+" : data.notificationCount
+        }}</span
+      >
+    </a>
   </div>
 
   <button

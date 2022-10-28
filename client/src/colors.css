@@ -1,0 +1,12 @@
+:root {
+  --primary: rgb(126, 87, 194);
+  --primary-dark: rgb(103, 58, 183);
+  --primary-light: rgba(126, 87, 194, 0.2);
+  --secondary: rgb(48, 48, 48);
+  --secondary-dark: rgb(30, 30, 30);
+  --error: rgb(185, 28, 28);
+  --error-dark: rgb(157, 14, 14);
+  --warning: rgb(220, 182, 12);
+  --info: rgb(43, 79, 220);
+  --success: rgb(8, 201, 137);
+}

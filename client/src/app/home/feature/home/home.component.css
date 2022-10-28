@@ -1,11 +1,3 @@
-.chat-box-container {
-  flex: 3;
-}
-
-mat-drawer {
-  background: #222222;
-}
-
 #main-panel {
   padding: 1rem;
   height: calc(100vh - 65px);

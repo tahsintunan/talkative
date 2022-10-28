@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject, tap } from 'rxjs';
-import { NotificationSnackbarComponent } from 'src/app/home/ui/notification-snackbar/notification-snackbar.component';
+import { NotificationSnackbarComponent } from 'src/app/home/ui/notification/notification-snackbar/notification-snackbar.component';
 import { EnvService } from '../../env.service';
 import { NotificationModel } from '../models/notification.model';
+import { PaginationModel } from '../models/pagination.model';
 import { UserModel } from '../models/user.model';
 import { UserService } from './user.service';
 
@@ -16,16 +17,14 @@ export class NotificationService {
   private readonly notificationsSubject = new BehaviorSubject<
     NotificationModel[]
   >([]);
+  public readonly notifications = this.notificationsSubject.asObservable();
 
-  public notifications = this.notificationsSubject.asObservable();
-
+  apiUrl = this.envService.apiUrl + 'api/Notification';
   notificationUrl = this.envService.apiUrl + 'notificationhub';
-
-  apiUrl = this.envService.apiUrl + 'Notification';
 
   private userAuth?: UserModel;
 
-  connection = new signalR.HubConnectionBuilder()
+  private connection = new signalR.HubConnectionBuilder()
     .withUrl(this.notificationUrl, {
       skipNegotiation: true,
       transport: signalR.HttpTransportType.WebSockets,
@@ -41,8 +40,6 @@ export class NotificationService {
     this.userService.userAuth.subscribe((res) => {
       this.userAuth = res;
     });
-
-    this.createConnection();
   }
 
   createConnection() {
@@ -76,40 +73,117 @@ export class NotificationService {
     }
   }
 
-  getNotifications() {
+  loadNotifications() {
+    this.getNotifications({ pageNumber: 1 }).subscribe();
+  }
+
+  getNotifications(pagination: PaginationModel) {
     return this.http
-      .get<NotificationModel[]>(this.apiUrl)
-      .pipe(tap((res) => this.addNotificationsToList(res)));
+      .get<NotificationModel[]>(this.apiUrl, {
+        params: {
+          ...pagination,
+        },
+      })
+      .pipe(
+        tap((res) => {
+          res.length > 0 &&
+            this.addNotificationsToList(res, pagination.pageNumber);
+        })
+      );
+  }
+
+  deleteNotification(notificationId: string) {
+    return this.http.delete(this.apiUrl + '/' + notificationId).pipe(
+      tap(() => {
+        const notifications = this.notificationsSubject.getValue();
+        const index = notifications.findIndex(
+          (x) => x.notificationId === notificationId
+        );
+
+        if (index !== -1) {
+          notifications.splice(index, 1);
+          this.notificationsSubject.next(notifications);
+        }
+      })
+    );
+  }
+
+  markAsRead(notificationId: string) {
+    return this.http
+      .patch(this.apiUrl + '/' + notificationId, { notificationId })
+      .pipe(
+        tap(() => {
+          const notifications = this.notificationsSubject.getValue();
+          const index = notifications.findIndex(
+            (x) => x.notificationId === notificationId
+          );
+
+          if (index !== -1) {
+            notifications[index].isRead = true;
+            this.notificationsSubject.next(notifications);
+          }
+        })
+      );
   }
 
   addNotificationToList(notification: NotificationModel) {
-    if (this.userAuth?.userId !== notification.eventTriggererId) {
+    if (
+      notification.eventTriggererId !== this.userAuth?.userId &&
+      notification.notificationReceiverId === this.userAuth?.userId
+    ) {
       this.notificationsSubject.next([
         notification,
         ...this.notificationsSubject.getValue(),
       ]);
 
-      this.showNotifications(notification);
+      this.showNotificationPopup(notification);
     }
   }
 
-  showNotifications(notification: NotificationModel) {
+  showNotificationPopup(notification: NotificationModel) {
+    new Audio('../../../assets/audios/notification.wav').play();
+
     this.snackBar.openFromComponent(NotificationSnackbarComponent, {
-      duration: 40000,
+      duration: 10000,
       horizontalPosition: 'right',
       verticalPosition: 'bottom',
       data: notification,
     });
   }
 
-  addNotificationsToList(notifications: NotificationModel[]) {
+  addNotificationsToList(
+    notifications: NotificationModel[],
+    pageNumber: number
+  ) {
     notifications = this.filterPersonalNotifications(notifications);
-    this.notificationsSubject.next(notifications);
+    if (pageNumber === 1) this.notificationsSubject.next(notifications);
+    else
+      this.notificationsSubject.next([
+        ...this.notificationsSubject.getValue(),
+        ...notifications,
+      ]);
   }
 
   filterPersonalNotifications(notifications: NotificationModel[]) {
-    return notifications.filter((notification) => {
-      return notification.eventTriggererId !== this.userAuth?.userId;
-    });
+    return notifications.filter(
+      (notification) =>
+        notification.eventTriggererId !== this.userAuth?.userId &&
+        notification.notificationReceiverId === this.userAuth?.userId
+    );
+  }
+
+  groupNotificationsByDate(notifications: NotificationModel[]) {
+    return notifications.reduce((r: Record<string, NotificationModel[]>, a) => {
+      const date = new Date(a.dateTime);
+      const key = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      ).toISOString();
+
+      r[key] = r[key] || [];
+      r[key].push(a);
+      return r;
+    }, {});
   }
 }

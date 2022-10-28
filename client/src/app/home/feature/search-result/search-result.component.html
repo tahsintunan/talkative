@@ -12,7 +12,8 @@
     *ngIf="(userList.length || tweetList.length) && searchType; else noResult"
   >
     <h1 class="text-gray-600 text-lg">
-      Showings {{ searchType }} search results
+      Showings {{ searchType }} search results for —
+      <strong>{{ searchValue }}</strong>
     </h1>
 
     <div [ngSwitch]="searchType" class="flex flex-col gap-3">
@@ -29,6 +30,12 @@
           [data]="tweet"
         ></app-tweet-item>
       </ng-container>
+
+      <app-empty-result-overlay
+        class="mx-auto w-1/2"
+        type="noDataAlt"
+        title="No More Results!"
+      ></app-empty-result-overlay>
     </div>
   </div>
 </section>

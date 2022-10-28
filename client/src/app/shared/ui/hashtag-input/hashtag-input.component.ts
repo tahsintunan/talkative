@@ -1,9 +1,12 @@
 import {
+  AfterViewInit,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
   Output,
+  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { HighlightTag } from 'angular-text-input-highlight';
@@ -14,7 +17,9 @@ import { HighlightTag } from 'angular-text-input-highlight';
   styleUrls: ['./hashtag-input.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class HashtagInputComponent implements OnInit {
+export class HashtagInputComponent implements OnInit, AfterViewInit {
+  @ViewChild('textarea') textArea?: ElementRef;
+
   @Input() classExpression: string = 'w-full p-4 text-lg';
   @Input() rows: Number = 2;
   @Input() placeholder: string = 'Type here...';
@@ -26,6 +31,12 @@ export class HashtagInputComponent implements OnInit {
   hashtags: string[] = [];
 
   constructor() {}
+
+  ngAfterViewInit() {
+    if (!!this.textArea) {
+      this.textArea.nativeElement.focus();
+    }
+  }
 
   ngOnInit(): void {
     this.addTags();

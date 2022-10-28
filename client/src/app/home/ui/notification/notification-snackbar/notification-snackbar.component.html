@@ -1,11 +1,14 @@
-<div class="flex flex-col gap-2 p-4 w-full text-gray-900">
+<div
+  class="flex flex-col gap-2 p-4 w-full text-gray-900 cursor-pointer"
+  (click)="onClick()"
+>
   <div class="flex gap-2 items-center text-primary">
     <span class="material-symbols-rounded">notifications_active</span>
     <span class="text-sm font-bold">New notification</span>
     <button
       type="button"
       class="ml-auto outline-none text-gray-900 bg-transparent hover:bg-gray-200 focus:bg-gray-200 rounded-full text-sm p-0.5 inline-flex items-center"
-      (click)="onClose()"
+      (click)="$event.stopPropagation(); onClose()"
     >
       <span class="material-symbols-rounded">close</span>
     </button>

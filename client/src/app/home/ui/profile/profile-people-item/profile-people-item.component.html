@@ -20,10 +20,10 @@
   <button
     *ngIf="data?.userId !== userAuth?.userId"
     mat-icon-button
-    class="hover:text-primaryLight"
+    class="transition hover:text-primary hover:shadow hover:bg-white"
     [matMenuTriggerFor]="menu"
   >
-    <mat-icon class="material-symbols-rounded">more_vert</mat-icon>
+    <mat-icon>more_vert</mat-icon>
   </button>
 
   <mat-menu #menu>
