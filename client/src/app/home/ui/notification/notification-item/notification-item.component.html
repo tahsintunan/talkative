@@ -42,7 +42,7 @@
         </ng-container>
       </span>
     </div>
-    <span class="text-primary"> {{ data?.dateTime | dateAgo }}</span>
+    <span class="text-primary"> {{ data?.dateTime | timeAgo }}</span>
   </div>
 
   <span class="rounded-full p-1" [ngClass]="{ 'bg-primary': !data?.isRead }">

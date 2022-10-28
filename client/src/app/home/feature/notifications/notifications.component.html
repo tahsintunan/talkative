@@ -14,7 +14,9 @@
       class="mx-5 px-5 flex flex-col gap-5 relative border-l-2 border-gray-200"
     >
       <div
-        *ngFor="let notifications of notificationsByDate | keyvalue"
+        *ngFor="
+          let notifications of notificationsByDate | keyvalue: originalOrder
+        "
         class="pl-5 flex flex-col gap-2"
       >
         <span

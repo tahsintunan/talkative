@@ -171,19 +171,4 @@ export class NotificationService {
         notification.notificationReceiverId === this.userAuth?.userId
     );
   }
-
-  groupNotificationsByDate(notifications: NotificationModel[]) {
-    return notifications.reduce((r: Record<string, NotificationModel[]>, a) => {
-      const date = new Date(a.dateTime);
-      const key = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate()
-      ).toISOString();
-
-      r[key] = r[key] || [];
-      r[key].push(a);
-      return r;
-    }, {});
-  }
 }

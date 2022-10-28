@@ -8,7 +8,7 @@
     >{{
       userAuth?.userId === data?.user?.userId ? "You" : data?.user?.username
     }}
-    retweeted {{ data?.createdAt | dateAgo }}</span
+    retweeted {{ data?.createdAt | timeAgo }}</span
   >
 </a>
 
@@ -28,7 +28,7 @@
         >{{ tweet?.user?.username }}</a
       >
       <span class="text-gray-500 text-xs">{{
-        tweet?.createdAt | dateAgo
+        tweet?.createdAt | timeAgo
       }}</span>
     </div>
 

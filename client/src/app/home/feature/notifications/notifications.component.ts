@@ -13,7 +13,8 @@ import { UserService } from '../../services/user.service';
 export class NotificationsComponent implements OnInit {
   pagination: PaginationModel = { pageNumber: 1 };
 
-  notificationsByDate?: Record<string, NotificationModel[]>;
+  notificationsByDate?: Map<string, NotificationModel[]>;
+  originalOrder = (a: any, b: any) => 0;
 
   constructor(
     private userService: UserService,
@@ -23,8 +24,7 @@ export class NotificationsComponent implements OnInit {
 
   ngOnInit(): void {
     this.notificationService.notifications.subscribe((res) => {
-      this.notificationsByDate =
-        this.notificationService.groupNotificationsByDate(res);
+      this.notificationsByDate = this.groupNotificationsByDate(res);
     });
 
     this.userService.userAuth.subscribe((res) => {
@@ -64,5 +64,19 @@ export class NotificationsComponent implements OnInit {
 
   onNotificationMarkAsRead(notificationId: string): void {
     this.notificationService.markAsRead(notificationId).subscribe();
+  }
+
+  groupNotificationsByDate(notifications: NotificationModel[]) {
+    return notifications.reduce((r, a) => {
+      const date = new Date(a.dateTime);
+      const key = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      ).toISOString();
+
+      r.set(key, [...(r.get(key) || []), a]);
+      return r;
+    }, new Map<string, NotificationModel[]>());
   }
 }

@@ -20,7 +20,7 @@
           routerLink="/home/profile/{{ data?.user?.userId }}"
           >{{ data?.user?.username }}</a
         >
-        <span class="text-gray-500">{{ data?.createdAt | dateAgo }}</span>
+        <span class="text-gray-500">{{ data?.createdAt | timeAgo }}</span>
 
         <span *ngIf="data?.isQuoteRetweet" class="text-gray-500"
           >——— quoted a post</span

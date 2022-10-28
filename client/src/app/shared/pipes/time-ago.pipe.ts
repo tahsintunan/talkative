@@ -7,10 +7,10 @@ import {
 } from '@angular/core';
 
 @Pipe({
-  name: 'dateAgo',
+  name: 'timeAgo',
   pure: false,
 })
-export class DateAgoPipe implements PipeTransform, OnDestroy {
+export class TimeAgoPipe implements PipeTransform, OnDestroy {
   private timer: number | null = null;
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -22,9 +22,15 @@ export class DateAgoPipe implements PipeTransform, OnDestroy {
     }
 
     this.removeTimer();
-    let d = new Date(value);
-    let now = new Date();
-    let seconds = Math.round(Math.abs((now.getTime() - d.getTime()) / 1000));
+    let seconds = Math.floor(
+      Math.abs((Date.now() - new Date(value).getTime()) / 1000)
+    );
+    let minutes = Math.floor(Math.abs(seconds / 60));
+    let hours = Math.floor(Math.abs(minutes / 60));
+    let days = Math.floor(Math.abs(hours / 24));
+    let months = Math.floor(Math.abs(days / 30.416));
+    let years = Math.floor(Math.abs(days / 365));
+
     let timeToUpdate = Number.isNaN(seconds)
       ? 1000
       : this.getSecondsUntilUpdate(seconds) * 1000;
@@ -37,12 +43,6 @@ export class DateAgoPipe implements PipeTransform, OnDestroy {
       }
       return null;
     });
-
-    let minutes = Math.round(Math.abs(seconds / 60));
-    let hours = Math.round(Math.abs(minutes / 60));
-    let days = Math.round(Math.abs(hours / 24));
-    let months = Math.round(Math.abs(days / 30.416));
-    let years = Math.round(Math.abs(days / 365));
 
     if (Number.isNaN(seconds)) {
       return '';
@@ -71,15 +71,18 @@ export class DateAgoPipe implements PipeTransform, OnDestroy {
       return years + ' years ago';
     }
   }
+
   ngOnDestroy(): void {
     this.removeTimer();
   }
+
   private removeTimer() {
     if (this.timer) {
       window.clearTimeout(this.timer);
       this.timer = null;
     }
   }
+
   private getSecondsUntilUpdate(seconds: number) {
     let min = 60;
     let hr = min * 60;

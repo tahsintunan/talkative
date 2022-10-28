@@ -32,7 +32,7 @@
 
       <span
         *ngIf="data.notificationCount"
-        class="inline-flex justify-center items-center ml-2 w-5 h-5 text-xs font-semibold bg-red-500 text-white rounded-full"
+        class="inline-flex justify-center items-center ml-2 w-7 h-7 text-xs font-semibold bg-primary text-white rounded-full"
         >{{
           data.notificationCount > 10 ? "10+" : data.notificationCount
         }}</span
@@ -41,7 +41,7 @@
   </div>
 
   <button
-    class="flex items-center justify-center gap-3 px-8 py-4 rounded border-none outline-none bg-zinc-900 text-white hover:bg-zinc-800"
+    class="flex items-center justify-center gap-3 px-8 py-4 rounded border-none outline-none bg-gray-900 text-white hover:bg-gray-800"
     (click)="onLogout()"
   >
     <span>LOGOUT</span>

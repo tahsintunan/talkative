@@ -13,7 +13,7 @@
     <a class="hover:underline" routerLink="/home/profile/{{ data?.userId }}"
       ><strong>{{ data?.username }}</strong></a
     >
-    <span class="text-xs text-gray-500">{{ data?.created | dateAgo }}</span>
+    <span class="text-xs text-gray-500">{{ data?.created | timeAgo }}</span>
 
     <button
       *ngIf="data?.userId === userAuth?.userId"
