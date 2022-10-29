@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
 import { TweetStore } from '../../shared/store/tweet.store';
@@ -16,7 +17,8 @@ export class RetweetService {
     private http: HttpClient,
     private env: EnvService,
     private storeService: TweetStore,
-    private tweetService: TweetService
+    private tweetService: TweetService,
+    private router: Router
   ) {}
 
   createRetweet(retweet: RetweetReqModel) {
@@ -45,10 +47,12 @@ export class RetweetService {
       })
       .pipe(
         tap(() => {
-          this.storeService.removeTweetFromTweetList(tweetId);
-          this.tweetService.getTweetById(originalTweetId).subscribe((res) => {
-            if (res) this.storeService.updateTweetInTweetList(res);
-          });
+          if (!this.router.url.includes('/tweet/')) {
+            this.storeService.removeTweetFromTweetList(tweetId);
+            this.tweetService.getTweetById(originalTweetId).subscribe((res) => {
+              if (res) this.storeService.updateTweetInTweetList(res);
+            });
+          }
         })
       );
   }

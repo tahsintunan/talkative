@@ -1,170 +1,39 @@
-<section class="flex flex-col items-center gap-6">
-  <div class="card max-w-2xl w-full flex flex-col">
-    <div class="flex gap-3 items-center m-3">
-      <app-avatar
-        alt="User"
-        [src]="tweet?.user?.username"
-        size="50px"
-        borderRadius="50%"
-        borderColor="#f0f0f0"
-        borderWidth="1px"
-        [generateAvater]="true"
-      ></app-avatar>
-
-      <span class="flex flex-col">
-        <a
-          class="text-md hover:underline"
-          routerLink="/home/profile/{{ tweet?.user?.userId }}"
-          >{{ tweet?.user?.username }}</a
-        >
-        <span class="text-gray-500 text-xs">{{
-          tweet?.createdAt | timeAgo
-        }}</span>
-      </span>
-
-      <button
-        *ngIf="tweet?.user?.userId === userAuth?.userId"
-        class="!ml-auto transition hover:text-primary hover:shadow hover:bg-white"
-        mat-icon-button
-        [matMenuTriggerFor]="menu"
-      >
-        <mat-icon>more_vert</mat-icon>
-      </button>
-
-      <mat-menu #menu>
-        <button mat-menu-item (click)="onEdit()">
-          <mat-icon>edit</mat-icon>
-          <span>Edit Post</span>
-        </button>
-        <button mat-menu-item (click)="onDelete()">
-          <mat-icon>delete</mat-icon>
-          <span>Delete Post</span>
-        </button>
-      </mat-menu>
-    </div>
-
-    <div class="mx-5 mb-5 flex flex-col gap-3">
-      <app-hashtag-renderer
-        class="text-2xl"
-        [text]="tweet?.text"
-        (onHashtagClick)="onTagClick($event)"
-      ></app-hashtag-renderer>
-
-      <app-retweet-content
-        *ngIf="tweet?.isQuoteRetweet"
-        [data]="tweet?.originalTweet"
-      ></app-retweet-content>
-    </div>
-
-    <div
-      class="flex py-3 mx-4 px-10 gap-10 text-gray-600 border-t border-gray-300"
+<section
+  class="flex flex-col min-h-full items-center gap-6 text-gray-700"
+  infiniteScroll
+  [infiniteScrollDistance]="2"
+  [infiniteScrollThrottle]="200"
+  [infiniteScrollContainer]="'#main-panel'"
+  [fromRoot]="true"
+  (scrolled)="onScroll()"
+>
+  <div class="max-w-2xl w-full">
+    <app-tweet-item
+      [data]="tweet"
+      [detailedView]="true"
+      (onCommentClick)="pagination.pageNumber = 1; getComments()"
+      (onDeleteClick)="onTweetDelete()"
     >
-      <h3 class="hover:underline cursor-pointer">
-        <strong class="text-gray-900">{{ tweet?.likes?.length }}</strong> Likes
-      </h3>
+      <div class="flex flex-col border-t py-3 gap-3">
+        <app-comment-input
+          (onCommentSubmit)="onComment($event)"
+        ></app-comment-input>
 
-      <h3 class="hover:underline cursor-pointer">
-        <strong class="text-gray-900">{{ tweet?.retweetUsers?.length }}</strong>
-        Shares
-      </h3>
+        <h3 class="text-lg font-semibold">
+          {{ tweet?.comments?.length }} Comments
+        </h3>
 
-      <h3 class="hover:underline cursor-pointer">
-        <strong class="text-gray-900">{{
-          tweet?.quoteRetweets?.length
-        }}</strong>
-        Quotes
-      </h3>
-    </div>
-
-    <div class="flex py-1 mx-4 gap-1 border-t border-gray-300">
-      <button
-        mat-button
-        class="flex-1 hover:text-pink-500"
-        [ngClass]="{
-          'text-pink-500': alreadyLiked
-        }"
-        (click)="onLike()"
-      >
-        <mat-icon
-          class="material-symbols-rounded"
-          [ngClass]="{
-            active: alreadyLiked
-          }"
-          >favorite</mat-icon
-        >
-      </button>
-
-      <mat-divider vertical></mat-divider>
-
-      <button
-        mat-button
-        class="flex-1 hover:text-blue-500"
-        (click)="pagination.pageNumber = 1; getComments()"
-      >
-        <mat-icon class="material-symbols-rounded">mode_comment</mat-icon>
-      </button>
-
-      <mat-divider vertical></mat-divider>
-
-      <button
-        mat-button
-        class="flex-1 hover:text-primary"
-        [ngClass]="{
-          'text-primary': alreadyRetweeted
-        }"
-        [matMenuTriggerFor]="retweetMenu"
-      >
-        <mat-icon class="material-symbols-rounded">cached</mat-icon>
-      </button>
-
-      <mat-menu #retweetMenu>
-        <button
-          *ngIf="alreadyRetweeted"
-          mat-menu-item
-          (click)="onRetweetUndo()"
-        >
-          <mat-icon class="material-symbols-rounded">sync_disabled</mat-icon>
-          <span>Undo Share</span>
-        </button>
-
-        <button *ngIf="!alreadyRetweeted" mat-menu-item (click)="onRetweet()">
-          <mat-icon class="material-symbols-rounded">cached</mat-icon>
-          <span>Share</span>
-        </button>
-
-        <button mat-menu-item (click)="onQuote()">
-          <mat-icon class="material-symbols-rounded">edit_note</mat-icon>
-          <span>Quote</span>
-        </button>
-      </mat-menu>
-    </div>
-
-    <app-comment-input
-      class="p-3 border-t border-gray-300"
-      (onCommentSubmit)="onComment($event)"
-    ></app-comment-input>
-
-    <div
-      class="flex flex-col"
-      infiniteScroll
-      [infiniteScrollDistance]="2"
-      [infiniteScrollThrottle]="200"
-      [infiniteScrollContainer]="'#main-panel'"
-      [fromRoot]="true"
-      (scrolled)="onScroll()"
-    >
-      <h3 class="mb-3 mx-3 text-lg font-semibold text-gray-900">
-        {{ tweet?.comments?.length }} Comments
-      </h3>
-
-      <app-comment-item
-        *ngFor="let comment of comments"
-        [data]="comment"
-        (onDeleteClick)="onCommentDelete($event)"
-        (onLikeClick)="onCommentLike($event)"
-        (onEditSubmit)="onCommentEdit($event)"
-        class="border-t border-gray-100"
-      ></app-comment-item>
-    </div>
+        <div class="flex flex-col gap-4">
+          <app-comment-item
+            *ngFor="let comment of comments"
+            [data]="comment"
+            (onDeleteClick)="onCommentDelete($event)"
+            (onLikeClick)="onCommentLike($event)"
+            (onEditSubmit)="onCommentEdit($event)"
+          >
+          </app-comment-item>
+        </div>
+      </div>
+    </app-tweet-item>
   </div>
 </section>

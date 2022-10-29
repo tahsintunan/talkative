@@ -10,6 +10,7 @@ import { ShortNumberPipe } from './pipes/short-number.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { AlertComponent } from './ui/alert/alert.component';
 import { AvatarComponent } from './ui/avatar/avatar.component';
+import { CommentInputComponent } from './ui/comment-input/comment-input.component';
 import { EmptyResultOverlayComponent } from './ui/empty-result-overlay/empty-result-overlay.component';
 import { HashtagInputComponent } from './ui/hashtag-input/hashtag-input.component';
 import { HashtagRendererComponent } from './ui/hashtag-renderer/hashtag-renderer.component';
@@ -23,6 +24,7 @@ import { SearchInputComponent } from './ui/search-input/search-input.component';
     AvatarComponent,
     HashtagInputComponent,
     SearchInputComponent,
+    CommentInputComponent,
     HashtagRendererComponent,
     AlertComponent,
     EmptyResultOverlayComponent,
@@ -47,6 +49,7 @@ import { SearchInputComponent } from './ui/search-input/search-input.component';
     HashtagRendererComponent,
     AlertComponent,
     EmptyResultOverlayComponent,
+    CommentInputComponent,
   ],
 })
 export class SharedModule {}

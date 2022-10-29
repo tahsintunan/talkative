@@ -1,11 +1,11 @@
 <form
-  class="transition rounded border border-gray-300"
-  [ngClass]="{ shadow: focused, 'bg-white': focused, 'bg-gray-50': !focused }"
+  class="transition rounded"
+  [ngClass]="{ shadow: focused, 'bg-white': focused, 'bg-gray-200': !focused }"
 >
-  <div class="flex items-center">
+  <div class="flex w-full items-center">
     <button
       #searchButton
-      class="transition flex items-center outline-none p-2 text-sm text-gray-400 hover:text-gray-900 bg-transparent rounded hover:bg-gray-200"
+      class="transition flex items-center outline-none p-2 text-sm text-gray-500 hover:text-primary bg-transparent rounded hover:bg-gray-200"
       [disabled]="!formControl.value"
       (click)="onSearchSubmit.emit(formControl.value?.trim())"
     >
@@ -13,7 +13,7 @@
     </button>
 
     <input
-      class="transition-all bg-transparent outline-none p-2.5 text-sm"
+      class="transition-all w-full bg-transparent outline-none p-2.5 text-sm"
       placeholder="Search"
       [formControl]="formControl"
       (focus)="focused = true"
@@ -22,7 +22,7 @@
     />
 
     <button
-      class="transition flex items-center outline-none p-2 text-sm text-gray-400 hover:text-gray-900 bg-transparent rounded hover:bg-gray-200"
+      class="transition flex items-center outline-none p-2 text-sm text-gray-500 hover:text-gray-900 bg-transparent rounded hover:bg-gray-200"
       [ngClass]="{ invisible: !formControl.value }"
       (click)="formControl.reset()"
     >

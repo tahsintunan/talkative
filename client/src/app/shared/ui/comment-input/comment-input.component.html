@@ -1,0 +1,38 @@
+<textarea
+  matInput
+  [rows]="isFocused ? 3 : 1"
+  [formControl]="formControl"
+  placeholder="Type your comment..."
+  class="mb-2 min-h-[2.5rem] max-h-32 px-3 py-2 border rounded w-full block placeholder:text-gray-400 outline-none focus:ring-1 bg-gray-50 focus:ring-primary focus:border-primary text-sm"
+  (focus)="isFocused = true"
+  (blur)="isFocused = !formControl.invalid"
+></textarea>
+<div class="flex gap-2 items-center">
+  <button
+    *ngIf="isFocused"
+    [disabled]="formControl.invalid"
+    class="text-white bg-primary hover:bg-primaryDark outline-none font-medium rounded text-sm px-5 py-2 text-center inline-flex items-center gap-2"
+    (click)="onSubmit()"
+  >
+    {{ isEditMode ? "Update Comment" : "Post Comment" }}
+    <mat-icon class="material-symbols-rounded active">send</mat-icon>
+  </button>
+
+  <button
+    *ngIf="isEditMode"
+    class="text-gray-800 bg-white hover:bg-gray-50 border outline-none font-medium rounded text-sm px-5 py-2 text-center inline-flex items-center gap-2"
+    (click)="onEditCancel.emit()"
+  >
+    Cancel
+    <mat-icon class="material-symbols-rounded">close</mat-icon>
+  </button>
+  <span
+    class="font-semibold ml-auto text-sm"
+    [ngClass]="{
+      hidden: !isFocused,
+      'text-red-500': formControl.invalid,
+      'text-primary': !formControl.invalid
+    }"
+    >{{ formControl.value?.length }}/{{ commentLimit }}</span
+  >
+</div>

@@ -3,9 +3,9 @@
     <app-navbar></app-navbar>
   </mat-drawer>
   <mat-drawer-content>
-    <mat-toolbar class="bg-white relative">
+    <mat-toolbar class="relative">
       <app-search-input
-        class="absolute top-3 z-50"
+        class="absolute top-3 mx-auto left-0 right-0 max-w-2xl z-50"
         [searchResults]="searchResults"
         (onSearchChange)="onSearchChange($event)"
         (onSearchResultSelect)="onSearchResultSelect($event)"
@@ -14,7 +14,7 @@
 
       <a
         routerLink="/home/profile/{{ userAuth?.userId }}"
-        class="ml-auto p-1 rounded-full text-gray-500 bg-gray-100 hover:bg-gray-200 font-bold text-sm flex items-center w-max"
+        class="ml-auto p-1 rounded-full text-gray-600 bg-gray-200 hover:bg-gray-300 font-bold text-sm flex items-center w-max"
       >
         <span class="px-2"> {{ userAuth?.username }} </span>
         <app-avatar
@@ -26,8 +26,6 @@
         ></app-avatar>
       </a>
     </mat-toolbar>
-
-    <mat-divider></mat-divider>
 
     <main id="main-panel">
       <router-outlet class="self-center"></router-outlet>

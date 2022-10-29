@@ -13,10 +13,11 @@ export class CommentInputComponent implements OnInit {
   @Output() onEditCancel = new EventEmitter();
 
   isFocused = false;
+  commentLimit = 280;
 
   formControl = new FormControl(this.defaultValue, [
     Validators.required,
-    Validators.maxLength(100),
+    Validators.maxLength(this.commentLimit),
   ]);
 
   constructor() {}

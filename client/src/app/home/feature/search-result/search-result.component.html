@@ -1,5 +1,5 @@
 <section
-  class="flex flex-col h-full items-center gap-6"
+  class="flex flex-col min-h-full items-center gap-6"
   infiniteScroll
   [infiniteScrollDistance]="2"
   [infiniteScrollThrottle]="200"
@@ -42,7 +42,7 @@
 
 <ng-template #noResult>
   <app-empty-result-overlay
-    class="w-1/3 my-auto"
+    class="w-1/3 m-auto"
     type="noSearchResult"
     title="No result found!"
     message="Try searching for something else"

@@ -1,5 +1,5 @@
 <section
-  class="flex justify-center h-full"
+  class="flex justify-center min-h-full"
   infiniteScroll
   [infiniteScrollDistance]="2"
   [infiniteScrollThrottle]="200"
@@ -10,35 +10,50 @@
   <div class="flex flex-col gap-4 max-w-2xl w-full">
     <h1 class="font-bold text-gray-900 text-2xl">Notifications</h1>
 
-    <div
-      class="mx-5 px-5 flex flex-col gap-5 relative border-l-2 border-gray-200"
-    >
-      <div
-        *ngFor="
-          let notifications of notificationsByDate | keyvalue: originalOrder
-        "
-        class="pl-5 flex flex-col gap-2"
-      >
-        <span
-          class="absolute p-1 bg-gray-200 rounded-full -left-1.5 bottom-0 border"
-        ></span>
-
-        <span
-          class="material-symbols-rounded active rounded-full absolute p-2 -left-5 bg-gray-200 text-primary"
-          >calendar_today</span
+    <ng-container *ngIf="notificationsByDate?.size; else noNotifications">
+      <div class="mx-5 px-5 flex flex-col gap-5 relative border-l-2">
+        <div
+          *ngFor="
+            let notifications of notificationsByDate | keyvalue: originalOrder
+          "
+          class="pl-5 flex flex-col gap-2"
         >
-        <h3 class="flex items-center pt-1 text-lg font-semibold text-gray-900">
-          {{ notifications.key | date: "fullDate" }}
-        </h3>
+          <span
+            class="absolute p-1 bg-gray-200 rounded-full -left-1.5 bottom-0 border"
+          ></span>
 
-        <app-notification-item
-          *ngFor="let notification of notifications.value"
-          [data]="notification"
-          (onClick)="onNotificationClick($event)"
-          (onDelete)="onNotificationDelete($event)"
-          (onMarkAsRead)="onNotificationMarkAsRead($event)"
-        ></app-notification-item>
+          <span
+            class="material-symbols-rounded active rounded-full absolute p-2 -left-5 bg-gray-200 text-primary"
+            >calendar_today</span
+          >
+          <h3
+            class="flex items-center pt-1 text-lg font-semibold text-gray-900"
+          >
+            {{ notifications.key | date: "fullDate" }}
+          </h3>
+
+          <app-notification-item
+            *ngFor="let notification of notifications.value"
+            [data]="notification"
+            (onClick)="onNotificationClick($event)"
+            (onDelete)="onNotificationDelete($event)"
+            (onMarkAsRead)="onNotificationMarkAsRead($event)"
+          ></app-notification-item>
+        </div>
       </div>
-    </div>
+      <app-empty-result-overlay
+        class="mx-auto w-1/2"
+        type="endReached"
+        title="You're all caught up for now!"
+      ></app-empty-result-overlay
+    ></ng-container>
   </div>
 </section>
+
+<ng-template #noNotifications>
+  <app-empty-result-overlay
+    class="m-auto w-1/2"
+    type="noDataAlt"
+    title="There are no notifications!"
+  ></app-empty-result-overlay>
+</ng-template>

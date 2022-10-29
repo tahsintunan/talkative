@@ -16,6 +16,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { SharedModule } from '../shared/shared.module';
+import { CommentInputComponent } from '../shared/ui/comment-input/comment-input.component';
 import { FeedComponent } from './feature/feed/feed.component';
 import { HomeComponent } from './feature/home/home.component';
 import { NotificationsComponent } from './feature/notifications/notifications.component';
@@ -23,7 +24,6 @@ import { ProfileComponent } from './feature/profile/profile.component';
 import { SearchResultComponent } from './feature/search-result/search-result.component';
 import { TweetDetailsComponent } from './feature/tweet-details/tweet-details.component';
 import { HomeRoutingModule } from './home-routing.module';
-import { CommentInputComponent } from './ui/comment/comment-input/comment-input.component';
 import { CommentItemComponent } from './ui/comment/comment-item/comment-item.component';
 import { NavbarComponent } from './ui/nav/navbar/navbar.component';
 import { NotificationItemComponent } from './ui/notification/notification-item/notification-item.component';
@@ -52,7 +52,7 @@ import { UserListItemComponent } from './ui/user-list-item/user-list-item.compon
     RetweetContentComponent,
     TweetDetailsComponent,
     CommentItemComponent,
-    CommentInputComponent,
+
     ProfilePeopleItemComponent,
     ProfilePeoplesComponent,
     SearchResultComponent,

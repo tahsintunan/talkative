@@ -1,5 +1,7 @@
+@import url("../../../../colors.css");
+
 .highlight {
-  background-color: rgb(154, 255, 156);
+  background-color: var(--primary-light);
   color: transparent;
 }
 
@@ -25,7 +27,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  color: rgba(0, 0, 0, 0);
+  color: transparent;
   z-index: 1;
 }
 

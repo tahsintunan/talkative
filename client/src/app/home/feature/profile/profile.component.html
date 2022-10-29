@@ -1,4 +1,4 @@
-<section class="flex justify-center">
+<section class="flex min-h-full justify-center">
   <div class="flex gap-5 max-w-7xl w-full">
     <div class="flex flex-col flex-1">
       <app-profile-details
@@ -61,7 +61,7 @@
 
 <ng-template #noPosts>
   <app-empty-result-overlay
-    class="mx-auto w-1/2"
+    class="m-auto w-1/2"
     type="noData"
     title="No Posts By {{ profile?.username }}!"
     message="Come back later to see if there are any new posts."

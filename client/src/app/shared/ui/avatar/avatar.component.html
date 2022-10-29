@@ -1,14 +1,21 @@
-<img
-  [alt]="alt"
-  [src]="generateAvater ? (src | generateImage) : src"
+<div
   [ngStyle]="{
-    minWidth: size,
-    minHeight: size,
-    maxWidth: size,
-    maxHeight: size,
     backgroundColor: bgColor,
     borderRadius: borderRadius,
     borderWidth: borderWidth,
     borderColor: borderColor
   }"
-/>
+>
+  <img
+    [alt]="alt"
+    [src]="generateAvater ? (src | generateImage) : src"
+    [ngStyle]="{
+      minWidth: size,
+      minHeight: size,
+      maxWidth: size,
+      maxHeight: size,
+      backgroundColor: bgColor,
+      borderRadius: borderRadius
+    }"
+  />
+</div>

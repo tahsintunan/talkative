@@ -1,5 +1,5 @@
 <section
-  class="relative flex justify-center h-full gap-6"
+  class="relative flex justify-center min-h-full gap-6 text-gray-700"
   infiniteScroll
   [infiniteScrollDistance]="2"
   [infiniteScrollThrottle]="200"
@@ -46,8 +46,8 @@
 
       <app-empty-result-overlay
         class="mx-auto w-1/2"
-        type="noDataAlt"
-        title="No More Results!"
+        type="endReached"
+        title="You're all caught up for now!"
       ></app-empty-result-overlay>
     </div>
   </div>
@@ -55,13 +55,13 @@
   <div
     class="hidden card sticky top-0 h-fit p-4 lg:flex flex-col gap-2 max-w-xs w-full"
   >
-    <h1 class="text-gray-900 font-bold">Trending Hashtags</h1>
+    <h1 class="font-bold">Trending Hashtags</h1>
     <div
       *ngFor="let hashtag of trendingHashtags"
       class="flex items-center gap-2 p-2 justify-between rounded-md font-bold hover:bg-gray-100"
       (click)="onTrendingHashtagClick(hashtag.hashtag)"
     >
-      <h3 class="text-gray-900">{{ hashtag.hashtag }}</h3>
+      <h3>{{ hashtag.hashtag }}</h3>
       <h3 class="text-gray-500">{{ hashtag.count }} posts</h3>
     </div>
   </div>
@@ -69,7 +69,7 @@
 
 <ng-template #noPosts>
   <app-empty-result-overlay
-    class="my-auto"
+    class="m-auto 1/2"
     type="noData"
     title="No Posts!"
     message="There are no posts to show. Refresh the page to see if there are any new posts."

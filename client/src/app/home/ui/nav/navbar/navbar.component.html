@@ -25,7 +25,7 @@
       *ngFor="let data of navData"
       [routerLink]="data.link"
       routerLinkActive="active"
-      class="nav-link"
+      class="nav-link transition"
     >
       <mat-icon class="material-symbols-rounded">{{ data.icon }}</mat-icon>
       <span>{{ data.text }}</span>

@@ -7,13 +7,12 @@ import {
   CommentUpdateModel,
 } from '../../models/comment.model';
 import { PaginationModel } from '../../models/pagination.model';
-import { TweetModel, TweetWriteModel } from '../../models/tweet.model';
+import { TweetModel } from '../../models/tweet.model';
 import { UserModel } from '../../models/user.model';
 import { CommentService } from '../../services/comment.service';
 import { RetweetService } from '../../services/retweet.service';
 import { TweetService } from '../../services/tweet.service';
 import { UserService } from '../../services/user.service';
-import { PostMakerDialogComponent } from '../../ui/tweet/post-maker-dialog/post-maker-dialog.component';
 
 @Component({
   selector: 'app-tweet-details',
@@ -21,6 +20,8 @@ import { PostMakerDialogComponent } from '../../ui/tweet/post-maker-dialog/post-
   styleUrls: ['./tweet-details.component.css'],
 })
 export class TweetDetailsComponent implements OnInit {
+  detailedView = true;
+
   pagination: PaginationModel = {
     pageNumber: 1,
   };
@@ -116,26 +117,8 @@ export class TweetDetailsComponent implements OnInit {
     }
   }
 
-  onTagClick(hashtag: string) {
-    this.router.navigate(['/home/search'], {
-      queryParams: { type: 'hashtag', value: hashtag },
-    });
-  }
-
-  onLike() {
-    this.tweetService
-      .likeTweet(this.tweet?.id!, !this.alreadyLiked)
-      .subscribe();
-
-    if (this.alreadyLiked && this.tweet) {
-      this.tweet.likes = this.tweet.likes.filter(
-        (likedBy) => likedBy !== this.userAuth?.userId
-      );
-    } else {
-      this.tweet?.likes?.push(this.userAuth?.userId!);
-    }
-
-    this.alreadyLiked = !this.alreadyLiked;
+  onTweetDelete() {
+    this.router.navigate(['..']);
   }
 
   onComment(commentText: string) {
@@ -146,80 +129,6 @@ export class TweetDetailsComponent implements OnInit {
           this.comments = [res, ...this.comments];
           this.tweet?.comments?.push(res.id);
         });
-    }
-  }
-
-  onRetweet() {
-    this.retweetService
-      .createRetweet({
-        isQuoteRetweet: false,
-        originalTweetId: this.tweet?.id!,
-      })
-      .subscribe(() => this.getTweet());
-  }
-
-  onQuote() {
-    const dialogRef = this.dialog.open(PostMakerDialogComponent, {
-      width: '500px',
-      data: {
-        isQuoteRetweet: true,
-        originalTweetId: this.tweet?.id,
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result: TweetWriteModel) => {
-      if (result) {
-        this.retweetService
-          .createRetweet({
-            isQuoteRetweet: true,
-            originalTweetId: result.originalTweetId!,
-            text: result.text,
-            hashtags: result.hashtags!,
-          })
-          .subscribe(() => this.getTweet());
-      }
-    });
-  }
-
-  onRetweetUndo() {
-    this.retweetService
-      .undoRetweet(this.tweet?.id!)
-      .subscribe(() => this.getTweet());
-  }
-
-  onEdit() {
-    const dialogRef = this.dialog.open(PostMakerDialogComponent, {
-      width: '500px',
-      data: {
-        isEdit: true,
-        id: this.tweet?.id,
-        text: this.tweet?.text,
-        isQuoteRetweet: this.tweet?.isQuoteRetweet,
-        originalTweetId: this.tweet?.originalTweet?.id,
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result: TweetWriteModel) => {
-      if (result) {
-        this.tweetService
-          .updateTweet({
-            id: result.id!,
-            text: result.text,
-            hashtags: result.hashtags,
-          })
-          .subscribe(() => this.getTweet());
-      }
-    });
-  }
-
-  onDelete() {
-    if (this.tweet?.id) {
-      if (this.tweet?.isQuoteRetweet)
-        this.retweetService
-          .deleteQuoteRetweet(this.tweet.id, this.tweet?.originalTweetId!)
-          .subscribe();
-      else this.tweetService.deleteTweet(this.tweet?.id).subscribe();
-      this.router.navigate(['..']);
     }
   }
 

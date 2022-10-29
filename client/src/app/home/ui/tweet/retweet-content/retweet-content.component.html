@@ -1,6 +1,6 @@
 <ng-container *ngIf="data?.id; else noContent">
   <div
-    class="card flex p-2 gap-3 cursor-pointer"
+    class="card border text-gray-700 flex p-2 gap-3 cursor-pointer"
     (click)="$event.stopPropagation(); onTweetClick()"
   >
     <app-avatar
@@ -20,10 +20,11 @@
           routerLink="/home/profile/{{ data?.user?.userId }}"
           >{{ data?.user?.username }}</a
         >
-        <span class="text-gray-500">{{ data?.createdAt | timeAgo }}</span>
+        <span>•</span>
+        <time class="text-gray-500">{{ data?.createdAt | timeAgo }}</time>
 
         <span *ngIf="data?.isQuoteRetweet" class="text-gray-500"
-          >——— quoted a post</span
+          >—— quoted a post</span
         >
       </div>
 
@@ -36,8 +37,8 @@
 </ng-container>
 
 <ng-template #noContent>
-  <div class="card flex gap-3 p-3 text-gray-500">
-    <span class="material-symbols-rounded">error</span>
-    <span>Content Not Available</span>
-  </div>
+  <app-alert
+    title="No content!"
+    message="Content of this post is unavailable"
+  ></app-alert>
 </ng-template>

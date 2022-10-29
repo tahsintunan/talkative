@@ -141,7 +141,7 @@ export class NotificationService {
   }
 
   showNotificationPopup(notification: NotificationModel) {
-    new Audio('../../../assets/audios/notification.wav').play();
+    new Audio('../../../assets/audios/notification.mp3').play();
 
     this.snackBar.openFromComponent(NotificationSnackbarComponent, {
       duration: 10000,

@@ -36,13 +36,25 @@ export class TweetService {
   updateTweet(tweet: TweetUpdateReqModel) {
     return this.http
       .put<TweetModel>(this.apiUrl, tweet)
-      .pipe(tap((res) => this.storeService.updateTweetInTweetList(res)));
+      .pipe(
+        tap(
+          (res) =>
+            !this.router.url.includes('/tweet/') &&
+            this.storeService.updateTweetInTweetList(res)
+        )
+      );
   }
 
   deleteTweet(tweetId: string) {
     return this.http
       .delete(this.apiUrl + '/' + tweetId)
-      .pipe(tap(() => this.storeService.removeTweetFromTweetList(tweetId)));
+      .pipe(
+        tap(
+          () =>
+            !this.router.url.includes('/tweet/') &&
+            this.storeService.removeTweetFromTweetList(tweetId)
+        )
+      );
   }
 
   getTweetById(id: string) {

@@ -6,22 +6,21 @@ import { TweetModel } from '../../home/models/tweet.model';
   providedIn: 'root',
 })
 export class TweetStore {
-  private readonly tweetListSubject = new BehaviorSubject<TweetModel[]>([]);
-  public readonly tweetList = this.tweetListSubject.asObservable();
+  public readonly tweetList = new BehaviorSubject<TweetModel[]>([]);
 
   constructor() {}
 
   addTweetToTweetList(tweet: TweetModel) {
     if (tweet.isRetweet && !tweet.originalTweet) return;
 
-    let tweets = this.tweetListSubject.getValue();
+    let tweets = this.tweetList.getValue();
     tweets = [tweet, ...tweets];
 
-    this.tweetListSubject.next(tweets);
+    this.tweetList.next(tweets);
   }
 
   removeTweetFromTweetList(tweetId: string) {
-    let tweets = this.tweetListSubject.getValue();
+    let tweets = this.tweetList.getValue();
 
     tweets = tweets
       .filter((t) => t.id !== tweetId)
@@ -38,7 +37,7 @@ export class TweetStore {
   }
 
   updateTweetInTweetList(tweet: TweetModel) {
-    let tweets = this.tweetListSubject.getValue();
+    let tweets = this.tweetList.getValue();
 
     tweets = tweets.map((t) => {
       if (t.id === tweet.id) {
@@ -66,11 +65,11 @@ export class TweetStore {
 
   addTweetsToTweetList(tweets: TweetModel[], page: number) {
     tweets = this.filterInvalidRetweets(tweets);
-    const currentTweets = this.tweetListSubject.getValue();
+    const currentTweets = this.tweetList.getValue();
     if (page === 1) {
-      this.tweetListSubject.next(tweets);
+      this.tweetList.next(tweets);
     } else {
-      this.tweetListSubject.next([...currentTweets, ...tweets]);
+      this.tweetList.next([...currentTweets, ...tweets]);
     }
   }
 
@@ -79,6 +78,6 @@ export class TweetStore {
   }
 
   clearTweetList() {
-    this.tweetListSubject.next([]);
+    this.tweetList.next([]);
   }
 }
