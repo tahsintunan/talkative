@@ -23,7 +23,7 @@
           {{ tweet?.comments?.length }} Comments
         </h3>
 
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4 pl-2">
           <app-comment-item
             *ngFor="let comment of comments"
             [data]="comment"

@@ -1,0 +1,27 @@
+.tooltip {
+  position: relative;
+  background-color: white;
+}
+
+.tooltip-right.tooltip {
+  margin-left: 14px;
+}
+
+.tooltip-right::before,
+.tooltip-right::after {
+  content: "";
+  position: absolute;
+  transition: all 0.3s ease-in;
+  left: -20px;
+  top: 30px;
+  height: fit-content;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 6px solid transparent;
+  border-right: 14px solid #ccc;
+}
+
+.tooltip-right::after {
+  border-left: 7px solid transparent;
+  border-right: 14px solid white;
+}
