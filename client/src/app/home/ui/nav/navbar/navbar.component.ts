@@ -18,9 +18,9 @@ export class NavbarComponent implements OnInit {
 
   navData = [
     {
-      text: 'Home',
+      text: 'Explore',
       link: './feed',
-      icon: 'home',
+      icon: 'explore',
     },
     {
       text: 'Profile',

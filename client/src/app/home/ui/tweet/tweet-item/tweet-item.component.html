@@ -51,17 +51,6 @@
       >
         <mat-icon>more_vert</mat-icon>
       </button>
-
-      <mat-menu #menu>
-        <button mat-menu-item (click)="onEdit()">
-          <mat-icon class="material-symbols-rounded">edit</mat-icon>
-          <span>Edit Post</span>
-        </button>
-        <button mat-menu-item (click)="onDelete()">
-          <mat-icon class="material-symbols-rounded">delete</mat-icon>
-          <span>Delete Post</span>
-        </button>
-      </mat-menu>
     </div>
 
     <div class="mx-2 mt-3 mb-5 flex flex-col gap-3">
@@ -159,28 +148,35 @@
           }}</span
         >
       </button>
-
-      <mat-menu #retweetMenu>
-        <button
-          *ngIf="alreadyRetweeted"
-          mat-menu-item
-          (click)="onRetweetUndo()"
-        >
-          <mat-icon class="material-symbols-rounded">sync_disabled</mat-icon>
-          <span>Undo Share</span>
-        </button>
-
-        <button *ngIf="!alreadyRetweeted" mat-menu-item (click)="onRetweet()">
-          <mat-icon class="material-symbols-rounded">cached</mat-icon>
-          <span>Share</span>
-        </button>
-
-        <button mat-menu-item (click)="onQuote()">
-          <mat-icon class="material-symbols-rounded">edit_note</mat-icon>
-          <span>Quote</span>
-        </button>
-      </mat-menu>
     </div>
   </div>
   <ng-content></ng-content>
 </div>
+
+<mat-menu #menu>
+  <button mat-menu-item (click)="onEdit()">
+    <mat-icon class="material-symbols-rounded">edit</mat-icon>
+    <span>Edit Post</span>
+  </button>
+  <button mat-menu-item (click)="onDelete()">
+    <mat-icon class="material-symbols-rounded">delete</mat-icon>
+    <span>Delete Post</span>
+  </button>
+</mat-menu>
+
+<mat-menu #retweetMenu>
+  <button *ngIf="alreadyRetweeted" mat-menu-item (click)="onRetweetUndo()">
+    <mat-icon class="material-symbols-rounded">sync_disabled</mat-icon>
+    <span>Undo Share</span>
+  </button>
+
+  <button *ngIf="!alreadyRetweeted" mat-menu-item (click)="onRetweet()">
+    <mat-icon class="material-symbols-rounded">cached</mat-icon>
+    <span>Share</span>
+  </button>
+
+  <button mat-menu-item (click)="onQuote()">
+    <mat-icon class="material-symbols-rounded">quick_phrases</mat-icon>
+    <span>Quote</span>
+  </button>
+</mat-menu>
