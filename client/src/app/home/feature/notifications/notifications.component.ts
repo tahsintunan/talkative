@@ -49,13 +49,13 @@ export class NotificationsComponent implements OnInit {
       notification.eventType === 'comment' ||
       notification.eventType === 'likeComment'
     ) {
-      this.router.navigate(['/home/tweet', notification.tweetId], {
+      this.router.navigate(['/tweet', notification.tweetId], {
         queryParams: { comment: notification.commentId },
       });
     } else if (notification.eventType === 'follow') {
-      this.router.navigate(['/home/profile', notification.eventTriggererId]);
+      this.router.navigate(['/profile', notification.eventTriggererId]);
     } else {
-      this.router.navigate(['/home/tweet', notification.tweetId]);
+      this.router.navigate(['/tweet', notification.tweetId]);
     }
   }
   onNotificationDelete(notificationId: string): void {

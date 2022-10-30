@@ -63,7 +63,7 @@ export class HomeComponent implements OnInit {
 
   onSearchResultSelect(searchResult: SearchResultModel): void {
     if (searchResult.type === 'user') {
-      this.router.navigate(['/home/profile', searchResult.key]);
+      this.router.navigate(['/profile', searchResult.key]);
     } else if (searchResult.type === 'hashtag') {
       this.onSearchSubmit(searchResult.value);
     }
@@ -71,7 +71,7 @@ export class HomeComponent implements OnInit {
 
   onSearchSubmit(search: string): void {
     const type = search.startsWith('#') ? 'hashtag' : 'username';
-    this.router.navigate(['/home/search'], {
+    this.router.navigate(['/search'], {
       queryParams: { type, value: search },
     });
   }

@@ -34,6 +34,9 @@ export class SearchResultComponent implements OnInit {
     });
 
     this.activatedRoute.queryParams.subscribe((res) => {
+      this.tweetList = [];
+      this.userList = [];
+
       this.searchType = res['type'] ? res['type'] : undefined;
       this.searchValue = res['value'] ? res['value'] : undefined;
 
@@ -55,7 +58,6 @@ export class SearchResultComponent implements OnInit {
   }
 
   getUserList() {
-    this.tweetList = [];
     this.searchService
       .getUsersByUsername(this.searchValue!, this.pagination)
       .subscribe((res) => {
@@ -68,7 +70,6 @@ export class SearchResultComponent implements OnInit {
   }
 
   getTweetList() {
-    this.userList = [];
     this.searchService
       .getTweetsByHashtag(this.searchValue!, this.pagination)
       .subscribe();

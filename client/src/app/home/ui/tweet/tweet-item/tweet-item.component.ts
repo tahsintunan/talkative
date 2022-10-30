@@ -74,12 +74,11 @@ export class TweetItemComponent implements OnInit, OnChanges {
   }
 
   onTweetClick() {
-    if (!this.detailedView)
-      this.router.navigate([`/home/tweet/${this.tweet?.id}`]);
+    if (!this.detailedView) this.router.navigate([`/tweet/${this.tweet?.id}`]);
   }
 
   onTagClick(hashtag: string) {
-    this.router.navigate(['/home/search'], {
+    this.router.navigate(['/search'], {
       queryParams: { type: 'hashtag', value: hashtag },
     });
   }

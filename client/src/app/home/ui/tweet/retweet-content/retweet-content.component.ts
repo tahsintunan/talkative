@@ -15,11 +15,11 @@ export class RetweetContentComponent implements OnInit {
   ngOnInit(): void {}
 
   onTweetClick() {
-    this.router.navigate([`/home/tweet/${this.data?.id}`]);
+    this.router.navigate([`/tweet/${this.data?.id}`]);
   }
 
   onTagClick(hashtag: string) {
-    this.router.navigate(['/home/search'], {
+    this.router.navigate(['/search'], {
       queryParams: { type: 'hashtag', value: hashtag },
     });
   }

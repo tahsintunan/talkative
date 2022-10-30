@@ -51,29 +51,20 @@ export class SignupComponent implements OnInit {
   ngOnInit(): void {}
 
   onSubmit() {
-    const formValues = this.formData.getRawValue();
-
-    this.authService.signup(formValues).subscribe({
-      next: () => {
-        let password = formValues.password;
-        let username = formValues.username;
-        this.signinUserAfterSignUp(username, password);
-      },
-      error: (err: any) => {
-        console.log(err);
-      },
-    });
+    this.authService
+      .signup(this.formData.getRawValue())
+      .subscribe(() =>
+        this.signinUserAfterSignUp(
+          this.formData.get('username')?.value,
+          this.formData.get('password')?.value
+        )
+      );
   }
 
   signinUserAfterSignUp(username: string, password: string) {
-    this.authService.signin({ username, password }).subscribe({
-      next: () => {
-        this.router.navigate(['/home']);
-      },
-      error: (err) => {
-        console.log(err);
-      },
-    });
+    this.authService
+      .signin({ username, password })
+      .subscribe(() => this.router.navigate(['/']));
   }
 
   private ageValidator(control: AbstractControl): ValidationErrors | null {

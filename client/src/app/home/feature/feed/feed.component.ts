@@ -67,7 +67,7 @@ export class FeedComponent implements OnInit {
   }
 
   onTrendingHashtagClick(hashtag: string) {
-    this.router.navigate(['/home/search'], {
+    this.router.navigate(['/search'], {
       queryParams: { type: 'hashtag', value: hashtag },
     });
   }

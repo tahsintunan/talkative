@@ -1,5 +1,5 @@
 <a
-  routerLink="/home/profile/{{ data?.user?.userId }}"
+  routerLink="/profile/{{ data?.user?.userId }}"
   *ngIf="data?.isRetweet"
   class="text-gray-600 flex items-center gap-2 pb-2"
 >
@@ -34,7 +34,7 @@
       <div class="flex flex-col" (click)="$event.stopPropagation()">
         <a
           class="text-md hover:underline font-semibold"
-          routerLink="/home/profile/{{ tweet?.user?.userId }}"
+          routerLink="/profile/{{ tweet?.user?.userId }}"
           >{{ tweet?.user?.username }}</a
         >
         <span class="text-gray-500 text-xs">{{

@@ -34,13 +34,13 @@ export class NotificationSnackbarComponent implements OnInit {
       this.data.eventType === 'comment' ||
       this.data.eventType === 'likeComment'
     ) {
-      this.router.navigate(['/home/tweet', this.data.tweetId], {
+      this.router.navigate(['/tweet', this.data.tweetId], {
         queryParams: { comment: this.data.commentId },
       });
     } else if (this.data.eventType === 'follow') {
-      this.router.navigate(['/home/profile', this.data.eventTriggererId]);
+      this.router.navigate(['/profile', this.data.eventTriggererId]);
     } else {
-      this.router.navigate(['/home/tweet', this.data.tweetId]);
+      this.router.navigate(['/tweet', this.data.tweetId]);
     }
 
     this.onClose();
