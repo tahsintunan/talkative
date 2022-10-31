@@ -3,7 +3,7 @@ import {
   MatSnackBarRef,
   MAT_SNACK_BAR_DATA,
 } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationModel } from 'src/app/home/models/notification.model';
 import { NotificationService } from 'src/app/home/services/notification.service';
 
@@ -21,7 +21,9 @@ export class NotificationSnackbarComponent implements OnInit {
     @Inject(MAT_SNACK_BAR_DATA) public data: NotificationModel
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+  }
 
   onClose(): void {
     this.snackbarRef.dismiss();

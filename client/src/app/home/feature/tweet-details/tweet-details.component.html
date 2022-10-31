@@ -1,36 +1,19 @@
-<section
-  class="flex flex-col min-h-full items-center gap-6 text-gray-700"
-  infiniteScroll
-  [infiniteScrollDistance]="2"
-  [infiniteScrollThrottle]="200"
-  [infiniteScrollContainer]="'#main-panel'"
-  [fromRoot]="true"
-  (scrolled)="onScroll()"
->
+<section class="flex flex-col min-h-full items-center gap-6 text-gray-700" infiniteScroll [infiniteScrollDistance]="2"
+  [infiniteScrollThrottle]="200" [infiniteScrollContainer]="'#main-panel'" [fromRoot]="true" (scrolled)="onScroll()">
   <div class="max-w-2xl w-full" *ngIf="tweet; else noData">
-    <app-tweet-item
-      [data]="tweet"
-      [detailedView]="true"
-      (onCommentClick)="pagination.pageNumber = 1; getComments()"
-      (onDeleteClick)="onTweetDelete()"
-    >
+    <app-tweet-item [data]="tweet" [detailedView]="true" (onCommentClick)="pagination.pageNumber = 1; getComments()"
+      (onDeleteClick)="onTweetDelete()">
       <div class="flex flex-col border-t py-3 gap-3">
-        <app-comment-input
-          (onCommentSubmit)="onComment($event)"
-        ></app-comment-input>
+        <app-comment-input (onCommentSubmit)="onComment($event)"></app-comment-input>
 
         <h3 class="text-lg font-semibold">
           {{ tweet.comments.length }} Comments
         </h3>
 
-        <div class="flex flex-col gap-4 pl-2">
-          <app-comment-item
-            *ngFor="let comment of comments"
-            [data]="comment"
-            (onDeleteClick)="onCommentDelete($event)"
-            (onLikeClick)="onCommentLike($event)"
-            (onEditSubmit)="onCommentEdit($event)"
-          >
+        <div class="flex flex-col gap-3 ">
+          <app-comment-item *ngFor="let comment of comments" [data]="comment" [commentToHightlight]="commentToHighlight"
+            (onDeleteClick)="onCommentDelete($event)" (onLikeClick)="onCommentLike($event)"
+            (onEditSubmit)="onCommentEdit($event)">
           </app-comment-item>
         </div>
       </div>
@@ -39,10 +22,6 @@
 </section>
 
 <ng-template #noData>
-  <app-empty-result-overlay
-    class="m-auto w-1/2"
-    type="noData"
-    title="Oops! Post unavailable."
-    message="Couldn't find any what you are looking for."
-  ></app-empty-result-overlay>
+  <app-empty-result-overlay class="m-auto w-1/2" type="noData" title="Oops! Post unavailable."
+    message="Couldn't find any what you are looking for."></app-empty-result-overlay>
 </ng-template>

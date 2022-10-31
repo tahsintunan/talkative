@@ -14,6 +14,7 @@ import { UserService } from '../../../services/user.service';
 })
 export class CommentItemComponent implements OnInit {
   @Input() data?: CommentModel;
+  @Input() commentToHightlight?: string;
   @Output() onDeleteClick = new EventEmitter();
   @Output() onEditSubmit = new EventEmitter<CommentUpdateModel>();
   @Output() onLikeClick = new EventEmitter<CommentLikeModel>();

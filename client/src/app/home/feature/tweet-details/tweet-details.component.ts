@@ -21,7 +21,7 @@ import { UserService } from '../../services/user.service';
 })
 export class TweetDetailsComponent implements OnInit {
   detailedView = true;
-
+  commentToHighlight: string = "";
   pagination: PaginationModel = {
     pageNumber: 1,
   };
@@ -54,28 +54,38 @@ export class TweetDetailsComponent implements OnInit {
 
       this.getTweet();
       this.getComments();
-
-      this.getCommentToShowAtTop();
     });
   }
 
   getCommentToShowAtTop() {
     this.activatedRoute.queryParams.subscribe((res) => {
-      const commentId = res['comment'];
-      if (commentId) {
-        const index = this.comments.findIndex((c) => c.id === commentId);
+      this.commentToHighlight = res['comment'];
+
+      if (this.commentToHighlight) {
+        const index = this.comments.findIndex((c) => c.id === this.commentToHighlight);
+        console.log(index);
+
         if (index !== -1) {
-          this.comments[0],
-            (this.comments[index] = this.comments[index]),
-            this.comments[0];
+          const updatedComment = this.comments[index];
+          this.comments.splice(index, 1);
+          this.comments.unshift(updatedComment)
         } else {
-          this.commentService.getCommentById(commentId).subscribe((res) => {
+          this.commentService.getCommentById(this.commentToHighlight).subscribe((res) => {
             if (res) this.comments.unshift(res);
           });
         }
       }
+
+
+      if (this.commentToHighlight) {
+          setTimeout(() => {
+            this.commentToHighlight = "";
+          }, 5000);
+        }
     });
   }
+
+
 
   onScroll() {
     this.pagination.pageNumber++;
@@ -113,6 +123,7 @@ export class TweetDetailsComponent implements OnInit {
           } else {
             this.comments = this.comments.concat(res);
           }
+          this.getCommentToShowAtTop();
         });
     }
   }
