@@ -22,7 +22,7 @@ public class RetweetController : ApiControllerBase
         return Ok(await Mediator.Send(getQuoteRetweetsOfSingleTweetQuery));
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("retweeters/{id}")]
     public async Task<ActionResult<IList<UserVm>>> GetRetweetUsers(
         string id,
         [FromQuery] GetRetweetUsersQuery getRetweetUsersQuery
