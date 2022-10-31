@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { PaginationModel } from 'src/app/home/models/pagination.model';
 import { UserModel } from 'src/app/home/models/user.model';
-import { RetweetService } from 'src/app/home/services/retweet.service';
+import { TweetService } from 'src/app/home/services/tweet.service';
 
 @Component({
   selector: 'app-retweeters-dialog',
@@ -18,7 +18,7 @@ export class RetweetersDialogComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private retweetService: RetweetService,
+    private tweetService: TweetService,
     public dialogRef: MatDialogRef<RetweetersDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: string
   ) {}
@@ -38,7 +38,7 @@ export class RetweetersDialogComponent implements OnInit {
   }
 
   getRetweeters() {
-    this.retweetService
+    this.tweetService
       .getRetweeters(this.data, this.pagination)
       .subscribe((res) => {
         if (this.pagination.pageNumber === 1) this.users = res;

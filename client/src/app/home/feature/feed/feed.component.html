@@ -1,8 +1,20 @@
-<section class="relative flex justify-center min-h-full gap-6 text-gray-700" infiniteScroll [infiniteScrollDistance]="2"
-  [infiniteScrollThrottle]="200" [infiniteScrollContainer]="'#main-panel'" [fromRoot]="true" (scrolled)="onScroll()">
-  <div class="hidden hover:shadow-md transition card sticky top-0 h-fit p-4 xl:flex flex-col gap-2 max-w-xs w-full">
+<section
+  class="relative flex justify-center min-h-full gap-6 text-gray-700"
+  infiniteScroll
+  [infiniteScrollDistance]="2"
+  [infiniteScrollThrottle]="200"
+  [infiniteScrollContainer]="'#main-panel'"
+  [fromRoot]="true"
+  (scrolled)="onScroll()"
+>
+  <div
+    class="hidden hover:shadow-md transition card sticky top-0 h-fit p-4 xl:flex flex-col gap-2 max-w-xs w-full"
+  >
     <h1 class="text-gray-900 font-bold">Top Users</h1>
-    <app-profile-people-item *ngFor="let user of topUsers" [data]="user"></app-profile-people-item>
+    <app-profile-people-item
+      *ngFor="let user of topUsers"
+      [data]="user"
+    ></app-profile-people-item>
   </div>
 
   <div class="flex flex-col gap-6 max-w-2xl w-full">
@@ -10,29 +22,47 @@
       <h2 class="font-semibold text-lg p-3 border-b">Post Something</h2>
 
       <div class="flex items-center gap-3 m-3">
-        <app-avatar alt="User" [src]="userAuth?.username" size="50px" [generateAvater]="true"></app-avatar>
+        <app-avatar
+          alt="User"
+          [src]="userAuth?.username"
+          size="50px"
+          [generateAvater]="true"
+        ></app-avatar>
 
         <button
           class="w-full py-2.5 px-5 text-start text-md font-medium rounded-full outline-none transition duration-200 ease-in-out text-gray-500 bg-gray-100 hover:bg-gray-200"
-          (click)="onCreatePost()">
+          (click)="onCreatePost()"
+        >
           What's on your mind?
         </button>
       </div>
     </div>
 
     <div class="flex flex-col gap-6" *ngIf="tweets?.length; else noPosts">
-      <app-tweet-item *ngFor="let tweet of tweets" [data]="tweet"></app-tweet-item>
+      <app-tweet-item
+        *ngFor="let tweet of tweets"
+        [data]="tweet"
+      ></app-tweet-item>
 
-      <app-empty-result-overlay class="mx-auto w-1/2" type="endReached" title="You're all caught up for now!">
+      <app-empty-result-overlay
+        class="mx-auto w-1/2"
+        type="endReached"
+        title="Hurrah!"
+        message="You're all caught up for now. Why don't you check out some other users?"
+      >
       </app-empty-result-overlay>
     </div>
   </div>
 
-  <div class="hidden hover:shadow-md transition card sticky top-0 h-fit p-4 lg:flex flex-col gap-2 max-w-xs w-full">
+  <div
+    class="hidden hover:shadow-md transition card sticky top-0 h-fit p-4 lg:flex flex-col gap-2 max-w-xs w-full"
+  >
     <h1 class="font-bold">Trending Hashtags</h1>
-    <div *ngFor="let hashtag of trendingHashtags"
+    <div
+      *ngFor="let hashtag of trendingHashtags"
       class="flex items-center gap-2 p-2 justify-between rounded-md font-semibold cursor-pointer hover:bg-gray-100"
-      (click)="onTrendingHashtagClick(hashtag.hashtag)">
+      (click)="onTrendingHashtagClick(hashtag.hashtag)"
+    >
       <h3>{{ hashtag.hashtag }}</h3>
       <h3 class="text-gray-500">{{ hashtag.count }} posts</h3>
     </div>
@@ -40,7 +70,11 @@
 </section>
 
 <ng-template #noPosts>
-  <app-empty-result-overlay class="m-auto" type="noData" title="No Posts!"
-    message="There are no posts to show. Refresh the page to see if there are any new posts.">
+  <app-empty-result-overlay
+    class="m-auto"
+    type="noData"
+    title="Nothing To Show!"
+    message="Try refreshing the page to see if there are any new posts available later."
+  >
   </app-empty-result-overlay>
 </ng-template>

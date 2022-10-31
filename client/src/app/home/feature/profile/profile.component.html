@@ -1,5 +1,5 @@
 <section class="flex min-h-full justify-center">
-  <div class="flex gap-8 max-w-7xl w-full">
+  <div class="flex gap-8 max-w-7xl w-full" *ngIf="profile; else noData">
     <div class="flex flex-col flex-1">
       <app-profile-details
         class="mb-16"
@@ -33,7 +33,8 @@
         <app-empty-result-overlay
           class="mx-auto w-1/2"
           type="noDataAlt"
-          title="No More Results!"
+          title="That's all from {{ profile.username }}!"
+          message="Why don't you check out some other users?"
         ></app-empty-result-overlay>
       </div>
     </div>
@@ -62,8 +63,17 @@
 <ng-template #noPosts>
   <app-empty-result-overlay
     class="m-auto w-1/2"
-    type="noData"
+    type="noDataAlt"
     title="No Posts By {{ profile?.username }}!"
     message="Come back later to see if there are any new posts."
+  ></app-empty-result-overlay>
+</ng-template>
+
+<ng-template #noData>
+  <app-empty-result-overlay
+    class="m-auto max-w-xl w-full"
+    type="noData"
+    title="Oops! User unavailable!"
+    message="This user is not available or does not exist."
   ></app-empty-result-overlay>
 </ng-template>

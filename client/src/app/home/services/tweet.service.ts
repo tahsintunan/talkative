@@ -11,6 +11,7 @@ import {
   TweetModel,
   TweetUpdateReqModel,
 } from '../models/tweet.model';
+import { UserModel } from '../models/user.model';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -90,6 +91,24 @@ export class TweetService {
         isLiked,
       })
       .pipe(tap((res) => this.tweetStore.updateTweetInTweetList(res)));
+  }
+
+  getRetweeters(tweetId: string, pagination: PaginationModel) {
+    return this.http.get<UserModel[]>(this.apiUrl + '/retweeters/' + tweetId, {
+      params: { ...pagination },
+    });
+  }
+
+  getQuotes(tweetId: string, pagination: PaginationModel) {
+    return this.http
+      .get<TweetModel[]>(this.apiUrl + '/quote-retweet/' + tweetId, {
+        params: { ...pagination },
+      })
+      .pipe(
+        tap((res) =>
+          this.tweetStore.addTweetsToTweetList(res, pagination.pageNumber)
+        )
+      );
   }
 
   getTrendingHashtags() {

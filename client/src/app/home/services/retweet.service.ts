@@ -4,9 +4,7 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
 import { TweetStore } from '../../shared/store/tweet.store';
-import { PaginationModel } from '../models/pagination.model';
 import { RetweetReqModel, TweetModel } from '../models/tweet.model';
-import { UserModel } from '../models/user.model';
 import { TweetService } from './tweet.service';
 
 @Injectable({
@@ -56,24 +54,6 @@ export class RetweetService {
             });
           }
         })
-      );
-  }
-
-  getRetweeters(tweetId: string, pagination: PaginationModel) {
-    return this.http.get<UserModel[]>(this.apiUrl + '/retweeters/' + tweetId, {
-      params: { ...pagination },
-    });
-  }
-
-  getQuotes(tweetId: string, pagination: PaginationModel) {
-    return this.http
-      .get<TweetModel[]>(this.apiUrl + '/quote-retweet/' + tweetId, {
-        params: { ...pagination },
-      })
-      .pipe(
-        tap((res) =>
-          this.tweetStore.addTweetsToTweetList(res, pagination.pageNumber)
-        )
       );
   }
 }

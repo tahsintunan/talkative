@@ -4,8 +4,8 @@ import { TweetStore } from 'src/app/shared/store/tweet.store';
 import { PaginationModel } from '../../models/pagination.model';
 import { TweetModel } from '../../models/tweet.model';
 import { UserModel } from '../../models/user.model';
-import { RetweetService } from '../../services/retweet.service';
 import { SearchService } from '../../services/search.service';
+import { TweetService } from '../../services/tweet.service';
 
 @Component({
   selector: 'app-search-result',
@@ -26,7 +26,7 @@ export class SearchResultComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private searchService: SearchService,
-    private retweetService: RetweetService,
+    private tweetService: TweetService,
     private tweetStore: TweetStore
   ) {}
 
@@ -80,7 +80,7 @@ export class SearchResultComponent implements OnInit {
   }
 
   getQuoteList() {
-    this.retweetService
+    this.tweetService
       .getQuotes(this.searchValue!, this.pagination)
       .subscribe((res) => {
         console.log(res);
