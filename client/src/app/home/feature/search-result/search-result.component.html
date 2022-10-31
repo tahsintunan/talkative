@@ -16,15 +16,15 @@
       <strong>{{ searchValue }}</strong>
     </h1>
 
-    <div [ngSwitch]="searchType" class="flex flex-col gap-3">
-      <ng-container *ngSwitchCase="'username'">
+    <div class="flex flex-col gap-3">
+      <ng-container *ngIf="searchType === 'username'">
         <app-user-list-item
           *ngFor="let user of userList"
           [user]="user"
         ></app-user-list-item>
       </ng-container>
 
-      <ng-container *ngSwitchCase="'hashtag'">
+      <ng-container *ngIf="searchType === 'hashtag' || searchType === 'quote'">
         <app-tweet-item
           *ngFor="let tweet of tweetList"
           [data]="tweet"

@@ -17,49 +17,41 @@
     <span>{{ data?.username }}</span>
   </a>
 
-  <button
-    *ngIf="data?.userId !== userAuth?.userId"
-    mat-icon-button
-    class="transition hover:text-primary hover:shadow hover:bg-white"
-    [matMenuTriggerFor]="menu"
-  >
-    <mat-icon>more_vert</mat-icon>
-  </button>
+  <ng-container *ngIf="data?.userId !== userAuth?.userId">
+    <ng-container *ngIf="!showBlockButton; else blockBtn">
+      <button
+        *ngIf="!isFollowing"
+        class="transition inline-flex items-center rounded-full border border-primary py-1 px-2 text-sm font-medium text-primary hover:text-white hover:bg-primary outline-none"
+        (click)="follow()"
+      >
+        Follow
+      </button>
 
-  <mat-menu #menu>
-    <button
-      *ngIf="!isFollowed"
-      mat-menu-item
-      (click)="onFollow.emit(data?.userId)"
-    >
-      <mat-icon class="material-symbols-rounded">person_add</mat-icon>
-      <span>Follow</span>
-    </button>
-    <button
-      *ngIf="isFollowed"
-      mat-menu-item
-      (click)="onUnfollow.emit(data?.userId)"
-    >
-      <mat-icon class="material-symbols-rounded">person_remove</mat-icon>
-      <span>Unfollow</span>
-    </button>
+      <button
+        *ngIf="isFollowing"
+        class="transition inline-flex items-center rounded-full border border-red-500 py-1 px-2 text-sm font-medium text-red-500 hover:text-white hover:bg-red-500 outline-none"
+        (click)="unfollow()"
+      >
+        Unfollow
+      </button>
+    </ng-container>
 
-    <button
-      *ngIf="!userBlocked"
-      mat-menu-item
-      (click)="onBlock.emit(data?.userId)"
-    >
-      <mat-icon class="material-symbols-rounded">person_off</mat-icon>
-      <span>Block</span>
-    </button>
+    <ng-template #blockBtn>
+      <button
+        *ngIf="!isBlocked"
+        class="transition inline-flex items-center rounded-full border border-primary py-1 px-2 text-sm font-medium text-primary hover:text-white hover:bg-primary outline-none"
+        (click)="block()"
+      >
+        Block
+      </button>
 
-    <button
-      *ngIf="userBlocked"
-      mat-menu-item
-      (click)="onUnblock.emit(data?.userId)"
-    >
-      <mat-icon class="material-symbols-rounded">how_to_reg</mat-icon>
-      <span>Unblock</span>
-    </button>
-  </mat-menu>
+      <button
+        *ngIf="isBlocked"
+        class="transition inline-flex items-center rounded-full border border-red-500 py-1 px-2 text-sm font-medium text-red-500 hover:text-white hover:bg-red-500 focus:outline-none"
+        (click)="unblock()"
+      >
+        Unblock
+      </button>
+    </ng-template>
+  </ng-container>
 </div>

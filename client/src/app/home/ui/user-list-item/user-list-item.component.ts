@@ -22,10 +22,12 @@ export class UserListItemComponent implements OnInit {
   }
 
   followUser() {
-    this.followService.followUser(this.user?.userId!).subscribe();
+    this.isFollowing = true;
+    this.followService.follow(this.user?.userId!).subscribe();
   }
 
   unfollowUser() {
-    this.followService.unfollowUser(this.user?.userId!).subscribe();
+    this.isFollowing = false;
+    this.followService.unfollow(this.user?.userId!).subscribe();
   }
 }

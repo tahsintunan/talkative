@@ -1,4 +1,4 @@
-<div class="card relative h-60 flex flex-col">
+<div class="card relative h-64 flex flex-col">
   <img
     [src]="data?.username | generateImage: 'background'"
     class="absolute inset-0 w-full h-full object-cover rounded-md"
@@ -72,7 +72,7 @@
         *ngIf="!userBlocked"
         mat-raised-button
         color="basic"
-        (click)="onBlock.emit(data?.userId)"
+        (click)="onBlockClick.emit()"
       >
         Block <span class="material-symbols-rounded">person_off</span>
       </button>
@@ -81,7 +81,7 @@
         *ngIf="userBlocked"
         mat-raised-button
         color="basic"
-        (click)="onUnblock.emit(data?.userId)"
+        (click)="onUnblockClick.emit()"
       >
         Unblock <span class="material-symbols-rounded">how_to_reg</span>
       </button>
@@ -90,7 +90,7 @@
         *ngIf="!isFollowing"
         mat-raised-button
         color="basic"
-        (click)="onFollow.emit(data?.userId)"
+        (click)="onFollowClick.emit()"
       >
         Follow <span class="material-symbols-rounded">person_add</span>
       </button>
@@ -99,7 +99,7 @@
         *ngIf="isFollowing"
         mat-raised-button
         color="basic"
-        (click)="onUnfollow.emit(data?.userId)"
+        (click)="onUnfollowClick.emit()"
       >
         Unfollow <span class="material-symbols-rounded">person_remove</span>
       </button>

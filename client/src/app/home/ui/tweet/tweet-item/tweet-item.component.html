@@ -4,7 +4,7 @@
   class="text-gray-600 flex items-center gap-2 pb-2"
 >
   <span class="material-symbols-rounded">cached</span>
-  <span class="hover:underline"
+  <span class="font-semibold hover:underline"
     >{{
       userAuth?.userId === data?.user?.userId ? "You" : data?.user?.username
     }}
@@ -12,7 +12,7 @@
   >
 </a>
 
-<div class="card px-3 pt-3">
+<div class="card px-3 pt-3 hover:shadow-md transition">
   <div
     class="flex flex-col text-gray-700"
     [ngClass]="{
@@ -76,12 +76,12 @@
         <strong class="text-gray-700">{{ tweet?.likes?.length }}</strong> Likes
       </h3>
 
-      <h3 class="hover:underline cursor-pointer">
+      <h3 class="hover:underline cursor-pointer" (click)="onViewRetweeters()">
         <strong class="text-gray-700">{{ tweet?.retweetUsers?.length }}</strong>
         Shares
       </h3>
 
-      <h3 class="hover:underline cursor-pointer">
+      <h3 class="hover:underline cursor-pointer" (click)="onViewQuotes()">
         <strong class="text-gray-700">
           {{ tweet?.quoteRetweets?.length }}
         </strong>

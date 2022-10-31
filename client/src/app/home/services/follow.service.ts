@@ -37,26 +37,16 @@ export class FollowService {
     });
   }
 
-  followUser(followingId: string) {
-    return this.http.post(this.apiUrl, { followingId }).pipe(
-      tap(() =>
-        this.userFollowingsSubject.next({
-          ...this.userFollowingsSubject.getValue(),
-          [followingId]: true,
-        })
-      )
-    );
+  follow(followingId: string) {
+    return this.http
+      .post(this.apiUrl, { followingId })
+      .pipe(tap(() => this.addToUserFollowings(followingId)));
   }
 
-  unfollowUser(followingId: string) {
-    return this.http.delete(this.apiUrl + '/' + followingId).pipe(
-      tap(() =>
-        this.userFollowingsSubject.next({
-          ...this.userFollowingsSubject.getValue(),
-          [followingId]: false,
-        })
-      )
-    );
+  unfollow(followingId: string) {
+    return this.http
+      .delete(this.apiUrl + '/' + followingId)
+      .pipe(tap(() => this.removeFromUserFollowings(followingId)));
   }
 
   getUserFollowings() {

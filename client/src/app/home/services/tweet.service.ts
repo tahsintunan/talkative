@@ -22,7 +22,7 @@ export class TweetService {
   constructor(
     private http: HttpClient,
     private env: EnvService,
-    private storeService: TweetStore,
+    private tweetStore: TweetStore,
     private userService: UserService,
     private router: Router
   ) {}
@@ -40,7 +40,7 @@ export class TweetService {
         tap(
           (res) =>
             !this.router.url.includes('/tweet/') &&
-            this.storeService.updateTweetInTweetList(res)
+            this.tweetStore.updateTweetInTweetList(res)
         )
       );
   }
@@ -52,7 +52,7 @@ export class TweetService {
         tap(
           () =>
             !this.router.url.includes('/tweet/') &&
-            this.storeService.removeTweetFromTweetList(tweetId)
+            this.tweetStore.removeTweetFromTweetList(tweetId)
         )
       );
   }
@@ -66,7 +66,7 @@ export class TweetService {
       .get<TweetModel[]>(this.apiUrl + '/feed', { params: { ...pagination } })
       .pipe(
         tap((res) =>
-          this.storeService.addTweetsToTweetList(res, pagination.pageNumber)
+          this.tweetStore.addTweetsToTweetList(res, pagination.pageNumber)
         )
       );
   }
@@ -78,7 +78,7 @@ export class TweetService {
       })
       .pipe(
         tap((res) =>
-          this.storeService.addTweetsToTweetList(res, pagination.pageNumber)
+          this.tweetStore.addTweetsToTweetList(res, pagination.pageNumber)
         )
       );
   }
@@ -89,7 +89,7 @@ export class TweetService {
         tweetId,
         isLiked,
       })
-      .pipe(tap((res) => this.storeService.updateTweetInTweetList(res)));
+      .pipe(tap((res) => this.tweetStore.updateTweetInTweetList(res)));
   }
 
   getTrendingHashtags() {
@@ -102,7 +102,7 @@ export class TweetService {
     this.userService.userAuth.subscribe((user) => {
       const activeProfileId = this.router.url.split('/profile/')[1];
       if (user.userId === activeProfileId && tweet.user.userId === user.userId)
-        this.storeService.addTweetToTweetList(tweet);
+        this.tweetStore.addTweetToTweetList(tweet);
     });
   }
 }

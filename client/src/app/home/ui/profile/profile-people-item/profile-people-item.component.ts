@@ -11,14 +11,16 @@ import { UserService } from '../../../services/user.service';
 })
 export class ProfilePeopleItemComponent implements OnInit {
   @Input() data?: UserModel;
+  @Input() showBlockButton: boolean = false;
+  
   @Output() onFollow = new EventEmitter();
   @Output() onUnfollow = new EventEmitter();
   @Output() onBlock = new EventEmitter();
   @Output() onUnblock = new EventEmitter();
 
   userAuth?: UserModel;
-  userBlocked: boolean = false;
-  isFollowed: boolean = false;
+  isBlocked: boolean = false;
+  isFollowing: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -32,11 +34,39 @@ export class ProfilePeopleItemComponent implements OnInit {
     });
 
     this.followService.userFollowings.subscribe((res) => {
-      this.isFollowed = res[this.data?.userId!];
+      this.isFollowing = res[this.data?.userId!];
     });
 
     this.blockService.userBlockList.subscribe((res) => {
-      this.userBlocked = res[this.data?.userId!];
+      this.isBlocked = res[this.data?.userId!];
+    });
+  }
+
+  follow() {
+    this.isFollowing = true;
+    this.followService.follow(this.data?.userId!).subscribe((res) => {
+      this.onFollow.emit(this.data);
+    });
+  }
+
+  unfollow() {
+    this.isFollowing = false;
+    this.followService.unfollow(this.data?.userId!).subscribe((res) => {
+      this.onUnfollow.emit(this.data);
+    });
+  }
+
+  block() {
+    this.isBlocked = true;
+    this.blockService.blockUser(this.data?.userId!).subscribe((res) => {
+      this.onBlock.emit(this.data);
+    });
+  }
+
+  unblock() {
+    this.isBlocked = false;
+    this.blockService.unblockUser(this.data?.userId!).subscribe((res) => {
+      this.onUnblock.emit(this.data);
     });
   }
 }

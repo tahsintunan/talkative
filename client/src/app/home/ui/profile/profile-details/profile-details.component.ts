@@ -25,10 +25,10 @@ export class ProfileDetailsComponent implements OnInit, OnChanges {
   @Input() analytics?: UserAnalyticsModel;
   @Output() onProfileEdit = new EventEmitter();
   @Output() onPasswordEdit = new EventEmitter();
-  @Output() onFollow = new EventEmitter();
-  @Output() onUnfollow = new EventEmitter();
-  @Output() onBlock = new EventEmitter();
-  @Output() onUnblock = new EventEmitter();
+  @Output() onFollowClick = new EventEmitter();
+  @Output() onUnfollowClick = new EventEmitter();
+  @Output() onBlockClick = new EventEmitter();
+  @Output() onUnblockClick = new EventEmitter();
 
   userAuth?: UserModel;
   userBlocked: boolean = false;

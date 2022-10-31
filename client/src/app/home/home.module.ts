@@ -37,6 +37,7 @@ import { PostMakerDialogComponent } from './ui/tweet/post-maker-dialog/post-make
 import { RetweetContentComponent } from './ui/tweet/retweet-content/retweet-content.component';
 import { TweetItemComponent } from './ui/tweet/tweet-item/tweet-item.component';
 import { UserListItemComponent } from './ui/user-list-item/user-list-item.component';
+import { RetweetersDialogComponent } from './ui/tweet/retweeters-dialog/retweeters-dialog.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { UserListItemComponent } from './ui/user-list-item/user-list-item.compon
     UserListItemComponent,
     NotificationSnackbarComponent,
     NotificationItemComponent,
+    RetweetersDialogComponent,
   ],
   imports: [
     CommonModule,

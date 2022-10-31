@@ -17,6 +17,7 @@ import { UserModel } from '../../../models/user.model';
 import { TweetService } from '../../../services/tweet.service';
 import { UserService } from '../../../services/user.service';
 import { PostMakerDialogComponent } from '../post-maker-dialog/post-maker-dialog.component';
+import { RetweetersDialogComponent } from '../retweeters-dialog/retweeters-dialog.component';
 
 @Component({
   selector: 'app-tweet-item',
@@ -46,7 +47,7 @@ export class TweetItemComponent implements OnInit, OnChanges {
     private userService: UserService,
     private tweetService: TweetService,
     private retweetService: RetweetService,
-    private storeService: TweetStore,
+    private tweetStore: TweetStore,
     private router: Router,
     public dialog: MatDialog
   ) {}
@@ -148,15 +149,15 @@ export class TweetItemComponent implements OnInit, OnChanges {
     this.retweetService.undoRetweet(this.tweet?.id!).subscribe(() => {
       if (!this.detailedView) {
         if (this.data?.isRetweet) {
-          this.storeService.removeTweetFromTweetList(this.data?.id!);
+          this.tweetStore.removeTweetFromTweetList(this.data?.id!);
         } else {
-          this.storeService.tweetList.getValue().forEach((tweet) => {
+          this.tweetStore.tweetList.getValue().forEach((tweet) => {
             if (
               tweet.isRetweet &&
               tweet.originalTweetId === this.tweet?.id &&
               tweet.user.userId === this.userAuth?.userId
             ) {
-              this.storeService.removeTweetFromTweetList(tweet.id);
+              this.tweetStore.removeTweetFromTweetList(tweet.id);
             }
           });
         }
@@ -205,5 +206,20 @@ export class TweetItemComponent implements OnInit, OnChanges {
     }
 
     this.onDeleteClick.emit(this.tweet);
+  }
+
+  onViewRetweeters() {
+    if (this.tweet?.retweetUsers?.length)
+      this.dialog.open(RetweetersDialogComponent, {
+        width: '500px',
+        data: this.tweet?.id,
+      });
+  }
+
+  onViewQuotes() {
+    if (this.tweet?.quoteRetweets?.length)
+      this.router.navigate(['/search'], {
+        queryParams: { type: 'quote', value: this.tweet?.id },
+      });
   }
 }

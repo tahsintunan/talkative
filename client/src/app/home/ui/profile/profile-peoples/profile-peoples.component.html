@@ -1,4 +1,8 @@
-<mat-tab-group mat-stretch-tabs dynamicHeight class="card">
+<mat-tab-group
+  mat-stretch-tabs
+  dynamicHeight
+  class="card hover:shadow-md transition"
+>
   <mat-tab label="Following" labelClass="!py-5">
     <div
       *ngIf="followings?.length; else noData"
@@ -55,6 +59,7 @@
     >
       <app-profile-people-item
         *ngFor="let block of blockList"
+        [showBlockButton]="true"
         [data]="block"
         (onBlock)="onBlock.emit($event)"
         (onUnblock)="onUnblock.emit($event)"

@@ -9,10 +9,10 @@
         [analytics]="userAnalytics"
         (onProfileEdit)="onProfileEdit()"
         (onPasswordEdit)="onPasswordEdit()"
-        (onFollow)="onFollow($event)"
-        (onUnfollow)="onUnfollow($event)"
-        (onBlock)="onBlock($event)"
-        (onUnblock)="onUnblock($event)"
+        (onFollowClick)="onFollow()"
+        (onUnfollowClick)="onUnfollow()"
+        (onBlockClick)="onBlock()"
+        (onUnblockClick)="onUnblock()"
       ></app-profile-details>
 
       <div

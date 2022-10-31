@@ -31,7 +31,7 @@ export class FeedComponent implements OnInit {
   constructor(
     private userService: UserService,
     private tweetService: TweetService,
-    private storeService: TweetStore,
+    private tweetStore: TweetStore,
     private router: Router,
     private dialog: MatDialog
   ) {}
@@ -41,7 +41,7 @@ export class FeedComponent implements OnInit {
       this.userAuth = res;
     });
 
-    this.storeService.tweetList.subscribe((res) => {
+    this.tweetStore.tweetList.subscribe((res) => {
       this.tweets = res;
     });
 

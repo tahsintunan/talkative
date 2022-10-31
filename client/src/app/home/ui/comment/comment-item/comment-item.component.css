@@ -11,7 +11,6 @@
 .tooltip-right::after {
   content: "";
   position: absolute;
-  transition: all 0.3s ease-in;
   left: -20px;
   top: 30px;
   height: fit-content;
@@ -22,6 +21,6 @@
 }
 
 .tooltip-right::after {
-  border-left: 7px solid transparent;
+  left: -19px;
   border-right: 14px solid white;
 }

@@ -8,7 +8,7 @@
   (scrolled)="onScroll()"
 >
   <div
-    class="hidden card sticky top-0 h-fit p-4 xl:flex flex-col gap-2 max-w-xs w-full"
+    class="hidden hover:shadow-md transition card sticky top-0 h-fit p-4 xl:flex flex-col gap-2 max-w-xs w-full"
   >
     <h1 class="text-gray-900 font-bold">Top Users</h1>
     <app-profile-people-item
@@ -18,7 +18,7 @@
   </div>
 
   <div class="flex flex-col gap-6 max-w-2xl w-full">
-    <div class="card">
+    <div class="card hover:shadow-md transition">
       <h2 class="font-semibold text-lg p-3 border-b">Post Something</h2>
 
       <div class="flex items-center gap-3 m-3">
@@ -53,12 +53,12 @@
   </div>
 
   <div
-    class="hidden card sticky top-0 h-fit p-4 lg:flex flex-col gap-2 max-w-xs w-full"
+    class="hidden hover:shadow-md transition card sticky top-0 h-fit p-4 lg:flex flex-col gap-2 max-w-xs w-full"
   >
     <h1 class="font-bold">Trending Hashtags</h1>
     <div
       *ngFor="let hashtag of trendingHashtags"
-      class="flex items-center gap-2 p-2 justify-between rounded-md font-bold hover:bg-gray-100"
+      class="flex items-center gap-2 p-2 justify-between rounded-md font-semibold hover:bg-gray-100"
       (click)="onTrendingHashtagClick(hashtag.hashtag)"
     >
       <h3>{{ hashtag.hashtag }}</h3>
@@ -69,7 +69,7 @@
 
 <ng-template #noPosts>
   <app-empty-result-overlay
-    class="m-auto 1/2"
+    class="m-auto"
     type="noData"
     title="No Posts!"
     message="There are no posts to show. Refresh the page to see if there are any new posts."

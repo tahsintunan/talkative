@@ -53,7 +53,7 @@ export class ProfileComponent implements OnInit {
     private blockService: BlockService,
     private tweetService: TweetService,
     private followService: FollowService,
-    private storeService: TweetStore,
+    private tweetStore: TweetStore,
     private activeRoute: ActivatedRoute
   ) {}
 
@@ -62,7 +62,7 @@ export class ProfileComponent implements OnInit {
       this.userAuth = res;
     });
 
-    this.storeService.tweetList.subscribe((res) => {
+    this.tweetStore.tweetList.subscribe((res) => {
       this.tweets = res;
     });
 
@@ -190,35 +190,55 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  onFollow(userId: string) {
-    this.followService.followUser(userId).subscribe((res) => {
-      this.followers = this.followers.concat(this.userAuth!);
-      this.userAnalytics!.followerCount++;
-    });
+  onFollow(user?: UserModel) {
+    if (!user) {
+      this.followService.follow(this.profile?.userId!).subscribe((res) => {
+        this.followers.unshift(this.userAuth!);
+        this.userAnalytics!.followerCount++;
+      });
+    } else if (user && this.profile?.userId === this.userAuth?.userId) {
+      this.followings.unshift(user);
+      this.userAnalytics!.followingCount++;
+    }
   }
 
-  onUnfollow(userId: string) {
-    this.followService.unfollowUser(userId).subscribe((res) => {
-      this.followers = this.followers.filter(
-        (x) => x.userId !== this.userAuth?.userId
-      );
+  onUnfollow(user?: UserModel) {
+    if (!user) {
+      this.followService.unfollow(this.profile?.userId!).subscribe((res) => {
+        this.followers = this.followers.filter(
+          (x) => x.userId !== this.userAuth?.userId
+        );
+        this.userAnalytics!.followerCount--;
+      });
+    } else if (user && this.profile?.userId === this.userAuth?.userId) {
+      this.followings = this.followings.filter((x) => x.userId !== user.userId);
+      this.userAnalytics!.followingCount--;
+    }
+  }
+
+  onBlock(user?: UserModel) {
+    if (!user) {
+      this.blockService.blockUser(this.profile?.userId!).subscribe((res) => {
+        this.followers = this.followers.filter(
+          (x) => x.userId !== this.userAuth?.userId
+        );
+
+        this.userAnalytics!.followerCount--;
+      });
+    } else if (user && this.profile?.userId === this.userAuth?.userId) {
+      this.blockList.unshift(user);
+      this.followings = this.followings.filter((x) => x.userId !== user.userId);
+      this.followers = this.followers.filter((x) => x.userId !== user.userId);
+      this.userAnalytics!.followingCount--;
       this.userAnalytics!.followerCount--;
-    });
+    }
   }
 
-  onBlock(userId: string) {
-    this.blockService.blockUser(userId).subscribe((res) => {
-      this.userAnalytics!.followerCount--;
-      this.followService.removeFromUserFollowings(userId);
-      this.getBlockList(this.profileId);
-    });
-  }
-
-  onUnblock(userId: string) {
-    this.blockService.unblockUser(userId).subscribe((res) => {
-      this.blockList = this.blockList.filter(
-        (x) => x.userId !== this.userAuth?.userId
-      );
-    });
+  onUnblock(user?: UserModel) {
+    if (!user) {
+      this.blockService.unblockUser(this.profile?.userId!).subscribe();
+    } else if (user && this.profile?.userId === this.userAuth?.userId) {
+      this.blockList = this.blockList.filter((x) => x.userId !== user.userId);
+    }
   }
 }

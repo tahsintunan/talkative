@@ -4,7 +4,9 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
 import { TweetStore } from '../../shared/store/tweet.store';
+import { PaginationModel } from '../models/pagination.model';
 import { RetweetReqModel, TweetModel } from '../models/tweet.model';
+import { UserModel } from '../models/user.model';
 import { TweetService } from './tweet.service';
 
 @Injectable({
@@ -16,7 +18,7 @@ export class RetweetService {
   constructor(
     private http: HttpClient,
     private env: EnvService,
-    private storeService: TweetStore,
+    private tweetStore: TweetStore,
     private tweetService: TweetService,
     private router: Router
   ) {}
@@ -25,7 +27,7 @@ export class RetweetService {
     return this.http.post<TweetModel>(this.apiUrl, retweet).pipe(
       tap((res) => {
         this.tweetService.addToUserTweets(res);
-        this.storeService.updateTweetInTweetList(res.originalTweet!);
+        this.tweetStore.updateTweetInTweetList(res.originalTweet!);
       })
     );
   }
@@ -35,7 +37,7 @@ export class RetweetService {
       tap(() => {
         this.tweetService
           .getTweetById(originalTweetId)
-          .subscribe((res) => this.storeService.updateTweetInTweetList(res));
+          .subscribe((res) => this.tweetStore.updateTweetInTweetList(res));
       })
     );
   }
@@ -48,12 +50,30 @@ export class RetweetService {
       .pipe(
         tap(() => {
           if (!this.router.url.includes('/tweet/')) {
-            this.storeService.removeTweetFromTweetList(tweetId);
+            this.tweetStore.removeTweetFromTweetList(tweetId);
             this.tweetService.getTweetById(originalTweetId).subscribe((res) => {
-              if (res) this.storeService.updateTweetInTweetList(res);
+              if (res) this.tweetStore.updateTweetInTweetList(res);
             });
           }
         })
+      );
+  }
+
+  getRetweeters(tweetId: string, pagination: PaginationModel) {
+    return this.http.get<UserModel[]>(this.apiUrl + '/retweeters/' + tweetId, {
+      params: { ...pagination },
+    });
+  }
+
+  getQuotes(tweetId: string, pagination: PaginationModel) {
+    return this.http
+      .get<TweetModel[]>(this.apiUrl + '/quote-retweet/' + tweetId, {
+        params: { ...pagination },
+      })
+      .pipe(
+        tap((res) =>
+          this.tweetStore.addTweetsToTweetList(res, pagination.pageNumber)
+        )
       );
   }
 }

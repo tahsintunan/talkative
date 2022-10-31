@@ -4,6 +4,7 @@ import { TweetStore } from 'src/app/shared/store/tweet.store';
 import { PaginationModel } from '../../models/pagination.model';
 import { TweetModel } from '../../models/tweet.model';
 import { UserModel } from '../../models/user.model';
+import { RetweetService } from '../../services/retweet.service';
 import { SearchService } from '../../services/search.service';
 
 @Component({
@@ -19,12 +20,13 @@ export class SearchResultComponent implements OnInit {
   userList: UserModel[] = [];
   tweetList: TweetModel[] = [];
 
-  searchType?: 'username' | 'hashtag';
+  searchType?: 'username' | 'hashtag' | 'quote';
   searchValue?: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private searchService: SearchService,
+    private retweetService: RetweetService,
     private tweetStore: TweetStore
   ) {}
 
@@ -54,6 +56,8 @@ export class SearchResultComponent implements OnInit {
       this.getUserList();
     } else if (this.searchType == 'hashtag') {
       this.getTweetList();
+    } else if (this.searchType == 'quote') {
+      this.getQuoteList();
     }
   }
 
@@ -73,5 +77,13 @@ export class SearchResultComponent implements OnInit {
     this.searchService
       .getTweetsByHashtag(this.searchValue!, this.pagination)
       .subscribe();
+  }
+
+  getQuoteList() {
+    this.retweetService
+      .getQuotes(this.searchValue!, this.pagination)
+      .subscribe((res) => {
+        console.log(res);
+      });
   }
 }
