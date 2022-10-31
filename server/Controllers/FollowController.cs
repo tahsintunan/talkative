@@ -52,6 +52,7 @@ public class FollowController : ApiControllerBase
     )
     {
         getFollowersQuery.UserId = id;
+        getFollowersQuery.CurrentUserId = HttpContext.Items["User"]!.ToString();
         return Ok(await Mediator.Send(getFollowersQuery));
     }
 
@@ -62,6 +63,7 @@ public class FollowController : ApiControllerBase
     )
     {
         getFollowingsQuery.UserId = id;
+        getFollowingsQuery.CurrentUserId = HttpContext.Items["User"]!.ToString();
         return Ok(await Mediator.Send(getFollowingsQuery));
     }
 
