@@ -10,8 +10,8 @@ import {
 import { UserAnalyticsModel, UserModel } from 'src/app/home/models/user.model';
 import { BlockService } from 'src/app/home/services/block.service';
 import { UtilityService } from 'src/app/shared/services/utility.service';
+import { UserStore } from 'src/app/shared/store/user.store';
 import { FollowService } from '../../../services/follow.service';
-import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-profile-details',
@@ -35,14 +35,14 @@ export class ProfileDetailsComponent implements OnInit, OnChanges {
   isFollowing: boolean = false;
 
   constructor(
-    private userService: UserService,
+    private userStore: UserStore,
     private followService: FollowService,
     private blockService: BlockService,
     protected utilityService: UtilityService
   ) {}
 
   ngOnInit(): void {
-    this.userService.userAuth.subscribe((res) => {
+    this.userStore.userAuth.subscribe((res) => {
       this.userAuth = res;
     });
 

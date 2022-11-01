@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { UserStore } from 'src/app/shared/store/user.store';
 import { TweetStore } from '../../../shared/store/tweet.store';
 import { PaginationModel } from '../../models/pagination.model';
 import {
@@ -29,6 +30,7 @@ export class FeedComponent implements OnInit {
   trendingHashtags: TrendingHashtagModel[] = [];
 
   constructor(
+    private userStore: UserStore,
     private userService: UserService,
     private tweetService: TweetService,
     private tweetStore: TweetStore,
@@ -37,7 +39,7 @@ export class FeedComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userService.userAuth.subscribe((res) => {
+    this.userStore.userAuth.subscribe((res) => {
       this.userAuth = res;
     });
 

@@ -12,10 +12,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RetweetService } from 'src/app/home/services/retweet.service';
 import { TweetStore } from 'src/app/shared/store/tweet.store';
+import { UserStore } from 'src/app/shared/store/user.store';
 import { TweetModel, TweetWriteModel } from '../../../models/tweet.model';
 import { UserModel } from '../../../models/user.model';
 import { TweetService } from '../../../services/tweet.service';
-import { UserService } from '../../../services/user.service';
 import { PostMakerDialogComponent } from '../post-maker-dialog/post-maker-dialog.component';
 import { RetweetersDialogComponent } from '../retweeters-dialog/retweeters-dialog.component';
 
@@ -44,7 +44,7 @@ export class TweetItemComponent implements OnInit, OnChanges {
   alreadyRetweeted: boolean = false;
 
   constructor(
-    private userService: UserService,
+    private userStore: UserStore,
     private tweetService: TweetService,
     private retweetService: RetweetService,
     private tweetStore: TweetStore,
@@ -58,7 +58,7 @@ export class TweetItemComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.userService.userAuth.subscribe((res) => {
+    this.userStore.userAuth.subscribe((res) => {
       this.userAuth = res;
     });
 

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UserModel } from 'src/app/home/models/user.model';
-import { UserService } from 'src/app/home/services/user.service';
+import { UserStore } from 'src/app/shared/store/user.store';
 
 @Component({
   selector: 'app-profile-peoples',
@@ -23,10 +23,10 @@ export class ProfilePeoplesComponent implements OnInit {
 
   userAuth?: UserModel;
 
-  constructor(private userService: UserService) {}
+  constructor(private userStore: UserStore) {}
 
   ngOnInit(): void {
-    this.userService.userAuth.subscribe((res) => {
+    this.userStore.userAuth.subscribe((res) => {
       this.userAuth = res;
     });
   }

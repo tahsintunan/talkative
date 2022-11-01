@@ -12,8 +12,9 @@
     *ngIf="(userList.length || tweetList.length) && searchType; else noResult"
   >
     <h1 class="text-gray-600 text-lg">
-      Showings {{ searchType }} search results for —
-      <strong>{{ searchValue }}</strong>
+      Showings {{ searchType }} search results
+      {{ searchType !== "quote" ? "for —" : "" }}
+      <strong *ngIf="searchType !== 'quote'">{{ searchValue }}</strong>
     </h1>
 
     <div class="flex flex-col gap-3">

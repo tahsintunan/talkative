@@ -5,7 +5,3 @@ export interface SignUpReqModel {
   password: string;
   confirmPassword: string;
 }
-
-export interface SignUpResModel {
-  accessToken: string;
-}

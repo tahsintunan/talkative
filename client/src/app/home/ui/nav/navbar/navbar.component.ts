@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
+import { AuthService } from 'src/app/auth/services/auth.service';
 import { TweetWriteModel } from 'src/app/home/models/tweet.model';
 import { NotificationService } from 'src/app/home/services/notification.service';
 import { TweetService } from 'src/app/home/services/tweet.service';
-import { UserService } from 'src/app/home/services/user.service';
+import { UserStore } from 'src/app/shared/store/user.store';
 import { PostMakerDialogComponent } from '../../tweet/post-maker-dialog/post-maker-dialog.component';
 
 @Component({
@@ -36,8 +36,8 @@ export class NavbarComponent implements OnInit {
   ];
 
   constructor(
-    private cookieService: CookieService,
-    private userService: UserService,
+    private authServie: AuthService,
+    private userStore: UserStore,
     private notificationService: NotificationService,
     private tweetService: TweetService,
     private router: Router,
@@ -45,7 +45,7 @@ export class NavbarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userService.userAuth.subscribe((res) => {
+    this.userStore.userAuth.subscribe((res) => {
       this.userId = res.userId;
       this.navData[1].link = `./profile/${this.userId}`;
     });
@@ -59,7 +59,7 @@ export class NavbarComponent implements OnInit {
   }
 
   onLogout() {
-    this.cookieService.delete('authorization');
+    this.authServie.signout();
     this.router.navigate(['/auth/signin']);
   }
 

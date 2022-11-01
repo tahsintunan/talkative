@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { UserStore } from 'src/app/shared/store/user.store';
 import {
   CommentLikeModel,
   CommentModel,
   CommentUpdateModel,
 } from '../../../models/comment.model';
 import { UserModel } from '../../../models/user.model';
-import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-comment-item',
@@ -25,10 +25,10 @@ export class CommentItemComponent implements OnInit {
 
   alreadyLiked: boolean = false;
 
-  constructor(private userService: UserService) {}
+  constructor(private userStore: UserStore) {}
 
   ngOnInit(): void {
-    this.userService.userAuth.subscribe((res) => {
+    this.userStore.userAuth.subscribe((res) => {
       this.userAuth = res;
     });
 

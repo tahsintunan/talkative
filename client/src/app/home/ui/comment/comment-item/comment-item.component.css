@@ -1,3 +1,5 @@
+@import url("../../../../../colors.css");
+
 .tooltip {
   position: relative;
   background-color: white;
@@ -23,4 +25,17 @@
 .tooltip-right::after {
   left: -19px;
   border-right: 14px solid white;
+}
+
+.highlight-comment {
+  animation: highlight 5s linear;
+}
+
+@keyframes highlight {
+  from {
+    background-color: var(--primary-light);
+  }
+  to {
+    background-color: transparent;
+  }
 }

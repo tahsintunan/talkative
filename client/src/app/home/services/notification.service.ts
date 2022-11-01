@@ -4,11 +4,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject, tap } from 'rxjs';
 import { NotificationSnackbarComponent } from 'src/app/home/ui/notification/notification-snackbar/notification-snackbar.component';
+import { UserStore } from 'src/app/shared/store/user.store';
 import { EnvService } from '../../env.service';
 import { NotificationModel } from '../models/notification.model';
 import { PaginationModel } from '../models/pagination.model';
-import { UserModel } from '../models/user.model';
-import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,8 +21,6 @@ export class NotificationService {
   apiUrl = this.envService.apiUrl + 'api/Notification';
   notificationUrl = this.envService.apiUrl + 'notificationhub';
 
-  private userAuth?: UserModel;
-
   private connection = new signalR.HubConnectionBuilder()
     .withUrl(this.notificationUrl, {
       skipNegotiation: true,
@@ -34,37 +31,32 @@ export class NotificationService {
   constructor(
     private http: HttpClient,
     private envService: EnvService,
-    private userService: UserService,
+    private userStore: UserStore,
     private snackBar: MatSnackBar
-  ) {
-    this.userService.userAuth.subscribe((res) => {
-      this.userAuth = res;
-    });
-  }
+  ) {}
 
-  createConnection() {
-    this.connection.onclose(async (err) => {
-      await this.start();
-    });
+  initConnection() {
     this.connection.on('GetNotification', (notification: NotificationModel) =>
       this.addNotificationToList(notification)
     );
-    this.start();
+
+    if (this.connection.state === signalR.HubConnectionState.Disconnected)
+      this.startConnection();
   }
 
-  async start() {
+  async startConnection() {
     try {
-      this.connection.start();
+      await this.connection.start();
       console.log('connection started');
     } catch (err) {
       console.log(err);
       setTimeout(() => {
-        this.start();
+        this.startConnection();
       }, 2500);
     }
   }
 
-  async stop() {
+  async stopConnection() {
     try {
       await this.connection.stop();
       console.log('connection stopped');
@@ -127,9 +119,11 @@ export class NotificationService {
   }
 
   addNotificationToList(notification: NotificationModel) {
+    const userAuth = this.userStore.userAuth.getValue();
+
     if (
-      notification.eventTriggererId !== this.userAuth?.userId &&
-      notification.notificationReceiverId === this.userAuth?.userId
+      notification.eventTriggererId !== userAuth?.userId &&
+      notification.notificationReceiverId === userAuth?.userId
     ) {
       this.notificationsSubject.next([
         notification,
@@ -165,10 +159,11 @@ export class NotificationService {
   }
 
   filterPersonalNotifications(notifications: NotificationModel[]) {
+    const userAuth = this.userStore.userAuth.getValue();
     return notifications.filter(
       (notification) =>
-        notification.eventTriggererId !== this.userAuth?.userId &&
-        notification.notificationReceiverId === this.userAuth?.userId
+        notification.eventTriggererId !== userAuth?.userId &&
+        notification.notificationReceiverId === userAuth?.userId
     );
   }
 }

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserStore } from 'src/app/shared/store/user.store';
 import { NotificationModel } from '../../models/notification.model';
 import { PaginationModel } from '../../models/pagination.model';
 import { NotificationService } from '../../services/notification.service';
-import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-notifications',
@@ -17,7 +17,7 @@ export class NotificationsComponent implements OnInit {
   originalOrder = (a: any, b: any) => 0;
 
   constructor(
-    private userService: UserService,
+    private userStore: UserStore,
     private notificationService: NotificationService,
     private router: Router
   ) {}
@@ -27,7 +27,7 @@ export class NotificationsComponent implements OnInit {
       this.notificationsByDate = this.groupNotificationsByDate(res);
     });
 
-    this.userService.userAuth.subscribe((res) => {
+    this.userStore.userAuth.subscribe((res) => {
       this.getNotifications();
     });
   }

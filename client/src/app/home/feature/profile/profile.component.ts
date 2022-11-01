@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
+import { UserStore } from 'src/app/shared/store/user.store';
 import { TweetStore } from '../../../shared/store/tweet.store';
 import { PaginationModel } from '../../models/pagination.model';
 import { TweetModel } from '../../models/tweet.model';
@@ -49,6 +50,7 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
+    private userStore: UserStore,
     private userService: UserService,
     private blockService: BlockService,
     private tweetService: TweetService,
@@ -58,7 +60,7 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userService.userAuth.subscribe((res) => {
+    this.userStore.userAuth.subscribe((res) => {
       this.userAuth = res;
     });
 

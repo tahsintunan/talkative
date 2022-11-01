@@ -2,8 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
+import { UserStore } from 'src/app/shared/store/user.store';
 import {
   UserAnalyticsModel,
   UserModel,
@@ -16,14 +17,11 @@ import {
 export class UserService {
   apiUrl = this.env.apiUrl + 'api/User';
 
-  private readonly userAuthSubject = new BehaviorSubject<UserModel>({});
-
-  public readonly userAuth = this.userAuthSubject.asObservable();
-
   constructor(
     private http: HttpClient,
     private env: EnvService,
-    private cookie: CookieService
+    private cookie: CookieService,
+    private userStore: UserStore
   ) {}
 
   loadUserAuth() {
@@ -34,10 +32,10 @@ export class UserService {
 
         if (decodedToken.exp * 1000 < Date.now()) {
           this.cookie.delete('authorization');
-          this.userAuthSubject.next({});
+          this.userStore.clearUserAuth();
         } else if (decodedToken.user_id) {
           this.getUser(decodedToken.user_id).subscribe((res) => {
-            this.userAuthSubject.next(res);
+            this.userStore.setUserAuth(res);
           });
         }
       } catch (error) {

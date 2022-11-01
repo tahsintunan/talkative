@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserStore } from 'src/app/shared/store/user.store';
 import {
   SearchChangeModel,
   SearchSuggestionModel as SearchResultModel,
@@ -21,6 +22,7 @@ export class HomeComponent implements OnInit {
   searchResults: SearchResultModel[] = [];
 
   constructor(
+    private userStore: UserStore,
     private userService: UserService,
     private followService: FollowService,
     private blockService: BlockService,
@@ -30,9 +32,9 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userService.userAuth.subscribe((res) => {
+    this.userStore.userAuth.subscribe((res) => {
       this.userAuth = res;
-      this.notificationService.loadNotifications();
+      if (this.userAuth?.userId) this.notificationService.loadNotifications();
     });
 
     this.preloadData();
@@ -42,7 +44,7 @@ export class HomeComponent implements OnInit {
     this.userService.loadUserAuth();
     this.followService.loadUserFollowings();
     this.blockService.loadUserBlockList();
-    this.notificationService.createConnection();
+    this.notificationService.initConnection();
   }
 
   onSearchChange(search: SearchChangeModel): void {

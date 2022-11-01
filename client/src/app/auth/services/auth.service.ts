@@ -1,27 +1,41 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
 import { EnvService } from 'src/app/env.service';
-import { SignInReqModel, SignInResModel } from '../models/signin.model';
-import { SignUpReqModel, SignUpResModel } from '../models/signup.model';
+import { NotificationService } from 'src/app/home/services/notification.service';
+import { UserStore } from 'src/app/shared/store/user.store';
+import { SignInReqModel } from '../models/signin.model';
+import { SignUpReqModel } from '../models/signup.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  authUrl = this.envService.apiUrl + 'api/Auth/';
+  authUrl = this.envService.apiUrl + 'api/Auth';
 
-  constructor(private http: HttpClient, private envService: EnvService) {}
+  constructor(
+    private http: HttpClient,
+    private envService: EnvService,
+    private cookieService: CookieService,
+    private userStore: UserStore,
+    private notificationService: NotificationService
+  ) {}
 
-  signup(data: SignUpReqModel): Observable<SignUpResModel> {
-    return this.http.post<SignUpResModel>(this.authUrl + 'signup', data, {
+  signup(data: SignUpReqModel) {
+    return this.http.post(this.authUrl + '/signup', data, {
       withCredentials: true,
     });
   }
 
-  signin(data: SignInReqModel): Observable<SignInResModel> {
-    return this.http.post<SignInResModel>(this.authUrl + 'login', data, {
+  signin(data: SignInReqModel) {
+    return this.http.post(this.authUrl + '/login', data, {
       withCredentials: true,
     });
+  }
+
+  signout() {
+    this.cookieService.delete('authorization');
+    this.userStore.clearUserAuth();
+    this.notificationService.stopConnection();
   }
 }

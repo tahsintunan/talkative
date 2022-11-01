@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs';
 import { EnvService } from 'src/app/env.service';
+import { UserStore } from 'src/app/shared/store/user.store';
 import { TweetStore } from '../../shared/store/tweet.store';
 import { PaginationModel } from '../models/pagination.model';
 import {
@@ -12,7 +13,6 @@ import {
   TweetUpdateReqModel,
 } from '../models/tweet.model';
 import { UserModel } from '../models/user.model';
-import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +24,7 @@ export class TweetService {
     private http: HttpClient,
     private env: EnvService,
     private tweetStore: TweetStore,
-    private userService: UserService,
+    private userStore: UserStore,
     private router: Router
   ) {}
 
@@ -118,10 +118,13 @@ export class TweetService {
   }
 
   addToUserTweets(tweet: TweetModel) {
-    this.userService.userAuth.subscribe((user) => {
-      const activeProfileId = this.router.url.split('/profile/')[1];
-      if (user.userId === activeProfileId && tweet.user.userId === user.userId)
-        this.tweetStore.addTweetToTweetList(tweet);
-    });
+    const userAuth = this.userStore.userAuth.getValue();
+
+    const activeProfileId = this.router.url.split('/profile/')[1];
+    if (
+      userAuth.userId === activeProfileId &&
+      tweet.user.userId === userAuth.userId
+    )
+      this.tweetStore.addTweetToTweetList(tweet);
   }
 }

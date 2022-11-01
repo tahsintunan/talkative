@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserStore } from 'src/app/shared/store/user.store';
 import {
   CommentLikeModel,
   CommentModel,
@@ -10,9 +11,7 @@ import { PaginationModel } from '../../models/pagination.model';
 import { TweetModel } from '../../models/tweet.model';
 import { UserModel } from '../../models/user.model';
 import { CommentService } from '../../services/comment.service';
-import { RetweetService } from '../../services/retweet.service';
 import { TweetService } from '../../services/tweet.service';
-import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-tweet-details',
@@ -21,7 +20,7 @@ import { UserService } from '../../services/user.service';
 })
 export class TweetDetailsComponent implements OnInit {
   detailedView = true;
-  commentToHighlight: string = "";
+  commentToHighlight: string = '';
   pagination: PaginationModel = {
     pageNumber: 1,
   };
@@ -35,9 +34,8 @@ export class TweetDetailsComponent implements OnInit {
   alreadyRetweeted: boolean = false;
 
   constructor(
-    private userService: UserService,
+    private userStore: UserStore,
     private tweetService: TweetService,
-    private retweetService: RetweetService,
     private commentService: CommentService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -45,7 +43,7 @@ export class TweetDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userService.userAuth.subscribe((res) => {
+    this.userStore.userAuth.subscribe((res) => {
       this.userAuth = res;
     });
 
@@ -62,30 +60,24 @@ export class TweetDetailsComponent implements OnInit {
       this.commentToHighlight = res['comment'];
 
       if (this.commentToHighlight) {
-        const index = this.comments.findIndex((c) => c.id === this.commentToHighlight);
-        console.log(index);
+        const index = this.comments.findIndex(
+          (c) => c.id === this.commentToHighlight
+        );
 
         if (index !== -1) {
-          const updatedComment = this.comments[index];
+          const commentToShow = this.comments[index];
           this.comments.splice(index, 1);
-          this.comments.unshift(updatedComment)
+          this.comments.unshift(commentToShow);
         } else {
-          this.commentService.getCommentById(this.commentToHighlight).subscribe((res) => {
-            if (res) this.comments.unshift(res);
-          });
+          this.commentService
+            .getCommentById(this.commentToHighlight)
+            .subscribe((res) => {
+              if (res) this.comments.unshift(res);
+            });
         }
       }
-
-
-      if (this.commentToHighlight) {
-          setTimeout(() => {
-            this.commentToHighlight = "";
-          }, 5000);
-        }
     });
   }
-
-
 
   onScroll() {
     this.pagination.pageNumber++;

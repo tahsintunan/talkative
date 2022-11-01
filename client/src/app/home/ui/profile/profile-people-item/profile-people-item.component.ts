@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BlockService } from 'src/app/home/services/block.service';
+import { UserStore } from 'src/app/shared/store/user.store';
 import { UserModel } from '../../../models/user.model';
 import { FollowService } from '../../../services/follow.service';
-import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-profile-people-item',
@@ -12,7 +12,7 @@ import { UserService } from '../../../services/user.service';
 export class ProfilePeopleItemComponent implements OnInit {
   @Input() data?: UserModel;
   @Input() showBlockButton: boolean = false;
-  
+
   @Output() onFollow = new EventEmitter();
   @Output() onUnfollow = new EventEmitter();
   @Output() onBlock = new EventEmitter();
@@ -23,13 +23,13 @@ export class ProfilePeopleItemComponent implements OnInit {
   isFollowing: boolean = false;
 
   constructor(
-    private userService: UserService,
+    private userStore: UserStore,
     private followService: FollowService,
     private blockService: BlockService
   ) {}
 
   ngOnInit(): void {
-    this.userService.userAuth.subscribe((res) => {
+    this.userStore.userAuth.subscribe((res) => {
       this.userAuth = res;
     });
 
