@@ -1,8 +1,11 @@
 ﻿using Application.Common.ViewModels;
+using Application.Retweets.Query.GetQuoteRetweetsOfTweet;
+using Application.Retweets.Query.GetRetweetUsers;
 using Application.Tweets.Commands.DeleteTweet;
 using Application.Tweets.Commands.LikeTweet;
 using Application.Tweets.Commands.PublishTweet;
 using Application.Tweets.Commands.UpdateTweet;
+using Application.Tweets.Queries.GetLikedUsers;
 using Application.Tweets.Queries.GetTrendingHashtags;
 using Application.Tweets.Queries.GetTweetById;
 using Application.Tweets.Queries.GetTweetsOfSingleUser;
@@ -41,6 +44,39 @@ public class TweetController : ApiControllerBase
     public async Task<ActionResult<IList<TrendingHashtagVm>>> GetTrendingHashtags()
     {
         return Ok(await Mediator.Send(new GetTrendingHashtagsQuery()));
+    }
+
+    // TODO
+    //ADD FILTER
+    [HttpGet("quote-retweet/{id}")]
+    public async Task<ActionResult<List<TweetVm>>> GetRetweetsOfTweet(
+        string id,
+        [FromQuery] GetQuoteRetweetsOfSingleTweetQuery getQuoteRetweetsOfSingleTweetQuery
+    )
+    {
+        getQuoteRetweetsOfSingleTweetQuery.UserId = HttpContext.Items["User"]!.ToString();
+        getQuoteRetweetsOfSingleTweetQuery.OriginalTweetId = id;
+        return Ok(await Mediator.Send(getQuoteRetweetsOfSingleTweetQuery));
+    }
+
+    // TODO
+    //ADD FILTER
+    [HttpGet("retweeters/{id}")]
+    public async Task<ActionResult<IList<UserVm>>> GetRetweetUsers(
+        string id,
+        [FromQuery] GetRetweetUsersQuery getRetweetUsersQuery
+    )
+    {
+        getRetweetUsersQuery.UserId = HttpContext.Items["User"]!.ToString();
+        getRetweetUsersQuery.OriginalTweetId = id;
+        return Ok(await Mediator.Send(getRetweetUsersQuery));
+    }
+
+    [HttpGet("like/{tweetId}")]
+    public async Task<ActionResult<IList<UserVm>>> GetLikedUsers(string tweetId, [FromQuery] GetLikedUsersQuery getLikedUsersQuery)
+    {
+        getLikedUsersQuery.TweetId = tweetId;
+        return Ok(await Mediator.Send(getLikedUsersQuery));
     }
 
     [HttpGet("{id}")]

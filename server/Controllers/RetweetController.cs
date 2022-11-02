@@ -11,27 +11,6 @@ namespace server.Controllers;
 
 public class RetweetController : ApiControllerBase
 {
-    [HttpGet("quote-retweet/{id}")]
-    public async Task<ActionResult<List<TweetVm>>> GetRetweetsOfTweet(
-        string id,
-        [FromQuery] GetQuoteRetweetsOfSingleTweetQuery getQuoteRetweetsOfSingleTweetQuery
-    )
-    {
-        getQuoteRetweetsOfSingleTweetQuery.UserId = HttpContext.Items["User"]!.ToString();
-        getQuoteRetweetsOfSingleTweetQuery.OriginalTweetId = id;
-        return Ok(await Mediator.Send(getQuoteRetweetsOfSingleTweetQuery));
-    }
-
-    [HttpGet("retweeters/{id}")]
-    public async Task<ActionResult<IList<UserVm>>> GetRetweetUsers(
-        string id,
-        [FromQuery] GetRetweetUsersQuery getRetweetUsersQuery
-    )
-    {
-        getRetweetUsersQuery.UserId = HttpContext.Items["User"]!.ToString();
-        getRetweetUsersQuery.OriginalTweetId = id;
-        return Ok(await Mediator.Send(getRetweetUsersQuery));
-    }
 
     [HttpPost]
     public async Task<ActionResult<TweetVm>> Retweet(RetweetCommand retweetCommand)

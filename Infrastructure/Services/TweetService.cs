@@ -353,4 +353,20 @@ public class TweetService : ITweet
 
         return userVmList;
     }
+
+    public async Task<IList<User>> GetLikedUsers(string tweetId, int skip, int limit)
+    {
+
+        var userVmList = await _tweetCollection
+        .Aggregate()
+        .Match(x => x.Id == tweetId)
+        .Lookup("users", "likes", "_id", "likedUsers")
+        .Unwind("likedUsers")
+        .ReplaceRoot<User>("$likedUsers")
+        .Skip(skip)
+        .Limit(limit)
+        .ToListAsync();
+
+        return userVmList;
+    }
 }

@@ -19,4 +19,5 @@ public interface ITweet
     Task<IList<TrendingHashtagVm>> GetTrendingHashtags();
     Task<long> GetNumberOfTweetsOfUser(string userId);
     Task<IList<User>> GetTopActiveUsers(int skip, int limit);
+    Task<IList<User>> GetLikedUsers(string tweetId, int skip, int limit);
 }
