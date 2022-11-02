@@ -3,6 +3,7 @@ using Application.Common.Interface;
 using FluentValidation.AspNetCore;
 using Infrastructure;
 using Infrastructure.DbConfig;
+using server.Filters;
 using server.Hub;
 using server.Middlewares;
 
@@ -11,7 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services
-    .AddControllers()
+    .AddControllers(options =>
+{
+    options.Filters.Add<BlockActionFilter>();
+})
     .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 
 builder.Services.Configure<UserDatabaseConfig>(

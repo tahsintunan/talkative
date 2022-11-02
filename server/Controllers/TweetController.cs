@@ -17,9 +17,7 @@ namespace server.Controllers;
 public class TweetController : ApiControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult<TweetVm>> PublishTweet(
-        PublishTweetCommand publishTweetCommand
-    )
+    public async Task<ActionResult<TweetVm>> PublishTweet(PublishTweetCommand publishTweetCommand)
     {
         var userId = HttpContext.Items["User"]!.ToString();
         publishTweetCommand.UserId = userId;
@@ -46,8 +44,6 @@ public class TweetController : ApiControllerBase
         return Ok(await Mediator.Send(new GetTrendingHashtagsQuery()));
     }
 
-    // TODO
-    //ADD FILTER
     [HttpGet("quote-retweet/{id}")]
     public async Task<ActionResult<List<TweetVm>>> GetRetweetsOfTweet(
         string id,
@@ -59,8 +55,6 @@ public class TweetController : ApiControllerBase
         return Ok(await Mediator.Send(getQuoteRetweetsOfSingleTweetQuery));
     }
 
-    // TODO
-    //ADD FILTER
     [HttpGet("retweeters/{id}")]
     public async Task<ActionResult<IList<UserVm>>> GetRetweetUsers(
         string id,
@@ -73,7 +67,10 @@ public class TweetController : ApiControllerBase
     }
 
     [HttpGet("like/{tweetId}")]
-    public async Task<ActionResult<IList<UserVm>>> GetLikedUsers(string tweetId, [FromQuery] GetLikedUsersQuery getLikedUsersQuery)
+    public async Task<ActionResult<IList<UserVm>>> GetLikedUsers(
+        string tweetId,
+        [FromQuery] GetLikedUsersQuery getLikedUsersQuery
+    )
     {
         getLikedUsersQuery.TweetId = tweetId;
         return Ok(await Mediator.Send(getLikedUsersQuery));
@@ -82,7 +79,8 @@ public class TweetController : ApiControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<TweetVm>> GetTweetById(string id)
     {
-        GetTweetByIdQuery getTweetByIdQuery = new() { Id = id, UserId = HttpContext.Items["User"]!.ToString() };
+        GetTweetByIdQuery getTweetByIdQuery =
+            new() { Id = id, UserId = HttpContext.Items["User"]!.ToString() };
         return Ok(await Mediator.Send(getTweetByIdQuery));
     }
 
@@ -122,9 +120,7 @@ public class TweetController : ApiControllerBase
         var userId = HttpContext.Items["User"]!.ToString();
         likeTweetCommand.UserId = userId;
         await Mediator.Send(likeTweetCommand);
-        return Ok(
-            await Mediator.Send(new GetTweetByIdQuery { Id = likeTweetCommand.TweetId })
-        );
+        return Ok(await Mediator.Send(new GetTweetByIdQuery { Id = likeTweetCommand.TweetId }));
     }
 
     [HttpDelete("{id}")]
