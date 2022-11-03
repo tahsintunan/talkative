@@ -106,11 +106,9 @@ public class UserService : IUser
     public async Task<bool> UpdatePassword(string userId, string oldPassword, string password)
     {
         var user = await _userCollection.Find(user => user.Id == userId).FirstOrDefaultAsync();
-        if (user == null) return false;
-        var hashedPassword = await _authService.CheckIfPasswordMatches(
-            oldPassword,
-            user.Password!
-        );
+        if (user == null)
+            return false;
+        var hashedPassword = await _authService.CheckIfPasswordMatches(oldPassword, user.Password!);
         if (hashedPassword)
         {
             await UpdatePassword(user, password);
@@ -123,14 +121,12 @@ public class UserService : IUser
     public async Task ForgetPassword(string email)
     {
         var newPassword = GenerateRandomString(16);
-        var user = await _userCollection
-            .Find(user => user.Email == email)
-            .FirstOrDefaultAsync();
-        if (user != null)
-        {
-            await UpdatePassword(user, newPassword);
-            await SendPasswordWithMail(email, newPassword);
-        }
+        var user = await _userCollection.Find(user => user.Email == email).FirstOrDefaultAsync();
+        if (user == null)
+            throw new BadRequestException("User does not exist with such email.");
+
+        await UpdatePassword(user, newPassword);
+        await SendPasswordWithMail(email, newPassword);
     }
 
     public async Task<Dictionary<string, bool>> GetBlockedUserIds(string userId)
@@ -144,7 +140,8 @@ public class UserService : IUser
             .ReplaceRoot<User>("$user")
             .ToListAsync();
 
-        foreach (var userVm in userVmList) blockedHashmap.Add(userVm.Id!, true);
+        foreach (var userVm in userVmList)
+            blockedHashmap.Add(userVm.Id!, true);
         return blockedHashmap;
     }
 

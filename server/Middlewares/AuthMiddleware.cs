@@ -16,10 +16,7 @@ public class AuthMiddleware
     public async Task Invoke(HttpContext httpContext, IUser userService)
     {
         var request = httpContext.Request;
-        if (
-            request.Path.HasValue
-            && request.Path.Value.ToLower() is "/api/auth/login" or "/api/auth/signup"
-        )
+        if (request.Path.HasValue && request.Path.Value.ToLower().Contains("auth"))
         {
             await _next.Invoke(httpContext);
             return;
@@ -51,7 +48,8 @@ public class AuthMiddleware
         try
         {
             var token = httpContext.Request.Cookies["authorization"];
-            if (token == null) return null;
+            if (token == null)
+                return null;
 
             token = token.Split(" ").Last();
             var handler = new JwtSecurityTokenHandler();
