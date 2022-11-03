@@ -103,7 +103,7 @@ public class TweetService : ITweet
     {
         await _tweetCollection.UpdateOneAsync(
             p => p.Id == tweetId,
-            update.Set(x => x.LastModified, DateTime.Now),
+            update,
             new UpdateOptions { IsUpsert = true }
         );
     }

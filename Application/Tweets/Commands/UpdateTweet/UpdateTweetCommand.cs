@@ -54,6 +54,7 @@ public class UpdateTweetCommandHandler : IRequestHandler<UpdateTweetCommand>
                 Builders<Tweet>.Update
                     .Set(p => p.Text, request.Text)
                     .Set(p => p.Hashtags, request.Hashtags)
+                    .Set(x => x.LastModified, DateTime.Now)
             );
         }
 

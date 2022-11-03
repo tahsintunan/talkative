@@ -106,7 +106,7 @@ public class CommentService : IComment
     {
         await _commentCollection.UpdateOneAsync(
             p => p.Id == commentId,
-            update.Set(x => x.LastModified, DateTime.Now),
+            update,
             new UpdateOptions { IsUpsert = true }
         );
     }
