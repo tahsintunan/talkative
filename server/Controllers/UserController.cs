@@ -15,7 +15,7 @@ namespace server.Controllers;
 public class UserController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IList<UserVm>>?> GetAllUsers(
+    public async Task<ActionResult<IList<UserVm>>> GetAllUsers(
         [FromQuery] GetAllUsersQuery getAllUsersQuery
     )
     {

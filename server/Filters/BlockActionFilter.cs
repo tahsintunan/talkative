@@ -32,7 +32,7 @@ namespace server.Filters
 
             if (value.GetType().FullName == typeof(List<UserVm>).FullName)
             {
-                IList<UserVm>? result = await _blockFilter.GetFilteredUsers(
+                var result = await _blockFilter.GetFilteredUsers(
                     value as List<UserVm>,
                     resultContext.HttpContext.Items["User"]!.ToString()!
                 );
@@ -53,7 +53,7 @@ namespace server.Filters
             else if (value.GetType().FullName == typeof(List<CommentVm>).FullName)
             {
                 var result = await _blockFilter.GetFilteredComments(
-                    value as List<CommentVm?>,
+                    value as List<CommentVm>,
                     resultContext.HttpContext.Items["User"]!.ToString()!
                 );
                 resultContext.Result = await Task.FromResult<IActionResult>(
