@@ -40,9 +40,10 @@
           <span class="text-md hover:underline font-semibold">{{
             tweet?.user?.username
           }}</span>
-          <span class="text-gray-500 text-xs">{{
-            tweet?.createdAt | timeAgo
-          }}</span>
+          <span class="text-gray-500 text-xs"
+            >{{ tweet?.createdAt | timeAgo }}
+            <span *ngIf="tweet?.lastModified"> (Edited)</span>
+          </span>
         </div>
       </a>
       <button

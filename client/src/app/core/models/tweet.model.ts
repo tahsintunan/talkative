@@ -5,6 +5,7 @@ export interface TweetModel {
   text: string;
   hashtags: string[];
   createdAt: Date;
+  lastModified?: Date;
   isRetweet: boolean;
   isQuoteRetweet: boolean;
   user: UserModel;

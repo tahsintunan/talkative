@@ -6,6 +6,7 @@ export interface CommentModel {
   tweetId: string;
   likes: string[];
   created: Date;
+  lastModified?: Date;
 }
 
 export interface CommentCreateModel {

@@ -43,6 +43,10 @@ export class NotificationsComponent implements OnInit {
     this.getNotifications();
   }
 
+  onMarkAllAsRead(): void {
+    this.notificationService.markAllAsRead().subscribe();
+  }
+
   onNotificationClick(notification: NotificationModel): void {
     if (!notification.isRead)
       this.onNotificationMarkAsRead(notification.notificationId);

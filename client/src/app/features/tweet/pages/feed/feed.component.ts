@@ -50,7 +50,7 @@ export class FeedComponent implements OnInit {
     this.tweetService.getTweets(this.pagination).subscribe();
 
     this.userService.getTopUsers().subscribe((res) => {
-      this.topUsers = res.slice(0, 10);
+      this.topUsers = res.slice(0, 6);
     });
 
     this.tweetService.getTrendingHashtags().subscribe((res) => {

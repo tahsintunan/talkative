@@ -27,7 +27,10 @@
           >{{ data?.user?.username }}</a
         >
         <span>•</span>
-        <time class="text-gray-500">{{ data?.createdAt | timeAgo }}</time>
+        <time class="text-gray-500"
+          >{{ data?.createdAt | timeAgo }}
+          <span *ngIf="data?.lastModified"> (Edited)</span>
+        </time>
 
         <span *ngIf="data?.isQuoteRetweet" class="text-gray-500"
           >—— quoted a post</span

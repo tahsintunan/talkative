@@ -140,6 +140,7 @@ export class TweetDetailsComponent implements OnInit {
       this.comments = this.comments.map((comment) => {
         if (comment.id === value.id) {
           comment.text = value.text;
+          comment.lastModified = new Date();
         }
         return comment;
       });

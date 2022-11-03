@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { PaginationModel } from 'src/app/core/models/pagination.model';
 import { UserModel } from 'src/app/core/models/user.model';
@@ -30,7 +31,8 @@ export class UserManagementComponent implements OnInit {
 
   constructor(
     private adminService: AdminService,
-    private userStore: UserStore
+    private userStore: UserStore,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +52,10 @@ export class UserManagementComponent implements OnInit {
     this.pagination.pageNumber++;
     if (!this.formControl.value?.trim()) this.getUsers();
     else this.search(this.formControl.value?.trim()!);
+  }
+
+  onRowClick(user: UserModel) {
+    this.router.navigate(['/profile', user.userId]);
   }
 
   search(value: string) {

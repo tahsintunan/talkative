@@ -24,9 +24,10 @@
             ><strong>{{ data?.username }}</strong></a
           >
           <span>•</span>
-          <time class="text-xs text-gray-500">{{
-            data?.created | timeAgo
-          }}</time>
+          <time class="text-xs text-gray-500"
+            >{{ data?.created | timeAgo }}
+            <span *ngIf="data?.lastModified"> (Edited)</span>
+          </time>
         </div>
 
         <app-comment-input

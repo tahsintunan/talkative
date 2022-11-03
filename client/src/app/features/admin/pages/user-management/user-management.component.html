@@ -9,6 +9,7 @@
 </mat-form-field>
 
 <h3 class="text-gray-700 font-semibold text-lg my-4">User list</h3>
+
 <section
   class="h-4/5 overflow-auto"
   tabindex="0"
@@ -48,7 +49,7 @@
           *ngIf="!element.isBanned"
           [disabled]="element.userId === userAuth?.userId"
           class="transition inline-flex items-center gap-2 rounded border border-primary px-3 py-1 text-sm font-medium text-primary hover:bg-primary hover:text-white focus:outline-none"
-          (click)="banUser(element.userId)"
+          (click)="$event.stopPropagation(); banUser(element.userId)"
         >
           Ban User
         </button>
@@ -56,7 +57,7 @@
         <button
           *ngIf="element.isBanned"
           class="transition inline-flex items-center gap-2 rounded border border-red-500 px-3 py-1 text-sm font-medium text-red-500 hover:bg-red-500 hover:text-white focus:outline-none"
-          (click)="unbanUser(element.userId)"
+          (click)="$event.stopPropagation(); unbanUser(element.userId)"
         >
           Unban User
         </button>
@@ -64,6 +65,11 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    <tr
+      mat-row
+      class="hover:bg-gray-100 cursor-pointer"
+      *matRowDef="let row; columns: displayedColumns"
+      (click)="onRowClick(row)"
+    ></tr>
   </table>
 </section>

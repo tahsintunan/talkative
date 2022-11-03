@@ -61,6 +61,12 @@ export class NotificationStore {
     }
   }
 
+  markAllAsRead() {
+    this.notifications.next(
+      this.notifications.getValue().map((x) => ({ ...x, isRead: true }))
+    );
+  }
+
   filterPersonalNotifications(notifications: NotificationModel[]) {
     const userAuth = this.userStore.userAuth.getValue();
     return notifications.filter(

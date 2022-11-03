@@ -1,8 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {
-  backgroundImageList,
-  profileImageList,
-} from '../data/profile-images.data';
+import { backgroundImageList, profileImageList } from '../data/images.data';
 
 @Pipe({
   name: 'generateImage',

@@ -97,6 +97,12 @@ export class NotificationService {
       );
   }
 
+  markAllAsRead() {
+    return this.http
+      .patch(this.apiUrl + '/read-all', null)
+      .pipe(tap(() => this.notificationStore.markAllAsRead()));
+  }
+
   markAsRead(notificationId: string) {
     return this.http
       .patch(this.apiUrl + '/' + notificationId, { notificationId })
