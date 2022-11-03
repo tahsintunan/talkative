@@ -22,6 +22,7 @@ public class Comment
     [BsonElement("text")] public string? Text { get; set; }
 
     [BsonElement("createdAt")] public DateTime? CreatedAt { get; set; }
+    [BsonElement("lastModified")] public DateTime? LastModified { get; set; }
 
     [BsonElement("likes")]
     [BsonRepresentation(BsonType.ObjectId)]

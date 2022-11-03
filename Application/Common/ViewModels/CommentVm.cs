@@ -8,6 +8,7 @@ public class CommentVm : Blockable
     public string? Text { get; set; }
     public string? Username { get; set; }
     public string? TweetId { get; set; }
+    public DateTime? LastModified { get; set; }
     public IList<string>? Likes { get; set; }
     public DateTime? Created { get; set; }
 }

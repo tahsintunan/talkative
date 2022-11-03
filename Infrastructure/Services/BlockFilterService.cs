@@ -43,7 +43,7 @@ public class BlockFilterService : IBlockFilter
         var blockedUserIds = new HashSet<string>();
 
         var user = await _userService.GetUserById(userId);
-        if (user == null) return blockedUserIds;
+        if (user == null || user.IsAdmin) return blockedUserIds;
         var (blocked, blockedBy) = (user.Blocked, user.BlockedBy);
 
         if (blocked != null)

@@ -39,6 +39,7 @@ public class CommentService : IComment
 
     public async Task CreateComment(Comment comment)
     {
+        comment.LastModified = null;
         await _commentCollection.InsertOneAsync(comment);
     }
 
@@ -62,7 +63,8 @@ public class CommentService : IComment
                 UserId = comments.UserId!,
                 Created = comments.CreatedAt,
                 Likes = comments.Likes,
-                Username = joinedUser.Username
+                Username = joinedUser.Username,
+                LastModified = comments.LastModified
             };
 
         var commentVm = await query.FirstOrDefaultAsync();
@@ -90,7 +92,8 @@ public class CommentService : IComment
                 UserId = p.UserId!,
                 Created = p.CreatedAt,
                 Likes = p.Likes,
-                Username = sub_o.Username
+                Username = sub_o.Username,
+                LastModified = p.LastModified
             }
         ).Skip(skip).Take(limit);
 
@@ -103,7 +106,7 @@ public class CommentService : IComment
     {
         await _commentCollection.UpdateOneAsync(
             p => p.Id == commentId,
-            update,
+            update.Set(x => x.LastModified, DateTime.Now),
             new UpdateOptions { IsUpsert = true }
         );
     }
