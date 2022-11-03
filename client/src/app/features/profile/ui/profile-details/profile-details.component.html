@@ -47,7 +47,7 @@
     </div>
   </div>
 
-  <div class="absolute top-0 right-3 z-10 space-x-2 p-4">
+  <div class="absolute top-0 right-3 z-10 flex gap-2 flex-wrap p-4">
     <ng-container *ngIf="userAuth?.userId === data?.userId; else followBtns">
       <button mat-raised-button color="basic" (click)="onProfileEdit.emit()">
         Edit Profile <span class="material-symbols-rounded">edit</span>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NotificationService } from 'src/app/core/services/notification.service';
+import { NotificationStore } from 'src/app/core/store/notification.store';
 import { UserStore } from 'src/app/core/store/user.store';
 import { NotificationModel } from '../../../../core/models/notification.model';
 import { PaginationModel } from '../../../../core/models/pagination.model';
@@ -19,11 +20,12 @@ export class NotificationsComponent implements OnInit {
   constructor(
     private userStore: UserStore,
     private notificationService: NotificationService,
+    private nottificationStore: NotificationStore,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.notificationService.notifications.subscribe((res) => {
+    this.nottificationStore.notifications.subscribe((res) => {
       this.notificationsByDate = this.groupNotificationsByDate(res);
     });
 
