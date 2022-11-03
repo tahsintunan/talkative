@@ -10,13 +10,14 @@ import {
   UrlSegment,
   UrlTree,
 } from '@angular/router';
+import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
+export class AdminAuthGuard implements CanActivate, CanLoad, CanActivateChild {
   constructor(private cookieService: CookieService, private router: Router) {}
 
   canActivateChild(
@@ -27,11 +28,7 @@ export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
     | UrlTree
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree> {
-    const accessToken = this.cookieService.get('authorization');
-    if (!accessToken) {
-      this.router.navigate(['/auth/signin']);
-    }
-    return !!accessToken;
+    return this.checkIfAdmin();
   }
 
   canLoad(
@@ -42,8 +39,7 @@ export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
     | UrlTree
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree> {
-    const accessToken = this.cookieService.get('authorization');
-    return !!accessToken;
+    return this.checkIfAdmin();
   }
 
   canActivate(
@@ -54,11 +50,19 @@ export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    const accessToken = this.cookieService.get('authorization');
+    return this.checkIfAdmin();
+  }
 
-    if (!accessToken) {
-      this.router.navigate(['/auth/signin']);
+  checkIfAdmin() {
+    const token = this.cookieService.get('authorization');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        return decodedToken.role === 'ADMIN';
+      } catch (error) {
+        console.log(error);
+      }
     }
-    return !!accessToken;
+    return false;
   }
 }

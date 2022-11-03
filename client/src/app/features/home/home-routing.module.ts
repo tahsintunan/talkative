@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AdminAuthGuard } from 'src/app/core/guards/admin-auth.guard';
 import { HomeComponent } from './pages/home/home.component';
 import { SearchResultComponent } from './pages/search-result/search-result.component';
 
@@ -33,6 +34,13 @@ const routes: Routes = [
       {
         path: 'search',
         component: SearchResultComponent,
+      },
+      {
+        path: 'admin',
+        canActivate: [AdminAuthGuard],
+        canActivateChild: [AdminAuthGuard],
+        loadChildren: () =>
+          import('../admin/admin.module').then((m) => m.AdminModule),
       },
     ],
   },

@@ -31,7 +31,7 @@ export class TweetService {
   createTweet(tweet: TweetCreateReqModel) {
     return this.http
       .post<TweetModel>(this.apiUrl, tweet)
-      .pipe(tap((res) => this.addToUserTweets(res)));
+      .pipe(tap((res) => this.addToTweets(res)));
   }
 
   updateTweet(tweet: TweetUpdateReqModel) {
@@ -123,14 +123,14 @@ export class TweetService {
     );
   }
 
-  addToUserTweets(tweet: TweetModel) {
+  addToTweets(tweet: TweetModel) {
     const userAuth = this.userStore.userAuth.getValue();
 
-    const activeProfileId = this.router.url.split('/profile/')[1];
-    if (
-      userAuth.userId === activeProfileId &&
-      tweet.user.userId === userAuth.userId
-    )
+    const isFeed = this.router.url.endsWith('/tweet');
+    const isAuthUser =
+      this.router.url.split('/profile/')[1] === userAuth.userId;
+
+    if (isFeed || (isAuthUser && tweet.user.userId === userAuth.userId))
       this.tweetStore.addTweetToTweetList(tweet);
   }
 }

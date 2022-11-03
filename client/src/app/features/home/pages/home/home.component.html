@@ -4,14 +4,27 @@
   </mat-drawer>
   <mat-drawer-content>
     <mat-toolbar class="relative">
-      <app-search-input class="absolute top-3 mx-auto left-0 right-0 max-w-2xl z-50" [searchResults]="searchResults"
-        (onSearchChange)="onSearchChange($event)" (onSearchResultSelect)="onSearchResultSelect($event)"
-        (onSearchSubmit)="onSearchSubmit($event)"></app-search-input>
-
-      <a routerLink="/profile/{{ userAuth?.userId }}"
-        class="ml-auto p-1 rounded-full text-gray-600 bg-gray-200 hover:bg-gray-300 font-bold text-sm flex items-center w-max">
+      <div class="relative w-full h-full">
+        <app-search-input
+          class="absolute top-3 left-0 right-0 max-w-xl z-50"
+          [searchResults]="searchResults"
+          (onSearchChange)="onSearchChange($event)"
+          (onSearchResultSelect)="onSearchResultSelect($event)"
+          (onSearchSubmit)="onSearchSubmit($event)"
+        ></app-search-input>
+      </div>
+      <a
+        routerLink="/profile/{{ userAuth?.userId }}"
+        class="ml-5 p-1 rounded-full text-gray-600 bg-gray-200 hover:bg-gray-300 font-bold text-sm flex items-center w-max"
+      >
         <span class="px-2"> {{ userAuth?.username }} </span>
-        <app-avatar bgColor="#fff" alt="User" [src]="userAuth?.username" size="35px" [generateAvater]="true">
+        <app-avatar
+          bgColor="#fff"
+          alt="User"
+          [src]="userAuth?.username"
+          size="35px"
+          [generateAvater]="true"
+        >
         </app-avatar>
       </a>
     </mat-toolbar>

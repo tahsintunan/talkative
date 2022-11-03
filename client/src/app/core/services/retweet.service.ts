@@ -24,7 +24,7 @@ export class RetweetService {
   createRetweet(retweet: RetweetReqModel) {
     return this.http.post<TweetModel>(this.apiUrl, retweet).pipe(
       tap((res) => {
-        this.tweetService.addToUserTweets(res);
+        this.tweetService.addToTweets(res);
         this.tweetStore.updateTweetInTweetList(res.originalTweet!);
       })
     );

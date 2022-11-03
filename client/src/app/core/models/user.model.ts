@@ -3,7 +3,7 @@ export interface UserModel {
   username?: string;
   email?: string;
   dateOfBirth?: Date;
-  isBannded?: boolean;
+  isBanned?: boolean;
 }
 
 export interface UserAnalyticsModel {
