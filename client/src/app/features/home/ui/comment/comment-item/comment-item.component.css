@@ -1,0 +1,41 @@
+@import url("../../../../../../colors.css");
+
+.tooltip {
+  position: relative;
+  background-color: white;
+}
+
+.tooltip-right.tooltip {
+  margin-left: 14px;
+}
+
+.tooltip-right::before,
+.tooltip-right::after {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 30px;
+  height: fit-content;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 6px solid transparent;
+  border-right: 14px solid #ccc;
+}
+
+.tooltip-right::after {
+  left: -19px;
+  border-right: 14px solid white;
+}
+
+.highlight-comment {
+  animation: highlight 5s linear;
+}
+
+@keyframes highlight {
+  from {
+    background-color: var(--primary-light);
+  }
+  to {
+    background-color: transparent;
+  }
+}

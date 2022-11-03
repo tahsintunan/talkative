@@ -4,6 +4,7 @@ import { BehaviorSubject, tap } from 'rxjs';
 import { EnvService } from 'src/app/shared/services/env.service';
 import { PaginationModel } from '../models/pagination.model';
 import { UserModel } from '../models/user.model';
+import { FollowStore } from '../store/follow.store';
 
 @Injectable({
   providedIn: 'root',
@@ -11,48 +12,32 @@ import { UserModel } from '../models/user.model';
 export class FollowService {
   apiUrl = this.env.apiUrl + 'api/Follow';
 
-  private readonly userFollowingsSubject = new BehaviorSubject<
-    Record<string, boolean>
-  >({});
-
-  public readonly userFollowings = this.userFollowingsSubject.asObservable();
-
-  constructor(private http: HttpClient, private env: EnvService) {}
+  constructor(
+    private http: HttpClient,
+    private env: EnvService,
+    private followStore: FollowStore
+  ) {}
 
   loadUserFollowings() {
     this.getUserFollowings().subscribe();
   }
 
-  addToUserFollowings(followingId: string) {
-    this.userFollowingsSubject.next({
-      ...this.userFollowingsSubject.getValue(),
-      [followingId]: true,
-    });
-  }
-
-  removeFromUserFollowings(followingId: string) {
-    this.userFollowingsSubject.next({
-      ...this.userFollowingsSubject.getValue(),
-      [followingId]: false,
-    });
-  }
-
   follow(followingId: string) {
     return this.http
       .post(this.apiUrl, { followingId })
-      .pipe(tap(() => this.addToUserFollowings(followingId)));
+      .pipe(tap(() => this.followStore.addToUserFollowings(followingId)));
   }
 
   unfollow(followingId: string) {
     return this.http
       .delete(this.apiUrl + '/' + followingId)
-      .pipe(tap(() => this.removeFromUserFollowings(followingId)));
+      .pipe(tap(() => this.followStore.removeFromUserFollowings(followingId)));
   }
 
   getUserFollowings() {
     return this.http
       .get<Record<string, boolean>>(this.apiUrl + '/following-id')
-      .pipe(tap((res) => this.userFollowingsSubject.next(res)));
+      .pipe(tap((res) => this.followStore.userFollowings.next(res)));
   }
 
   getFollowers(userId: string, pagination: PaginationModel) {

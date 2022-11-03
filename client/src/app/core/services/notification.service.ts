@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject, tap } from 'rxjs';
 import { UserStore } from 'src/app/core/store/user.store';
-import { NotificationSnackbarComponent } from 'src/app/home/ui/notification/notification-snackbar/notification-snackbar.component';
+import { NotificationSnackbarComponent } from 'src/app/features/home/ui/notification/notification-snackbar/notification-snackbar.component';
 import { EnvService } from '../../shared/services/env.service';
 import { NotificationModel } from '../models/notification.model';
 import { PaginationModel } from '../models/pagination.model';

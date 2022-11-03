@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { EnvService } from 'src/app/shared/services/env.service';
 import { PaginationModel } from '../models/pagination.model';
 import { UserModel } from '../models/user.model';
-import { FollowService } from './follow.service';
+import { BlockStore } from '../store/block.store';
 
 @Injectable({
   providedIn: 'root',
@@ -12,46 +12,26 @@ import { FollowService } from './follow.service';
 export class BlockService {
   apiUrl = this.env.apiUrl + 'api/Block';
 
-  private readonly userBlockListSubject = new BehaviorSubject<
-    Record<string, boolean>
-  >({});
-  public readonly userBlockList = this.userBlockListSubject.asObservable();
-
   constructor(
     private http: HttpClient,
     private env: EnvService,
-    private followService: FollowService
+    private blockStore: BlockStore
   ) {}
 
   loadUserBlockList() {
     this.getUserBlockList().subscribe();
   }
 
-  addToUserBlockList(blockedId: string) {
-    this.userBlockListSubject.next({
-      ...this.userBlockListSubject.getValue(),
-      [blockedId]: true,
-    });
-    this.followService.removeFromUserFollowings(blockedId);
-  }
-
-  removeFromUserBlockList(blockedId: string) {
-    this.userBlockListSubject.next({
-      ...this.userBlockListSubject.getValue(),
-      [blockedId]: false,
-    });
-  }
-
   blockUser(userId: string) {
     return this.http
       .post(this.apiUrl + '/' + userId, { userId })
-      .pipe(tap(() => this.addToUserBlockList(userId)));
+      .pipe(tap(() => this.blockStore.addToUserBlockList(userId)));
   }
 
   unblockUser(userId: string) {
     return this.http
       .delete(this.apiUrl + '/' + userId)
-      .pipe(tap(() => this.removeFromUserBlockList(userId)));
+      .pipe(tap(() => this.blockStore.removeFromUserBlockList(userId)));
   }
 
   getBlockList(userId: string, pagination: PaginationModel) {
@@ -63,6 +43,6 @@ export class BlockService {
   getUserBlockList() {
     return this.http
       .get<Record<string, boolean>>(this.apiUrl + '/blocked-id')
-      .pipe(tap((res) => this.userBlockListSubject.next(res)));
+      .pipe(tap((res) => this.blockStore.userBlockList.next(res)));
   }
 }
