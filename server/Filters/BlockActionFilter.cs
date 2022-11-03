@@ -20,9 +20,14 @@ namespace server.Filters
         )
         {
             var resultContext = await next();
+
+            if (resultContext.HttpContext.Request.Method == "GET" && resultContext.HttpContext.Request.Path == "/api/Block")
+                return;
+
             var value = (resultContext.Result as ObjectResult)?.Value;
             if (value == null)
                 return;
+
             var type = value.GetType();
 
             if (value.GetType().FullName == typeof(List<UserVm>).FullName)
