@@ -17,4 +17,5 @@ public interface INotification
     Task<IList<NotificationVm>> GetNotifications(string userId, int skip, int limit);
     Task DeleteNotification(string notificationId);
     Task UpdateReadStatus(string notificationId);
+    Task MarkAllAsRead(string userId);
 }

@@ -159,6 +159,11 @@ public class NotificationService : INotification
         await _notificationCollection.UpdateOneAsync(x => x.Id == notificationId, Builders<Notification>.Update.Set(x => x.IsRead, !notification.IsRead));
     }
 
+    public async Task MarkAllAsRead(string userId)
+    {
+        await _notificationCollection.UpdateManyAsync(x => x.NotificationReceiverId == userId, Builders<Notification>.Update.Set(x => x.IsRead, true));
+    }
+
     private async Task<Notification> GetNotification(string notificationId)
     {
         return await _notificationCollection.Find(x => x.Id == notificationId).FirstOrDefaultAsync();

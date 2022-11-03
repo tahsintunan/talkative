@@ -1,5 +1,6 @@
 ﻿using Application.Common.ViewModels;
 using Application.Notifications.Commands.DeleteNotification;
+using Application.Notifications.Commands.MarkAllAsRead;
 using Application.Notifications.Commands.UpdateReadStatus;
 using Application.Notifications.Queries.GetNotificationOfUser;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,14 @@ public class NotificationController : ApiControllerBase
     {
         getNotificationOfUserQuery.UserId = HttpContext.Items["User"]!.ToString();
         return Ok(await Mediator.Send(getNotificationOfUserQuery));
+    }
+
+    [HttpPatch("read-all")]
+    public async Task<IActionResult> MarkAllAsRead(string userId)
+    {
+        MarkAllAsReadCommand markAllAsReadCommand = new() { UserId = HttpContext.Items["User"]!.ToString() };
+        await Mediator.Send(markAllAsReadCommand);
+        return NoContent();
     }
 
     [HttpPatch("{notificationId}")]
