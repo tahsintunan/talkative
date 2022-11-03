@@ -19,9 +19,10 @@ public class NotificationController : ApiControllerBase
     }
 
     [HttpPatch("read-all")]
-    public async Task<IActionResult> MarkAllAsRead(string userId)
+    public async Task<IActionResult> MarkAllAsRead()
     {
-        MarkAllAsReadCommand markAllAsReadCommand = new() { UserId = HttpContext.Items["User"]!.ToString() };
+        MarkAllAsReadCommand markAllAsReadCommand =
+            new() { UserId = HttpContext.Items["User"]!.ToString() };
         await Mediator.Send(markAllAsReadCommand);
         return NoContent();
     }
