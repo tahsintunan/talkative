@@ -8,8 +8,6 @@ namespace Application.Users.Queries.SearchUsers;
 
 public class SearchUserQuery : IRequest<IList<UserVm>>
 {
-    [JsonIgnore] public string? UserId { get; set; }
-
     public string? Username { get; set; }
     public int? PageNumber { get; set; }
     public int? ItemCount { get; set; }
@@ -17,15 +15,13 @@ public class SearchUserQuery : IRequest<IList<UserVm>>
 
 public class SearchUserQueryHandler : IRequestHandler<SearchUserQuery, IList<UserVm>>
 {
-    private readonly IBlockFilter _blockFilter;
     private readonly IMapper _mapper;
     private readonly IUser _userService;
 
-    public SearchUserQueryHandler(IUser userService, IMapper mapper, IBlockFilter blockFilter)
+    public SearchUserQueryHandler(IUser userService, IMapper mapper)
     {
         _userService = userService;
         _mapper = mapper;
-        _blockFilter = blockFilter;
     }
 
     public async Task<IList<UserVm>> Handle(
@@ -40,6 +36,6 @@ public class SearchUserQueryHandler : IRequestHandler<SearchUserQuery, IList<Use
         var limit = pageNumber * itemCount;
         var userList = await _userService.FindWithUsername(request.Username!, skip, limit);
         var userVmList = _mapper.Map<IList<UserVm>>(userList);
-        return await _blockFilter.GetFilteredUsers(userVmList, request.UserId!);
+        return userVmList;
     }
 }

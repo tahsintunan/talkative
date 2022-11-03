@@ -14,7 +14,6 @@ public class SearchController : ApiControllerBase
         [FromQuery] SearchTweetsByHashtagQuery searchTweetsByHashtagQuery
     )
     {
-        searchTweetsByHashtagQuery.UserId = HttpContext.Items["User"]!.ToString();
         searchTweetsByHashtagQuery.Hashtag = hashtag;
         return Ok(await Mediator.Send(searchTweetsByHashtagQuery));
     }
@@ -35,7 +34,6 @@ public class SearchController : ApiControllerBase
         [FromQuery] SearchUserQuery searchUserQuery
     )
     {
-        searchUserQuery.UserId = HttpContext.Items["User"]!.ToString();
         searchUserQuery.Username = username;
         return Ok(await Mediator.Send(searchUserQuery));
     }

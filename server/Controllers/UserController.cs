@@ -19,14 +19,12 @@ public class UserController : ApiControllerBase
         [FromQuery] GetAllUsersQuery getAllUsersQuery
     )
     {
-        getAllUsersQuery.UserId = HttpContext.Items["User"]!.ToString();
         return Ok(await Mediator.Send(getAllUsersQuery));
     }
 
     [HttpGet("top-active-users")]
     public async Task<ActionResult<IList<UserVm>>> GetTopActiveUsers([FromQuery] GetTopActiveUsersQuery getTopActiveUsersQuery)
     {
-        getTopActiveUsersQuery.UserId = HttpContext.Items["User"]!.ToString();
         return Ok(await Mediator.Send(getTopActiveUsersQuery));
     }
 

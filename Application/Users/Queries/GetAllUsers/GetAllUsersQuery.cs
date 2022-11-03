@@ -7,7 +7,6 @@ namespace Application.Users.Queries.GetAllUsers;
 
 public class GetAllUsersQuery : IRequest<IList<UserVm>?>
 {
-    [JsonIgnore] public string? UserId { get; set; }
 
     public int? PageNumber { get; set; }
     public int? ItemCount { get; set; }
@@ -15,13 +14,11 @@ public class GetAllUsersQuery : IRequest<IList<UserVm>?>
 
 public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, IList<UserVm>?>
 {
-    private readonly IBlockFilter _blockFilter;
     private readonly IUser _userService;
 
     public GetAllUsersQueryHandler(IUser userService, IBlockFilter blockFilter)
     {
         _userService = userService;
-        _blockFilter = blockFilter;
     }
 
     public async Task<IList<UserVm>?> Handle(
@@ -36,6 +33,6 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, IList<U
         var limit = pageNumber * itemCount;
         var users = await _userService.GetAllUsers(skip, limit);
         if (users == null) return null;
-        return await _blockFilter.GetFilteredUsers(users, request.UserId!);
+        return users;
     }
 }

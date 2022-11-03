@@ -15,17 +15,14 @@ public class TweetsForFeedQuery : IRequest<IList<TweetVm>>
 
 public class TweetForFeedQueryHandler : IRequestHandler<TweetsForFeedQuery, IList<TweetVm>>
 {
-    private readonly IBlockFilter _blockFilter;
     private readonly IBsonDocumentMapper<TweetVm> _tweetMapper;
     private readonly ITweet _tweetService;
 
     public TweetForFeedQueryHandler(
         ITweet tweetService,
-        IBlockFilter blockFilter,
         IBsonDocumentMapper<TweetVm> tweetMapper
     )
     {
-        _blockFilter = blockFilter;
         _tweetService = tweetService;
         _tweetMapper = tweetMapper;
     }
@@ -45,6 +42,6 @@ public class TweetForFeedQueryHandler : IRequestHandler<TweetsForFeedQuery, ILis
         IList<TweetVm> tweetVmList = new List<TweetVm>();
 
         foreach (var tweet in tweets) tweetVmList.Add(_tweetMapper.map(tweet));
-        return await _blockFilter.GetFilteredTweets(tweetVmList, request.UserId!);
+        return tweetVmList;
     }
 }

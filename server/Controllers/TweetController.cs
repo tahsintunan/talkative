@@ -44,25 +44,23 @@ public class TweetController : ApiControllerBase
         return Ok(await Mediator.Send(new GetTrendingHashtagsQuery()));
     }
 
-    [HttpGet("quote-retweet/{id}")]
+    [HttpGet("quote-retweet/{tweetId}")]
     public async Task<ActionResult<List<TweetVm>>> GetRetweetsOfTweet(
-        string id,
+        string tweetId,
         [FromQuery] GetQuoteRetweetsOfSingleTweetQuery getQuoteRetweetsOfSingleTweetQuery
     )
     {
-        getQuoteRetweetsOfSingleTweetQuery.UserId = HttpContext.Items["User"]!.ToString();
-        getQuoteRetweetsOfSingleTweetQuery.OriginalTweetId = id;
+        getQuoteRetweetsOfSingleTweetQuery.OriginalTweetId = tweetId;
         return Ok(await Mediator.Send(getQuoteRetweetsOfSingleTweetQuery));
     }
 
-    [HttpGet("retweeters/{id}")]
+    [HttpGet("retweeters/{tweetId}")]
     public async Task<ActionResult<IList<UserVm>>> GetRetweetUsers(
-        string id,
+        string tweetId,
         [FromQuery] GetRetweetUsersQuery getRetweetUsersQuery
     )
     {
-        getRetweetUsersQuery.UserId = HttpContext.Items["User"]!.ToString();
-        getRetweetUsersQuery.OriginalTweetId = id;
+        getRetweetUsersQuery.OriginalTweetId = tweetId;
         return Ok(await Mediator.Send(getRetweetUsersQuery));
     }
 
@@ -90,7 +88,6 @@ public class TweetController : ApiControllerBase
     )
     {
         getTweetsOfSingleUserQuery.UserId = HttpContext.Items["User"]!.ToString();
-        getTweetsOfSingleUserQuery.CurrentUserId = HttpContext.Items["User"]!.ToString();
         return Ok(await Mediator.Send(getTweetsOfSingleUserQuery));
     }
 
@@ -100,7 +97,6 @@ public class TweetController : ApiControllerBase
         [FromQuery] GetTweetsOfSingleUserQuery getTweetsOfSingleUserQuery
     )
     {
-        getTweetsOfSingleUserQuery.CurrentUserId = HttpContext.Items["User"]!.ToString();
         getTweetsOfSingleUserQuery.UserId = userId;
         return Ok(await Mediator.Send(getTweetsOfSingleUserQuery));
     }

@@ -34,7 +34,6 @@ public class CommentController : ApiControllerBase
         [FromQuery] GetCommentsByTweetIdQuery getCommentsByTweetIdQuery
     )
     {
-        getCommentsByTweetIdQuery.UserId = HttpContext.Items["User"]!.ToString();
         getCommentsByTweetIdQuery.TweetId = id;
         return Ok(await Mediator.Send(getCommentsByTweetIdQuery));
     }

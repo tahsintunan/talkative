@@ -10,24 +10,19 @@ public class GetTweetsOfSingleUserQuery : IRequest<IList<TweetVm>>
     public int? PageNumber { get; set; }
     public int? ItemCount { get; set; }
     public string? UserId { get; set; }
-
-    [JsonIgnore] public string? CurrentUserId { get; set; }
 }
 
 public class GetTweetsOfSingleUserQueryHandler
     : IRequestHandler<GetTweetsOfSingleUserQuery, IList<TweetVm>>
 {
-    private readonly IBlockFilter _blockFilter;
     private readonly IBsonDocumentMapper<TweetVm> _tweetMapper;
     private readonly ITweet _tweetService;
 
     public GetTweetsOfSingleUserQueryHandler(
         ITweet tweetService,
-        IBlockFilter blockFilter,
         IBsonDocumentMapper<TweetVm> tweetMapper
     )
     {
-        _blockFilter = blockFilter;
         _tweetService = tweetService;
         _tweetMapper = tweetMapper;
     }
@@ -48,7 +43,6 @@ public class GetTweetsOfSingleUserQueryHandler
         IList<TweetVm> result = new List<TweetVm>();
 
         foreach (var tweet in tweets) result.Add(_tweetMapper.map(tweet));
-        if (request.CurrentUserId == request.UserId) return result;
-        return await _blockFilter.GetFilteredTweets(result, request.CurrentUserId!);
+        return result;
     }
 }

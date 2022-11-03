@@ -7,8 +7,6 @@ namespace Application.Retweets.Query.GetQuoteRetweetsOfTweet;
 
 public class GetQuoteRetweetsOfSingleTweetQuery : IRequest<IList<TweetVm>>
 {
-    [JsonIgnore] public string? UserId { get; set; }
-
     public string? OriginalTweetId { get; set; }
     public int? PageNumber { get; set; }
     public int? ItemCount { get; set; }
@@ -17,17 +15,14 @@ public class GetQuoteRetweetsOfSingleTweetQuery : IRequest<IList<TweetVm>>
 public class GetAllRetweetQueryHandler
     : IRequestHandler<GetQuoteRetweetsOfSingleTweetQuery, IList<TweetVm>>
 {
-    private readonly IBlockFilter _blockFilter;
     private readonly IBsonDocumentMapper<TweetVm> _documentMapper;
     private readonly IRetweet _retweetService;
 
     public GetAllRetweetQueryHandler(
         IRetweet retweetService,
-        IBlockFilter blockFilter,
         IBsonDocumentMapper<TweetVm> documentMapper
     )
     {
-        _blockFilter = blockFilter;
         _retweetService = retweetService;
         _documentMapper = documentMapper;
     }
@@ -52,6 +47,6 @@ public class GetAllRetweetQueryHandler
 
         foreach (var tweet in retweets) tweetVmList.Add(_documentMapper.map(tweet.AsBsonDocument));
 
-        return await _blockFilter.GetFilteredTweets(tweetVmList, request.UserId!);
+        return tweetVmList;
     }
 }

@@ -7,8 +7,6 @@ namespace Application.Comments.Queries.GetCommentsByTweetId;
 
 public class GetCommentsByTweetIdQuery : IRequest<IList<CommentVm>>
 {
-    [JsonIgnore] public string? UserId { get; set; }
-
     public string? TweetId { get; set; }
     public int? PageNumber { get; set; }
     public int? ItemCount { get; set; }
@@ -17,13 +15,11 @@ public class GetCommentsByTweetIdQuery : IRequest<IList<CommentVm>>
 public class GetCommentsByTweetIdQueryHandler
     : IRequestHandler<GetCommentsByTweetIdQuery, IList<CommentVm>>
 {
-    private readonly IBlockFilter _blockFilter;
     private readonly IComment _commentService;
 
-    public GetCommentsByTweetIdQueryHandler(IComment commentService, IBlockFilter blockFilter)
+    public GetCommentsByTweetIdQueryHandler(IComment commentService)
     {
         _commentService = commentService;
-        _blockFilter = blockFilter;
     }
 
     public async Task<IList<CommentVm>> Handle(
@@ -37,7 +33,6 @@ public class GetCommentsByTweetIdQueryHandler
         var skip = (pageNumber - 1) * itemCount;
         var limit = pageNumber * itemCount;
         var commentVmList = await _commentService.GetCommentsByTweetId(request.TweetId!, skip, limit);
-
-        return await _blockFilter.GetFilteredComments(commentVmList, request.UserId!);
+        return commentVmList;
     }
 }

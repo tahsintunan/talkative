@@ -8,8 +8,6 @@ namespace Application.Users.Queries.GetTopActiveUsers
 {
     public class GetTopActiveUsersQuery : IRequest<IList<UserVm>>
     {
-        [JsonIgnore]
-        public string? UserId { get; set; }
         public int? PageNumber { get; set; }
         public int? ItemCount { get; set; }
     }
@@ -17,12 +15,10 @@ namespace Application.Users.Queries.GetTopActiveUsers
     public class GetTopActiveUsersQueryHandler : IRequestHandler<GetTopActiveUsersQuery, IList<UserVm>>
     {
         private readonly ITweet _tweetService;
-        private readonly IBlockFilter _blockFilter;
         private readonly IMapper _mapper;
-        public GetTopActiveUsersQueryHandler(ITweet tweetService, IBlockFilter blockFilter, IMapper mapper)
+        public GetTopActiveUsersQueryHandler(ITweet tweetService, IMapper mapper)
         {
             _tweetService = tweetService;
-            _blockFilter = blockFilter;
             _mapper = mapper;
         }
         public async Task<IList<UserVm>> Handle(GetTopActiveUsersQuery request, CancellationToken cancellationToken)
@@ -34,7 +30,7 @@ namespace Application.Users.Queries.GetTopActiveUsers
             var limit = pageNumber * itemCount;
             var topUsers = await _tweetService.GetTopActiveUsers(skip, limit);
             IList<UserVm> topUserVmList = _mapper.Map<List<UserVm>>(topUsers);
-            return await _blockFilter.GetFilteredUsers(topUserVmList, request.UserId!);
+            return topUserVmList;
         }
     }
 }
