@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { TextInputHighlightModule } from 'angular-text-input-highlight';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { GenerateImagePipe } from './pipes/generate-image.pipe';
@@ -12,6 +15,7 @@ import { AlertComponent } from './ui/alert/alert.component';
 import { AvatarComponent } from './ui/avatar/avatar.component';
 import { CommentInputComponent } from './ui/comment-input/comment-input.component';
 import { EmptyResultOverlayComponent } from './ui/empty-result-overlay/empty-result-overlay.component';
+import { ForgotPasswordDialogComponent } from './ui/forgot-password-dialog/forgot-password-dialog.component';
 import { HashtagInputComponent } from './ui/hashtag-input/hashtag-input.component';
 import { HashtagRendererComponent } from './ui/hashtag-renderer/hashtag-renderer.component';
 import { SearchInputComponent } from './ui/search-input/search-input.component';
@@ -26,6 +30,7 @@ import { SearchInputComponent } from './ui/search-input/search-input.component';
     SearchInputComponent,
     CommentInputComponent,
     HashtagRendererComponent,
+    ForgotPasswordDialogComponent,
     AlertComponent,
     EmptyResultOverlayComponent,
     ShortNumberPipe,
@@ -36,6 +41,9 @@ import { SearchInputComponent } from './ui/search-input/search-input.component';
     ReactiveFormsModule,
     TextInputHighlightModule,
     MatIconModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatDialogModule,
     InfiniteScrollModule,
   ],
   exports: [
@@ -48,6 +56,7 @@ import { SearchInputComponent } from './ui/search-input/search-input.component';
     SearchInputComponent,
     HashtagRendererComponent,
     AlertComponent,
+    ForgotPasswordDialogComponent,
     EmptyResultOverlayComponent,
     CommentInputComponent,
   ],

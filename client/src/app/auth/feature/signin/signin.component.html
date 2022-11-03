@@ -70,9 +70,12 @@
         </a>
       </p>
 
-      <a [routerLink]="'/auth/signin'" class="text-primary hover:underline">
+      <span
+        class="text-primary hover:underline cursor-pointer"
+        (click)="onForgotPasswordClick()"
+      >
         <strong>Forgot Password?</strong>
-      </a>
+      </span>
     </div>
   </div>
 </form>

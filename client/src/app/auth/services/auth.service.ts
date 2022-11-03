@@ -38,4 +38,8 @@ export class AuthService {
     this.userStore.clearUserAuth();
     this.notificationService.stopConnection();
   }
+
+  forgotPassword(email: string) {
+    return this.http.post(this.authUrl + '/forget-password', { email });
+  }
 }

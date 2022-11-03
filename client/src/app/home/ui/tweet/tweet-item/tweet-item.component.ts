@@ -16,8 +16,8 @@ import { UserStore } from 'src/app/shared/store/user.store';
 import { TweetModel, TweetWriteModel } from '../../../models/tweet.model';
 import { UserModel } from '../../../models/user.model';
 import { TweetService } from '../../../services/tweet.service';
+import { LikersRetweetersDialogComponent } from '../likers-retweeters-dialog/likers-retweeters-dialog.component';
 import { PostMakerDialogComponent } from '../post-maker-dialog/post-maker-dialog.component';
-import { RetweetersDialogComponent } from '../retweeters-dialog/retweeters-dialog.component';
 
 @Component({
   selector: 'app-tweet-item',
@@ -208,11 +208,25 @@ export class TweetItemComponent implements OnInit, OnChanges {
     this.onDeleteClick.emit(this.tweet);
   }
 
+  onViewLikes() {
+    if (this.tweet?.likes?.length)
+      this.dialog.open(LikersRetweetersDialogComponent, {
+        width: '500px',
+        data: {
+          tweetId: this.tweet?.id,
+          type: 'likes',
+        },
+      });
+  }
+
   onViewRetweeters() {
     if (this.tweet?.retweetUsers?.length)
-      this.dialog.open(RetweetersDialogComponent, {
+      this.dialog.open(LikersRetweetersDialogComponent, {
         width: '500px',
-        data: this.tweet?.id,
+        data: {
+          tweetId: this.tweet?.id,
+          type: 'retweeters',
+        },
       });
   }
 

@@ -16,7 +16,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { SharedModule } from '../shared/shared.module';
-import { CommentInputComponent } from '../shared/ui/comment-input/comment-input.component';
 import { FeedComponent } from './feature/feed/feed.component';
 import { HomeComponent } from './feature/home/home.component';
 import { NotificationsComponent } from './feature/notifications/notifications.component';
@@ -33,11 +32,11 @@ import { ProfileDetailsComponent } from './ui/profile/profile-details/profile-de
 import { ProfilePeopleItemComponent } from './ui/profile/profile-people-item/profile-people-item.component';
 import { ProfilePeoplesComponent } from './ui/profile/profile-peoples/profile-peoples.component';
 import { ProfileUpdateDialogComponent } from './ui/profile/profile-update-dialog/profile-update-dialog.component';
+import { LikersRetweetersDialogComponent } from './ui/tweet/likers-retweeters-dialog/likers-retweeters-dialog.component';
 import { PostMakerDialogComponent } from './ui/tweet/post-maker-dialog/post-maker-dialog.component';
 import { RetweetContentComponent } from './ui/tweet/retweet-content/retweet-content.component';
 import { TweetItemComponent } from './ui/tweet/tweet-item/tweet-item.component';
 import { UserListItemComponent } from './ui/user-list-item/user-list-item.component';
-import { RetweetersDialogComponent } from './ui/tweet/retweeters-dialog/retweeters-dialog.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +60,7 @@ import { RetweetersDialogComponent } from './ui/tweet/retweeters-dialog/retweete
     UserListItemComponent,
     NotificationSnackbarComponent,
     NotificationItemComponent,
-    RetweetersDialogComponent,
+    LikersRetweetersDialogComponent,
   ],
   imports: [
     CommonModule,

@@ -5,12 +5,17 @@ import { PaginationModel } from 'src/app/home/models/pagination.model';
 import { UserModel } from 'src/app/home/models/user.model';
 import { TweetService } from 'src/app/home/services/tweet.service';
 
+interface LikersRetweetersDialogData {
+  tweetId: string;
+  type: 'likes' | 'retweeters';
+}
+
 @Component({
-  selector: 'app-retweeters-dialog',
-  templateUrl: './retweeters-dialog.component.html',
-  styleUrls: ['./retweeters-dialog.component.css'],
+  selector: 'app-likers-retweeters-dialog',
+  templateUrl: './likers-retweeters-dialog.component.html',
+  styleUrls: ['./likers-retweeters-dialog.component.css'],
 })
-export class RetweetersDialogComponent implements OnInit {
+export class LikersRetweetersDialogComponent implements OnInit {
   pagination: PaginationModel = {
     pageNumber: 1,
   };
@@ -19,8 +24,8 @@ export class RetweetersDialogComponent implements OnInit {
   constructor(
     private router: Router,
     private tweetService: TweetService,
-    public dialogRef: MatDialogRef<RetweetersDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: string
+    public dialogRef: MatDialogRef<LikersRetweetersDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: LikersRetweetersDialogData
   ) {}
 
   ngOnInit(): void {
@@ -29,17 +34,28 @@ export class RetweetersDialogComponent implements OnInit {
     });
 
     this.pagination.pageNumber = 1;
-    this.getRetweeters();
+    if (this.data.type === 'likes') this.getLikers();
+    else this.getRetweeters();
   }
 
   onScroll() {
     this.pagination.pageNumber++;
-    this.getRetweeters();
+    if (this.data.type === 'likes') this.getLikers();
+    else this.getRetweeters();
   }
 
   getRetweeters() {
     this.tweetService
-      .getRetweeters(this.data, this.pagination)
+      .getRetweeters(this.data.tweetId, this.pagination)
+      .subscribe((res) => {
+        if (this.pagination.pageNumber === 1) this.users = res;
+        else this.users = this.users.concat(res);
+      });
+  }
+
+  getLikers() {
+    this.tweetService
+      .getLikedUsers(this.data.tweetId, this.pagination)
       .subscribe((res) => {
         if (this.pagination.pageNumber === 1) this.users = res;
         else this.users = this.users.concat(res);

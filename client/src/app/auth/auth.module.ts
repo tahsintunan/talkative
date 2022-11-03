@@ -8,6 +8,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { SharedModule } from '../shared/shared.module';
 import { AuthRoutingModule } from './auth-routing.module';
 import { SigninComponent } from './feature/signin/signin.component';
 import { SignupComponent } from './feature/signup/signup.component';
@@ -23,6 +24,7 @@ import { SignupComponent } from './feature/signup/signup.component';
     MatIconModule,
     MatFormFieldModule,
     MatButtonModule,
+    SharedModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatDividerModule,

@@ -99,6 +99,12 @@ export class TweetService {
     });
   }
 
+  getLikedUsers(tweetId: string, pagination: PaginationModel) {
+    return this.http.get<UserModel[]>(this.apiUrl + '/like/' + tweetId, {
+      params: { ...pagination },
+    });
+  }
+
   getQuotes(tweetId: string, pagination: PaginationModel) {
     return this.http
       .get<TweetModel[]>(this.apiUrl + '/quote-retweet/' + tweetId, {

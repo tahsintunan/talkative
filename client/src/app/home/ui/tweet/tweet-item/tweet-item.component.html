@@ -72,7 +72,7 @@
       *ngIf="detailedView"
       class="flex py-3 px-10 gap-10 text-gray-600 border-t"
     >
-      <h3 class="hover:underline cursor-pointer">
+      <h3 class="hover:underline cursor-pointer" (click)="onViewLikes()">
         <strong class="text-gray-700">{{ tweet?.likes?.length }}</strong> Likes
       </h3>
 

@@ -1,6 +1,8 @@
 <div>
   <div class="relative flex items-center p-4 justify-center border-b">
-    <h3 class="text-xl font-semibold text-gray-900">Shared by</h3>
+    <h3 class="text-xl font-semibold text-gray-900">
+      {{ data.type === "likes" ? "Liked by" : "Shared by" }}
+    </h3>
     <button
       class="absolute right-3 outline-none text-gray-900 bg-transparent hover:bg-gray-200 focus:bg-gray-200 rounded-full text-sm p-1.5 inline-flex items-center"
       mat-dialog-close
@@ -10,6 +12,7 @@
   </div>
 
   <div
+    *ngIf="users.length; else noData"
     class="flex flex-col p-2 max-h-[80vh] overflow-y-auto gap-2"
     infiniteScroll
     [infiniteScrollDistance]="2"
@@ -22,3 +25,9 @@
     </div>
   </div>
 </div>
+
+<ng-template #noData>
+  <div class="p-2">
+    <app-alert title="Oops!" message="No data found"></app-alert>
+  </div>
+</ng-template>
