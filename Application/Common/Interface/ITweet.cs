@@ -9,7 +9,6 @@ public interface ITweet
 {
     Task PublishTweet(Tweet tweet);
     Task DeleteTweet(string id);
-    Task UpdateTweet(Tweet tweet);
     Task<BsonDocument?> GetTweetById(string id);
     Task<IList<string>> SearchHashtags(string hashtag, int skip, int limit);
     Task<IList<BsonDocument>> GetTweetsOfSingleUser(string userId, int skip, int take);

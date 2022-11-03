@@ -42,6 +42,9 @@ public class TweetBsonDocumentMapper : IBsonDocumentMapper<TweetVm?>
             CreatedAt = CheckIfDocumentExists(tweet, "createdAt")
                 ? tweet["createdAt"].ToUniversalTime()
                 : null,
+            LastModified = CheckIfDocumentExists(tweet, "lastModified")
+                ? tweet["lastModified"].ToUniversalTime()
+                : null,
             Likes = CheckIfDocumentExists(tweet, "likes")
                 ? tweet.GetValue("likes", null)?.AsBsonArray.Select(p => p.ToString()).ToList()
                 : null,

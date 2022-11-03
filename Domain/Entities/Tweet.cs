@@ -19,6 +19,7 @@ public class Tweet
     [BsonElement("text")] public string? Text { get; set; }
 
     [BsonElement("createdAt")] public DateTime? CreatedAt { get; set; }
+    [BsonElement("lastModified")] public DateTime? LastModified { get; set; }
 
     [BsonElement("hashtags")] public IList<string>? Hashtags { get; set; }
 

@@ -17,4 +17,5 @@ public class TweetVm : Blockable
     public IList<string?>? Likes { get; set; }
     public IList<string?>? Comments { get; set; }
     public DateTime? CreatedAt { get; set; }
+    public DateTime? LastModified { get; set; }
 }

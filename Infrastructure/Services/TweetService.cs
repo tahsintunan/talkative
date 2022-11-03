@@ -40,6 +40,7 @@ public class TweetService : ITweet
 
     public async Task PublishTweet(Tweet tweet)
     {
+        tweet.LastModified = null;
         await _tweetCollection.InsertOneAsync(tweet);
     }
 
@@ -98,16 +99,11 @@ public class TweetService : ITweet
         return tweet;
     }
 
-    public async Task UpdateTweet(Tweet updatedTweet)
-    {
-        await _tweetCollection.ReplaceOneAsync(x => x.Id == updatedTweet.Id, updatedTweet);
-    }
-
     public async Task PartialUpdate(string tweetId, UpdateDefinition<Tweet> update)
     {
         await _tweetCollection.UpdateOneAsync(
             p => p.Id == tweetId,
-            update,
+            update.Set(x => x.LastModified, DateTime.Now),
             new UpdateOptions { IsUpsert = true }
         );
     }
