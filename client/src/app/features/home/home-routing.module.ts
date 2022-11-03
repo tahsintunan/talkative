@@ -1,11 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FeedComponent } from './pages/feed/feed.component';
 import { HomeComponent } from './pages/home/home.component';
-import { NotificationsComponent } from './pages/notifications/notifications.component';
-import { ProfileComponent } from './pages/profile/profile.component';
 import { SearchResultComponent } from './pages/search-result/search-result.component';
-import { TweetDetailsComponent } from './pages/tweet-details/tweet-details.component';
 
 const routes: Routes = [
   {
@@ -14,24 +10,25 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'feed',
+        redirectTo: 'tweet',
         pathMatch: 'full',
       },
       {
-        path: 'feed',
-        component: FeedComponent,
-      },
-      {
-        path: 'tweet/:tweetId',
-        component: TweetDetailsComponent,
+        path: 'tweet',
+        loadChildren: () =>
+          import('../tweet/tweet.module').then((m) => m.TweetModule),
       },
       {
         path: 'profile/:userId',
-        component: ProfileComponent,
+        loadChildren: () =>
+          import('../profile/profile.module').then((m) => m.ProfileModule),
       },
       {
         path: 'notifications',
-        component: NotificationsComponent,
+        loadChildren: () =>
+          import('./../notification/notification.module').then(
+            (m) => m.NotificationModule
+          ),
       },
       {
         path: 'search',

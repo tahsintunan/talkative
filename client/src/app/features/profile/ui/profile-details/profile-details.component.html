@@ -1,0 +1,99 @@
+<div class="card relative h-64 flex flex-col">
+  <img
+    [src]="data?.username | generateImage: 'background'"
+    class="absolute inset-0 w-full h-full object-cover rounded-md"
+  />
+
+  <div class="absolute top-[42%] left-0 right-0 px-8 flex items-center gap-5">
+    <app-avatar
+      size="170px"
+      [src]="data?.username"
+      [generateAvater]="true"
+      borderColor="#fafafa"
+      borderWidth="10px"
+      borderRadius="50%"
+      bgColor="#fff"
+    >
+    </app-avatar>
+
+    <div class="flex flex-col gap-1">
+      <h1 class="text-2xl font-bold text-gray-800">
+        {{ data?.username }}
+      </h1>
+
+      <p class="text-gray-600">{{ data?.email }}</p>
+
+      <p class="text-gray-600">
+        {{ utilityService.getAge(data?.dateOfBirth!) }} years old
+      </p>
+    </div>
+
+    <div class="flex justify-center gap-4 ml-auto">
+      <div class="flex flex-col items-center">
+        <p class="text-gray-800 font-bold">
+          {{ analytics?.followerCount | shortNumber }}
+        </p>
+        <p class="text-gray-600">Followers</p>
+      </div>
+
+      <mat-divider vertical="true"></mat-divider>
+
+      <div class="flex flex-col items-center">
+        <p class="text-gray-800 font-bold">
+          {{ analytics?.followingCount | shortNumber }}
+        </p>
+        <p class="text-gray-600">Following</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute top-0 right-3 z-10 space-x-2 p-4">
+    <ng-container *ngIf="userAuth?.userId === data?.userId; else followBtns">
+      <button mat-raised-button color="basic" (click)="onProfileEdit.emit()">
+        Edit Profile <span class="material-symbols-rounded">edit</span>
+      </button>
+
+      <button mat-raised-button color="basic" (click)="onPasswordEdit.emit()">
+        Change Password <span class="material-symbols-rounded">key</span>
+      </button>
+    </ng-container>
+
+    <ng-template #followBtns>
+      <button
+        *ngIf="!userBlocked"
+        mat-raised-button
+        color="basic"
+        (click)="onBlockClick.emit()"
+      >
+        Block <span class="material-symbols-rounded">person_off</span>
+      </button>
+
+      <button
+        *ngIf="userBlocked"
+        mat-raised-button
+        color="basic"
+        (click)="onUnblockClick.emit()"
+      >
+        Unblock <span class="material-symbols-rounded">how_to_reg</span>
+      </button>
+
+      <button
+        *ngIf="!isFollowing"
+        mat-raised-button
+        color="basic"
+        (click)="onFollowClick.emit()"
+      >
+        Follow <span class="material-symbols-rounded">person_add</span>
+      </button>
+
+      <button
+        *ngIf="isFollowing"
+        mat-raised-button
+        color="basic"
+        (click)="onUnfollowClick.emit()"
+      >
+        Unfollow <span class="material-symbols-rounded">person_remove</span>
+      </button>
+    </ng-template>
+  </div>
+</div>

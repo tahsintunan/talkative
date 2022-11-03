@@ -1,0 +1,185 @@
+<a
+  routerLink="/profile/{{ data?.user?.userId }}"
+  *ngIf="data?.isRetweet"
+  class="text-primary flex items-center gap-2 pb-2"
+>
+  <span class="material-symbols-rounded">cached</span>
+  <span class="font-semibold hover:underline"
+    >{{
+      userAuth?.userId === data?.user?.userId ? "You" : data?.user?.username
+    }}
+    retweeted {{ data?.createdAt | timeAgo }}</span
+  >
+</a>
+
+<div class="card px-3 pt-3 hover:shadow-md transition">
+  <div
+    class="flex flex-col text-gray-700"
+    [ngClass]="{
+      'cursor-pointer': !detailedView
+    }"
+    (click)="onTweetClick()"
+  >
+    <div class="flex gap-3 items-center">
+      <a
+        (click)="$event.stopPropagation()"
+        class="flex gap-3 items-center"
+        routerLink="/profile/{{ tweet?.user?.userId }}"
+      >
+        <app-avatar
+          alt="User"
+          [src]="tweet?.user?.username"
+          size="50px"
+          borderRadius="50%"
+          borderColor="#f0f0f0"
+          borderWidth="1px"
+          [generateAvater]="true"
+        ></app-avatar>
+
+        <div class="flex flex-col">
+          <span class="text-md hover:underline font-semibold">{{
+            tweet?.user?.username
+          }}</span>
+          <span class="text-gray-500 text-xs">{{
+            tweet?.createdAt | timeAgo
+          }}</span>
+        </div>
+      </a>
+      <button
+        *ngIf="tweet?.user?.userId === userAuth?.userId"
+        class="!ml-auto transition hover:text-primary hover:shadow hover:bg-white"
+        mat-icon-button
+        (click)="$event.stopPropagation()"
+        [matMenuTriggerFor]="menu"
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </div>
+
+    <div class="mx-2 mt-3 mb-5 flex flex-col gap-3">
+      <app-hashtag-renderer
+        [ngClass]="{
+          'text-2xl': detailedView
+        }"
+        [text]="tweet?.text"
+        (onHashtagClick)="onTagClick($event)"
+      ></app-hashtag-renderer>
+
+      <app-retweet-content
+        *ngIf="tweet?.isQuoteRetweet"
+        [data]="tweet?.originalTweet"
+      ></app-retweet-content>
+    </div>
+
+    <div
+      *ngIf="detailedView"
+      class="flex py-3 px-10 gap-10 text-gray-600 border-t"
+    >
+      <h3 class="hover:underline cursor-pointer" (click)="onViewLikes()">
+        <strong class="text-gray-700">{{ tweet?.likes?.length }}</strong> Likes
+      </h3>
+
+      <h3 class="hover:underline cursor-pointer" (click)="onViewRetweeters()">
+        <strong class="text-gray-700">{{ tweet?.retweetUsers?.length }}</strong>
+        Shares
+      </h3>
+
+      <h3 class="hover:underline cursor-pointer" (click)="onViewQuotes()">
+        <strong class="text-gray-700">
+          {{ tweet?.quoteRetweets?.length }}
+        </strong>
+        Quotes
+      </h3>
+    </div>
+
+    <div class="flex py-1 gap-1 border-t" (click)="$event.stopPropagation()">
+      <button
+        mat-button
+        class="flex-1 hover:text-pink-500"
+        [ngClass]="{
+          'text-pink-500': alreadyLiked
+        }"
+        (click)="onLike()"
+      >
+        <mat-icon
+          class="mx-2 material-symbols-rounded"
+          [ngClass]="{
+            active: alreadyLiked
+          }"
+          >favorite</mat-icon
+        >
+        <span *ngIf="tweet?.likes?.length && !detailedView" class="text-lg">{{
+          tweet?.likes?.length | shortNumber
+        }}</span>
+      </button>
+
+      <mat-divider vertical></mat-divider>
+
+      <button
+        mat-button
+        class="flex-1 hover:text-blue-500"
+        (click)="onComment()"
+      >
+        <mat-icon class="mx-2 material-symbols-rounded">mode_comment</mat-icon>
+        <span
+          *ngIf="tweet?.comments?.length && !detailedView"
+          class="text-lg"
+          >{{ tweet?.comments?.length | shortNumber }}</span
+        >
+      </button>
+
+      <mat-divider vertical></mat-divider>
+
+      <button
+        mat-button
+        class="flex-1 hover:text-primary"
+        [ngClass]="{
+          'text-primary': alreadyRetweeted
+        }"
+        [matMenuTriggerFor]="retweetMenu"
+      >
+        <mat-icon class="mx-2 material-symbols-rounded">cached</mat-icon>
+        <span
+          *ngIf="
+            (tweet?.retweetUsers?.length || tweet?.quoteRetweets?.length) &&
+            !detailedView
+          "
+          class="text-lg"
+          >{{
+            tweet?.retweetUsers?.length! + tweet?.quoteRetweets?.length!
+              | shortNumber
+          }}</span
+        >
+      </button>
+    </div>
+  </div>
+  <ng-content></ng-content>
+</div>
+
+<mat-menu #menu>
+  <button mat-menu-item (click)="onEdit()">
+    <mat-icon class="material-symbols-rounded">edit</mat-icon>
+    <span>Edit Post</span>
+  </button>
+  <button mat-menu-item (click)="onDelete()">
+    <mat-icon class="material-symbols-rounded">delete</mat-icon>
+    <span>Delete Post</span>
+  </button>
+</mat-menu>
+
+<mat-menu #retweetMenu>
+  <button *ngIf="alreadyRetweeted" mat-menu-item (click)="onRetweetUndo()">
+    <mat-icon class="material-symbols-rounded">sync_disabled</mat-icon>
+    <span>Undo Share</span>
+  </button>
+
+  <button *ngIf="!alreadyRetweeted" mat-menu-item (click)="onRetweet()">
+    <mat-icon class="material-symbols-rounded">cached</mat-icon>
+    <span>Share</span>
+  </button>
+
+  <button mat-menu-item (click)="onQuote()">
+    <mat-icon class="material-symbols-rounded">quick_phrases</mat-icon>
+    <span>Quote</span>
+  </button>
+</mat-menu>

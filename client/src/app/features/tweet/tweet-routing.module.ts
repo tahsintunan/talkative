@@ -1,10 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TweetDetailsComponent } from '../home/pages/tweet-details/tweet-details.component';
+import { FeedComponent } from './pages/feed/feed.component';
+import { TweetDetailsComponent } from './pages/tweet-details/tweet-details.component';
 
 const routes: Routes = [
   {
     path: '',
+    component: FeedComponent,
+  },
+  {
+    path: ':tweetId',
     component: TweetDetailsComponent,
   },
 ];

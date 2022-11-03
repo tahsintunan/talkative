@@ -1,10 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { RouterModule } from '@angular/router';
 import { TextInputHighlightModule } from 'angular-text-input-highlight';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { GenerateImagePipe } from './pipes/generate-image.pipe';
@@ -18,13 +22,17 @@ import { EmptyResultOverlayComponent } from './ui/empty-result-overlay/empty-res
 import { ForgotPasswordDialogComponent } from './ui/forgot-password-dialog/forgot-password-dialog.component';
 import { HashtagInputComponent } from './ui/hashtag-input/hashtag-input.component';
 import { HashtagRendererComponent } from './ui/hashtag-renderer/hashtag-renderer.component';
+import { ProfilePeopleItemComponent } from './ui/profile-people-item/profile-people-item.component';
+import { RetweetContentComponent } from './ui/retweet-content/retweet-content.component';
 import { SearchInputComponent } from './ui/search-input/search-input.component';
+import { TweetItemComponent } from './ui/tweet-item/tweet-item.component';
 
 @NgModule({
   declarations: [
     TimeAgoPipe,
     GenerateImagePipe,
     HashtagPipe,
+    ShortNumberPipe,
     AvatarComponent,
     HashtagInputComponent,
     SearchInputComponent,
@@ -33,9 +41,12 @@ import { SearchInputComponent } from './ui/search-input/search-input.component';
     ForgotPasswordDialogComponent,
     AlertComponent,
     EmptyResultOverlayComponent,
-    ShortNumberPipe,
+    TweetItemComponent,
+    RetweetContentComponent,
+    ProfilePeopleItemComponent,
   ],
   imports: [
+    RouterModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -45,6 +56,9 @@ import { SearchInputComponent } from './ui/search-input/search-input.component';
     MatFormFieldModule,
     MatDialogModule,
     InfiniteScrollModule,
+    MatMenuModule,
+    MatDividerModule,
+    MatButtonModule,
   ],
   exports: [
     TimeAgoPipe,
@@ -59,6 +73,9 @@ import { SearchInputComponent } from './ui/search-input/search-input.component';
     ForgotPasswordDialogComponent,
     EmptyResultOverlayComponent,
     CommentInputComponent,
+    TweetItemComponent,
+    RetweetContentComponent,
+    ProfilePeopleItemComponent,
   ],
 })
 export class SharedModule {}

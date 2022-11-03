@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject, tap } from 'rxjs';
 import { UserStore } from 'src/app/core/store/user.store';
-import { NotificationSnackbarComponent } from 'src/app/features/home/ui/notification/notification-snackbar/notification-snackbar.component';
+import { NotificationSnackbarComponent } from 'src/app/features/notification/ui/notification-snackbar/notification-snackbar.component';
 import { EnvService } from '../../shared/services/env.service';
 import { NotificationModel } from '../models/notification.model';
 import { PaginationModel } from '../models/pagination.model';
@@ -21,12 +21,16 @@ export class NotificationService {
   apiUrl = this.envService.apiUrl + 'api/Notification';
   notificationUrl = this.envService.apiUrl + 'notificationhub';
 
-  private connection = new signalR.HubConnectionBuilder()
+  private readonly connection = new signalR.HubConnectionBuilder()
     .withUrl(this.notificationUrl, {
       skipNegotiation: true,
       transport: signalR.HttpTransportType.WebSockets,
     })
     .build();
+
+  private notificationAudio = new Audio(
+    '../../../assets/audios/notification.mp3'
+  );
 
   constructor(
     private http: HttpClient,
@@ -36,9 +40,9 @@ export class NotificationService {
   ) {}
 
   initConnection() {
-    this.connection.on('GetNotification', (notification: NotificationModel) =>
-      this.addNotificationToList(notification)
-    );
+    this.connection.on('GetNotification', (notification: NotificationModel) => {
+      this.addNotificationToList(notification);
+    });
 
     if (this.connection.state === signalR.HubConnectionState.Disconnected)
       this.startConnection();
@@ -120,7 +124,6 @@ export class NotificationService {
 
   addNotificationToList(notification: NotificationModel) {
     const userAuth = this.userStore.userAuth.getValue();
-
     if (
       notification.eventTriggererId !== userAuth?.userId &&
       notification.notificationReceiverId === userAuth?.userId
@@ -131,7 +134,6 @@ export class NotificationService {
       ]);
 
       this.playNotificationSound();
-
       this.showNotificationPopup(notification);
     }
   }
@@ -145,8 +147,11 @@ export class NotificationService {
     });
   }
 
-  playNotificationSound() {
-    new Audio('../../../assets/audios/notification.mp3').play();
+  async playNotificationSound() {
+    this.notificationAudio.volume = 0.5;
+    try {
+      await this.notificationAudio.play();
+    } catch (error) {}
   }
 
   addNotificationsToList(
