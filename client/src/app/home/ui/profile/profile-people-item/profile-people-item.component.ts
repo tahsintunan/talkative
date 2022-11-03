@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BlockService } from 'src/app/home/services/block.service';
-import { UserStore } from 'src/app/shared/store/user.store';
-import { UserModel } from '../../../models/user.model';
-import { FollowService } from '../../../services/follow.service';
+import { BlockService } from 'src/app/core/services/block.service';
+import { FollowService } from 'src/app/core/services/follow.service';
+import { UserStore } from 'src/app/core/store/user.store';
+import { UserModel } from '../../../../core/models/user.model';
 
 @Component({
   selector: 'app-profile-people-item',

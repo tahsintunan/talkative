@@ -2,10 +2,10 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { UserStore } from 'src/app/shared/store/user.store';
-import { TweetModel } from '../../../models/tweet.model';
-import { UserModel } from '../../../models/user.model';
-import { TweetService } from '../../../services/tweet.service';
+import { TweetService } from 'src/app/core/services/tweet.service';
+import { UserStore } from 'src/app/core/store/user.store';
+import { TweetModel } from '../../../../core/models/tweet.model';
+import { UserModel } from '../../../../core/models/user.model';
 
 interface PostMakerDialogData {
   isEdit: boolean;

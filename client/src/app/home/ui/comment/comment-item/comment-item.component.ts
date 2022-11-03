@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UserStore } from 'src/app/shared/store/user.store';
+import { UserStore } from 'src/app/core/store/user.store';
 import {
   CommentLikeModel,
   CommentModel,
   CommentUpdateModel,
-} from '../../../models/comment.model';
-import { UserModel } from '../../../models/user.model';
+} from '../../../../core/models/comment.model';
+import { UserModel } from '../../../../core/models/user.model';
 
 @Component({
   selector: 'app-comment-item',

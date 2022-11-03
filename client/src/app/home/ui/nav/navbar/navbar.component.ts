@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/auth/services/auth.service';
-import { TweetWriteModel } from 'src/app/home/models/tweet.model';
-import { NotificationService } from 'src/app/home/services/notification.service';
-import { TweetService } from 'src/app/home/services/tweet.service';
-import { UserStore } from 'src/app/shared/store/user.store';
+import { TweetWriteModel } from 'src/app/core/models/tweet.model';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
+import { TweetService } from 'src/app/core/services/tweet.service';
+
+import { UserStore } from 'src/app/core/store/user.store';
 import { PostMakerDialogComponent } from '../../tweet/post-maker-dialog/post-maker-dialog.component';
 
 @Component({

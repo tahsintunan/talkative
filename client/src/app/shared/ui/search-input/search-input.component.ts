@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { PaginationModel } from 'src/app/home/models/pagination.model';
+import { PaginationModel } from 'src/app/core/models/pagination.model';
 import {
   SearchChangeModel,
   SearchSuggestionModel,
-} from 'src/app/home/models/search.model';
+} from 'src/app/core/models/search.model';
 
 @Component({
   selector: 'app-search-input',

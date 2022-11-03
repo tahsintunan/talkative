@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UserModel } from 'src/app/home/models/user.model';
-import { UserStore } from 'src/app/shared/store/user.store';
+import { UserModel } from 'src/app/core/models/user.model';
+import { UserStore } from 'src/app/core/store/user.store';
 
 @Component({
   selector: 'app-profile-peoples',

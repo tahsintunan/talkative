@@ -6,10 +6,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { EnvServiceProvider } from './env.service.provider';
-import { HttpErrorInterceptor } from './shared/interceptors/http-error.interceptor';
-import { HttpLoadingInterceptor } from './shared/interceptors/http-loading.interceptor';
-import { HttpReqHeaderInterceptor } from './shared/interceptors/http-req-header.interceptor';
+import { HttpErrorInterceptor } from './core/interceptors/http-error.interceptor';
+import { HttpLoadingInterceptor } from './core/interceptors/http-loading.interceptor';
+import { HttpReqHeaderInterceptor } from './core/interceptors/http-req-header.interceptor';
+import { EnvServiceProvider } from './shared/services/env.service.provider';
 
 @NgModule({
   declarations: [AppComponent],

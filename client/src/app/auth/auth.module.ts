@@ -10,8 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { SharedModule } from '../shared/shared.module';
 import { AuthRoutingModule } from './auth-routing.module';
-import { SigninComponent } from './feature/signin/signin.component';
-import { SignupComponent } from './feature/signup/signup.component';
+import { SigninComponent } from './pages/signin/signin.component';
+import { SignupComponent } from './pages/signup/signup.component';
 
 @NgModule({
   declarations: [SigninComponent, SignupComponent],

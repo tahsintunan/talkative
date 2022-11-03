@@ -1,9 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { PaginationModel } from 'src/app/home/models/pagination.model';
-import { UserModel } from 'src/app/home/models/user.model';
-import { TweetService } from 'src/app/home/services/tweet.service';
+import { PaginationModel } from 'src/app/core/models/pagination.model';
+import { UserModel } from 'src/app/core/models/user.model';
+import { TweetService } from 'src/app/core/services/tweet.service';
 
 interface LikersRetweetersDialogData {
   tweetId: string;

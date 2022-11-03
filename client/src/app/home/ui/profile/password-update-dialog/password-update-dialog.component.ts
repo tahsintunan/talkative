@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UserUpdateReqModel } from 'src/app/home/models/user.model';
+import { UserUpdateReqModel } from 'src/app/core/models/user.model';
 
 @Component({
   selector: 'app-password-update-dialog',

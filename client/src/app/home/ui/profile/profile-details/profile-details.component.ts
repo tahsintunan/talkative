@@ -7,11 +7,11 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { UserAnalyticsModel, UserModel } from 'src/app/home/models/user.model';
-import { BlockService } from 'src/app/home/services/block.service';
+import { UserAnalyticsModel, UserModel } from 'src/app/core/models/user.model';
+import { BlockService } from 'src/app/core/services/block.service';
+import { FollowService } from 'src/app/core/services/follow.service';
+import { UserStore } from 'src/app/core/store/user.store';
 import { UtilityService } from 'src/app/shared/services/utility.service';
-import { UserStore } from 'src/app/shared/store/user.store';
-import { FollowService } from '../../../services/follow.service';
 
 @Component({
   selector: 'app-profile-details',

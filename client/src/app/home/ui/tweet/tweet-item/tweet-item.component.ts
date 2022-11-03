@@ -10,12 +10,15 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { RetweetService } from 'src/app/home/services/retweet.service';
-import { TweetStore } from 'src/app/shared/store/tweet.store';
-import { UserStore } from 'src/app/shared/store/user.store';
-import { TweetModel, TweetWriteModel } from '../../../models/tweet.model';
-import { UserModel } from '../../../models/user.model';
-import { TweetService } from '../../../services/tweet.service';
+import { RetweetService } from 'src/app/core/services/retweet.service';
+import { TweetService } from 'src/app/core/services/tweet.service';
+import { TweetStore } from 'src/app/core/store/tweet.store';
+import { UserStore } from 'src/app/core/store/user.store';
+import {
+  TweetModel,
+  TweetWriteModel,
+} from '../../../../core/models/tweet.model';
+import { UserModel } from '../../../../core/models/user.model';
 import { LikersRetweetersDialogComponent } from '../likers-retweeters-dialog/likers-retweeters-dialog.component';
 import { PostMakerDialogComponent } from '../post-maker-dialog/post-maker-dialog.component';
 

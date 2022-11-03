@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { delay } from 'rxjs';
-import { IconService } from './icon.service';
+import { IconService } from './shared/services/icon.service';
 import { LoaderService } from './shared/services/loader.service';
 
 @Component({
