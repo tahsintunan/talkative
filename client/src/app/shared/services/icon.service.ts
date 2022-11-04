@@ -9,7 +9,7 @@ export class IconService {
   constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
     iconRegistry.addSvgIcon(
       'app_logo',
-      sanitizer.bypassSecurityTrustResourceUrl('/assets/images/logo.svg')
+      sanitizer.bypassSecurityTrustResourceUrl('assets/images/logo.svg')
     );
   }
 }

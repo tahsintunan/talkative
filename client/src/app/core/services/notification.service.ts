@@ -23,9 +23,7 @@ export class NotificationService {
     })
     .build();
 
-  private notificationAudio = new Audio(
-    '/assets/audios/notification.mp3'
-  );
+  private notificationAudio = new Audio('assets/audios/notification.mp3');
 
   constructor(
     private http: HttpClient,
