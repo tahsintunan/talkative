@@ -64,7 +64,7 @@ export class SignupComponent implements OnInit {
   signinUserAfterSignUp(username: string, password: string) {
     this.authService
       .signin({ username, password })
-      .subscribe(() => this.router.navigate(['/']));
+      .subscribe(() => this.router.navigate(['/'], { replaceUrl: true }));
   }
 
   private ageValidator(control: AbstractControl): ValidationErrors | null {

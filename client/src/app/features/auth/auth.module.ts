@@ -11,9 +11,10 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { AuthRoutingModule } from './auth-routing.module';
 import { SigninComponent } from './pages/signin/signin.component';
 import { SignupComponent } from './pages/signup/signup.component';
+import { AuthMainComponent } from './pages/auth-main/auth-main.component';
 
 @NgModule({
-  declarations: [SigninComponent, SignupComponent],
+  declarations: [SigninComponent, SignupComponent, AuthMainComponent],
   imports: [
     AuthRoutingModule,
     CommonModule,

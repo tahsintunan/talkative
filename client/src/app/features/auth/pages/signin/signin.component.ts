@@ -30,7 +30,7 @@ export class SigninComponent implements OnInit {
   onSubmit(): void {
     this.authService
       .signin(this.formData.getRawValue())
-      .subscribe(() => this.router.navigate(['/']));
+      .subscribe(() => this.router.navigate(['/'], { replaceUrl: true }));
   }
 
   onForgotPasswordClick() {
