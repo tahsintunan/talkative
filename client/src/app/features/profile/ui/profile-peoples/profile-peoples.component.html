@@ -1,9 +1,9 @@
 <mat-tab-group
   mat-stretch-tabs
   dynamicHeight
-  class="card hover:shadow-md transition"
+  class="card hover:shadow-md transition !min-w-[400px]"
 >
-  <mat-tab label="Following" labelClass="!py-5">
+  <mat-tab label="Following">
     <div
       *ngIf="followings?.length; else noData"
       class="container"
@@ -23,7 +23,7 @@
       ></app-profile-people-item>
     </div>
   </mat-tab>
-  <mat-tab label="Followers" labelClass="!py-5">
+  <mat-tab label="Followers">
     <div
       *ngIf="followers?.length; else noData"
       class="container"
@@ -46,7 +46,6 @@
   <mat-tab
     *ngIf="profileDetails?.userId === userAuth?.userId"
     label="Block List"
-    labelClass="!py-5"
   >
     <div
       *ngIf="blockList?.length; else noData"
@@ -69,7 +68,11 @@
 </mat-tab-group>
 
 <ng-template #noData>
-  <div class="p-2">
-    <app-alert title="Sorry!" message="No data available"></app-alert>
+  <div class="container">
+    <app-empty-result-overlay
+      class="w-72 m-auto"
+      type="noData"
+      title="Nothing to show"
+    ></app-empty-result-overlay>
   </div>
 </ng-template>

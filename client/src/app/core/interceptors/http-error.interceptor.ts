@@ -6,17 +6,15 @@ import {
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CookieService } from 'ngx-cookie-service';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { UserStore } from '../store/user.store';
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
   constructor(
     private snackBar: MatSnackBar,
-    private cookieService: CookieService,
-    private userStore: UserStore
+    private authService: AuthService
   ) {}
 
   intercept(
@@ -39,8 +37,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         });
 
         if (error.status === 401) {
-          this.cookieService.delete('authorization');
-          this.userStore.clearUserAuth();
+          this.authService.signout();
         }
 
         console.error(error);

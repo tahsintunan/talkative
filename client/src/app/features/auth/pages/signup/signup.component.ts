@@ -21,7 +21,14 @@ export class SignupComponent implements OnInit {
 
   formData: FormGroup = this.formBuilder.group(
     {
-      username: [null, [Validators.required]],
+      username: [
+        null,
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(20),
+        ],
+      ],
       email: [null, [Validators.email, Validators.required]],
       dateOfBirth: [null, [Validators.required, this.ageValidator.bind(this)]],
       password: [

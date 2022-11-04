@@ -28,7 +28,8 @@ export class HashtagInputComponent implements OnInit, AfterViewInit {
 
   tags: HighlightTag[] = [];
 
-  hashtags: string[] = [];
+  hashtags = new Set<string>();
+  matchHashtag = /(#\w+) ?/gm;
 
   constructor() {}
 
@@ -44,11 +45,10 @@ export class HashtagInputComponent implements OnInit, AfterViewInit {
 
   addTags() {
     this.tags = [];
-    this.hashtags = [];
-    const matchHashtag = /(#\w+) ?/g;
+    this.hashtags.clear();
     let hashtag;
 
-    while ((hashtag = matchHashtag.exec(this.text))) {
+    while ((hashtag = this.matchHashtag.exec(this.text))) {
       this.tags.push({
         indices: {
           start: hashtag.index,
@@ -57,13 +57,16 @@ export class HashtagInputComponent implements OnInit, AfterViewInit {
         data: hashtag[1],
       });
 
-      this.hashtags.push(hashtag[1]);
+      this.hashtags.add(hashtag[1]);
     }
 
     this.onTextChange();
   }
 
   onTextChange() {
-    this.onChange.emit({ text: this.text, hashtags: this.hashtags });
+    this.onChange.emit({
+      text: this.text,
+      hashtags: Array.from(this.hashtags),
+    });
   }
 }

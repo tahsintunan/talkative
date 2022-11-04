@@ -19,7 +19,10 @@ import { UtilityService } from 'src/app/shared/services/utility.service';
 export class ProfileUpdateDialogComponent implements OnInit {
   formData: FormGroup = this.formBuilder.group({
     userId: [this.data.userId, Validators.required],
-    username: [this.data.username, [Validators.required]],
+    username: [
+      this.data.username,
+      [Validators.required, Validators.minLength(3), Validators.maxLength(20)],
+    ],
     email: [this.data.email, [Validators.required, Validators.email]],
     dateOfBirth: [
       this.data.dateOfBirth,
@@ -34,8 +37,8 @@ export class ProfileUpdateDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: UserUpdateReqModel
   ) {}
 
-  ngOnInit(): void { }
-  
+  ngOnInit(): void {}
+
   onClose() {
     this.dialogRef.close();
   }

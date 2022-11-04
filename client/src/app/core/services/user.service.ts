@@ -10,6 +10,7 @@ import {
   UserModel,
   UserUpdateReqModel,
 } from '../models/user.model';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +22,8 @@ export class UserService {
     private http: HttpClient,
     private env: EnvService,
     private cookie: CookieService,
-    private userStore: UserStore
+    private userStore: UserStore,
+    private authService: AuthService
   ) {}
 
   loadUserAuth() {
@@ -31,8 +33,7 @@ export class UserService {
         const decodedToken: any = jwtDecode(token);
 
         if (decodedToken.exp * 1000 < Date.now()) {
-          this.cookie.delete('authorization');
-          this.userStore.clearUserAuth();
+          this.authService.signout();
         } else if (decodedToken.user_id) {
           this.getUser(decodedToken.user_id).subscribe((res) => {
             this.userStore.setUserAuth(res);

@@ -18,11 +18,11 @@
       ></app-avatar
     ></a>
 
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-1">
       <div class="flex gap-3 items-center">
         <a
           (click)="$event.stopPropagation()"
-          class="font-semibold hover:underline"
+          class="font-semibold hover:underline truncate"
           routerLink="/profile/{{ data?.user?.userId }}"
           >{{ data?.user?.username }}</a
         >

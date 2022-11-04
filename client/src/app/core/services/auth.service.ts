@@ -34,6 +34,7 @@ export class AuthService {
   }
 
   signout() {
+    this.http.post(this.authUrl + '/logout', null).subscribe();
     this.cookieService.delete('authorization');
     this.userStore.clearUserAuth();
     this.notificationService.stopConnection();

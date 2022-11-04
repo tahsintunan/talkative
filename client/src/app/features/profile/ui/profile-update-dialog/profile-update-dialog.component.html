@@ -15,8 +15,22 @@
       <mat-label>Username</mat-label>
       <input matInput type="text" formControlName="username" />
 
-      <mat-error *ngIf="formData.controls['username'].hasError('required')">
-        Username is required
+      <mat-error *ngIf="formData.controls['username'].invalid">
+        {{
+          formData.controls["username"].hasError("required")
+            ? "Username is required"
+            : ""
+        }}
+        {{
+          formData.controls["username"].hasError("minlength")
+            ? "Username must be at least 3 characters"
+            : ""
+        }}
+        {{
+          formData.controls["username"].hasError("maxlength")
+            ? "Username can be at most 20 characters"
+            : ""
+        }}
       </mat-error>
     </mat-form-field>
 
@@ -24,12 +38,17 @@
       <mat-label>Email</mat-label>
       <input matInput type="email" formControlName="email" />
 
-      <mat-error *ngIf="formData.controls['email'].hasError('required')">
-        Email is required
-      </mat-error>
-
-      <mat-error *ngIf="formData.controls['email'].hasError('email')">
-        Please enter a valid email address
+      <mat-error *ngIf="formData.controls['email'].invalid">
+        {{
+          formData.controls["email"].hasError("required")
+            ? "Email is required"
+            : ""
+        }}
+        {{
+          formData.controls["email"].hasError("email")
+            ? "Email is not valid"
+            : ""
+        }}
       </mat-error>
     </mat-form-field>
 
@@ -46,12 +65,17 @@
       ></mat-datepicker-toggle>
       <mat-datepicker #datePicker></mat-datepicker>
 
-      <mat-error *ngIf="formData.controls['dateOfBirth'].hasError('required')">
-        Date of birth is required
-      </mat-error>
-
-      <mat-error *ngIf="formData.controls['dateOfBirth'].hasError('underage')">
-        Must be over 18 years old
+      <mat-error *ngIf="formData.controls['dateOfBirth'].invalid">
+        {{
+          formData.controls["dateOfBirth"].hasError("required")
+            ? "Date of Birth is required"
+            : ""
+        }}
+        {{
+          formData.controls["dateOfBirth"].hasError("underage")
+            ? "You must be at least 18 years old"
+            : ""
+        }}
       </mat-error>
     </mat-form-field>
   </div>
