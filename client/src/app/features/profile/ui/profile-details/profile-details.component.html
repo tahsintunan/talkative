@@ -1,6 +1,6 @@
 <div class="rounded-md bg-white flex flex-col">
   <div
-    class="flex relative h-60 z-10 justify-end items-start gap-2 flex-wrap p-4"
+    class="flex relative h-60 z-10 justify-end items-end gap-2 flex-wrap p-4"
   >
     <img
       [src]="
@@ -10,21 +10,10 @@
       "
       class="absolute -z-10 inset-0 w-full h-full object-cover rounded-md"
     />
-    <ng-container *ngIf="userAuth?.userId === data?.userId; else followBtns">
-      <button
-        class="transition flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
-        (click)="onProfileEdit.emit()"
-      >
-        Edit Profile <span class="material-symbols-rounded">edit</span>
-      </button>
-
-      <button
-        class="transition flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
-        (click)="onPasswordEdit.emit()"
-      >
-        Change Password <span class="material-symbols-rounded">key</span>
-      </button>
-
+    <div
+      *ngIf="userAuth?.userId === data?.userId; else followBtns"
+      class="flex flex-col justify-between h-full items-end"
+    >
       <button
         class="transition flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
         (click)="onCoverImageEdit.emit()"
@@ -32,7 +21,23 @@
         Change Cover Image
         <span class="material-symbols-rounded">add_photo_alternate</span>
       </button>
-    </ng-container>
+
+      <div class="flex gap-2">
+        <button
+          class="transition flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+          (click)="onProfileEdit.emit()"
+        >
+          Edit Profile <span class="material-symbols-rounded">edit</span>
+        </button>
+
+        <button
+          class="transition flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+          (click)="onPasswordEdit.emit()"
+        >
+          Change Password <span class="material-symbols-rounded">key</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="z-10 text-gray-500 px-8 py-4 flex items-end gap-4">
