@@ -15,8 +15,9 @@ builder.Services
     .AddControllers(options =>
 {
     options.Filters.Add<BlockActionFilter>();
-})
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
+});
+
+builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.Configure<UserDatabaseConfig>(
     builder.Configuration.GetSection("UserDatabaseConfig")
