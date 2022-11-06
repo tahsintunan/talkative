@@ -8,6 +8,7 @@ public class UserVm : Blockable
     public string? Username { get; set; }
     public string? Email { get; set; }
     public DateTime? DateOfBirth { get; set; }
+    public string? ProfilePicture { get; set; }
 
     [JsonIgnore] public IList<string?>? BlockedBy { get; set; }
 

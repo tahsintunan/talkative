@@ -3,6 +3,7 @@ using Application.Users.Commands.BanUser;
 using Application.Users.Commands.ForgetPassword;
 using Application.Users.Commands.UnbanUser;
 using Application.Users.Commands.UpdatePassword;
+using Application.Users.Commands.UpdateProfilePicture;
 using Application.Users.Commands.UpdateUser;
 using Application.Users.Queries.GetAllUsers;
 using Application.Users.Queries.GetTopActiveUsers;
@@ -64,6 +65,18 @@ public class UserController : ApiControllerBase
             return Unauthorized();
         }
         await Mediator.Send(updateUserCommand);
+        return NoContent();
+    }
+
+    [HttpPatch("profile-picture")]
+    public async Task<IActionResult> UpdateProfilePicture(IFormFile profilePicture)
+    {
+        UpdateProfilePictureCommand updateProfilePictureCommand = new()
+        {
+            ProfilePicture = profilePicture,
+            UserId = HttpContext.Items["User"]!.ToString()
+        };
+        await Mediator.Send(updateProfilePictureCommand);
         return NoContent();
     }
 

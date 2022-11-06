@@ -21,6 +21,8 @@ public class User
 
     [BsonElement("username")] public string? Username { get; set; }
 
+    [BsonElement("profilePicture")] public string? ProfilePicture { get; set; }
+
     [BsonElement("dateOfBirth")] public DateTime DateOfBirth { get; set; }
 
     [BsonElement("password")] public string? Password { get; set; }

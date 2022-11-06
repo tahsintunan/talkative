@@ -22,6 +22,7 @@ public static class ConfigureServices
         services.AddTransient<IBlockFilter, BlockFilterService>();
         services.AddTransient<INotification, NotificationService>();
         services.AddSingleton<IRabbitmq, RabbitmqService>();
+        services.AddScoped<ICloudinary, CloudinaryService>();
         services.AddHostedService<DbNotificationHandlerService>();
         services.AddHostedService<RtNotificationHandlerService>();
         return services;
