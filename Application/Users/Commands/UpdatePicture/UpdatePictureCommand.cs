@@ -28,14 +28,19 @@ namespace Application.Users.Commands.UpdatePicture
 
         public async Task<Unit> Handle(UpdatePictureCommand request, CancellationToken cancellationToken)
         {
-
-            var pictureUrl = await _cloudinary.UploadImage(request.Picture!);
+            var user = await _userService.GetUserById(request.UserId!);
             if (request.Type == PictureType.ProfilePicture)
             {
+
+                var previousProfilePicture = user!.ProfilePicture;
+                var pictureUrl = await _cloudinary.UploadImage(request.Picture!, previousProfilePicture);
                 await _userService.PartialUpdate(request.UserId!, Builders<User>.Update.Set(x => x.ProfilePicture, pictureUrl));
             }
             else if (request.Type == PictureType.CoverPicture)
             {
+
+                var previousCoverPicture = user!.CoverPicture;
+                var pictureUrl = await _cloudinary.UploadImage(request.Picture!, previousCoverPicture);
                 await _userService.PartialUpdate(request.UserId!, Builders<User>.Update.Set(x => x.CoverPicture, pictureUrl));
             }
 

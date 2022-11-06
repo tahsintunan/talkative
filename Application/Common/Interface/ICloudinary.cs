@@ -4,6 +4,6 @@ namespace Application.Common.Interface
 {
     public interface ICloudinary
     {
-        Task<string> UploadImage(IFormFile file);
+        Task<string> UploadImage(IFormFile file, string? previousPicture);
     }
 }

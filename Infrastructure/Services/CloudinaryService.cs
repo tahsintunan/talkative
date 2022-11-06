@@ -16,10 +16,17 @@ namespace Infrastructure.Services
             cloudinary.Api.Secure = true;
 
         }
-        public async Task<string> UploadImage(IFormFile file)
+        public async Task<string> UploadImage(IFormFile file, string? previousPicture)
         {
             // ImageBase64 = String.Format("data:image/png;base64,{0}", Convert.ToBase64String(c.Content))
 
+            if (previousPicture != null)
+            {
+                var splittedImageUrl = previousPicture!.Split("/");
+                var imageName = splittedImageUrl[splittedImageUrl.Count() - 1];
+                var imageNameWithoutType = imageName.Split(".")[0];
+                await cloudinary.DestroyAsync(new DeletionParams(imageNameWithoutType));
+            }
             var uploadParams = new ImageUploadParams()
             {
                 File = new FileDescription(file.FileName, file.OpenReadStream())
