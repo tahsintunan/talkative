@@ -71,6 +71,7 @@ export class SearchService {
             type: 'user',
             key: item.userId!,
             value: item.username!,
+            image: item.profilePicture!,
           }))
         )
       );

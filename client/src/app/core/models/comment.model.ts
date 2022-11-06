@@ -3,6 +3,7 @@ export interface CommentModel {
   text: string;
   userId: string;
   username: string;
+  profilePicture?: string;
   tweetId: string;
   likes: string[];
   created: Date;

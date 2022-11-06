@@ -16,6 +16,7 @@ import {
 import { TweetStore } from '../../../../core/store/tweet.store';
 
 import { PasswordUpdateDialogComponent } from '../../ui/password-update-dialog/password-update-dialog.component';
+import { ProfileImageUploaderDialogComponent } from '../../ui/profile-image-uploader-dialog/profile-image-uploader-dialog.component';
 import { ProfileUpdateDialogComponent } from '../../ui/profile-update-dialog/profile-update-dialog.component';
 
 @Component({
@@ -189,6 +190,35 @@ export class ProfileComponent implements OnInit {
         this.userService
           .updatePassword(result.oldPassword, result.newPassword)
           .subscribe();
+      }
+    });
+  }
+
+  onProfileImageEdit() {
+    const dialogRef = this.dialog.open(ProfileImageUploaderDialogComponent, {
+      width: '500px',
+    });
+
+    dialogRef.afterClosed().subscribe((result: File) => {
+      if (result) {
+        this.userService.updateProfileImage(result).subscribe((res) => {
+          this.getProfile(this.profileId);
+        });
+      }
+    });
+  }
+
+  onCoverImageEdit() {
+    const dialogRef = this.dialog.open(ProfileImageUploaderDialogComponent, {
+      width: '500px',
+      data: { isCover: true },
+    });
+
+    dialogRef.afterClosed().subscribe((result: File) => {
+      if (result) {
+        this.userService.updateCoverImage(result).subscribe((res) => {
+          this.getProfile(this.profileId);
+        });
       }
     });
   }

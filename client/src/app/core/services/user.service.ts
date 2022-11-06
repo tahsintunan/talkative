@@ -56,10 +56,28 @@ export class UserService {
   }
 
   updatePassword(oldPassword: string, newPassword: string) {
+    const userId = this.userStore.userAuth.getValue()?.userId;
     return this.http.post(this.apiUrl + '/update-password', {
+      userId,
       oldPassword,
       newPassword,
     });
+  }
+
+  updateCoverImage(image: File) {
+    const formData = new FormData();
+    formData.append('coverPicture', image);
+    return this.http
+      .patch<UserModel>(this.apiUrl + '/cover-picture', formData)
+      .pipe(tap((res) => this.loadUserAuth()));
+  }
+
+  updateProfileImage(image: File) {
+    const formData = new FormData();
+    formData.append('profilePicture', image);
+    return this.http
+      .patch<UserModel>(this.apiUrl + '/profile-picture', formData)
+      .pipe(tap((res) => this.loadUserAuth()));
   }
 
   getUserAnalytics(userId: string) {

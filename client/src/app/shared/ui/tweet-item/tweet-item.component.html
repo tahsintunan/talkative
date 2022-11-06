@@ -27,13 +27,12 @@
         routerLink="/profile/{{ tweet?.user?.userId }}"
       >
         <app-avatar
-          alt="User"
-          [src]="tweet?.user?.username"
+          [src]="tweet?.user?.profilePicture"
+          [alt]="tweet?.user?.username"
           size="50px"
           borderRadius="50%"
           borderColor="#f0f0f0"
           borderWidth="1px"
-          [generateAvater]="true"
         ></app-avatar>
 
         <div class="flex flex-col">

@@ -1,0 +1,115 @@
+<form>
+  <div class="relative flex items-center p-4 justify-center border-b">
+    <h3 class="text-xl font-semibold text-gray-900">
+      {{ data?.isCover ? "Update Cover Image" : "Update Profile Image" }}
+    </h3>
+    <button
+      type="button"
+      class="absolute right-3 outline-none text-gray-900 bg-transparent hover:bg-gray-200 focus:bg-gray-200 rounded-full text-sm p-1.5 inline-flex items-center"
+      (click)="onClose()"
+    >
+      <span class="material-symbols-rounded">close</span>
+    </button>
+  </div>
+
+  <div
+    class="flex flex-col items-center gap-4 px-6 py-3 overflow-y-auto max-h-[80vh]"
+  >
+    <div class="flex justify-center items-center w-full">
+      <label
+        for="input-file"
+        class="flex gap-2 justify-center p-3 text-gray-500 font-semibold items-center w-full bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer"
+      >
+        <span class="material-symbols-rounded"> upload </span>
+        <p>Click to upload image</p>
+
+        <input
+          id="input-file"
+          type="file"
+          class="hidden"
+          accept="image/*"
+          (change)="fileChangeEvent($event)"
+        />
+      </label>
+    </div>
+
+    <div class="flex flex-col gap-2" [ngClass]="{ hidden: !imageChangedEvent }">
+      <image-cropper
+        class="border"
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="true"
+        [containWithinAspectRatio]="containWithinAspectRatio"
+        [aspectRatio]="data?.isCover ? 16 / 9 : 1 / 1"
+        [resizeToWidth]="256"
+        [cropperMinWidth]="128"
+        [onlyScaleDown]="true"
+        [roundCropper]="!data?.isCover"
+        [canvasRotation]="canvasRotation"
+        [transform]="transform"
+        [alignImage]="'left'"
+        [style.display]="showCropper ? null : 'none'"
+        format="png"
+        (imageCropped)="imageCropped($event)"
+        (imageLoaded)="imageLoaded()"
+        (cropperReady)="cropperReady($event)"
+        (loadImageFailed)="loadImageFailed()"
+      ></image-cropper>
+
+      <div class="flex justify-between">
+        <button
+          class="transition flex items-center justify-center h-10 w-10 rounded-full border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+          (click)="rotateLeft()"
+        >
+          <span class="material-symbols-rounded">rotate_left</span>
+        </button>
+        <button
+          class="transition flex items-center justify-center h-10 w-10 rounded-full border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+          (click)="rotateRight()"
+        >
+          <span class="material-symbols-rounded">rotate_right</span>
+        </button>
+        <button
+          class="transition flex items-center justify-center h-10 w-10 rounded-full border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+          (click)="flipHorizontal()"
+        >
+          <span class="material-symbols-rounded">swap_horiz</span>
+        </button>
+        <button
+          class="transition flex items-center justify-center h-10 w-10 rounded-full border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+          (click)="flipVertical()"
+        >
+          <span class="material-symbols-rounded">swap_vert</span>
+        </button>
+
+        <button
+          class="transition flex items-center justify-center h-10 w-10 rounded-full border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+          (click)="resetImage()"
+        >
+          <span class="material-symbols-rounded">reset_image</span>
+        </button>
+
+        <button
+          class="transition flex items-center justify-center h-10 w-10 rounded-full border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+          (click)="zoomOut()"
+        >
+          <span class="material-symbols-rounded">zoom_out</span>
+        </button>
+
+        <button
+          class="transition flex items-center justify-center h-10 w-10 rounded-full border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+          (click)="zoomIn()"
+        >
+          <span class="material-symbols-rounded">zoom_in</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <button
+    class="w-full text-white bg-primary hover:bg-primaryDark outline-none font-lg rounded-b text-sm px-5 py-3 text-center"
+    type="button"
+    (click)="onSubmit()"
+    [disabled]="!croppedImage"
+  >
+    Upload Image
+  </button>
+</form>

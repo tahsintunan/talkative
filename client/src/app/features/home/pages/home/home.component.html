@@ -20,10 +20,9 @@
         <span class="px-2"> {{ userAuth?.username }} </span>
         <app-avatar
           bgColor="#fff"
-          alt="User"
-          [src]="userAuth?.username"
+          [alt]="userAuth?.username"
+          [src]="userAuth?.profilePicture"
           size="35px"
-          [generateAvater]="true"
         >
         </app-avatar>
       </a>

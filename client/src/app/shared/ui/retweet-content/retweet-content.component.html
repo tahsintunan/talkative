@@ -8,13 +8,12 @@
       (click)="$event.stopPropagation()"
       routerLink="/profile/{{ data?.user?.userId }}"
       ><app-avatar
-        alt="User"
-        [src]="data?.user?.username"
+        [src]="data?.user?.profilePicture"
+        [alt]="data?.user?.username"
         size="50px"
         borderColor="#f0f0f0"
         borderWidth="1px"
         borderRadius="50%"
-        [generateAvater]="true"
       ></app-avatar
     ></a>
 

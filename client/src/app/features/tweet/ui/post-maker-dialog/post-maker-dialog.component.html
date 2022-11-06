@@ -16,11 +16,10 @@
       class="mb-2 p-1 rounded-full text-gray-500 bg-gray-100 font-bold text-md flex items-center w-max"
     >
       <app-avatar
-        alt="User"
         bgColor="#fff"
-        [src]="userAuth?.username"
+        [alt]="userAuth?.username"
+        [src]="userAuth?.profilePicture"
         size="36px"
-        [generateAvater]="true"
       ></app-avatar>
       <span class="px-2">
         {{ userAuth?.username }}

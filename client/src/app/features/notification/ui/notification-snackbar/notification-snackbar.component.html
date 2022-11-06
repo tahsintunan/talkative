@@ -16,13 +16,12 @@
 
   <div class="flex gap-3">
     <app-avatar
-      alt="User"
-      [src]="data.eventTriggererUsername"
+      [src]="data.eventTriggererProfilePicture"
+      [alt]="data.eventTriggererUsername"
       size="50px"
       borderRadius="50%"
       borderColor="#f0f0f0"
       borderWidth="1px"
-      [generateAvater]="true"
     ></app-avatar>
 
     <div class="flex flex-col gap-1 text-sm font-normal">

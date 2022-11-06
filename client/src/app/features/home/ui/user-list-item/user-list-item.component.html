@@ -4,12 +4,12 @@
     class="flex-1 flex items-center gap-3"
   >
     <app-avatar
-      [src]="user?.username"
+      [alt]="user?.username"
+      [src]="user?.profilePicture"
       size="50px"
       borderRadius="50%"
       borderColor="#f0f0f0"
       borderWidth="1px"
-      [generateAvater]="true"
     ></app-avatar>
 
     <div>

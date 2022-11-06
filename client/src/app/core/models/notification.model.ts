@@ -10,6 +10,7 @@ export interface NotificationModel {
     | 'quoteRetweet';
   eventTriggererId: string;
   eventTriggererUsername: string;
+  eventTriggererProfilePicture?: string;
   tweetId?: string;
   commentId?: string;
   dateTime: Date;

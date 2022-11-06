@@ -3,7 +3,11 @@
     class="flex relative h-60 z-10 justify-end items-start gap-2 flex-wrap p-4"
   >
     <img
-      [src]="data?.username | generateImage: 'background'"
+      [src]="
+        data?.coverPicture
+          ? data?.coverPicture
+          : (data?.username | generateImage: 'background')
+      "
       class="absolute -z-10 inset-0 w-full h-full object-cover rounded-md"
     />
     <ng-container *ngIf="userAuth?.userId === data?.userId; else followBtns">
@@ -20,6 +24,14 @@
       >
         Change Password <span class="material-symbols-rounded">key</span>
       </button>
+
+      <button
+        class="transition flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+        (click)="onCoverImageEdit.emit()"
+      >
+        Change Cover Image
+        <span class="material-symbols-rounded">add_photo_alternate</span>
+      </button>
     </ng-container>
   </div>
 
@@ -28,14 +40,21 @@
       <app-avatar
         class="absolute bottom-0"
         size="170px"
-        [src]="data?.username"
-        [generateAvater]="true"
+        [src]="data?.profilePicture"
+        [alt]="data?.username"
         borderColor="#fff"
         borderWidth="6px"
         borderRadius="50%"
         bgColor="#fafafa"
       >
       </app-avatar>
+      <button
+        *ngIf="userAuth?.userId === data?.userId"
+        class="absolute bottom-5 right-5 transition flex items-center justify-center h-10 w-10 rounded-full border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+        (click)="onProfileImageEdit.emit()"
+      >
+        <span class="material-symbols-rounded">edit</span>
+      </button>
     </div>
 
     <div class="flex flex-col gap-1">

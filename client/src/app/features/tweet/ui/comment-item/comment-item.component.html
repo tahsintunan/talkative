@@ -4,13 +4,12 @@
 >
   <a class="mt-5 h-fit" routerLink="/profile/{{ data?.userId }}"
     ><app-avatar
-      alt="User"
-      [src]="data?.username"
+      [alt]="data?.username"
+      [src]="data?.profilePicture"
       size="40px"
       borderRadius="50%"
       borderColor="#f0f0f0"
       borderWidth="1px"
-      [generateAvater]="true"
     ></app-avatar
   ></a>
 

@@ -26,6 +26,8 @@ export class ProfileDetailsComponent implements OnInit, OnChanges {
   @Input() analytics?: UserAnalyticsModel;
   @Output() onProfileEdit = new EventEmitter();
   @Output() onPasswordEdit = new EventEmitter();
+  @Output() onProfileImageEdit = new EventEmitter();
+  @Output() onCoverImageEdit = new EventEmitter();
   @Output() onFollowClick = new EventEmitter();
   @Output() onUnfollowClick = new EventEmitter();
   @Output() onBlockClick = new EventEmitter();

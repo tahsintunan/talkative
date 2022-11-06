@@ -3,12 +3,12 @@
   (click)="onClick.emit(data)"
 >
   <app-avatar
-    [src]="data?.eventTriggererUsername"
+    [alt]="data?.eventTriggererUsername"
+    [src]="data?.eventTriggererProfilePicture"
     size="45px"
     borderRadius="50%"
     borderColor="#f0f0f0"
     borderWidth="1px"
-    [generateAvater]="true"
   >
   </app-avatar>
 

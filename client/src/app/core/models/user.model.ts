@@ -2,6 +2,8 @@ export interface UserModel {
   userId?: string;
   username?: string;
   email?: string;
+  profilePicture?: string;
+  coverPicture?: string;
   dateOfBirth?: Date;
   isBanned?: boolean;
 }

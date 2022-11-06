@@ -24,6 +24,7 @@
     "angular-text-input-highlight": "^1.4.3",
     "jwt-decode": "^3.1.2",
     "ngx-cookie-service": "^14.0.1",
+    "ngx-image-cropper": "^6.2.2",
     "ngx-infinite-scroll": "^14.0.0",
     "rxjs": "~7.5.0",
     "tailwindcss": "^3.1.8",

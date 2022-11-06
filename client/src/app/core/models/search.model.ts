@@ -4,6 +4,7 @@ export interface SearchSuggestionModel {
   type: string;
   key: string;
   value: string;
+  image?: string;
 }
 
 export interface SearchChangeModel {
