@@ -29,7 +29,9 @@ namespace Infrastructure.Services
             }
             var uploadParams = new ImageUploadParams()
             {
-                File = new FileDescription(file.FileName, file.OpenReadStream())
+                File = new FileDescription(file.FileName, file.OpenReadStream()),
+                QualityAnalysis = true,
+                Transformation = new Transformation().Width(720)
             };
 
             var uploadResult = await cloudinary.UploadAsync(uploadParams);
