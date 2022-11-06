@@ -30,10 +30,12 @@ namespace server.Filters
 
             var type = value.GetType();
 
+            if (type == null) return;
+
             if (value.GetType().FullName == typeof(List<UserVm>).FullName)
             {
                 var result = await _blockFilter.GetFilteredUsers(
-                    value as List<UserVm>,
+                    (List<UserVm>)value,
                     resultContext.HttpContext.Items["User"]!.ToString()!
                 );
                 resultContext.Result = await Task.FromResult<IActionResult>(
@@ -43,7 +45,7 @@ namespace server.Filters
             else if (value.GetType().FullName == typeof(List<TweetVm>).FullName)
             {
                 var result = await _blockFilter.GetFilteredTweets(
-                    value as List<TweetVm>,
+                    (List<TweetVm>)value,
                     resultContext.HttpContext.Items["User"]!.ToString()!
                 );
                 resultContext.Result = await Task.FromResult<IActionResult>(
@@ -53,7 +55,7 @@ namespace server.Filters
             else if (value.GetType().FullName == typeof(List<CommentVm>).FullName)
             {
                 var result = await _blockFilter.GetFilteredComments(
-                    value as List<CommentVm>,
+                    (List<CommentVm>)value,
                     resultContext.HttpContext.Items["User"]!.ToString()!
                 );
                 resultContext.Result = await Task.FromResult<IActionResult>(
