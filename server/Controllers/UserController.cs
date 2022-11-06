@@ -4,7 +4,7 @@ using Application.Users.Commands.BanUser;
 using Application.Users.Commands.ForgetPassword;
 using Application.Users.Commands.UnbanUser;
 using Application.Users.Commands.UpdatePassword;
-using Application.Users.Commands.UpdateProfilePicture;
+using Application.Users.Commands.UpdatePicture;
 using Application.Users.Commands.UpdateUser;
 using Application.Users.Queries.GetAllUsers;
 using Application.Users.Queries.GetTopActiveUsers;
@@ -72,7 +72,7 @@ public class UserController : ApiControllerBase
     [HttpPatch("profile-picture")]
     public async Task<IActionResult> UpdateProfilePicture(IFormFile profilePicture)
     {
-        UpdateProfilePictureCommand updateProfilePictureCommand = new()
+        UpdatePictureCommand updateProfilePictureCommand = new()
         {
             Picture = profilePicture,
             Type = PictureType.ProfilePicture,
@@ -85,7 +85,7 @@ public class UserController : ApiControllerBase
     [HttpPatch("cover-picture")]
     public async Task<IActionResult> UpdateCoverPicture(IFormFile coverPicture)
     {
-        UpdateProfilePictureCommand updateProfilePictureCommand = new()
+        UpdatePictureCommand updateProfilePictureCommand = new()
         {
             Picture = coverPicture,
             Type = PictureType.CoverPicture,

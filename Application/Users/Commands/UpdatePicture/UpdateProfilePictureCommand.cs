@@ -6,9 +6,9 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using MongoDB.Driver;
 
-namespace Application.Users.Commands.UpdateProfilePicture
+namespace Application.Users.Commands.UpdatePicture
 {
-    public class UpdateProfilePictureCommand : IRequest
+    public class UpdatePictureCommand : IRequest
     {
         [JsonIgnore]
         public string? UserId { get; set; }
@@ -16,17 +16,17 @@ namespace Application.Users.Commands.UpdateProfilePicture
         public PictureType? Type { get; set; }
     }
 
-    public class UpdateProfilePictureCommandHandler : IRequestHandler<UpdateProfilePictureCommand>
+    public class UpdatePictureCommandHandler : IRequestHandler<UpdatePictureCommand>
     {
         private readonly ICloudinary _cloudinary;
         private readonly IUser _userService;
-        public UpdateProfilePictureCommandHandler(ICloudinary cloudinary, IUser userService)
+        public UpdatePictureCommandHandler(ICloudinary cloudinary, IUser userService)
         {
             _cloudinary = cloudinary;
             _userService = userService;
         }
 
-        public async Task<Unit> Handle(UpdateProfilePictureCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdatePictureCommand request, CancellationToken cancellationToken)
         {
 
             var pictureUrl = await _cloudinary.UploadImage(request.Picture!);
