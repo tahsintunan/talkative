@@ -1,4 +1,5 @@
-﻿using Application.Common.ViewModels;
+﻿using Application.Common.Enums;
+using Application.Common.ViewModels;
 using Application.Users.Commands.BanUser;
 using Application.Users.Commands.ForgetPassword;
 using Application.Users.Commands.UnbanUser;
@@ -73,7 +74,21 @@ public class UserController : ApiControllerBase
     {
         UpdateProfilePictureCommand updateProfilePictureCommand = new()
         {
-            ProfilePicture = profilePicture,
+            Picture = profilePicture,
+            Type = PictureType.ProfilePicture,
+            UserId = HttpContext.Items["User"]!.ToString(),
+        };
+        await Mediator.Send(updateProfilePictureCommand);
+        return NoContent();
+    }
+
+    [HttpPatch("cover-picture")]
+    public async Task<IActionResult> UpdateCoverPicture(IFormFile coverPicture)
+    {
+        UpdateProfilePictureCommand updateProfilePictureCommand = new()
+        {
+            Picture = coverPicture,
+            Type = PictureType.CoverPicture,
             UserId = HttpContext.Items["User"]!.ToString()
         };
         await Mediator.Send(updateProfilePictureCommand);

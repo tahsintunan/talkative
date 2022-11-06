@@ -23,6 +23,8 @@ public class User
 
     [BsonElement("profilePicture")] public string? ProfilePicture { get; set; }
 
+    [BsonElement("coverPicture")] public string? CoverPicture { get; set; }
+
     [BsonElement("dateOfBirth")] public DateTime DateOfBirth { get; set; }
 
     [BsonElement("password")] public string? Password { get; set; }

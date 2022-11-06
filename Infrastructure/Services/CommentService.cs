@@ -64,7 +64,8 @@ public class CommentService : IComment
                 Created = comments.CreatedAt,
                 Likes = comments.Likes,
                 Username = joinedUser.Username,
-                LastModified = comments.LastModified
+                LastModified = comments.LastModified,
+                ProfilePicture = joinedUser.ProfilePicture
             };
 
         var commentVm = await query.FirstOrDefaultAsync();
@@ -93,7 +94,8 @@ public class CommentService : IComment
                 Created = p.CreatedAt,
                 Likes = p.Likes,
                 Username = sub_o.Username,
-                LastModified = p.LastModified
+                LastModified = p.LastModified,
+                ProfilePicture = sub_o.ProfilePicture
             }
         ).Skip(skip).Take(limit);
 
