@@ -107,8 +107,9 @@ public class UserService : IUser
     {
         var user = await _userCollection.Find(user => user.Id == userId).FirstOrDefaultAsync();
         if (user == null)
-            return false;
-        var hashedPassword = await _authService.CheckIfPasswordMatches(oldPassword, user.Password!);
+            throw new BadRequestException("User doesn't exist");
+
+        var hashedPassword = await _authService.CheckIfPasswordMatches(user.Username!, oldPassword);
         if (hashedPassword)
         {
             await UpdatePassword(user, password);
@@ -199,7 +200,7 @@ public class UserService : IUser
         SmtpClient smtp = new();
         message.From = new MailAddress(systemEmail);
         message.To.Add(new MailAddress(email));
-        message.Subject = "Your New Password";
+        message.Subject = "Password Reset";
         message.IsBodyHtml = true; //to make message body as html
         message.Body = "Your new password is " + newPassword;
         smtp.UseDefaultCredentials = true;

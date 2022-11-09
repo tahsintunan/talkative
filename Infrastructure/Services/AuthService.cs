@@ -129,9 +129,7 @@ public class AuthService : IAuth
             new Claim(ClaimTypes.Name, user.Username!),
             new Claim("user_id", user.Id!),
             new Claim(ClaimTypes.Email, user.Email!),
-            new Claim(
-                ClaimTypes.Role,user.IsAdmin?Role.ADMIN.ToString() : Role.USER.ToString()
-            )
+            new Claim(ClaimTypes.Role, user.IsAdmin ? Role.ADMIN.ToString() : Role.USER.ToString())
         };
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_configuration.GetSection("JwtSettings:AccessTokenKey").Value)
