@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { PaginationModel } from 'src/app/core/models/pagination.model';
 import { UserModel } from 'src/app/core/models/user.model';
 import { AdminService } from 'src/app/core/services/admin.service';
 import { UserStore } from 'src/app/core/store/user.store';
+import { ProfileUpdateDialogComponent } from 'src/app/features/profile/ui/profile-update-dialog/profile-update-dialog.component';
 
 @Component({
   selector: 'app-user-management',
@@ -23,7 +25,7 @@ export class UserManagementComponent implements OnInit {
     'dateOfBirth',
     'isBanned',
   ];
-  dataSource: UserModel[] = [];
+  userList: UserModel[] = [];
 
   userAuth?: UserModel;
 
@@ -32,6 +34,7 @@ export class UserManagementComponent implements OnInit {
   constructor(
     private adminService: AdminService,
     private userStore: UserStore,
+    private dialog: MatDialog,
     private router: Router
   ) {}
 
@@ -61,20 +64,37 @@ export class UserManagementComponent implements OnInit {
   search(value: string) {
     this.pagination.pageNumber = 1;
     this.adminService.searchUser(value!, this.pagination).subscribe((res) => {
-      this.dataSource = res;
+      this.userList = res;
     });
   }
 
   getUsers() {
     this.adminService.getUserList(this.pagination).subscribe((res) => {
-      if (this.pagination.pageNumber === 1) this.dataSource = res;
-      else this.dataSource = this.dataSource.concat(res);
+      if (this.pagination.pageNumber === 1) this.userList = res;
+      else this.userList = this.userList.concat(res);
+    });
+  }
+
+  editUser(user: UserModel) {
+    const dialogRef = this.dialog.open(ProfileUpdateDialogComponent, {
+      width: '500px',
+      data: user,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.adminService.updateUser(result).subscribe(() => {
+          this.userList = this.userList.map((user) =>
+            user.userId === result.userId ? result : user
+          );
+        });
+      }
     });
   }
 
   banUser(userId: string) {
     this.adminService.banUser(userId).subscribe(() => {
-      this.dataSource = this.dataSource.map((user) =>
+      this.userList = this.userList.map((user) =>
         user.userId === userId ? { ...user, isBanned: true } : user
       );
     });
@@ -82,7 +102,7 @@ export class UserManagementComponent implements OnInit {
 
   unbanUser(userId: string) {
     this.adminService.unbanUser(userId).subscribe(() => {
-      this.dataSource = this.dataSource.map((user) =>
+      this.userList = this.userList.map((user) =>
         user.userId === userId ? { ...user, isBanned: false } : user
       );
     });

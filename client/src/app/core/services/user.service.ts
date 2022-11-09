@@ -51,14 +51,12 @@ export class UserService {
 
   updateProfile(user: UserUpdateReqModel) {
     return this.http
-      .put<UserModel>(this.apiUrl, user)
-      .pipe(tap((res) => this.loadUserAuth()));
+      .put<UserModel>(this.apiUrl + '/profile', user)
+      .pipe(tap(() => this.loadUserAuth()));
   }
 
   updatePassword(oldPassword: string, newPassword: string) {
-    const userId = this.userStore.userAuth.getValue()?.userId;
-    return this.http.post(this.apiUrl + '/update-password', {
-      userId,
+    return this.http.put(this.apiUrl + '/password', {
       oldPassword,
       newPassword,
     });
@@ -68,7 +66,7 @@ export class UserService {
     const formData = new FormData();
     formData.append('coverPicture', image);
     return this.http
-      .patch<UserModel>(this.apiUrl + '/cover-picture', formData)
+      .put<UserModel>(this.apiUrl + '/cover-picture', formData)
       .pipe(tap((res) => this.loadUserAuth()));
   }
 
@@ -76,7 +74,7 @@ export class UserService {
     const formData = new FormData();
     formData.append('profilePicture', image);
     return this.http
-      .patch<UserModel>(this.apiUrl + '/profile-picture', formData)
+      .put<UserModel>(this.apiUrl + '/profile-picture', formData)
       .pipe(tap((res) => this.loadUserAuth()));
   }
 

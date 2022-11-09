@@ -19,7 +19,7 @@
   [scrollWindow]="false"
   (scrolled)="onScroll()"
 >
-  <table mat-table recycleRows [dataSource]="dataSource" class="w-full">
+  <table mat-table recycleRows [dataSource]="userList" class="w-full">
     <ng-container matColumnDef="userId">
       <th mat-header-cell *matHeaderCellDef>User ID</th>
       <td mat-cell *matCellDef="let element">{{ element.userId }}</td>
@@ -43,24 +43,39 @@
     </ng-container>
 
     <ng-container matColumnDef="isBanned" stickyEnd>
-      <th mat-header-cell *matHeaderCellDef>Action</th>
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        class="!justify-center !text-center"
+      >
+        Actions
+      </th>
       <td mat-cell *matCellDef="let element">
-        <button
-          *ngIf="!element.isBanned"
-          [disabled]="element.userId === userAuth?.userId"
-          class="transition inline-flex items-center gap-2 rounded border border-primary px-3 py-1 text-sm font-medium text-primary hover:bg-primary hover:text-white focus:outline-none"
-          (click)="$event.stopPropagation(); banUser(element.userId)"
-        >
-          Ban User
-        </button>
+        <div class="flex flex-wrap justify-center gap-1 p-1">
+          <button
+            class="transition inline-flex items-center gap-2 rounded border border-primary px-3 py-1 text-sm font-medium text-primary hover:bg-primary hover:text-white focus:outline-none"
+            (click)="$event.stopPropagation(); editUser(element)"
+          >
+            Edit User
+          </button>
 
-        <button
-          *ngIf="element.isBanned"
-          class="transition inline-flex items-center gap-2 rounded border border-red-500 px-3 py-1 text-sm font-medium text-red-500 hover:bg-red-500 hover:text-white focus:outline-none"
-          (click)="$event.stopPropagation(); unbanUser(element.userId)"
-        >
-          Unban User
-        </button>
+          <button
+            *ngIf="!element.isBanned"
+            [disabled]="element.userId === userAuth?.userId"
+            class="transition inline-flex items-center gap-2 rounded border border-primary px-3 py-1 text-sm font-medium text-primary hover:bg-primary hover:text-white focus:outline-none"
+            (click)="$event.stopPropagation(); banUser(element.userId)"
+          >
+            Ban User
+          </button>
+
+          <button
+            *ngIf="element.isBanned"
+            class="transition inline-flex items-center gap-2 rounded border border-red-500 px-3 py-1 text-sm font-medium text-red-500 hover:bg-red-500 hover:text-white focus:outline-none"
+            (click)="$event.stopPropagation(); unbanUser(element.userId)"
+          >
+            Unban User
+          </button>
+        </div>
       </td>
     </ng-container>
 

@@ -14,7 +14,7 @@
 
     <div>
       <h3 class="text-lg font-semibold">{{ user?.username }}</h3>
-      <p class="text-sm text-gray-500">{{ user?.email }}</p>
+      <p>{{ utilityService.getAge(user?.dateOfBirth!) }} years old</p>
     </div>
   </a>
 

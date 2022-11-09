@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FollowService } from 'src/app/core/services/follow.service';
 import { FollowStore } from 'src/app/core/store/follow.store';
+import { UtilityService } from 'src/app/shared/services/utility.service';
 import { UserModel } from '../../../../core/models/user.model';
 
 @Component({
@@ -17,7 +18,7 @@ export class UserListItemComponent implements OnInit {
   constructor(
     private followService: FollowService,
     private followStore: FollowStore,
-    private router: Router
+    protected utilityService: UtilityService
   ) {}
 
   ngOnInit(): void {
