@@ -80,6 +80,7 @@ public class UserService : IUser
 
         if (usernameExists)
             throw new BadRequestException("User already exists");
+
         await PartialUpdate(
             updatedUser.Id!,
             Builders<User>.Update
@@ -109,14 +110,13 @@ public class UserService : IUser
         if (user == null)
             throw new BadRequestException("User doesn't exist");
 
-        var hashedPassword = await _authService.CheckIfPasswordMatches(user.Username!, oldPassword);
-        if (hashedPassword)
-        {
-            await UpdatePassword(user, password);
-            return true;
-        }
+        var passwordMatch = await _authService.CheckIfPasswordMatches(user.Username!, oldPassword);
 
-        return false;
+        if (!passwordMatch)
+            throw new BadRequestException("Old password doesn't match");
+
+        await UpdatePassword(user, password);
+        return true;
     }
 
     public async Task ForgetPassword(string email)
