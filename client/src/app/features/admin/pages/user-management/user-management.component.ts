@@ -34,7 +34,7 @@ export class UserManagementComponent implements OnInit {
   constructor(
     private adminService: AdminService,
     private userStore: UserStore,
-    private dialog: MatDialog,
+    public dialog: MatDialog,
     private router: Router
   ) {}
 
