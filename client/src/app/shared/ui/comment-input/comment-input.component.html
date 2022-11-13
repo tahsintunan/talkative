@@ -9,6 +9,7 @@
     matInput
     [rows]="isFocused ? 3 : 1"
     [formControl]="formControl"
+    [maxlength]="commentLimit"
     placeholder="Type your comment..."
     class="min-h-[2.5rem] max-h-32 bg-transparent w-full placeholder:text-gray-400 outline-none text-sm"
     (focus)="isFocused = true"
