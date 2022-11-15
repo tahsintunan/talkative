@@ -12,7 +12,9 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { EMPTY } from 'rxjs';
 import { TweetServiceMock } from 'src/app/core/mock-services/tweet.service.mock';
+import { UserServiceMock } from 'src/app/core/mock-services/user.service.mock';
 import { TweetService } from 'src/app/core/services/tweet.service';
+import { UserService } from 'src/app/core/services/user.service';
 import { PostMakerDialogComponent } from '../../ui/post-maker-dialog/post-maker-dialog.component';
 import { FeedComponent } from './feed.component';
 
@@ -31,6 +33,7 @@ describe('Feed component', () => {
       declarations: [FeedComponent],
       providers: [
         { provide: TweetService, useClass: TweetServiceMock },
+        { provide: UserService, useClass: UserServiceMock },
         {
           provide: Router,
           useClass: class {

@@ -16,6 +16,8 @@ import { HomeComponent } from './home.component';
 import { SearchChangeModel } from '../../../../core/models/search.model';
 import { SearchServiceMock } from 'src/app/core/mock-services/search.service.mock';
 import { NotificationServiceMock } from 'src/app/core/mock-services/notification.service.mock';
+import { UserServiceMock } from 'src/app/core/mock-services/user.service.mock';
+import { AuthServiceMock } from 'src/app/core/mock-services/auth.service.mock';
 describe('Home', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
@@ -24,9 +26,9 @@ describe('Home', () => {
       imports: [RouterTestingModule, HttpClientModule, MatSnackBarModule],
       declarations: [HomeComponent],
       providers: [
-        UserService,
+        { provide: UserService, useClass: UserServiceMock },
         { provide: SearchService, useClass: SearchServiceMock },
-        AuthService,
+        { provide: AuthService, useClass: AuthServiceMock },
         { provide: NotificationService, useClass: NotificationServiceMock },
       ],
       schemas: [NO_ERRORS_SCHEMA],

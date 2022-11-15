@@ -16,55 +16,12 @@ import { EMPTY, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { AdminService } from 'src/app/core/services/admin.service';
 import { By } from '@angular/platform-browser';
+import { AdminServiceMock } from 'src/app/core/mock-services/admin.service.mock';
+import { AuthServiceMock } from 'src/app/core/mock-services/auth.service.mock';
 describe('User Management', () => {
   let component: UserManagementComponent;
   let fixture: ComponentFixture<UserManagementComponent>;
-  let serviceStub: any;
   beforeEach(async () => {
-    serviceStub = {
-      searchUser: (value: string, page: number) =>
-        of([
-          {
-            userId: 1,
-            username: 'siam',
-            email: 'random@gmail.com',
-          },
-          {
-            userId: 2,
-            username: 'siam1',
-            email: 'random@gmail.com',
-          },
-        ]),
-      getUserList: () =>
-        of([
-          {
-            userId: 1,
-            username: 'siam',
-            email: 'random@gmail.com',
-            isBanned: false,
-          },
-          {
-            userId: 2,
-            username: 'siam1',
-            email: 'random@gmail.com',
-            isBanned: false,
-          },
-        ]),
-      banService: () =>
-        of([
-          {
-            userId: 1,
-            username: 'siam',
-            email: 'random@gmail.com',
-          },
-          {
-            userId: 2,
-            username: 'siam1',
-            email: 'random@gmail.com',
-          },
-        ]),
-    };
-
     await TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -76,7 +33,7 @@ describe('User Management', () => {
       ],
       declarations: [UserManagementComponent],
       providers: [
-        AuthService,
+        { provide: AuthService, useClass: AuthServiceMock },
         MatDialog,
         {
           provide: Router,
@@ -86,7 +43,7 @@ describe('User Management', () => {
         },
         {
           provide: AdminService,
-          useValue: serviceStub,
+          useClass: AdminServiceMock,
         },
       ],
       schemas: [NO_ERRORS_SCHEMA],

@@ -5,11 +5,14 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { EMPTY } from 'rxjs';
+import { AuthServiceMock } from 'src/app/core/mock-services/auth.service.mock';
 import { FollowServiceMock } from 'src/app/core/mock-services/follow.service.mock';
 import { NotificationServiceMock } from 'src/app/core/mock-services/notification.service.mock';
+import { UserServiceMock } from 'src/app/core/mock-services/user.service.mock';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { FollowService } from 'src/app/core/services/follow.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
+import { UserService } from 'src/app/core/services/user.service';
 import { PasswordUpdateDialogComponent } from '../../ui/password-update-dialog/password-update-dialog.component';
 import { ProfileImageUploaderDialogComponent } from '../../ui/profile-image-uploader-dialog/profile-image-uploader-dialog.component';
 import { ProfileUpdateDialogComponent } from '../../ui/profile-update-dialog/profile-update-dialog.component';
@@ -30,7 +33,8 @@ describe('Profile component', () => {
       declarations: [ProfileComponent],
       providers: [
         { provide: FollowService, useClass: FollowServiceMock },
-        AuthService,
+        { provide: AuthService, useClass: AuthServiceMock },
+        { provide: UserService, useClass: UserServiceMock },
         { provide: NotificationService, useClass: NotificationServiceMock },
       ],
       schemas: [NO_ERRORS_SCHEMA],

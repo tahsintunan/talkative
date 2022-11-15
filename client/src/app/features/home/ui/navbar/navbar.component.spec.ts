@@ -14,6 +14,7 @@ import { EMPTY } from 'rxjs';
 import { AuthServiceMock } from 'src/app/core/mock-services/auth.service.mock';
 import { NotificationServiceMock } from 'src/app/core/mock-services/notification.service.mock';
 import { SearchServiceMock } from 'src/app/core/mock-services/search.service.mock';
+import { UserServiceMock } from 'src/app/core/mock-services/user.service.mock';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { SearchService } from 'src/app/core/services/search.service';
@@ -33,7 +34,7 @@ describe('Navbar', () => {
       ],
       declarations: [NavbarComponent],
       providers: [
-        UserService,
+        { provide: UserService, useClass: UserServiceMock },
         { provide: SearchService, useClass: SearchServiceMock },
         { provide: AuthService, useClass: AuthServiceMock },
         { provide: NotificationService, useClass: NotificationServiceMock },

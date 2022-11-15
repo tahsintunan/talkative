@@ -25,7 +25,21 @@ export class TweetServiceMock {
   }
 
   getTweetById(id: string) {
-    return of();
+    return of({
+      text: 'random',
+      hashtags: ['test'],
+      id: '1',
+      createdAt: new Date(),
+      isQuoteRetweet: false,
+      isRetweet: false,
+      likes: [],
+      comments: [],
+      user: {
+        userId: '1',
+      },
+      retweetUsers: [],
+      quoteRetweets: [],
+    });
   }
 
   getTweets(pagination: PaginationModel) {

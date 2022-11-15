@@ -15,6 +15,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { NotificationServiceMock } from 'src/app/core/mock-services/notification.service.mock';
+import { AuthServiceMock } from 'src/app/core/mock-services/auth.service.mock';
 describe('Signin', () => {
   let component: SigninComponent;
   let fixture: ComponentFixture<SigninComponent>;
@@ -30,7 +31,7 @@ describe('Signin', () => {
       ],
       declarations: [SigninComponent],
       providers: [
-        AuthService,
+        { provide: AuthService, useClass: AuthServiceMock },
         { provide: NotificationService, useClass: NotificationServiceMock },
       ],
       schemas: [NO_ERRORS_SCHEMA],
@@ -47,7 +48,7 @@ describe('Signin', () => {
     expect(SigninComponent).toBeTruthy();
   });
 
-  it('should submit form', fakeAsync(() => {
+  it('should submit form', () => {
     component.formData.reset();
     component.formData.setValue({
       username: 'siam398',
@@ -59,7 +60,6 @@ describe('Signin', () => {
       .query(By.css('form'))
       .triggerEventHandler('ngSubmit', null);
     fixture.detectChanges();
-    tick(1000);
     expect(component.onSubmit).toHaveBeenCalled();
-  }));
+  });
 });

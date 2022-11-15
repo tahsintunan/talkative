@@ -6,7 +6,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { EMPTY, Observable, of } from 'rxjs';
-import { ActivatedRouteMock } from 'src/app/core/mock-services/activated-route.mock';
 import { TweetServiceMock } from 'src/app/core/mock-services/tweet.service.mock';
 import { TweetService } from 'src/app/core/services/tweet.service';
 import { TweetDetailsComponent } from './tweet-details.component';
