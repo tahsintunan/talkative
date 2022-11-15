@@ -1,8 +1,7 @@
 import { fakeAsync, tick } from '@angular/core/testing';
-import { of } from 'rxjs';
 import { LoaderService } from './loader.service';
 
-describe('utility service', () => {
+describe('Loader service', () => {
   let service: LoaderService;
   beforeEach(() => {
     service = new LoaderService();
