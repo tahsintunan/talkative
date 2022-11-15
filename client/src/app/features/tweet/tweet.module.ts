@@ -7,6 +7,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { TimeAgoPipe } from 'src/app/shared/pipes/time-ago.pipe';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { FeedComponent } from './pages/feed/feed.component';
 import { TweetDetailsComponent } from './pages/tweet-details/tweet-details.component';
@@ -36,5 +37,6 @@ import { PostMakerDialogComponent } from './ui/post-maker-dialog/post-maker-dial
     MatDividerModule,
     MatButtonModule,
   ],
+  providers: [],
 })
 export class TweetModule {}

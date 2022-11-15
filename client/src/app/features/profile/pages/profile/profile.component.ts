@@ -51,7 +51,7 @@ export class ProfileComponent implements OnInit {
   userAnalytics?: UserAnalyticsModel;
 
   constructor(
-    private dialog: MatDialog,
+    public dialog: MatDialog,
     private userStore: UserStore,
     private userService: UserService,
     private blockService: BlockService,

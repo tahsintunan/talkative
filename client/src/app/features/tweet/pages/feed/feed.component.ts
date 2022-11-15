@@ -35,7 +35,7 @@ export class FeedComponent implements OnInit {
     private tweetService: TweetService,
     private tweetStore: TweetStore,
     private router: Router,
-    private dialog: MatDialog
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {

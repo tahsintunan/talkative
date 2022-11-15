@@ -45,7 +45,7 @@ export class PasswordUpdateDialogComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private dialog: MatDialog,
+    public dialog: MatDialog,
     public dialogRef: MatDialogRef<PasswordUpdateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: UserUpdateReqModel
   ) {}

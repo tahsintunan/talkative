@@ -41,7 +41,7 @@ export class NavbarComponent implements OnInit {
     private notificationStore: NotificationStore,
     private tweetService: TweetService,
     private router: Router,
-    private dialog: MatDialog
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {

@@ -5,25 +5,17 @@
     </h3>
     <button
       class="absolute right-3 outline-none text-gray-900 bg-transparent hover:bg-gray-200 focus:bg-gray-200 rounded-full text-sm p-1.5 inline-flex items-center"
-      mat-dialog-close
-    >
+      mat-dialog-close>
       <span class="material-symbols-rounded">close</span>
     </button>
   </div>
 
-  <div
-    *ngIf="users.length; else noData"
-    class="flex flex-col p-2 max-h-[80vh] overflow-y-auto gap-2"
-    infiniteScroll
-    [infiniteScrollDistance]="2"
-    [infiniteScrollThrottle]="200"
-    [scrollWindow]="false"
-    (scrolled)="onScroll()"
-  >
+  <section *ngIf="users.length; else noData" class="flex flex-col p-2 max-h-[80vh] overflow-y-auto gap-2" infiniteScroll
+    [infiniteScrollDistance]="2" [infiniteScrollThrottle]="200" [scrollWindow]="false" (scrolled)="onScroll()">
     <div class="card border" *ngFor="let user of users">
       <app-profile-people-item [data]="user"></app-profile-people-item>
     </div>
-  </div>
+  </section>
 </div>
 
 <ng-template #noData>

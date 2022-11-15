@@ -52,16 +52,11 @@ export class ProfileImageUploaderDialogComponent implements OnInit {
 
   imageLoaded() {
     this.showCropper = true;
-    console.log('Image loaded');
   }
 
-  cropperReady(sourceImageDimensions: Dimensions) {
-    console.log('Cropper ready', sourceImageDimensions);
-  }
+  cropperReady(sourceImageDimensions: Dimensions) {}
 
-  loadImageFailed() {
-    console.log('Load failed');
-  }
+  loadImageFailed() {}
 
   rotateLeft() {
     this.canvasRotation--;
