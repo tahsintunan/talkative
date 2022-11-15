@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using Application.Common.Exceptions;
 using Application.Common.Interface;
 
 namespace server.Middlewares;
@@ -13,7 +14,7 @@ public class AuthMiddleware
         _next = next;
     }
 
-    public async Task Invoke(HttpContext httpContext, IUser userService)
+    public async Task Invoke(HttpContext httpContext, IToken tokenService, IUser userService)
     {
         var request = httpContext.Request;
         if (request.Path.HasValue && request.Path.Value.ToLower().Contains("auth"))
@@ -22,46 +23,22 @@ public class AuthMiddleware
             return;
         }
 
-        var userId = DecodeAccessToken(httpContext);
+        var token = httpContext.Request.Cookies["authorization"]?.Split(" ").Last();
+        if (string.IsNullOrEmpty(token))
+            throw new UnauthorizedException("No Token Found.");
+
+        var userId = tokenService.ValidateAccessToken(token);
         var user = await userService.GetUserById(userId!);
+
         if (user == null)
-        {
-            httpContext.Response.StatusCode = 401;
-            await httpContext.Response.WriteAsync("Unauthorized");
-            return;
-        }
+            throw new UnauthorizedException("Invalid Token.");
 
         if (user.IsBanned)
-        {
-            httpContext.Response.StatusCode = 401;
-            await httpContext.Response.WriteAsync("Unauthorized");
-            return;
-        }
+            throw new UnauthorizedException("User is banned.");
 
         httpContext.Items["User"] = userId;
         httpContext.Items["Admin"] = user.IsAdmin;
         await _next.Invoke(httpContext);
-    }
-
-    private static string? DecodeAccessToken(HttpContext httpContext)
-    {
-        try
-        {
-            var token = httpContext.Request.Cookies["authorization"];
-            if (token == null)
-                return null;
-
-            token = token.Split(" ").Last();
-            var handler = new JwtSecurityTokenHandler();
-            var jwtSecurityToken = handler.ReadJwtToken(token);
-            var userId = jwtSecurityToken.Claims.First(claim => claim.Type == "user_id").Value;
-
-            return userId;
-        }
-        catch
-        {
-            return null;
-        }
     }
 }
 

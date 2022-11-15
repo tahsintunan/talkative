@@ -121,13 +121,15 @@ public class UserService : IUser
 
     public async Task ForgetPassword(string email)
     {
-        var newPassword = GenerateRandomString(16);
         var user = await _userCollection.Find(user => user.Email == email).FirstOrDefaultAsync();
         if (user == null)
-            throw new BadRequestException("User does not exist with such email.");
+            throw new NotFoundException("User does not exist with such email.");
+
+        var newPassword = GeneratePassword(16);
 
         await UpdatePassword(user, newPassword);
-        await SendPasswordWithMail(email, newPassword);
+
+        await SendMail(email, "New Password", "Your new password: " + newPassword);
     }
 
     public async Task<Dictionary<string, bool>> GetBlockedUserIds(string userId)
@@ -191,7 +193,7 @@ public class UserService : IUser
         await _userCollection.ReplaceOneAsync(x => x.Id == user.Id, user);
     }
 
-    private async Task SendPasswordWithMail(string email, string newPassword)
+    private async Task SendMail(string email, string subject, string messageBody)
     {
         var systemEmailCredentials = _configuration.GetSection("EmailCredentials");
         var systemEmail = systemEmailCredentials.GetSection("Email").Value;
@@ -200,9 +202,9 @@ public class UserService : IUser
         SmtpClient smtp = new();
         message.From = new MailAddress(systemEmail);
         message.To.Add(new MailAddress(email));
-        message.Subject = "Password Reset";
+        message.Subject = subject;
         message.IsBodyHtml = true; //to make message body as html
-        message.Body = "Your new password is " + newPassword;
+        message.Body = messageBody;
         smtp.UseDefaultCredentials = true;
         smtp.Port = 587;
         smtp.Host = "smtp.gmail.com"; //for gmail host
@@ -213,10 +215,13 @@ public class UserService : IUser
         await smtp.SendMailAsync(message);
     }
 
-    public static string GenerateRandomString(int length)
+    public static string GeneratePassword(int length)
     {
+        const string chars =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+
         Random random = new();
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
         return new string(
             Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray()
         );

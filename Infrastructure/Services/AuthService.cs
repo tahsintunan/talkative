@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -19,14 +18,18 @@ namespace Infrastructure.Services;
 public class AuthService : IAuth
 {
     private readonly IConfiguration _configuration;
+    private readonly IToken _tokenService;
     private readonly IMongoCollection<User> _userCollection;
 
     public AuthService(
         IConfiguration configuration,
+        IToken tokenService,
         IOptions<UserDatabaseConfig> userDatabaseConfig
     )
     {
         _configuration = configuration;
+
+        _tokenService = tokenService;
 
         var mongoClient = new MongoClient(userDatabaseConfig.Value.ConnectionString);
 
@@ -66,7 +69,17 @@ public class AuthService : IAuth
                     user.Username == username && (user.IsBanned == null || user.IsBanned == false)
             )
             .FirstOrDefaultAsync();
-        var accessToken = GenerateAccessToken(user);
+
+        if (user == null)
+            throw new BadRequestException("Invalid Request.");
+
+        var accessToken = _tokenService.GenerateAccessToken(
+            user.Id!,
+            user.Username!,
+            user.Email!,
+            user.IsAdmin ? Role.ADMIN.ToString() : Role.USER.ToString(),
+            60 * 24 * 7
+        );
         var value = new AuthenticationHeaderValue("Bearer", accessToken);
         return accessToken;
     }
@@ -117,34 +130,5 @@ public class AuthService : IAuth
             .Find(user => user.Username == username)
             .FirstOrDefaultAsync();
         return foundUser != null;
-    }
-
-    private string GenerateAccessToken(User user)
-    {
-        if (user == null)
-            throw new Exception("Invalid request");
-
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.Name, user.Username!),
-            new Claim("user_id", user.Id!),
-            new Claim(ClaimTypes.Email, user.Email!),
-            new Claim(ClaimTypes.Role, user.IsAdmin ? Role.ADMIN.ToString() : Role.USER.ToString())
-        };
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration.GetSection("JwtSettings:AccessTokenKey").Value)
-        );
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddDays(7),
-            SigningCredentials = credentials
-        };
-
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var jwt = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(jwt);
     }
 }

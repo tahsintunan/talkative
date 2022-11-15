@@ -14,6 +14,7 @@ public static class ConfigureServices
         services.AddTransient<IBsonDocumentMapper<UserVm>, UserBsonDocumentMapper>();
         services.AddTransient<IBsonDocumentMapper<TweetVm?>, TweetBsonDocumentMapper>();
         services.AddTransient<IUser, UserService>();
+        services.AddTransient<IToken, TokenService>();
         services.AddTransient<IAuth, AuthService>();
         services.AddTransient<IComment, CommentService>();
         services.AddTransient<IFollow, FollowService>();
