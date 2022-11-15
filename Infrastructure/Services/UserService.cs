@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
+using Application.Common.Enums;
 using Application.Common.Exceptions;
 using Application.Common.Interface;
 using Application.Common.ViewModels;
@@ -17,6 +18,7 @@ namespace Infrastructure.Services;
 public class UserService : IUser
 {
     private readonly IAuth _authService;
+    private readonly IToken _tokenService;
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
     private readonly IMongoCollection<User>? _userCollection;
@@ -24,6 +26,7 @@ public class UserService : IUser
     public UserService(
         IOptions<UserDatabaseConfig> userDatabaseConfig,
         IAuth authService,
+        IToken tokenService,
         IConfiguration configuration,
         IMapper mapper
     )
@@ -39,6 +42,8 @@ public class UserService : IUser
         _mapper = mapper;
 
         _authService = authService;
+
+        _tokenService = tokenService;
 
         _configuration = configuration;
     }
@@ -125,11 +130,47 @@ public class UserService : IUser
         if (user == null)
             throw new NotFoundException("User does not exist with such email.");
 
+        var token = _tokenService.GenerateAccessToken(
+            user.Id!,
+            user.Username!,
+            user.Email!,
+            user.IsAdmin ? Role.ADMIN.ToString() : Role.USER.ToString(),
+            5
+        );
+
+        var link = _configuration["AppUrl"] + "/Auth/reset-password/" + token;
+
+        var messageBody =
+            $@"
+                    <h4>Forgot Password Verification</h4>
+                    <p>Click the link below to reset your password.</p>
+                    <a href=""{link}"">Reset Password Link</a>
+                ";
+
+        await SendMail(email, "Forgot Password Verification", messageBody);
+    }
+
+    public async Task<string> ResetPassword(string token)
+    {
+        var userId = _tokenService.ValidateAccessToken(token);
+
+        var user = await _userCollection.Find(user => user.Id == userId).FirstOrDefaultAsync();
+        if (user == null)
+            throw new BadRequestException("Invalid Request.");
+
         var newPassword = GeneratePassword(16);
 
         await UpdatePassword(user, newPassword);
 
-        await SendMail(email, "New Password", "Your new password: " + newPassword);
+        var messageBody =
+            $@"
+                    <h4>Your Password has been reset</h4>
+                    <p>Your new password is: <strong>{newPassword}</strong></p>
+                ";
+
+        await SendMail(user.Email!, "Password Reset Successful", messageBody);
+
+        return newPassword;
     }
 
     public async Task<Dictionary<string, bool>> GetBlockedUserIds(string userId)

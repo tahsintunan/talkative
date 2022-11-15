@@ -44,13 +44,6 @@ public class UserController : ApiControllerBase
         return Ok(await Mediator.Send(getUserByIdQuery));
     }
 
-    [HttpPost("forget-password")]
-    public async Task<ActionResult> ForgotPassword(ForgetPasswordCommand forgetPasswordCommand)
-    {
-        await Mediator.Send(forgetPasswordCommand);
-        return NoContent();
-    }
-
     [HttpPut("profile")]
     public async Task<IActionResult> UpdateUser(UpdateUserCommand updateUserCommand)
     {

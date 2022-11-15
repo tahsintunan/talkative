@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using Application.Auth.Commands.Login;
 using Application.Auth.Commands.Signup;
 using Application.Users.Commands.ForgetPassword;
+using Application.Users.Commands.ResetPassword;
 using Microsoft.AspNetCore.Mvc;
 
 namespace server.Controllers;
@@ -36,6 +37,13 @@ public class AuthController : ApiControllerBase
     {
         await Mediator.Send(forgetPasswordCommand);
         return NoContent();
+    }
+
+    [HttpGet("reset-password/{token}")]
+    public async Task<ActionResult> ResetPassword(string token)
+    {
+        await Mediator.Send(new ResetPasswordCommand { Token = token });
+        return Ok("Your new password has been sent via email");
     }
 
     [HttpPost("logout")]

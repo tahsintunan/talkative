@@ -11,6 +11,7 @@ public interface IUser
     Task UpdateUserInfo(User updatedUser);
     Task DeleteUserById(string id);
     Task ForgetPassword(string email);
+    Task<string> ResetPassword(string token);
     Task<Dictionary<string, bool>> GetBlockedUserIds(string userId);
     Task<IList<UserVm>> GetBlockedUsers(string userId, int skip, int limit);
     Task<bool> UpdatePassword(string userId, string oldPassword, string password);
