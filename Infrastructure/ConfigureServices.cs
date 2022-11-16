@@ -21,6 +21,7 @@ public static class ConfigureServices
         services.AddTransient<ITweet, TweetService>();
         services.AddTransient<IRetweet, RetweetService>();
         services.AddTransient<IBlockFilter, BlockFilterService>();
+        services.AddTransient<IBlock, BlockService>();
         services.AddTransient<INotification, NotificationService>();
         services.AddSingleton<IRabbitmq, RabbitmqService>();
         services.AddScoped<ICloudinary, CloudinaryService>();
