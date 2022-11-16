@@ -1,3 +1,4 @@
+using Application.Common.Interface;
 using Application.Common.ViewModels;
 using Domain.Entities;
 using Infrastructure.DbConfig;
@@ -7,7 +8,7 @@ using MongoDB.Driver;
 
 namespace Infrastructure.Services
 {
-    public class BlockService
+    public class BlockService : IBlock
     {
         private readonly IMongoCollection<User>? _userCollection;
         private readonly IConfiguration _configuration;
