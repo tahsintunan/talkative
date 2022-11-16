@@ -4,7 +4,7 @@ using Application.Common.ViewModels;
 using FakeItEasy;
 using Infrastructure.Services;
 
-namespace UnitTests;
+namespace server.UnitTests;
 
 public class BlockFilterTest
 {
@@ -90,6 +90,4 @@ public class BlockFilterTest
                 new HashSet<string>()
             }
         };
-    
-    
 }
