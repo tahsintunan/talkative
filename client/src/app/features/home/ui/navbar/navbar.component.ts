@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import jwtDecode from 'jwt-decode';
+import { CookieService } from 'ngx-cookie-service';
 import { TweetWriteModel } from 'src/app/core/models/tweet.model';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { TweetService } from 'src/app/core/services/tweet.service';
@@ -33,6 +35,12 @@ export class NavbarComponent implements OnInit {
       icon: 'notifications',
       notificationCount: 0,
     },
+    {
+      text: 'Admin Panel',
+      link: './admin',
+      icon: 'admin_panel_settings',
+      hidden: true,
+    },
   ];
 
   constructor(
@@ -41,13 +49,16 @@ export class NavbarComponent implements OnInit {
     private notificationStore: NotificationStore,
     private tweetService: TweetService,
     private router: Router,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public cookieService: CookieService
   ) {}
 
   ngOnInit(): void {
     this.userStore.userAuth.subscribe((res) => {
       this.userId = res.userId;
       this.navData[1].link = `./profile/${this.userId}`;
+
+      if (this.checkIfAdmin()) this.navData[3].hidden = false;
     });
 
     this.notificationStore.notifications.subscribe((res) => {
@@ -78,5 +89,18 @@ export class NavbarComponent implements OnInit {
           .subscribe();
       }
     });
+  }
+
+  checkIfAdmin() {
+    const token = this.cookieService.get('authorization');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        return decodedToken.role === 'ADMIN';
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    return false;
   }
 }
