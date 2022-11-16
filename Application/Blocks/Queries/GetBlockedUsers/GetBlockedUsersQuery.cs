@@ -13,11 +13,11 @@ public class GetBlockedUsersQuery : IRequest<IList<UserVm>>
 
 public class GetBlockedUserQueryHandler : IRequestHandler<GetBlockedUsersQuery, IList<UserVm>>
 {
-    private readonly IUser _userService;
+    private readonly IBlock _blockService;
 
-    public GetBlockedUserQueryHandler(IUser userService)
+    public GetBlockedUserQueryHandler(IBlock blockService)
     {
-        _userService = userService;
+        _blockService = blockService;
     }
 
     public async Task<IList<UserVm>> Handle(
@@ -30,6 +30,6 @@ public class GetBlockedUserQueryHandler : IRequestHandler<GetBlockedUsersQuery, 
 
         var skip = (pageNumber - 1) * itemCount;
         var limit = pageNumber * itemCount;
-        return await _userService.GetBlockedUsers(request.UserId!, skip, limit);
+        return await _blockService.GetBlockedUsers(request.UserId!, skip, limit);
     }
 }

@@ -10,16 +10,16 @@ public class GetBlockedUserIdsQuery : IRequest<Dictionary<string, bool>>
 
 public class GetBlockedUserIdsQueryHandler : IRequestHandler<GetBlockedUserIdsQuery, Dictionary<string, bool>>
 {
-    private readonly IUser _userService;
+    private readonly IBlock _blockService;
 
-    public GetBlockedUserIdsQueryHandler(IUser userService)
+    public GetBlockedUserIdsQueryHandler(IBlock blockService)
     {
-        _userService = userService;
+        _blockService = blockService;
     }
 
     public async Task<Dictionary<string, bool>> Handle(GetBlockedUserIdsQuery request,
         CancellationToken cancellationToken)
     {
-        return await _userService.GetBlockedUserIds(request.UserId!);
+        return await _blockService.GetBlockedUserIds(request.UserId!);
     }
 }

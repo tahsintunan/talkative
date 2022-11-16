@@ -173,37 +173,6 @@ public class UserService : IUser
         return newPassword;
     }
 
-    public async Task<Dictionary<string, bool>> GetBlockedUserIds(string userId)
-    {
-        var blockedHashmap = new Dictionary<string, bool>();
-        var userVmList = await _userCollection
-            .Aggregate()
-            .Match(x => x.Id == userId)
-            .Lookup("users", "blocked", "_id", "user")
-            .Unwind("user")
-            .ReplaceRoot<User>("$user")
-            .ToListAsync();
-
-        foreach (var userVm in userVmList)
-            blockedHashmap.Add(userVm.Id!, true);
-        return blockedHashmap;
-    }
-
-    public async Task<IList<UserVm>> GetBlockedUsers(string userId, int skip, int limit)
-    {
-        var userVmList = await _userCollection
-            .Aggregate()
-            .Match(x => x.Id == userId)
-            .Skip(skip)
-            .Limit(limit)
-            .Lookup("users", "blocked", "_id", "user")
-            .Unwind("user")
-            .ReplaceRoot<User>("$user")
-            .Project(o => new UserVm { UserId = o.Id, Username = o.Username })
-            .ToListAsync();
-        return userVmList;
-    }
-
     public async Task<IList<User>> FindWithUsername(string username, int skip, int limit)
     {
         var user = await _userCollection
