@@ -74,6 +74,7 @@ public class UserService : IUser
             .FirstOrDefaultAsync();
 
         var usernameExists = false;
+        var emailExists = false;
 
         if (updatedUser.Username != user.Username)
         {
@@ -83,8 +84,19 @@ public class UserService : IUser
             usernameExists = existingUserWithSameUsername != null;
         }
 
+        if (updatedUser.Email != user.Email)
+        {
+            var existingUserWithEmail = await _userCollection
+                .Find(user => user.Email == updatedUser.Email)
+                .FirstOrDefaultAsync();
+            emailExists = existingUserWithEmail != null;
+        }
+
         if (usernameExists)
             throw new BadRequestException("User already exists");
+
+        if (emailExists)
+            throw new BadRequestException("Email already exists");
 
         await PartialUpdate(
             updatedUser.Id!,
