@@ -39,7 +39,7 @@ public class ExceptionMiddleware
 
             var response = _env.IsDevelopment()
                 ? new ErrorVm(statusCode, ex.Message, ex.StackTrace)
-                : new ErrorVm(statusCode, "Internal server error");
+                : new ErrorVm(statusCode, ex.Message);
 
             var options = new JsonSerializerOptions
             {
