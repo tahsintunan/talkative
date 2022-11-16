@@ -12,12 +12,21 @@ public class UserBsonDocumentMapper : IBsonDocumentMapper<UserVm>
         {
             UserId = user.Contains("_id") ? user["_id"].ToString() : null,
             Username = user.Contains("username") ? user["username"].ToString() : null,
-            ProfilePicture = user.Contains("profilePicture") ? user["profilePicture"].ToString() : null,
-            CoverPicture = user.Contains("coverPicture") ? user["coverPicture"].ToString() : null,
+            ProfilePicture = CheckIfDocumentExists(user, "profilePicture")
+                ? user["profilePicture"].ToString()
+                : null,
+            CoverPicture = CheckIfDocumentExists(user, "coverPicture")
+                ? user["coverPicture"].ToString()
+                : null,
             Email = user.Contains("email") ? user["email"].ToString() : null,
             DateOfBirth = user.Contains("dateOfBirth")
                 ? user["dateOfBirth"].ToUniversalTime()
                 : null
         };
+    }
+
+    public bool CheckIfDocumentExists(BsonDocument document, string documentKey)
+    {
+        return document.Contains(documentKey) && document[documentKey].BsonType != BsonType.Null;
     }
 }
