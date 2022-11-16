@@ -5,6 +5,10 @@ import { SignInReqModel } from 'src/app/core/models/signin.model';
 import { SignUpReqModel } from 'src/app/core/models/signup.model';
 import { UserStore } from 'src/app/core/store/user.store';
 import { EnvService } from 'src/app/shared/services/env.service';
+import { BlockStore } from '../store/block.store';
+import { FollowStore } from '../store/follow.store';
+import { NotificationStore } from '../store/notification.store';
+import { TweetStore } from '../store/tweet.store';
 import { NotificationService } from './notification.service';
 
 @Injectable({
@@ -18,7 +22,11 @@ export class AuthService {
     private envService: EnvService,
     private cookieService: CookieService,
     private userStore: UserStore,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private followStore: FollowStore,
+    private blockStore: BlockStore,
+    private tweetStore: TweetStore,
+    private notificationStore: NotificationStore
   ) {}
 
   signup(data: SignUpReqModel) {
@@ -37,6 +45,10 @@ export class AuthService {
     this.http.post(this.authUrl + '/logout', null).subscribe();
     this.cookieService.delete('authorization');
     this.userStore.clearUserAuth();
+    this.followStore.clearFollowings();
+    this.blockStore.clearBlockList();
+    this.tweetStore.clearTweetList();
+    this.notificationStore.clearNotifications();
     this.notificationService.stopConnection();
   }
 
