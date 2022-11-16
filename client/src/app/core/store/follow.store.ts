@@ -22,4 +22,8 @@ export class FollowStore {
       [followingId]: false,
     });
   }
+
+  clearFollowings() {
+    this.userFollowings.next({});
+  }
 }

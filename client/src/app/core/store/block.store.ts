@@ -26,4 +26,8 @@ export class BlockStore {
       [blockedId]: false,
     });
   }
+
+  clearBlockList() {
+    this.userBlockList.next({});
+  }
 }

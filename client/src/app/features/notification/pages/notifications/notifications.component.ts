@@ -30,7 +30,7 @@ export class NotificationsComponent implements OnInit {
     });
 
     this.userStore.userAuth.subscribe((res) => {
-      this.getNotifications();
+      if (res?.userId) this.getNotifications();
     });
   }
 

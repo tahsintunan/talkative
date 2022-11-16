@@ -21,23 +21,25 @@
   </button>
 
   <div class="mb-auto flex flex-col gap-2">
-    <a
-      *ngFor="let data of navData"
-      [routerLink]="data.link"
-      routerLinkActive="active"
-      class="nav-link transition"
-    >
-      <mat-icon class="material-symbols-rounded">{{ data.icon }}</mat-icon>
-      <span>{{ data.text }}</span>
-
-      <span
-        *ngIf="data.notificationCount"
-        class="inline-flex justify-center items-center ml-2 w-7 h-7 text-xs font-semibold bg-primary text-white rounded-full"
-        >{{
-          data.notificationCount > 10 ? "10+" : data.notificationCount
-        }}</span
+    <ng-container *ngFor="let data of navData">
+      <a
+        *ngIf="!data.hidden"
+        [routerLink]="data.link"
+        routerLinkActive="active"
+        class="nav-link transition"
       >
-    </a>
+        <mat-icon class="material-symbols-rounded">{{ data.icon }}</mat-icon>
+        <span>{{ data.text }}</span>
+
+        <span
+          *ngIf="data.notificationCount"
+          class="inline-flex justify-center items-center ml-2 w-7 h-7 text-xs font-semibold bg-primary text-white rounded-full"
+          >{{
+            data.notificationCount > 10 ? "10+" : data.notificationCount
+          }}</span
+        >
+      </a></ng-container
+    >
   </div>
 
   <button

@@ -75,4 +75,8 @@ export class NotificationStore {
         notification.notificationReceiverId === userAuth?.userId
     );
   }
+
+  clearNotifications() {
+    this.notifications.next([]);
+  }
 }
