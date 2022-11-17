@@ -118,8 +118,8 @@ public class TweetService : ITweet
             .Aggregate()
             .Match(x => x.UserId == userId)
             .SortByDescending(x => x.CreatedAt)
-            .Skip(skip)
             .Limit(limit)
+            .Skip(skip)
             .Lookup("users", "userId", "_id", "user")
             .Lookup("tweets", "originalTweetId", "_id", "originalTweet")
             .Unwind(
@@ -167,8 +167,8 @@ public class TweetService : ITweet
             .ReplaceRoot<Tweet>("$tweet")
             .SortBy(x => x.CreatedAt)
             .ThenByDescending(x => x.CreatedAt)
-            .Skip(skip)
             .Limit(limit)
+            .Skip(skip)
             .Lookup("users", "userId", "_id", "user")
             .Lookup("tweets", "originalTweetId", "_id", "originalTweet")
             .Unwind(
@@ -269,8 +269,8 @@ public class TweetService : ITweet
                 }
             )
             .SortByDescending(x => x.CreatedAt)
-            .Skip(skip)
             .Limit(limit)
+            .Skip(skip)
             .ToListAsync();
 
         foreach (var tweet in hashtags) hashtagSet.UnionWith(tweet.Hashtags!);
@@ -296,8 +296,8 @@ public class TweetService : ITweet
             )
             .SortBy(x => x.CreatedAt)
             .ThenByDescending(x => x.CreatedAt)
-            .Skip(skip)
             .Limit(limit)
+            .Skip(skip)
             .Lookup("users", "userId", "_id", "user")
             .Lookup("tweets", "originalTweetId", "_id", "originalTweet")
             .Unwind(
@@ -357,8 +357,8 @@ public class TweetService : ITweet
             .Lookup("users", "likes", "_id", "likedUsers")
             .Unwind("likedUsers")
             .ReplaceRoot<User>("$likedUsers")
-            .Skip(skip)
             .Limit(limit)
+            .Skip(skip)
             .ToListAsync();
 
         return userVmList;

@@ -51,9 +51,10 @@ public class UserService : IUser
     public async Task<IList<UserVm>?> GetAllUsers(int skip, int limit)
     {
         IList<User> users = await _userCollection
-            .Find(users => true)
-            .Skip(skip)
+            .Aggregate()
+            .SortBy(x => x.Username)
             .Limit(limit)
+            .Skip(skip)
             .ToListAsync();
         var usersVm = _mapper.Map<IList<UserVm>>(users);
 
@@ -197,8 +198,8 @@ public class UserService : IUser
                     }
                 }
             )
-            .Skip(skip)
             .Limit(limit)
+            .Skip(skip)
             .ToListAsync();
         return user;
     }

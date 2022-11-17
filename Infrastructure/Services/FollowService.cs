@@ -86,14 +86,14 @@ public class FollowService : IFollow
         var followerList = await _followerCollection
             .Aggregate()
             .Match(x => x.FollowingId == userId)
-            .Skip(skip)
             .Limit(limit)
+            .Skip(skip)
             .Lookup("users", "followerId", "_id", "user")
             .Unwind("user")
             .ReplaceRoot<User>("$user")
             .SortByDescending(x => x.Username)
             .Project(user => new UserVm
-                { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
+            { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
             .ToListAsync();
 
         return followerList;
@@ -108,14 +108,14 @@ public class FollowService : IFollow
         var followingList = await _followerCollection
             .Aggregate()
             .Match(x => x.FollowerId == userId)
-            .Skip(skip)
             .Limit(limit)
+            .Skip(skip)
             .Lookup("users", "followingId", "_id", "user")
             .Unwind("user")
             .ReplaceRoot<User>("$user")
             .SortByDescending(x => x.Username)
             .Project(user => new UserVm
-                { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
+            { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
             .ToListAsync();
 
         return followingList;

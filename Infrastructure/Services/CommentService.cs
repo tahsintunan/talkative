@@ -97,7 +97,7 @@ public class CommentService : IComment
                 LastModified = p.LastModified,
                 ProfilePicture = sub_o.ProfilePicture
             }
-        ).Skip(skip).Take(limit);
+        ).Take(limit).Skip(skip);
 
         var commentVmList = await query.ToListAsync();
 

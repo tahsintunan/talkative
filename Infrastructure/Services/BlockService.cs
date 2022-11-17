@@ -50,13 +50,13 @@ public class BlockService : IBlock
         var userVmList = await _userCollection
             .Aggregate()
             .Match(x => x.Id == userId)
-            .Skip(skip)
             .Limit(limit)
+            .Skip(skip)
             .Lookup("users", "blocked", "_id", "user")
             .Unwind("user")
             .ReplaceRoot<User>("$user")
             .Project(user => new UserVm
-                { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
+            { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
             .ToListAsync();
         return userVmList;
     }

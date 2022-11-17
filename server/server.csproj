@@ -31,20 +31,4 @@
         <_ContentIncludedByDefault Remove="UnitTest\obj\project.packagespec.json"/>
         <_ContentIncludedByDefault Remove="UnitTest\obj\UnitTest.csproj.nuget.dgspec.json"/>
     </ItemGroup>
-    <ItemGroup>
-        <Compile Remove="TestProject1\**"/>
-        <Compile Remove="UnitTest\**"/>
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Remove="TestProject1\**"/>
-        <EmbeddedResource Remove="UnitTest\**"/>
-    </ItemGroup>
-    <ItemGroup>
-        <None Remove="TestProject1\**"/>
-        <None Remove="UnitTest\**"/>
-    </ItemGroup>
-    <ItemGroup>
-        <Content Remove="TestProject1\**"/>
-        <Content Remove="UnitTest\**"/>
-    </ItemGroup>
 </Project>

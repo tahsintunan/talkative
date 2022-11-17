@@ -38,8 +38,8 @@ public class RetweetService : IRetweet
         return await _tweetCollection
             .Aggregate()
             .Match(x => x.Id == tweetId)
-            .Skip(skip)
             .Limit(limit)
+            .Skip(skip)
             .Lookup("users", "retweetUsers", "_id", "users")
             .Unwind("users")
             .ReplaceRoot<User>("$users")
@@ -52,14 +52,14 @@ public class RetweetService : IRetweet
         return await _tweetCollection
             .Aggregate()
             .Match(x => x.Id == tweetId)
-            .Skip(skip)
             .Limit(limit)
+            .Skip(skip)
             .Lookup("tweets", "quoteRetweets", "_id", "tweets")
             .Unwind("tweets")
             .ReplaceRoot<Tweet>("$tweets")
             .SortByDescending(x => x.CreatedAt)
-            .Skip(skip)
             .Limit(limit)
+            .Skip(skip)
             .Lookup("users", "userId", "_id", "user")
             .Lookup("tweets", "originalTweetId", "_id", "originalTweet")
             .Unwind(

@@ -142,7 +142,7 @@ public class NotificationService : INotification
                 EventTriggererProfilePicture = subO.ProfilePicture,
                 IsRead = notification.IsRead
             }
-        ).Skip(skip).Take(limit);
+        ).Take(limit).Skip(skip);
 
         var notificationVms = await query.ToListAsync();
 
