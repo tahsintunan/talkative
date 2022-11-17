@@ -18,6 +18,7 @@ import { LikersRetweetersDialogComponent } from 'src/app/features/tweet/ui/liker
 import { PostMakerDialogComponent } from 'src/app/features/tweet/ui/post-maker-dialog/post-maker-dialog.component';
 import { TweetModel, TweetWriteModel } from '../../../core/models/tweet.model';
 import { UserModel } from '../../../core/models/user.model';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-tweet-item',
@@ -197,15 +198,29 @@ export class TweetItemComponent implements OnInit, OnChanges {
   }
 
   onDelete() {
-    if (this.tweet?.id) {
-      if (this.tweet?.isQuoteRetweet)
-        this.retweetService
-          .deleteQuoteRetweet(this.tweet.id, this.tweet?.originalTweetId!)
-          .subscribe();
-      else this.tweetService.deleteTweet(this.tweet?.id).subscribe();
-    }
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '500px',
+      data: {
+        title: 'Warning',
+        message:
+          'Are you sure you want to delete this post? You cannot undo this action.',
+        type: 'danger',
+      },
+    });
 
-    this.onDeleteClick.emit(this.tweet);
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        if (this.tweet?.id) {
+          if (this.tweet?.isQuoteRetweet)
+            this.retweetService
+              .deleteQuoteRetweet(this.tweet.id, this.tweet?.originalTweetId!)
+              .subscribe();
+          else this.tweetService.deleteTweet(this.tweet?.id).subscribe();
+        }
+
+        this.onDeleteClick.emit(this.tweet);
+      }
+    });
   }
 
   onViewLikes() {

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommentService } from 'src/app/core/services/comment.service';
 import { TweetService } from 'src/app/core/services/tweet.service';
 import { UserStore } from 'src/app/core/store/user.store';
+import { ConfirmationDialogComponent } from 'src/app/shared/ui/confirmation-dialog/confirmation-dialog.component';
 import {
   CommentLikeModel,
   CommentModel,
@@ -165,11 +166,28 @@ export class TweetDetailsComponent implements OnInit {
   }
 
   onCommentDelete(commentId: string) {
-    this.commentService.deleteComment(commentId).subscribe(() => {
-      this.tweet?.comments?.splice(this.tweet?.comments?.indexOf(commentId), 1);
-      this.comments = this.comments.filter(
-        (comment) => comment.id !== commentId
-      );
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '500px',
+      data: {
+        title: 'Warning',
+        message:
+          'Are you sure you want to delete this comment? You cannot undo this action.',
+        type: 'danger',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.commentService.deleteComment(commentId).subscribe(() => {
+          this.tweet?.comments?.splice(
+            this.tweet?.comments?.indexOf(commentId),
+            1
+          );
+          this.comments = this.comments.filter(
+            (comment) => comment.id !== commentId
+          );
+        });
+      }
     });
   }
 }

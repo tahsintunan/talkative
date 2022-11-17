@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { NotificationStore } from 'src/app/core/store/notification.store';
 import { UserStore } from 'src/app/core/store/user.store';
+import { ConfirmationDialogComponent } from 'src/app/shared/ui/confirmation-dialog/confirmation-dialog.component';
 import { NotificationModel } from '../../../../core/models/notification.model';
 import { PaginationModel } from '../../../../core/models/pagination.model';
 
@@ -21,6 +23,7 @@ export class NotificationsComponent implements OnInit {
     private userStore: UserStore,
     private notificationService: NotificationService,
     private nottificationStore: NotificationStore,
+    private dialog: MatDialog,
     private router: Router
   ) {}
 
@@ -44,7 +47,17 @@ export class NotificationsComponent implements OnInit {
   }
 
   onMarkAllAsRead(): void {
-    this.notificationService.markAllAsRead().subscribe();
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Warning',
+        message: 'Are you sure you want to mark all notifications as read?',
+        type: 'warning',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) this.notificationService.markAllAsRead().subscribe();
+    });
   }
 
   onNotificationClick(notification: NotificationModel): void {

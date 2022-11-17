@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import jwtDecode from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { tap } from 'rxjs';
 import { UserStore } from 'src/app/core/store/user.store';
 import { EnvService } from 'src/app/shared/services/env.service';
+import { AlertSnackbarComponent } from 'src/app/shared/ui/alert-snackbar/alert-snackbar.component';
 import {
   UserAnalyticsModel,
   UserModel,
@@ -23,7 +25,8 @@ export class UserService {
     private env: EnvService,
     private cookie: CookieService,
     private userStore: UserStore,
-    private authService: AuthService
+    private authService: AuthService,
+    private snackBar: MatSnackBar
   ) {}
 
   loadUserAuth() {
@@ -50,16 +53,21 @@ export class UserService {
   }
 
   updateProfile(user: UserUpdateReqModel) {
-    return this.http
-      .put<UserModel>(this.apiUrl + '/profile', user)
-      .pipe(tap(() => this.loadUserAuth()));
+    return this.http.put<UserModel>(this.apiUrl + '/profile', user).pipe(
+      tap(() => {
+        this.loadUserAuth();
+        this.showSuccessSnackBar('Profile updated');
+      })
+    );
   }
 
   updatePassword(oldPassword: string, newPassword: string) {
-    return this.http.put(this.apiUrl + '/password', {
-      oldPassword,
-      newPassword,
-    });
+    return this.http
+      .put(this.apiUrl + '/password', {
+        oldPassword,
+        newPassword,
+      })
+      .pipe(tap(() => this.showSuccessSnackBar('Password updated')));
   }
 
   updateCoverImage(image: File) {
@@ -67,7 +75,12 @@ export class UserService {
     formData.append('coverPicture', image);
     return this.http
       .put<UserModel>(this.apiUrl + '/cover-picture', formData)
-      .pipe(tap((res) => this.loadUserAuth()));
+      .pipe(
+        tap((res) => {
+          this.loadUserAuth();
+          this.showSuccessSnackBar('Cover picture updated');
+        })
+      );
   }
 
   updateProfileImage(image: File) {
@@ -75,7 +88,12 @@ export class UserService {
     formData.append('profilePicture', image);
     return this.http
       .put<UserModel>(this.apiUrl + '/profile-picture', formData)
-      .pipe(tap((res) => this.loadUserAuth()));
+      .pipe(
+        tap((res) => {
+          this.loadUserAuth();
+          this.showSuccessSnackBar('Profile picture updated');
+        })
+      );
   }
 
   getUserAnalytics(userId: string) {
@@ -84,5 +102,15 @@ export class UserService {
 
   getTopUsers() {
     return this.http.get<UserModel[]>(this.apiUrl + '/top-active-users');
+  }
+
+  showSuccessSnackBar(message: string) {
+    this.snackBar.openFromComponent(AlertSnackbarComponent, {
+      data: {
+        message,
+        title: 'Success',
+        type: 'success',
+      },
+    });
   }
 }

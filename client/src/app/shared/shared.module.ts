@@ -26,6 +26,8 @@ import { ProfilePeopleItemComponent } from './ui/profile-people-item/profile-peo
 import { RetweetContentComponent } from './ui/retweet-content/retweet-content.component';
 import { SearchInputComponent } from './ui/search-input/search-input.component';
 import { TweetItemComponent } from './ui/tweet-item/tweet-item.component';
+import { AlertSnackbarComponent } from './ui/alert-snackbar/alert-snackbar.component';
+import { ConfirmationDialogComponent } from './ui/confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,8 @@ import { TweetItemComponent } from './ui/tweet-item/tweet-item.component';
     TweetItemComponent,
     RetweetContentComponent,
     ProfilePeopleItemComponent,
+    AlertSnackbarComponent,
+    ConfirmationDialogComponent,
   ],
   imports: [
     RouterModule,

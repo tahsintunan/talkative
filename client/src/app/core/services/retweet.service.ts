@@ -26,6 +26,10 @@ export class RetweetService {
       tap((res) => {
         this.tweetService.addToTweets(res);
         this.tweetStore.updateTweetInTweetList(res.originalTweet!);
+
+        this.tweetService.showSuccessSnackBar(
+          retweet.isQuoteRetweet ? 'Post quoted' : 'Post shared'
+        );
       })
     );
   }
@@ -33,9 +37,11 @@ export class RetweetService {
   undoRetweet(originalTweetId: string) {
     return this.http.delete(this.apiUrl + '/' + originalTweetId).pipe(
       tap(() => {
-        this.tweetService
-          .getTweetById(originalTweetId)
-          .subscribe((res) => this.tweetStore.updateTweetInTweetList(res));
+        this.tweetService.getTweetById(originalTweetId).subscribe((res) => {
+          this.tweetStore.updateTweetInTweetList(res);
+
+          this.tweetService.showSuccessSnackBar('Shared post removed');
+        });
       })
     );
   }
@@ -53,6 +59,8 @@ export class RetweetService {
               if (res) this.tweetStore.updateTweetInTweetList(res);
             });
           }
+
+          this.tweetService.showSuccessSnackBar('Quoted post removed');
         })
       );
   }

@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs';
 import { UserStore } from 'src/app/core/store/user.store';
 import { EnvService } from 'src/app/shared/services/env.service';
+import { AlertSnackbarComponent } from 'src/app/shared/ui/alert-snackbar/alert-snackbar.component';
 import { PaginationModel } from '../models/pagination.model';
 import {
   TrendingHashtagModel,
@@ -25,37 +27,39 @@ export class TweetService {
     private env: EnvService,
     private tweetStore: TweetStore,
     private userStore: UserStore,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
 
   createTweet(tweet: TweetCreateReqModel) {
-    return this.http
-      .post<TweetModel>(this.apiUrl, tweet)
-      .pipe(tap((res) => this.addToTweets(res)));
+    return this.http.post<TweetModel>(this.apiUrl, tweet).pipe(
+      tap((res) => {
+        this.addToTweets(res);
+        this.showSuccessSnackBar('Post created');
+      })
+    );
   }
 
   updateTweet(tweet: TweetUpdateReqModel) {
-    return this.http
-      .put<TweetModel>(this.apiUrl, tweet)
-      .pipe(
-        tap(
-          (res) =>
-            !this.router.url.includes('/tweet/') &&
-            this.tweetStore.updateTweetInTweetList(res)
-        )
-      );
+    return this.http.put<TweetModel>(this.apiUrl, tweet).pipe(
+      tap((res) => {
+        !this.router.url.includes('/tweet/') &&
+          this.tweetStore.updateTweetInTweetList(res);
+
+        this.showSuccessSnackBar('Post updated');
+      })
+    );
   }
 
   deleteTweet(tweetId: string) {
-    return this.http
-      .delete(this.apiUrl + '/' + tweetId)
-      .pipe(
-        tap(
-          () =>
-            !this.router.url.includes('/tweet/') &&
-            this.tweetStore.removeTweetFromTweetList(tweetId)
-        )
-      );
+    return this.http.delete(this.apiUrl + '/' + tweetId).pipe(
+      tap(() => {
+        !this.router.url.includes('/tweet/') &&
+          this.tweetStore.removeTweetFromTweetList(tweetId);
+
+        this.showSuccessSnackBar('Post deleted');
+      })
+    );
   }
 
   getTweetById(id: string) {
@@ -132,5 +136,15 @@ export class TweetService {
 
     if (isFeed || (isAuthUser && tweet.user.userId === userAuth.userId))
       this.tweetStore.addTweetToTweetList(tweet);
+  }
+
+  showSuccessSnackBar(message: string) {
+    this.snackBar.openFromComponent(AlertSnackbarComponent, {
+      data: {
+        message,
+        title: 'Success',
+        type: 'success',
+      },
+    });
   }
 }

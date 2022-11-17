@@ -8,6 +8,7 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { AlertSnackbarComponent } from 'src/app/shared/ui/alert-snackbar/alert-snackbar.component';
 import { AuthService } from '../services/auth.service';
 
 @Injectable()
@@ -31,9 +32,12 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           errorMessage = 'Network error';
         }
 
-        this.snackBar.open('Error: ' + errorMessage, 'Close', {
-          duration: 4000,
-          panelClass: ['error-snackbar'],
+        this.snackBar.openFromComponent(AlertSnackbarComponent, {
+          data: {
+            title: 'Error',
+            message: errorMessage,
+            type: 'danger',
+          },
         });
 
         if (error.status === 401) {

@@ -1,0 +1,22 @@
+.tooltip-top {
+  margin-top: 18px;
+}
+
+.tooltip-top::before,
+.tooltip-top::after {
+  content: "";
+  z-index: 20;
+  position: absolute;
+  top: -1px;
+  left: 40px;
+  height: fit-content;
+  border-right: 12px solid transparent;
+  border-left: 12px solid transparent;
+  border-top: 6px solid transparent;
+  border-bottom: 14px solid #ccc;
+}
+
+.tooltip-top::after {
+  top: 0px;
+  border-bottom: 14px solid white;
+}

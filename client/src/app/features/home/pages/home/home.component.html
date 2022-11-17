@@ -4,15 +4,26 @@
   </mat-drawer>
   <mat-drawer-content>
     <mat-toolbar class="relative">
-      <app-search-input class="w-44 md:w-[500px] m-auto z-50" [searchResults]="searchResults"
-        (onSearchChange)="onSearchChange($event)" (onSearchResultSelect)="onSearchResultSelect($event)"
-        (onSearchSubmit)="onSearchSubmit($event)">
+      <app-search-input
+        class="w-44 md:w-[500px] m-auto z-50"
+        [searchResults]="searchResults"
+        (onSearchChange)="onSearchChange($event)"
+        (onSearchResultSelect)="onSearchResultSelect($event)"
+        (onSearchSubmit)="onSearchSubmit($event)"
+      >
       </app-search-input>
       <div class="relative h-full">
-        <a routerLink="/profile/{{ userAuth?.userId }}"
-          class="ml-5 absolute top-2 right-0 p-1 rounded-full text-gray-600 bg-gray-200 hover:bg-gray-300 font-bold text-sm flex items-center w-max">
+        <a
+          routerLink="/profile/{{ userAuth?.userId }}"
+          class="ml-5 absolute top-3 right-0 p-1 rounded-full text-gray-600 bg-gray-200 hover:bg-gray-300 font-bold text-sm flex items-center w-max"
+        >
           <span class="px-2"> {{ userAuth?.username }} </span>
-          <app-avatar bgColor="#fff" [alt]="userAuth?.username" [src]="userAuth?.profilePicture" size="35px">
+          <app-avatar
+            bgColor="#fff"
+            [alt]="userAuth?.username"
+            [src]="userAuth?.profilePicture"
+            size="35px"
+          >
           </app-avatar>
         </a>
       </div>

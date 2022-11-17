@@ -9,7 +9,7 @@ export class HashtagPipe implements PipeTransform {
   transform(text: string) {
     const transformedText = text.replace(
       this.matchHashtag,
-      '<span class="hashtag">$1</span>'
+      (value) => `<span class="hashtag">${value}</span>`
     );
 
     return transformedText;
