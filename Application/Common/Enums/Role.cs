@@ -1,8 +1,7 @@
-namespace Application.Common.Enums
+namespace Application.Common.Enums;
+
+public enum Role
 {
-    public enum Role
-    {
-        ADMIN,
-        USER
-    }
+    ADMIN,
+    USER
 }

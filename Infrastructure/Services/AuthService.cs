@@ -1,6 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
-using System.Security.Claims;
+﻿using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using Application.Common.Enums;
@@ -10,7 +8,6 @@ using Domain.Entities;
 using Infrastructure.DbConfig;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 
 namespace Infrastructure.Services;

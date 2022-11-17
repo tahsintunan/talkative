@@ -1,8 +1,7 @@
-namespace Application.Common.Enums
+namespace Application.Common.Enums;
+
+public enum PictureType
 {
-    public enum PictureType
-    {
-        ProfilePicture,
-        CoverPicture
-    }
+    ProfilePicture,
+    CoverPicture
 }

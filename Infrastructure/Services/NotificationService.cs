@@ -157,12 +157,14 @@ public class NotificationService : INotification
     public async Task UpdateReadStatus(string notificationId)
     {
         var notification = await GetNotification(notificationId);
-        await _notificationCollection.UpdateOneAsync(x => x.Id == notificationId, Builders<Notification>.Update.Set(x => x.IsRead, !notification.IsRead));
+        await _notificationCollection.UpdateOneAsync(x => x.Id == notificationId,
+            Builders<Notification>.Update.Set(x => x.IsRead, !notification.IsRead));
     }
 
     public async Task MarkAllAsRead(string userId)
     {
-        await _notificationCollection.UpdateManyAsync(x => x.NotificationReceiverId == userId, Builders<Notification>.Update.Set(x => x.IsRead, true));
+        await _notificationCollection.UpdateManyAsync(x => x.NotificationReceiverId == userId,
+            Builders<Notification>.Update.Set(x => x.IsRead, true));
     }
 
     private async Task<Notification> GetNotification(string notificationId)

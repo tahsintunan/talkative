@@ -11,10 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<BlockActionFilter>();
-});
+builder.Services.AddControllers(options => { options.Filters.Add<BlockActionFilter>(); });
 
 builder.Services.AddFluentValidationAutoValidation();
 
@@ -43,10 +40,7 @@ builder.Services.Configure<NotificationDatabaseConfig>(
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices();
-builder.Services.AddLogging(loggingBuilder =>
-{
-    loggingBuilder.AddSeq();
-});
+builder.Services.AddLogging(loggingBuilder => { loggingBuilder.AddSeq(); });
 builder.Services.AddTransient<INotificationHub, NotificationHub>();
 builder.Services.AddSignalR();
 

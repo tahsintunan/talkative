@@ -33,7 +33,7 @@ public class SignupCommandHandler : IRequestHandler<SignupCommand>
                 DateOfBirth = request.DateOfBirth.Date,
                 Email = request.Email,
                 IsBanned = false,
-                IsAdmin = false,
+                IsAdmin = false
             }
         );
         return Unit.Value;

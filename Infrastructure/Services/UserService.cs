@@ -18,9 +18,9 @@ namespace Infrastructure.Services;
 public class UserService : IUser
 {
     private readonly IAuth _authService;
-    private readonly IToken _tokenService;
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
+    private readonly IToken _tokenService;
     private readonly IMongoCollection<User>? _userCollection;
 
     public UserService(

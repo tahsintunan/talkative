@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Application.Common.Interface;
+﻿using Application.Common.Interface;
 using Application.Common.ViewModels;
 using MediatR;
 
@@ -7,7 +6,6 @@ namespace Application.Users.Queries.GetAllUsers;
 
 public class GetAllUsersQuery : IRequest<IList<UserVm>?>
 {
-
     public int? PageNumber { get; set; }
     public int? ItemCount { get; set; }
 }

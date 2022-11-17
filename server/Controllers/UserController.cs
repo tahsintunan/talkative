@@ -1,6 +1,5 @@
 ﻿using Application.Common.Enums;
 using Application.Common.ViewModels;
-using Application.Users.Commands.ForgetPassword;
 using Application.Users.Commands.UpdatePassword;
 using Application.Users.Commands.UpdatePicture;
 using Application.Users.Commands.UpdateUser;
@@ -68,7 +67,7 @@ public class UserController : ApiControllerBase
             {
                 Picture = profilePicture,
                 Type = PictureType.ProfilePicture,
-                UserId = HttpContext.Items["User"]!.ToString(),
+                UserId = HttpContext.Items["User"]!.ToString()
             };
         await Mediator.Send(updateProfilePictureCommand);
         return NoContent();

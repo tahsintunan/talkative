@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Http;
 
-namespace Application.Common.Interface
+namespace Application.Common.Interface;
+
+public interface ICloudinary
 {
-    public interface ICloudinary
-    {
-        Task<string> UploadImage(IFormFile file, string? previousPicture);
-    }
+    Task<string> UploadImage(IFormFile file, string? previousPicture);
 }

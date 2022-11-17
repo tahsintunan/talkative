@@ -14,14 +14,11 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
 
     public async Task Process(TRequest request, CancellationToken cancellationToken)
     {
-        string requestName = typeof(TRequest).Name;
+        var requestName = typeof(TRequest).Name;
         var requestObject = request;
-        string userName = string.Empty;
+        var userName = string.Empty;
 
-        if (!string.IsNullOrEmpty(""))
-        {
-            userName = await Task.Run(() => "", cancellationToken);
-        }
+        if (!string.IsNullOrEmpty("")) userName = await Task.Run(() => "", cancellationToken);
 
         _logger.LogInformation("Talkative Request: {Name} {@UserId} {@UserName} {@Request}",
             requestName, "", userName, request);

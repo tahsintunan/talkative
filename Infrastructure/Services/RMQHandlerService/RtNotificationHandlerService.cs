@@ -52,7 +52,8 @@ public class RtNotificationHandlerService : IHostedService
 
     private async Task ProcessNotification(Notification notification)
     {
-        var (eventTriggererUsername, eventTriggererProfilePicture) = await GetUsernameAndProfilePictureById(notification.EventTriggererId!);
+        var (eventTriggererUsername, eventTriggererProfilePicture) =
+            await GetUsernameAndProfilePictureById(notification.EventTriggererId!);
         var notificationVm = new NotificationVm
         {
             NotificationId = notification.Id,
@@ -72,10 +73,7 @@ public class RtNotificationHandlerService : IHostedService
     private async Task<(string?, string?)> GetUsernameAndProfilePictureById(string userId)
     {
         var user = await _userService.GetUserById(userId);
-        if (user == null)
-        {
-            return ("Unknown", null);
-        }
+        if (user == null) return ("Unknown", null);
         return (user.Username, user.ProfilePicture);
     }
 }

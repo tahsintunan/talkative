@@ -92,7 +92,8 @@ public class FollowService : IFollow
             .Unwind("user")
             .ReplaceRoot<User>("$user")
             .SortByDescending(x => x.Username)
-            .Project(user => new UserVm { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
+            .Project(user => new UserVm
+                { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
             .ToListAsync();
 
         return followerList;
@@ -113,7 +114,8 @@ public class FollowService : IFollow
             .Unwind("user")
             .ReplaceRoot<User>("$user")
             .SortByDescending(x => x.Username)
-            .Project(user => new UserVm { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
+            .Project(user => new UserVm
+                { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
             .ToListAsync();
 
         return followingList;

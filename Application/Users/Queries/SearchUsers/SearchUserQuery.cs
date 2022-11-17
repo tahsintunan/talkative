@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Application.Common.Interface;
+﻿using Application.Common.Interface;
 using Application.Common.ViewModels;
 using AutoMapper;
 using MediatR;

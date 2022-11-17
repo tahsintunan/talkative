@@ -2,8 +2,6 @@
 using Application.Retweets.Command.DeleteQuoteRetweet;
 using Application.Retweets.Command.Retweet;
 using Application.Retweets.Command.UndoRetweet;
-using Application.Retweets.Query.GetQuoteRetweetsOfTweet;
-using Application.Retweets.Query.GetRetweetUsers;
 using Application.Tweets.Queries.GetTweetById;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +9,6 @@ namespace server.Controllers;
 
 public class RetweetController : ApiControllerBase
 {
-
     [HttpPost]
     public async Task<ActionResult<TweetVm>> Retweet(RetweetCommand retweetCommand)
     {

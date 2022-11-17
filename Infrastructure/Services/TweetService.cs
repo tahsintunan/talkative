@@ -336,32 +336,30 @@ public class TweetService : ITweet
 
     public async Task<IList<User>> GetTopActiveUsers(int skip, int limit)
     {
-
         var userVmList = await _tweetCollection
-        .Aggregate()
-        .Group(x => x.UserId, z => new { UserId = z.Key, Count = z.Count() })
-        .SortBy(x => x.Count)
-        .ThenByDescending(x => x.Count)
-        .Lookup("users", "_id", "_id", "user")
-        .Unwind("user")
-        .ReplaceRoot<User>("$user")
-        .ToListAsync();
+            .Aggregate()
+            .Group(x => x.UserId, z => new { UserId = z.Key, Count = z.Count() })
+            .SortBy(x => x.Count)
+            .ThenByDescending(x => x.Count)
+            .Lookup("users", "_id", "_id", "user")
+            .Unwind("user")
+            .ReplaceRoot<User>("$user")
+            .ToListAsync();
 
         return userVmList;
     }
 
     public async Task<IList<User>> GetLikedUsers(string tweetId, int skip, int limit)
     {
-
         var userVmList = await _tweetCollection
-        .Aggregate()
-        .Match(x => x.Id == tweetId)
-        .Lookup("users", "likes", "_id", "likedUsers")
-        .Unwind("likedUsers")
-        .ReplaceRoot<User>("$likedUsers")
-        .Skip(skip)
-        .Limit(limit)
-        .ToListAsync();
+            .Aggregate()
+            .Match(x => x.Id == tweetId)
+            .Lookup("users", "likes", "_id", "likedUsers")
+            .Unwind("likedUsers")
+            .ReplaceRoot<User>("$likedUsers")
+            .Skip(skip)
+            .Limit(limit)
+            .ToListAsync();
 
         return userVmList;
     }

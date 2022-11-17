@@ -33,7 +33,8 @@ public class UpdateCommentCommandHandler : IRequestHandler<UpdateCommentCommand>
         if (comment.UserId == request.UserId)
             await _commentService.PartialUpdate(
                 request.Id!,
-                Builders<Comment>.Update.Set(comment => comment.Text, request.Text).Set(x => x.LastModified, DateTime.Now)
+                Builders<Comment>.Update.Set(comment => comment.Text, request.Text)
+                    .Set(x => x.LastModified, DateTime.Now)
             );
         return Unit.Value;
     }
