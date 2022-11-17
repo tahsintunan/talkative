@@ -198,6 +198,7 @@ public class UserService : IUser
                     }
                 }
             )
+            .SortBy(x => x.Username)
             .Limit(limit)
             .Skip(skip)
             .ToListAsync();
