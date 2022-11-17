@@ -6,10 +6,8 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-        <PackageReference Include="FakeItEasy" Version="7.3.1" />
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.6" />
@@ -23,5 +21,30 @@
     </ItemGroup>
     <ItemGroup>
       <_ContentIncludedByDefault Remove="UnitTests\obj\Release\net6.0\ubuntu.18.04-x64\UnitTests.deps.json" />
+      <_ContentIncludedByDefault Remove="UnitTests\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="UnitTests\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="UnitTests\obj\UnitTests.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="TestProject1\obj\TestProject1.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="UnitTest\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="UnitTest\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="UnitTest\obj\UnitTest.csproj.nuget.dgspec.json" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Remove="TestProject1\**" />
+      <Compile Remove="UnitTest\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Remove="TestProject1\**" />
+      <EmbeddedResource Remove="UnitTest\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="TestProject1\**" />
+      <None Remove="UnitTest\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Remove="TestProject1\**" />
+      <Content Remove="UnitTest\**" />
     </ItemGroup>
 </Project>

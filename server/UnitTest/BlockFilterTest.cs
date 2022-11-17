@@ -1,10 +1,10 @@
+using FakeItEasy;
 using Application.Common.Class;
 using Application.Common.Interface;
 using Application.Common.ViewModels;
-using FakeItEasy;
 using Infrastructure.Services;
 
-namespace server.UnitTests;
+namespace UnitTest;
 
 public class BlockFilterTest
 {
