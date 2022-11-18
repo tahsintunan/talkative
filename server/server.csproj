@@ -19,16 +19,4 @@
         <ProjectReference Include="..\Application\Application.csproj"/>
         <ProjectReference Include="..\Infrastructure\Infrastructure.csproj"/>
     </ItemGroup>
-    <ItemGroup>
-        <_ContentIncludedByDefault Remove="UnitTests\obj\Release\net6.0\ubuntu.18.04-x64\UnitTests.deps.json"/>
-        <_ContentIncludedByDefault Remove="UnitTests\obj\project.assets.json"/>
-        <_ContentIncludedByDefault Remove="UnitTests\obj\project.packagespec.json"/>
-        <_ContentIncludedByDefault Remove="UnitTests\obj\UnitTests.csproj.nuget.dgspec.json"/>
-        <_ContentIncludedByDefault Remove="TestProject1\obj\project.assets.json"/>
-        <_ContentIncludedByDefault Remove="TestProject1\obj\project.packagespec.json"/>
-        <_ContentIncludedByDefault Remove="TestProject1\obj\TestProject1.csproj.nuget.dgspec.json"/>
-        <_ContentIncludedByDefault Remove="UnitTest\obj\project.assets.json"/>
-        <_ContentIncludedByDefault Remove="UnitTest\obj\project.packagespec.json"/>
-        <_ContentIncludedByDefault Remove="UnitTest\obj\UnitTest.csproj.nuget.dgspec.json"/>
-    </ItemGroup>
 </Project>
