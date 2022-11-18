@@ -4,3 +4,8 @@
   width: fit-content !important;
   background: white !important;
 }
+
+p {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
