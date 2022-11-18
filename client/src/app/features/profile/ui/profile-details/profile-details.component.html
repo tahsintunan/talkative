@@ -67,7 +67,10 @@
         {{ data?.username }}
       </h1>
 
-      <p>{{ utilityService.getAge(data?.dateOfBirth!) }} years old</p>
+      <div class="flex gap-2">
+        <span class="material-symbols-rounded">cake</span>
+        <p>Born in {{ data?.dateOfBirth | date: "longDate" }}</p>
+      </div>
     </div>
 
     <div class="flex justify-center gap-4 ml-auto">
