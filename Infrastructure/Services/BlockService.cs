@@ -56,7 +56,7 @@ public class BlockService : IBlock
             .Unwind("user")
             .ReplaceRoot<User>("$user")
             .Project(user => new UserVm
-            { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
+                { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
             .ToListAsync();
         return userVmList;
     }
