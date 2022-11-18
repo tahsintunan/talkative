@@ -11,36 +11,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers(options => { options.Filters.Add<BlockActionFilter>(); });
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<BlockActionFilter>();
+});
 
 builder.Services.AddFluentValidationAutoValidation();
 
-builder.Services.Configure<UserDatabaseConfig>(
-    builder.Configuration.GetSection("UserDatabaseConfig")
-);
-builder.Services.Configure<MessageDatabaseConfig>(
-    builder.Configuration.GetSection("MessageDatabaseConfig")
-);
-builder.Services.Configure<TweetDatabaseConfig>(
-    builder.Configuration.GetSection("TweetDatabaseConfig")
-);
-
-builder.Services.Configure<CommentDatabaseConfig>(
-    builder.Configuration.GetSection("CommentDatabaseConfig")
-);
-
-builder.Services.Configure<FollowerDatabaseConfig>(
-    builder.Configuration.GetSection("FollowerDatabaseConfig")
-);
-
-builder.Services.Configure<NotificationDatabaseConfig>(
-    builder.Configuration.GetSection("NotificationDatabaseConfig")
-);
-
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices();
-builder.Services.AddLogging(loggingBuilder => { loggingBuilder.AddSeq(); });
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddSeq();
+});
 builder.Services.AddTransient<INotificationHub, NotificationHub>();
 builder.Services.AddSignalR();
 
