@@ -43,7 +43,8 @@ public class RetweetService : IRetweet
             .Lookup("users", "retweetUsers", "_id", "users")
             .Unwind("users")
             .ReplaceRoot<User>("$users")
-            .Project(user => new UserVm { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
+            .Project(user => new UserVm
+                { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
             .ToListAsync();
     }
 

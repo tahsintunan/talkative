@@ -2,7 +2,6 @@ using Application;
 using Application.Common.Interface;
 using FluentValidation.AspNetCore;
 using Infrastructure;
-using Infrastructure.DbConfig;
 using server.Filters;
 using server.Hub;
 using server.Middlewares;
@@ -11,20 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<BlockActionFilter>();
-});
+builder.Services.AddControllers(options => { options.Filters.Add<BlockActionFilter>(); });
 
 builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddLogging(loggingBuilder =>
-{
-    loggingBuilder.AddSeq();
-});
+builder.Services.AddLogging(loggingBuilder => { loggingBuilder.AddSeq(); });
 builder.Services.AddTransient<INotificationHub, NotificationHub>();
 builder.Services.AddSignalR();
 
