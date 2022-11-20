@@ -13,7 +13,6 @@ namespace Infrastructure.Services.RMQHandlerService;
 public class RtNotificationHandlerService : IHostedService
 {
     private const string RabbitmqQueueName = "RtNotificationQueue";
-
     private readonly IModel _channel;
     private readonly EventingBasicConsumer _consumer;
     private readonly INotificationHub _notificationHub;

@@ -32,7 +32,7 @@ builder.Services.AddCors(o =>
         corsPolicyBuilder =>
         {
             corsPolicyBuilder
-                .WithOrigins("http://localhost:4200")
+                .WithOrigins("http://kernel-panic.learnathon.net/web/")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
