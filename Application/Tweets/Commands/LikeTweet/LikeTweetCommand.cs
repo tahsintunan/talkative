@@ -13,8 +13,6 @@ public class LikeTweetCommand : IRequest
     public string? TweetId { get; set; }
 
     [JsonIgnore] public string? UserId { get; set; }
-
-    public bool IsLiked { get; set; }
 }
 
 public class LikeTweetCommandHandler : IRequestHandler<LikeTweetCommand>
@@ -42,7 +40,7 @@ public class LikeTweetCommandHandler : IRequestHandler<LikeTweetCommand>
         var currentTweet = await _tweetService.GetTweetById(request.TweetId!);
         var tweetVm = _tweetBsonDocumentMapper.map(currentTweet!);
 
-        if (request.IsLiked)
+        if (tweetVm.Likes!.Contains(request.UserId))
         {
             tweetVm.Likes!.Add(request.UserId);
             await _notificationService.TriggerLikeTweetNotification(request, tweetVm);
