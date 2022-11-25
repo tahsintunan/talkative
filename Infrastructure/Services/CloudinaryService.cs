@@ -2,7 +2,6 @@ using Application.Common.Interface;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Services;
 
@@ -10,9 +9,9 @@ public class CloudinaryService : ICloudinary
 {
     private readonly Cloudinary cloudinary;
 
-    public CloudinaryService(IConfiguration iconfig)
+    public CloudinaryService()
     {
-        var cloudianryUrl = iconfig.GetValue<string>("Cloudinary:Url");
+        var cloudianryUrl = Environment.GetEnvironmentVariable("Cloudinary__Url");
         cloudinary = new Cloudinary(cloudianryUrl);
         cloudinary.Api.Secure = true;
     }

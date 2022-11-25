@@ -1,7 +1,6 @@
 using System.Text;
 using Application.Common.Interface;
 using Domain.Entities;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 
@@ -12,12 +11,12 @@ public class RabbitmqService : IRabbitmq
     private readonly IModel _channel;
     private readonly string _rabbitmqServerExchangeName;
 
-    public RabbitmqService(IConfiguration configuration)
+    public RabbitmqService()
     {
-        _rabbitmqServerExchangeName = configuration["RabbitMQ:ExchangeName"];
+        _rabbitmqServerExchangeName = Environment.GetEnvironmentVariable("RabbitMQ__ExchangeName") ?? "";
         var connectionFactory = new ConnectionFactory
         {
-            Uri = new Uri(configuration["RabbitMQ:ConnectionString"])
+            Uri = new Uri(Environment.GetEnvironmentVariable("RabbitMQ__ConnectionString") ?? "")
         };
         var connection = connectionFactory.CreateConnection();
         _channel = connection.CreateModel();

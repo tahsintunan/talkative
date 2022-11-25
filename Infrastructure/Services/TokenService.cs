@@ -9,11 +9,9 @@ namespace Infrastructure.Services;
 
 public class TokenService : IToken
 {
-    private readonly IConfiguration _configuration;
 
-    public TokenService(IConfiguration configuration)
+    public TokenService()
     {
-        _configuration = configuration;
     }
 
     public string GenerateAccessToken(
@@ -39,7 +37,7 @@ public class TokenService : IToken
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(
-                        _configuration.GetSection("JwtSettings:AccessTokenKey").Value
+                        Environment.GetEnvironmentVariable("JwtSettings__AccessTokenKey") ?? ""
                     )
                 ),
                 SecurityAlgorithms.HmacSha512Signature
@@ -60,7 +58,7 @@ public class TokenService : IToken
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(
-            _configuration.GetSection("JwtSettings:AccessTokenKey").Value
+            Environment.GetEnvironmentVariable("JwtSettings__AccessTokenKey") ?? ""
         );
         try
         {

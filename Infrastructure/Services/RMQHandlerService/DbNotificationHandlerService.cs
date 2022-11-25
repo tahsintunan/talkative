@@ -1,7 +1,6 @@
 using System.Text;
 using Domain.Entities;
 using Infrastructure.DbConfig;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -20,21 +19,18 @@ public class DbNotificationHandlerService : IHostedService
     private readonly IMongoCollection<Notification> _notificationCollection;
 
     public DbNotificationHandlerService(
-        IConfiguration configuration,
-        IOptions<NotificationDatabaseConfig> notificationDatabaseConfig
     )
     {
-        var mongoClient = new MongoClient(notificationDatabaseConfig.Value.ConnectionString);
-        var notificationDatabase = mongoClient.GetDatabase(
-            notificationDatabaseConfig.Value.DatabaseName
-        );
+        var mongoClient = new MongoClient(Environment.GetEnvironmentVariable("ConnectionString"));
+        var notificationDatabase = mongoClient.GetDatabase(Environment.GetEnvironmentVariable("DatabaseName"));
+
         _notificationCollection = notificationDatabase.GetCollection<Notification>(
-            notificationDatabaseConfig.Value.CollectionName
+            Environment.GetEnvironmentVariable("NotificationCollectionName")
         );
 
         var connectionFactory = new ConnectionFactory
         {
-            Uri = new Uri(configuration["RabbitMQ:ConnectionString"])
+            Uri = new Uri(Environment.GetEnvironmentVariable("RabbitMQ__ConnectionString") ?? "")
         };
         var connection = connectionFactory.CreateConnection();
         _channel = connection.CreateModel();

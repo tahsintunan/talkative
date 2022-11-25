@@ -14,24 +14,21 @@ public class CommentService : IComment
     private readonly IMongoCollection<User> _userCollection;
 
     public CommentService(
-        IOptions<CommentDatabaseConfig> tweetDatabaseConfig,
-        IOptions<UserDatabaseConfig> userDatabaseConfig
     )
     {
-        var mongoClient = new MongoClient(tweetDatabaseConfig.Value.ConnectionString);
-
-        var mongoDatabase = mongoClient.GetDatabase(tweetDatabaseConfig.Value.DatabaseName);
+        var mongoClient = new MongoClient(Environment.GetEnvironmentVariable("ConnectionString"));
+        var mongoDatabase = mongoClient.GetDatabase(Environment.GetEnvironmentVariable("DatabaseName"));
 
         _commentCollection = mongoDatabase.GetCollection<Comment>(
-            tweetDatabaseConfig.Value.CollectionName
+            Environment.GetEnvironmentVariable("CommentCollectionName")
         );
 
         _userCollection = mongoDatabase.GetCollection<User>(
-            userDatabaseConfig.Value.UserCollectionName
+            Environment.GetEnvironmentVariable("UserCollectionName")
         );
 
         var settings = MongoClientSettings.FromConnectionString(
-            tweetDatabaseConfig.Value.ConnectionString
+            Environment.GetEnvironmentVariable("ConnectionString")
         );
 
         settings.LinqProvider = LinqProvider.V3;

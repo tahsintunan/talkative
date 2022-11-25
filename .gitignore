@@ -50,7 +50,7 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
-
+*.env
 
 
 ## Ignore Visual Studio temporary files, build results, and

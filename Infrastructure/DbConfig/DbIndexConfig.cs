@@ -9,25 +9,20 @@ public static class DbIndexConfig
 {
     public static IServiceCollection DatabaseIndexConfig(this IServiceCollection services)
     {
-        var userDatabaseConfig = services
-            .BuildServiceProvider()
-            .GetRequiredService<IOptions<UserDatabaseConfig>>()
-            .Value;
-        var tweetDatabaseConfig = services
-            .BuildServiceProvider()
-            .GetRequiredService<IOptions<TweetDatabaseConfig>>()
-            .Value;
+        // foreach (var item in Environment.GetEnvironmentVariables().Keys)
+        // {
+        //     Console.WriteLine(item.ToString() + " " + Environment.GetEnvironmentVariable(item.ToString() ?? ""));
+        // }
+        var mongoClient = new MongoClient(Environment.GetEnvironmentVariable("ConnectionString"));
 
-        var mongoClient = new MongoClient(userDatabaseConfig.ConnectionString);
-
-        var mongoDatabase = mongoClient.GetDatabase(userDatabaseConfig.DatabaseName);
+        var mongoDatabase = mongoClient.GetDatabase(Environment.GetEnvironmentVariable("DatabaseName"));
 
         var _userCollection = mongoDatabase.GetCollection<User>(
-            userDatabaseConfig.UserCollectionName
+            Environment.GetEnvironmentVariable("UserCollectionName")
         );
 
         var _tweetCollection = mongoDatabase.GetCollection<Tweet>(
-            tweetDatabaseConfig.TweetCollectionName
+            Environment.GetEnvironmentVariable("TweetCollectionName")
         );
 
         var userIndexModel = new CreateIndexModel<User>(

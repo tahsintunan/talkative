@@ -21,25 +21,23 @@ public class NotificationService : INotification
     private readonly IMongoCollection<User> _userCollection;
 
     public NotificationService(
-        IRabbitmq rabbitmqService,
-        IOptions<NotificationDatabaseConfig> notificationDatabaseConfig,
-        IOptions<UserDatabaseConfig> userDatabaseConfig
+        IRabbitmq rabbitmqService
     )
     {
         _rabbitmqService = rabbitmqService;
-        var mongoClient = new MongoClient(notificationDatabaseConfig.Value.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(notificationDatabaseConfig.Value.DatabaseName);
+        var mongoClient = new MongoClient(Environment.GetEnvironmentVariable("ConnectionString"));
+        var mongoDatabase = mongoClient.GetDatabase(Environment.GetEnvironmentVariable("DatabaseName"));
 
         _notificationCollection = mongoDatabase.GetCollection<Notification>(
-            notificationDatabaseConfig.Value.CollectionName
+            Environment.GetEnvironmentVariable("NotificationCollectionName")
         );
 
         _userCollection = mongoDatabase.GetCollection<User>(
-            userDatabaseConfig.Value.UserCollectionName
+            Environment.GetEnvironmentVariable("UserCollectionName")
         );
 
         var settings = MongoClientSettings.FromConnectionString(
-            notificationDatabaseConfig.Value.ConnectionString
+            Environment.GetEnvironmentVariable("ConnectionString")
         );
 
         settings.LinqProvider = LinqProvider.V3;

@@ -2,7 +2,6 @@ using System.Text;
 using Application.Common.Interface;
 using Application.Common.ViewModels;
 using Domain.Entities;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -18,12 +17,12 @@ public class RtNotificationHandlerService : IHostedService
     private readonly INotificationHub _notificationHub;
     private readonly IUser _userService;
 
-    public RtNotificationHandlerService(IConfiguration configuration, INotificationHub notificationHub,
+    public RtNotificationHandlerService(INotificationHub notificationHub,
         IUser userService)
     {
         _userService = userService;
         _notificationHub = notificationHub;
-        var connectionFactory = new ConnectionFactory { Uri = new Uri(configuration["RabbitMQ:ConnectionString"]) };
+        var connectionFactory = new ConnectionFactory { Uri = new Uri(Environment.GetEnvironmentVariable("RabbitMQ__ConnectionString") ?? "") };
         var connection = connectionFactory.CreateConnection();
         _channel = connection.CreateModel();
         _consumer = new EventingBasicConsumer(_channel);

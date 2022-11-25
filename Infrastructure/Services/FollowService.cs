@@ -14,24 +14,22 @@ public class FollowService : IFollow
     private readonly IMongoCollection<User> _userCollection;
 
     public FollowService(
-        IOptions<FollowerDatabaseConfig> followerDatabaseConfig,
-        IOptions<UserDatabaseConfig> userDatabaseConfig
     )
     {
-        var mongoClient = new MongoClient(followerDatabaseConfig.Value.ConnectionString);
 
-        var mongoDatabase = mongoClient.GetDatabase(followerDatabaseConfig.Value.DatabaseName);
+        var mongoClient = new MongoClient(Environment.GetEnvironmentVariable("ConnectionString"));
+        var mongoDatabase = mongoClient.GetDatabase(Environment.GetEnvironmentVariable("DatabaseName"));
 
         _followerCollection = mongoDatabase.GetCollection<Follower>(
-            followerDatabaseConfig.Value.CollectionName
+            Environment.GetEnvironmentVariable("FollowerCollectionName")
         );
 
         _userCollection = mongoDatabase.GetCollection<User>(
-            userDatabaseConfig.Value.UserCollectionName
+            Environment.GetEnvironmentVariable("UserCollectionName")
         );
 
         var settings = MongoClientSettings.FromConnectionString(
-            followerDatabaseConfig.Value.ConnectionString
+            Environment.GetEnvironmentVariable("ConnectionString")
         );
 
         settings.LinqProvider = LinqProvider.V3;
@@ -93,7 +91,7 @@ public class FollowService : IFollow
             .ReplaceRoot<User>("$user")
             .SortByDescending(x => x.Username)
             .Project(user => new UserVm
-                { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
+            { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
             .ToListAsync();
 
         return followerList;
@@ -115,7 +113,7 @@ public class FollowService : IFollow
             .ReplaceRoot<User>("$user")
             .SortByDescending(x => x.Username)
             .Project(user => new UserVm
-                { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
+            { UserId = user.Id, Username = user.Username, ProfilePicture = user.ProfilePicture })
             .ToListAsync();
 
         return followingList;

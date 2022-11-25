@@ -15,24 +15,21 @@ public class TweetService : ITweet
     private readonly IMongoCollection<Tweet> _tweetCollection;
 
     public TweetService(
-        IOptions<TweetDatabaseConfig> tweetDatabaseConfig,
-        IOptions<FollowerDatabaseConfig> followerDatabaseConfig
     )
     {
-        var mongoClient = new MongoClient(tweetDatabaseConfig.Value.ConnectionString);
-
-        var mongoDatabase = mongoClient.GetDatabase(tweetDatabaseConfig.Value.DatabaseName);
+        var mongoClient = new MongoClient(Environment.GetEnvironmentVariable("ConnectionString"));
+        var mongoDatabase = mongoClient.GetDatabase(Environment.GetEnvironmentVariable("DatabaseName"));
 
         _tweetCollection = mongoDatabase.GetCollection<Tweet>(
-            tweetDatabaseConfig.Value.TweetCollectionName
+            Environment.GetEnvironmentVariable("TweetCollectionName")
         );
 
         _followerCollection = mongoDatabase.GetCollection<Follower>(
-            followerDatabaseConfig.Value.CollectionName
+            Environment.GetEnvironmentVariable("FollowerCollectionName")
         );
 
         var settings = MongoClientSettings.FromConnectionString(
-            tweetDatabaseConfig.Value.ConnectionString
+            Environment.GetEnvironmentVariable("ConnectionString")
         );
 
         settings.LinqProvider = LinqProvider.V3;

@@ -7,9 +7,6 @@ using Application.Common.Interface;
 using Application.Common.ViewModels;
 using AutoMapper;
 using Domain.Entities;
-using Infrastructure.DbConfig;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -18,25 +15,21 @@ namespace Infrastructure.Services;
 public class UserService : IUser
 {
     private readonly IAuth _authService;
-    private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
     private readonly IToken _tokenService;
     private readonly IMongoCollection<User>? _userCollection;
 
     public UserService(
-        IOptions<UserDatabaseConfig> userDatabaseConfig,
         IAuth authService,
         IToken tokenService,
-        IConfiguration configuration,
         IMapper mapper
     )
     {
-        var mongoClient = new MongoClient(userDatabaseConfig.Value.ConnectionString);
-
-        var mongoDatabase = mongoClient.GetDatabase(userDatabaseConfig.Value.DatabaseName);
+        var mongoClient = new MongoClient(Environment.GetEnvironmentVariable("ConnectionString"));
+        var mongoDatabase = mongoClient.GetDatabase(Environment.GetEnvironmentVariable("DatabaseName"));
 
         _userCollection = mongoDatabase.GetCollection<User>(
-            userDatabaseConfig.Value.UserCollectionName
+            Environment.GetEnvironmentVariable("UserCollectionName")
         );
 
         _mapper = mapper;
@@ -44,8 +37,6 @@ public class UserService : IUser
         _authService = authService;
 
         _tokenService = tokenService;
-
-        _configuration = configuration;
     }
 
     public async Task<IList<UserVm>?> GetAllUsers(int skip, int limit)
@@ -151,7 +142,7 @@ public class UserService : IUser
             5
         );
 
-        var link = _configuration["AppUrl"] + "/Auth/reset-password/" + token;
+        var link = Environment.GetEnvironmentVariable("AppUrl") + "/Auth/reset-password/" + token;
 
         var messageBody =
             $@"
@@ -219,9 +210,8 @@ public class UserService : IUser
 
     private async Task SendMail(string email, string subject, string messageBody)
     {
-        var systemEmailCredentials = _configuration.GetSection("EmailCredentials");
-        var systemEmail = systemEmailCredentials.GetSection("Email").Value;
-        var systemEmailPassword = systemEmailCredentials.GetSection("Password").Value;
+        var systemEmail = Environment.GetEnvironmentVariable("EmailCredentials__Email") ?? "";
+        var systemEmailPassword = Environment.GetEnvironmentVariable("EmailCredentials__Password") ?? "";
         MailMessage message = new();
         SmtpClient smtp = new();
         message.From = new MailAddress(systemEmail);
