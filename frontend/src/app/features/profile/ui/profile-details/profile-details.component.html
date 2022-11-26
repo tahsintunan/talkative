@@ -1,0 +1,128 @@
+<div class="rounded-md bg-white flex flex-col">
+  <div
+    class="flex relative h-64 z-10 justify-end items-end gap-2 flex-wrap p-4"
+  >
+    <img
+      [src]="
+        data?.coverPicture
+          ? data?.coverPicture
+          : (data?.username | generateImage: 'background')
+      "
+      class="absolute -z-10 inset-0 w-full h-full object-cover rounded-md"
+    />
+    <div
+      *ngIf="userAuth?.userId === data?.userId; else followBtns"
+      class="flex flex-col justify-between h-full items-end"
+    >
+      <button
+        class="transition flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+        (click)="onCoverImageEdit.emit()"
+      >
+        Change Cover Image
+        <span class="material-symbols-rounded">add_photo_alternate</span>
+      </button>
+
+      <div class="flex gap-2">
+        <button
+          class="transition flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+          (click)="onProfileEdit.emit()"
+        >
+          Edit Profile <span class="material-symbols-rounded">edit</span>
+        </button>
+
+        <button
+          class="transition flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+          (click)="onPasswordEdit.emit()"
+        >
+          Change Password <span class="material-symbols-rounded">key</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="z-10 text-gray-500 px-8 py-4 flex items-end gap-4">
+    <div class="relative h-full w-48">
+      <app-avatar
+        class="absolute bottom-0"
+        size="170px"
+        [src]="data?.profilePicture"
+        [alt]="data?.username"
+        borderColor="#fff"
+        borderWidth="6px"
+        borderRadius="50%"
+        bgColor="#fafafa"
+      >
+      </app-avatar>
+      <button
+        *ngIf="userAuth?.userId === data?.userId"
+        class="absolute bottom-5 right-5 transition flex items-center justify-center h-10 w-10 rounded-full border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+        (click)="onProfileImageEdit.emit()"
+      >
+        <span class="material-symbols-rounded">edit</span>
+      </button>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <h1 class="text-2xl font-semibold text-gray-700">
+        {{ data?.username }}
+      </h1>
+
+      <div class="flex gap-2">
+        <span class="material-symbols-rounded">cake</span>
+        <p>Born in {{ data?.dateOfBirth | date: "longDate" }}</p>
+      </div>
+    </div>
+
+    <div class="flex justify-center gap-4 ml-auto">
+      <div class="flex flex-col items-center">
+        <p class="text-gray-700 font-bold">
+          {{ analytics?.followerCount | shortNumber }}
+        </p>
+        <p>Followers</p>
+      </div>
+
+      <mat-divider vertical="true"></mat-divider>
+
+      <div class="flex flex-col items-center">
+        <p class="text-gray-700 font-bold">
+          {{ analytics?.followingCount | shortNumber }}
+        </p>
+        <p>Following</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #followBtns>
+  <button
+    *ngIf="!userBlocked"
+    class="transition flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+    (click)="onBlockClick.emit()"
+  >
+    Block <span class="material-symbols-rounded">person_off</span>
+  </button>
+
+  <button
+    *ngIf="userBlocked"
+    class="transition flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+    (click)="onUnblockClick.emit()"
+  >
+    Unblock <span class="material-symbols-rounded">how_to_reg</span>
+  </button>
+
+  <button
+    *ngIf="!isFollowing && !userBlocked"
+    class="transition flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+    (click)="onFollowClick.emit()"
+  >
+    Follow <span class="material-symbols-rounded">person_add</span>
+  </button>
+
+  <button
+    *ngIf="isFollowing && !userBlocked"
+    class="transition flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium border shadow-sm text-gray-700 bg-white hover:bg-gray-50 outline-none"
+    (click)="onUnfollowClick.emit()"
+  >
+    Unfollow <span class="material-symbols-rounded">person_remove</span>
+  </button>
+</ng-template>

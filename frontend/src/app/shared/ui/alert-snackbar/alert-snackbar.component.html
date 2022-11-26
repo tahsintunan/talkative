@@ -1,0 +1,42 @@
+<div
+  class="flex gap-2 border-l-4 rounded p-4"
+  [ngClass]="{
+    'text-gray-700 border-gray-700 bg-gray-100': data.type === 'default',
+    'text-blue-700 border-blue-700 bg-blue-100': data.type === 'info',
+    'text-purple-700 border-purple-700 bg-purple-100': data.type === 'notice',
+    'text-red-700 border-red-700 bg-red-100': data.type === 'danger',
+    'text-green-700 border-green-700 bg-green-100': data.type === 'success',
+    'text-yellow-700 border-yellow-700 bg-yellow-100': data.type === 'warning'
+  }"
+  (mouseover)="onMouseHover()"
+  (mouseout)="onMouseLeave()"
+>
+  <span [ngSwitch]="data.type" class="material-symbols-rounded active">
+    <ng-container *ngSwitchCase="'info'">info</ng-container>
+    <ng-container *ngSwitchCase="'notice'">lightbulb_circle</ng-container>
+    <ng-container *ngSwitchCase="'danger'">dangerous</ng-container>
+    <ng-container *ngSwitchCase="'success'">verified</ng-container>
+    <ng-container *ngSwitchCase="'warning'">warning</ng-container>
+    <ng-container *ngSwitchDefault>error</ng-container>
+  </span>
+  <div>
+    <p class="font-bold">{{ data.title }}</p>
+    <p>{{ data.message }}</p>
+  </div>
+
+  <button
+    type="button"
+    class="ml-auto my-auto outline-none bg-transparent rounded-full text-sm p-1 w-fit h-fit inline-flex items-center"
+    [ngClass]="{
+      'hover:bg-gray-200': data.type === 'default',
+      'hover:bg-blue-200': data.type === 'info',
+      'hover:bg-purple-200': data.type === 'notice',
+      'hover:bg-red-200': data.type === 'danger',
+      'hover:bg-green-200': data.type === 'success',
+      'hover:bg-yellow-200': data.type === 'warning'
+    }"
+    (click)="onClose()"
+  >
+    <span class="material-symbols-rounded">close</span>
+  </button>
+</div>

@@ -1,0 +1,38 @@
+<div class="card flex items-center p-4 hover:shadow-md transition">
+  <a
+    routerLink="/profile/{{ user?.userId }}"
+    class="flex-1 flex items-center gap-3"
+  >
+    <app-avatar
+      [alt]="user?.username"
+      [src]="user?.profilePicture"
+      size="50px"
+      borderRadius="50%"
+      borderColor="#f0f0f0"
+      borderWidth="1px"
+    ></app-avatar>
+
+    <div>
+      <h3 class="text-lg font-semibold">{{ user?.username }}</h3>
+      <p>{{ utilityService.getAge(user?.dateOfBirth!) }} years old</p>
+    </div>
+  </a>
+
+  <button
+    *ngIf="!isFollowing"
+    class="transition inline-flex items-center gap-2 rounded border border-primary px-5 py-2 text-sm font-medium text-primary hover:bg-primary hover:text-white focus:outline-none"
+    (click)="followUser()"
+  >
+    Follow
+    <span class="material-symbols-rounded">person_add</span>
+  </button>
+
+  <button
+    *ngIf="isFollowing"
+    class="transition inline-flex items-center gap-2 rounded border border-red-500 px-5 py-2 text-sm font-medium text-red-500 hover:bg-red-500 hover:text-white focus:outline-none"
+    (click)="unfollowUser()"
+  >
+    Unfollow
+    <span class="material-symbols-rounded">person_remove</span>
+  </button>
+</div>

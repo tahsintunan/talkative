@@ -1,0 +1,78 @@
+<mat-tab-group
+  mat-stretch-tabs
+  dynamicHeight
+  class="card hover:shadow-md transition !min-w-[400px]"
+>
+  <mat-tab label="Following">
+    <div
+      *ngIf="followings?.length; else noData"
+      class="container"
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="200"
+      [scrollWindow]="false"
+      (scrolled)="onFollowingScroll.emit()"
+    >
+      <app-profile-people-item
+        *ngFor="let following of followings"
+        [data]="following"
+        (onFollow)="onFollow.emit($event)"
+        (onUnfollow)="onUnfollow.emit($event)"
+        (onBlock)="onBlock.emit($event)"
+        (onUnblock)="onUnblock.emit($event)"
+      ></app-profile-people-item>
+    </div>
+  </mat-tab>
+  <mat-tab label="Followers">
+    <div
+      *ngIf="followers?.length; else noData"
+      class="container"
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="200"
+      [scrollWindow]="false"
+      (scrolled)="onFollowersScroll.emit()"
+    >
+      <app-profile-people-item
+        *ngFor="let follower of followers"
+        [data]="follower"
+        (onFollow)="onFollow.emit($event)"
+        (onUnfollow)="onUnfollow.emit($event)"
+        (onBlock)="onBlock.emit($event)"
+        (onUnblock)="onUnblock.emit($event)"
+      ></app-profile-people-item>
+    </div>
+  </mat-tab>
+  <mat-tab
+    *ngIf="profileDetails?.userId === userAuth?.userId"
+    label="Block List"
+  >
+    <div
+      *ngIf="blockList?.length; else noData"
+      class="container"
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="200"
+      [scrollWindow]="false"
+      (scrolled)="onBlockListScroll.emit()"
+    >
+      <app-profile-people-item
+        *ngFor="let block of blockList"
+        [showBlockButton]="true"
+        [data]="block"
+        (onBlock)="onBlock.emit($event)"
+        (onUnblock)="onUnblock.emit($event)"
+      ></app-profile-people-item>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+<ng-template #noData>
+  <div class="container">
+    <app-empty-result-overlay
+      class="w-72 m-auto"
+      type="noData"
+      title="Nothing to show"
+    ></app-empty-result-overlay>
+  </div>
+</ng-template>

@@ -1,0 +1,52 @@
+<div
+  class="relative text-gray-400 flex flex-col gap-4 p-6 text-center border-t-4"
+  [ngClass]="{
+    ' border-gray-500': data.type === 'default',
+    ' border-blue-500': data.type === 'info',
+    ' border-purple-500': data.type === 'notice',
+    ' border-red-500': data.type === 'danger',
+    ' border-green-500': data.type === 'success',
+    ' border-yellow-500': data.type === 'warning'
+  }"
+>
+  <button
+    type="button"
+    class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 outline-none rounded-full text-sm p-1 w-fit h-fit inline-flex items-center"
+    (click)="onCancel()"
+  >
+    <span class="material-symbols-rounded">close</span>
+  </button>
+  <span class="material-symbols-rounded text-6xl">warning</span>
+
+  <h3 class="text-2xl font-semibold">{{ data.title }}</h3>
+
+  <h3 class="text-lg font-normal">
+    {{ data.message }}
+  </h3>
+
+  <div class="flex gap-3 justify-center">
+    <button
+      type="button"
+      class="text-gray-500 bg-white hover:bg-gray-100 outline-none rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900"
+      (click)="onCancel()"
+    >
+      No, cancel
+    </button>
+
+    <button
+      type="button"
+      class="text-white outline-none font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+      [ngClass]="{
+        'bg-gray-500 hover:bg-gray-700': data.type === 'default',
+        'bg-blue-500 hover:bg-blue-700': data.type === 'info',
+        'bg-purple-500 hover:bg-purple-700': data.type === 'notice',
+        'bg-red-500 hover:bg-red-700': data.type === 'danger',
+        'bg-green-500 hover:bg-green-700': data.type === 'success',
+        'bg-yellow-500 hover:bg-yellow-700': data.type === 'warning'
+      }"
+      (click)="onConfirm()"
+    >
+      Yes, I'm sure
+    </button>
+  </div>
+</div>

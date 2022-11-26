@@ -1,0 +1,19 @@
+@import url("../../../../../colors.css");
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 1rem 3rem;
+  gap: 1rem;
+  border-radius: 4px;
+  color: var(--primary);
+}
+
+.nav-link:hover {
+  background-color: var(--primary-light);
+}
+
+.nav-link.active,
+.nav-link:hover.active {
+  background-color: var(--primary-light);
+}

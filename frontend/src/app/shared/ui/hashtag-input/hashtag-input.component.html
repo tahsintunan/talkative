@@ -1,0 +1,19 @@
+<div mwlTextInputHighlightContainer>
+  <textarea
+    #textarea
+    mwlTextInputElement
+    [class]="classExpression"
+    [placeholder]="placeholder"
+    [rows]="rows"
+    [maxlength]="500"
+    [(ngModel)]="text"
+    (input)="addTags()"
+  >
+  </textarea>
+  <mwl-text-input-highlight
+    [tags]="tags"
+    tagCssClass="highlight"
+    [textInputElement]="textarea"
+  >
+  </mwl-text-input-highlight>
+</div>

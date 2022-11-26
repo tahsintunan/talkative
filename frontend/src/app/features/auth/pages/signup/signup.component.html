@@ -1,0 +1,186 @@
+<form [formGroup]="formData" (ngSubmit)="onSubmit()">
+  <div class="card shadow flex max-w-5xl flex-1">
+    <div class="flex flex-col p-10 flex-1 gap-3">
+      <h1 class="py-3 text-4xl font-semibold text-gray-900">Signup</h1>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput type="text" formControlName="username" />
+
+        <mat-error *ngIf="formData.controls['username'].invalid">
+          {{
+            formData.controls["username"].hasError("required")
+              ? "Username is required"
+              : ""
+          }}
+          {{
+            formData.controls["username"].hasError("minlength")
+              ? "Username must be at least 3 characters"
+              : ""
+          }}
+          {{
+            formData.controls["username"].hasError("maxlength")
+              ? "Username can be at most 20 characters"
+              : ""
+          }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" />
+
+        <mat-error *ngIf="formData.controls['email'].invalid">
+          {{
+            formData.controls["email"].hasError("required")
+              ? "Email is required"
+              : ""
+          }}
+          {{
+            formData.controls["email"].hasError("email")
+              ? "Email is not valid"
+              : ""
+          }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Date of Birth</mat-label>
+        <input
+          matInput
+          [matDatepicker]="datePicker"
+          formControlName="dateOfBirth"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="datePicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #datePicker></mat-datepicker>
+
+        <mat-error *ngIf="formData.controls['dateOfBirth'].invalid">
+          {{
+            formData.controls["dateOfBirth"].hasError("required")
+              ? "Date of Birth is required"
+              : ""
+          }}
+
+          {{
+            formData.controls["dateOfBirth"].hasError("underage")
+              ? "You must be at least 18 years ago"
+              : ""
+          }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          autocomplete
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password"
+        />
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          (click)="hidePassword = !hidePassword"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hidePassword"
+        >
+          <mat-icon class="material-symbols-rounded">{{
+            hidePassword ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+
+        <mat-error *ngIf="formData.controls['password'].invalid">
+          {{
+            formData.controls["password"].hasError("required")
+              ? "Password is required"
+              : ""
+          }}
+          {{
+            formData.controls["password"].hasError("pattern")
+              ? "Must contain at least 8 characters, an uppercase letter, a lowercase letter, a number and a special character"
+              : ""
+          }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Confirm password</mat-label>
+        <input
+          matInput
+          autocomplete
+          [type]="hideConfirmPassword ? 'password' : 'text'"
+          formControlName="confirmPassword"
+        />
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          (click)="hideConfirmPassword = !hideConfirmPassword"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hideConfirmPassword"
+        >
+          <mat-icon class="material-symbols-rounded">{{
+            hideConfirmPassword ? "visibility_off" : "visibility"
+          }}</mat-icon>
+        </button>
+
+        <mat-error *ngIf="formData.controls['confirmPassword'].invalid">
+          {{
+            formData.controls["confirmPassword"].hasError("required")
+              ? "Confirm password is required"
+              : ""
+          }}
+          {{
+            formData.controls["confirmPassword"].hasError("mismatch")
+              ? "Passwords must be the same"
+              : ""
+          }}
+        </mat-error>
+      </mat-form-field>
+
+      <div class="flex items-center gap-5 mt-2">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="formData.invalid"
+        >
+          Create an account
+        </button>
+        <p class="text-gray-700">
+          Already have an account?
+          <a [routerLink]="'/auth/signin'" class="text-primary hover:underline">
+            <strong>Sign In</strong>
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="relative flex flex-col justify-center border-l p-10 max-w-sm gap-6"
+    >
+      <span class="flex items-center gap-3">
+        <mat-icon
+          color="primary"
+          svgIcon="app_logo"
+          [ngStyle]="{ fontSize: '2rem', width: '2rem', height: '2rem' }"
+        >
+        </mat-icon>
+        <h1 class="text-2xl font-bold text-gray-900">Talkative</h1>
+      </span>
+
+      <h1 class="py-3 mt-auto text-4xl font-bold text-gray-900">
+        Hello, Friend!
+      </h1>
+
+      <p class="text-2xl mb-auto text-gray-700 pb-5">
+        Sign up to get access to our service and connect with people all around.
+        It's completely free!
+      </p>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,88 @@
+<div
+  class="flex gap-1 p-2 rounded-2xl text-gray-700"
+  [ngClass]="{ 'highlight-comment': commentToHightlight === data?.id }"
+>
+  <a class="mt-5 h-fit" routerLink="/profile/{{ data?.userId }}"
+    ><app-avatar
+      [alt]="data?.username"
+      [src]="data?.profilePicture"
+      size="40px"
+      borderRadius="50%"
+      borderColor="#f0f0f0"
+      borderWidth="1px"
+    ></app-avatar
+  ></a>
+
+  <div class="flex-1">
+    <div class="flex items-center gap-2 flex-1">
+      <div
+        class="tooltip tooltip-right rounded-3xl border w-[88%] space-y-1 flex flex-col bg-white p-4"
+      >
+        <div class="flex items-center gap-3">
+          <a class="hover:underline" routerLink="/profile/{{ data?.userId }}"
+            ><strong>{{ data?.username }}</strong></a
+          >
+          <span>•</span>
+          <time class="text-xs text-gray-500"
+            >{{ data?.created | timeAgo }}
+            <span *ngIf="data?.lastModified"> (Edited)</span>
+          </time>
+        </div>
+
+        <app-comment-input
+          *ngIf="isEditMode"
+          class="mt-2"
+          [isEditMode]="isEditMode"
+          [defaultValue]="data?.text!"
+          (onCommentSubmit)="onEdit($event)"
+          (onEditCancel)="isEditMode = false"
+        ></app-comment-input>
+
+        <p *ngIf="!isEditMode" class="mt-1 whitespace-pre-line">
+          {{ data?.text }}
+        </p>
+      </div>
+
+      <button
+        *ngIf="data?.userId === userAuth?.userId"
+        class="transition hover:text-primary hover:shadow hover:bg-white"
+        mat-icon-button
+        (click)="$event.stopPropagation()"
+        [matMenuTriggerFor]="menu"
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </div>
+
+    <div
+      class="ml-6 pt-1 flex gap-1 items-center"
+      [ngClass]="{
+        'text-primary': alreadyLiked
+      }"
+    >
+      <button
+        class="transition inline-flex items-center p-1 rounded-full hover:bg-primaryLight hover:text-primary"
+        (click)="onLike()"
+      >
+        <mat-icon
+          class="material-symbols-rounded"
+          [ngClass]="{
+            active: alreadyLiked
+          }"
+          >favorite</mat-icon
+        ></button
+      ><span *ngIf="data?.likes?.length">{{ data?.likes?.length }}</span>
+    </div>
+  </div>
+</div>
+
+<mat-menu #menu>
+  <button mat-menu-item (click)="isEditMode = true">
+    <mat-icon class="material-symbols-rounded">edit</mat-icon>
+    <span>Edit Comment</span>
+  </button>
+  <button mat-menu-item (click)="onDelete()">
+    <mat-icon class="material-symbols-rounded">delete</mat-icon>
+    <span>Delete Comment</span>
+  </button>
+</mat-menu>

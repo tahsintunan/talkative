@@ -1,0 +1,89 @@
+<form [formGroup]="formData" (ngSubmit)="onSubmit()">
+  <div class="relative flex items-center p-4 justify-center border-b">
+    <h3 class="text-xl font-semibold text-gray-900">Update Profile</h3>
+    <button
+      type="button"
+      class="absolute right-3 outline-none text-gray-900 bg-transparent hover:bg-gray-200 focus:bg-gray-200 rounded-full text-sm p-1.5 inline-flex items-center"
+      (click)="onClose()"
+    >
+      <span class="material-symbols-rounded">close</span>
+    </button>
+  </div>
+
+  <div class="flex flex-col gap-2 px-6 pt-8 pb-3">
+    <mat-form-field appearance="outline">
+      <mat-label>Username</mat-label>
+      <input matInput type="text" formControlName="username" />
+
+      <mat-error *ngIf="formData.controls['username'].invalid">
+        {{
+          formData.controls["username"].hasError("required")
+            ? "Username is required"
+            : ""
+        }}
+        {{
+          formData.controls["username"].hasError("minlength")
+            ? "Username must be at least 3 characters"
+            : ""
+        }}
+        {{
+          formData.controls["username"].hasError("maxlength")
+            ? "Username can be at most 20 characters"
+            : ""
+        }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" />
+
+      <mat-error *ngIf="formData.controls['email'].invalid">
+        {{
+          formData.controls["email"].hasError("required")
+            ? "Email is required"
+            : ""
+        }}
+        {{
+          formData.controls["email"].hasError("email")
+            ? "Email is not valid"
+            : ""
+        }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date of Birth</mat-label>
+      <input
+        matInput
+        [matDatepicker]="datePicker"
+        formControlName="dateOfBirth"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="datePicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+
+      <mat-error *ngIf="formData.controls['dateOfBirth'].invalid">
+        {{
+          formData.controls["dateOfBirth"].hasError("required")
+            ? "Date of Birth is required"
+            : ""
+        }}
+        {{
+          formData.controls["dateOfBirth"].hasError("underage")
+            ? "You must be at least 18 years old"
+            : ""
+        }}
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <button
+    class="w-full text-white bg-primary hover:bg-primaryDark outline-none font-lg rounded-b text-sm px-5 py-3 text-center"
+    type="submit"
+    [disabled]="formData.invalid"
+  >
+    Submit
+  </button>
+</form>

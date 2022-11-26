@@ -1,0 +1,80 @@
+<section class="flex min-h-full justify-center">
+  <div class="flex gap-8 max-w-7xl w-full" *ngIf="profile; else noData">
+    <div class="flex flex-col gap-8 flex-1">
+      <app-profile-details
+        [data]="profile"
+        [followers]="followers"
+        [followings]="followings"
+        [analytics]="userAnalytics"
+        (onProfileEdit)="onProfileEdit()"
+        (onPasswordEdit)="onPasswordEdit()"
+        (onProfileImageEdit)="onProfileImageEdit()"
+        (onCoverImageEdit)="onCoverImageEdit()"
+        (onFollowClick)="onFollow()"
+        (onUnfollowClick)="onUnfollow()"
+        (onBlockClick)="onBlock()"
+        (onUnblockClick)="onUnblock()"
+      ></app-profile-details>
+
+      <div
+        *ngIf="tweets?.length; else noPosts"
+        class="flex flex-col gap-6"
+        infiniteScroll
+        [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="200"
+        [infiniteScrollContainer]="'#main-panel'"
+        [fromRoot]="true"
+        (scrolled)="onScroll()"
+      >
+        <app-tweet-item
+          *ngFor="let tweet of tweets"
+          [data]="tweet"
+        ></app-tweet-item>
+
+        <app-empty-result-overlay
+          class="mx-auto w-1/2"
+          type="endReached"
+          title="That's all from {{ profile.username }}!"
+          message="Why don't you check out some other users?"
+        ></app-empty-result-overlay>
+      </div>
+    </div>
+
+    <div class="relative">
+      <div class="h-fit sticky top-0">
+        <app-profile-peoples
+          [profileDetails]="profile"
+          [followers]="followers"
+          [followings]="followings"
+          [blockList]="blockList"
+          (onFollow)="onFollow($event)"
+          (onUnfollow)="onUnfollow($event)"
+          (onBlock)="onBlock($event)"
+          (onUnblock)="onUnblock($event)"
+          (onFollowingScroll)="onFollowingScroll()"
+          (onFollowersScroll)="onFollowersScroll()"
+          (onBlockListScroll)="onBlockListScroll()"
+        >
+        </app-profile-peoples>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #noPosts>
+  <app-empty-result-overlay
+    class="m-auto w-1/2"
+    type="noDataAlt"
+    title="No Posts By {{ profile?.username }}!"
+    message="Come back later to see if there are any new posts."
+  ></app-empty-result-overlay>
+</ng-template>
+
+<ng-template #noData>
+  <app-empty-result-overlay
+    class="m-auto max-w-xl w-full"
+    type="noData"
+    title="Oops! User unavailable!"
+    message="This user is not available or does not exist."
+  ></app-empty-result-overlay>
+</ng-template>

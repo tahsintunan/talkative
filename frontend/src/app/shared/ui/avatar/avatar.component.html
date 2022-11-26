@@ -1,0 +1,21 @@
+<div
+  [ngStyle]="{
+    backgroundColor: bgColor,
+    borderRadius: borderRadius,
+    borderWidth: borderWidth,
+    borderColor: borderColor
+  }"
+>
+  <img
+    [alt]="alt"
+    [src]="src ? src : (alt | generateImage)"
+    [ngStyle]="{
+      minWidth: size,
+      minHeight: size,
+      maxWidth: size,
+      maxHeight: size,
+      backgroundColor: bgColor,
+      borderRadius: borderRadius
+    }"
+  />
+</div>

@@ -1,0 +1,81 @@
+<form [formGroup]="formData" (ngSubmit)="onSubmit()">
+  <div
+    class="mt-20 h-fit card shadow flex flex-col max-w-2xl flex-1 px-10 sm:px-20 pb-20 py-14 gap-4"
+  >
+    <span class="flex items-center gap-3">
+      <mat-icon
+        color="primary"
+        svgIcon="app_logo"
+        [ngStyle]="{ fontSize: '2rem', width: '2rem', height: '2rem' }"
+      >
+      </mat-icon>
+      <h1 class="text-2xl font-bold text-gray-900">Talkative</h1>
+    </span>
+
+    <h1 class="py-3 text-4xl font-bold text-gray-900">Welcome Back!</h1>
+
+    <p class="text-2xl text-gray-700 pb-5">
+      To keep connected with us please login with your personal info
+    </p>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Username</mat-label>
+      <input matInput type="text" formControlName="username" />
+      <mat-error *ngIf="formData.controls['username'].hasError('required')">
+        Username is required.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        autocomplete
+        [type]="hidePassword ? 'password' : 'text'"
+        formControlName="password"
+      />
+      <button
+        type="button"
+        mat-icon-button
+        matSuffix
+        (click)="hidePassword = !hidePassword"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hidePassword"
+      >
+        <mat-icon class="material-symbols-rounded">{{
+          hidePassword ? "visibility_off" : "visibility"
+        }}</mat-icon>
+      </button>
+
+      <mat-error *ngIf="formData.controls['password'].hasError('required')">
+        Password is required.
+      </mat-error>
+    </mat-form-field>
+
+    <button
+      class="w-full uppercase"
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="formData.invalid"
+    >
+      Login
+    </button>
+
+    <div class="flex sm:flex-row flex-col justify-between gap-4">
+      <p class="text-gray-700">
+        Don't have an account?
+        <a [routerLink]="'/auth/signup'" class="text-primary hover:underline">
+          <strong>Sign Up</strong>
+        </a>
+      </p>
+
+      <span
+        class="text-primary hover:underline cursor-pointer"
+        (click)="onForgotPasswordClick()"
+      >
+        <strong>Forgot Password?</strong>
+      </span>
+    </div>
+  </div>
+</form>

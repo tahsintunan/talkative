@@ -1,0 +1,75 @@
+<div
+  class="card flex gap-3 items-center p-3 hover:bg-gray-100 hover:shadow-md transition cursor-pointer"
+  (click)="onClick.emit(data)"
+>
+  <app-avatar
+    [alt]="data?.eventTriggererUsername"
+    [src]="data?.eventTriggererProfilePicture"
+    size="45px"
+    borderRadius="50%"
+    borderColor="#f0f0f0"
+    borderWidth="1px"
+  >
+  </app-avatar>
+
+  <div class="text-gray-600 flex flex-col flex-1">
+    <div class="text-gray-900 flex gap-2">
+      <span class="font-bold">{{ data?.eventTriggererUsername }}</span>
+
+      <span>———</span>
+
+      <span [ngSwitch]="data?.eventType" class="text-gray-700">
+        <ng-container *ngSwitchCase="'follow'">
+          Started following you
+        </ng-container>
+        <ng-container *ngSwitchCase="'likeTweet'">
+          Liked your post
+        </ng-container>
+        <ng-container *ngSwitchCase="'likeComment'">
+          Liked your comment
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'comment'">
+          Commented on your post
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'retweet'">
+          Shared your post
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'quoteRetweet'">
+          Quoted your post
+        </ng-container>
+      </span>
+    </div>
+    <span class="text-primary"> {{ data?.dateTime | timeAgo }}</span>
+  </div>
+
+  <span class="rounded-full p-1" [ngClass]="{ 'bg-primary': !data?.isRead }">
+  </span>
+
+  <button
+    class="transition hover:text-primary hover:shadow hover:bg-white"
+    mat-icon-button
+    (click)="$event.stopPropagation()"
+    [matMenuTriggerFor]="menu"
+  >
+    <mat-icon>more_vert</mat-icon>
+  </button>
+
+  <mat-menu #menu>
+    <button
+      *ngIf="!data?.isRead"
+      mat-menu-item
+      (click)="onMarkAsRead.emit(data?.notificationId)"
+    >
+      <mat-icon class="material-symbols-rounded">task_alt</mat-icon>
+      <span>Mark As Read</span>
+    </button>
+
+    <button mat-menu-item (click)="onDelete.emit(data?.notificationId)">
+      <mat-icon class="material-symbols-rounded">delete</mat-icon>
+      <span>Delete Notification</span>
+    </button>
+  </mat-menu>
+</div>

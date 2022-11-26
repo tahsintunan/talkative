@@ -1,0 +1,39 @@
+@import url("../../../../colors.css");
+
+.highlight {
+  background-color: var(--primary-light);
+  color: transparent;
+}
+
+.text-input-highlight-container {
+  position: relative;
+}
+
+.text-input-highlight-container .text-input-element {
+  background: none;
+  position: relative;
+  resize: none;
+  padding-left: 3px;
+  padding-right: 3px;
+  z-index: 2;
+}
+
+.text-input-highlight-container .text-highlight-element {
+  overflow: hidden !important;
+  word-break: break-word;
+  white-space: pre-wrap;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: transparent;
+  z-index: 1;
+}
+
+.text-input-highlight-container .text-highlight-tag {
+  border-radius: 4px;
+  padding: 1px 2px;
+  margin: -1px -2px;
+  overflow-wrap: break-word;
+}

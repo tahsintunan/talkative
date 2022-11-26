@@ -1,0 +1,56 @@
+<div
+  class="flex items-center gap-3 justify-between rounded-md hover:bg-gray-50 p-2 text-gray-700"
+>
+  <a
+    routerLink="/profile/{{ data?.userId }}"
+    class="flex gap-3 items-center flex-1 truncate"
+  >
+    <app-avatar
+      [src]="data?.profilePicture"
+      [alt]="data?.username"
+      size="50px"
+      borderRadius="50%"
+      borderWidth="1px"
+      borderColor="#f0f0f0"
+    ></app-avatar>
+    <span class="truncate">{{ data?.username }}</span>
+  </a>
+
+  <ng-container *ngIf="data?.userId !== userAuth?.userId">
+    <ng-container *ngIf="!showBlockButton; else blockBtn">
+      <button
+        *ngIf="!isFollowing"
+        class="transition inline-flex items-center rounded-full border border-primary py-1 px-2 text-sm font-medium text-primary hover:text-white hover:bg-primary outline-none"
+        (click)="follow()"
+      >
+        Follow
+      </button>
+
+      <button
+        *ngIf="isFollowing"
+        class="transition inline-flex items-center rounded-full border border-red-500 py-1 px-2 text-sm font-medium text-red-500 hover:text-white hover:bg-red-500 outline-none"
+        (click)="unfollow()"
+      >
+        Unfollow
+      </button>
+    </ng-container>
+
+    <ng-template #blockBtn>
+      <button
+        *ngIf="!isBlocked"
+        class="transition inline-flex items-center rounded-full border border-primary py-1 px-2 text-sm font-medium text-primary hover:text-white hover:bg-primary outline-none"
+        (click)="block()"
+      >
+        Block
+      </button>
+
+      <button
+        *ngIf="isBlocked"
+        class="transition inline-flex items-center rounded-full border border-red-500 py-1 px-2 text-sm font-medium text-red-500 hover:text-white hover:bg-red-500 focus:outline-none"
+        (click)="unblock()"
+      >
+        Unblock
+      </button>
+    </ng-template>
+  </ng-container>
+</div>
