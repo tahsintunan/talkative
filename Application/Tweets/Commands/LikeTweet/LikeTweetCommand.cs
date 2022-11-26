@@ -40,7 +40,7 @@ public class LikeTweetCommandHandler : IRequestHandler<LikeTweetCommand>
         var currentTweet = await _tweetService.GetTweetById(request.TweetId!);
         var tweetVm = _tweetBsonDocumentMapper.map(currentTweet!);
 
-        if (tweetVm.Likes!.Contains(request.UserId))
+        if (!tweetVm.Likes!.Contains(request.UserId))
         {
             tweetVm.Likes!.Add(request.UserId);
             await _notificationService.TriggerLikeTweetNotification(request, tweetVm);
