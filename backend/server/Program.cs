@@ -2,15 +2,10 @@ using Application;
 using Application.Common.Interface;
 using FluentValidation.AspNetCore;
 using Infrastructure;
-using server;
 using server.Filters;
 using server.Hub;
 using server.Middlewares;
 
-
-var root = Directory.GetCurrentDirectory();
-var dotenv = Path.Combine(root, ".env");
-DotEnv.Load(dotenv);
 
 var builder = WebApplication.CreateBuilder(args);
 
